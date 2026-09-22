@@ -124,6 +124,34 @@ class MouseEventFilter(QObject):
                         g._current_color = target_color
                         needs_render = True
                 
+                
+                # --- Object Hover Logic ---
+                hovered_obj = None
+                if act is not None and hovered_axis is None:
+                    for t in self.main.transducer_actors:
+                        if t.GetAddressAsString("vtkProp") == act_addr:
+                            hovered_obj = t
+                            break
+                    if hovered_obj is None:
+                        for p in self.main.control_points:
+                            if p["actor"].GetAddressAsString("vtkProp") == act_addr:
+                                hovered_obj = p["actor"]
+                                break
+                                
+                for t in self.main.transducer_actors + [p["actor"] for p in self.main.control_points]:
+                    if hasattr(t, 'prop'):
+                        is_selected = (t in self.main.selected_actors)
+                        is_hovered = (t == hovered_obj)
+                        
+                        if is_selected: target_op = 0.5
+                        elif is_hovered: target_op = 0.7
+                        else: target_op = 1.0
+                        
+                        if getattr(t, '_current_opacity', 1.0) != target_op:
+                            t.prop.opacity = target_op
+                            t._current_opacity = target_op
+                            needs_render = True
+                            
                 if needs_render:
                     self.main.plotter.render()
             # -------------------
@@ -1049,7 +1077,6 @@ class AcousticStudioMain(QMainWindow):
         if not self.selected_actors:
             self.sel_x.setValue(0); self.sel_y.setValue(0); self.sel_z.setValue(0)
             self.sel_rx.setValue(0); self.sel_ry.setValue(0); self.sel_rz.setValue(0)
-            self.gizmo_widget.Off()
             self._is_updating_ui = False
             return
 
@@ -1077,7 +1104,6 @@ class AcousticStudioMain(QMainWindow):
             self.prop_type_lbl.setText("다중 선택 (혼합)")
             self._sel_base_centroid = [0.0, 0.0, 0.0]
             self._sel_base_rot = [0.0, 0.0, 0.0]
-            self.gizmo_widget.Off()
             self._is_updating_ui = False
             return
 
@@ -1128,15 +1154,13 @@ class AcousticStudioMain(QMainWindow):
                 dy_b = (max_y - min_y)
                 dz_b = (max_z - min_z)
                 
-                d = max(dx_b, dy_b, dz_b) * 1.0
-                if d < 8.0: d = 8.0 # Make minimum size smaller
+                d = 18.0 # Fixed size for Gizmo to prevent massive scaling when multiple objects are selected
                 
                 import pyvista as pv
                 import vtk
                 for axis, dir_vec in [('x', (1,0,0)), ('y', (0,1,0)), ('z', (0,0,1))]:
-                    # Make cylinder thinner and shorter
-                    mesh = pv.Cylinder(center=(cx + d/2*dir_vec[0], cy + d/2*dir_vec[1], cz + d/2*dir_vec[2]), direction=dir_vec, radius=d*0.015, height=d).merge(
-                           pv.Sphere(center=(cx + d*dir_vec[0], cy + d*dir_vec[1], cz + d*dir_vec[2]), radius=d*0.06))
+                    mesh = pv.Cylinder(center=(cx + d/2*dir_vec[0], cy + d/2*dir_vec[1], cz + d/2*dir_vec[2]), direction=dir_vec, radius=d*0.02, height=d).merge(
+                           pv.Sphere(center=(cx + d*dir_vec[0], cy + d*dir_vec[1], cz + d*dir_vec[2]), radius=d*0.08))
                     if axis in getattr(self, 'gizmo_actors', {}):
                         self.gizmo_actors[axis].mapper.dataset = mesh
                         self.gizmo_actors[axis].SetVisibility(True)
@@ -1144,7 +1168,7 @@ class AcousticStudioMain(QMainWindow):
                         self.gizmo_actors[axis].SetUserMatrix(vtk.vtkMatrix4x4())
                         
                 if 'center' in getattr(self, 'gizmo_actors', {}):
-                    c_mesh = pv.Sphere(center=(cx, cy, cz), radius=d*0.06)
+                    c_mesh = pv.Sphere(center=(cx, cy, cz), radius=d*0.1)
                     self.gizmo_actors['center'].mapper.dataset = c_mesh
                     self.gizmo_actors['center'].SetVisibility(True)
                     self.gizmo_actors['center'].prop.color = 'white'
