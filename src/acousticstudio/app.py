@@ -56,6 +56,12 @@ class MouseEventFilter(QObject):
                     import vtk
                     prop_picker = vtk.vtkPropPicker()
                     renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
+                    
+                    # 1. First Pass: Gizmo Only
+                    other_actors = getattr(self.main, 'transducer_actors', []) + [p["actor"] for p in getattr(self.main, 'control_points', [])]
+                    for a in other_actors:
+                        if hasattr(a, 'SetPickable'): a.SetPickable(False)
+                        
                     prop_picker.Pick(scaled_x, vtk_y, 0, renderer)
                     act = prop_picker.GetActor()
                     
@@ -66,6 +72,10 @@ class MouseEventFilter(QObject):
                             if g_act.GetAddressAsString("vtkProp") == act_addr and g_act.GetVisibility():
                                 gizmo_clicked = axis
                                 break
+                                
+                    # Restore pickability
+                    for a in other_actors:
+                        if hasattr(a, 'SetPickable'): a.SetPickable(True)
                             
                     if gizmo_clicked:
                         self.main.active_gizmo_axis = gizmo_clicked
@@ -102,6 +112,11 @@ class MouseEventFilter(QObject):
                 import vtk
                 prop_picker = vtk.vtkPropPicker()
                 renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
+                
+                other_actors = getattr(self.main, 'transducer_actors', []) + [p["actor"] for p in getattr(self.main, 'control_points', [])]
+                for a in other_actors:
+                    if hasattr(a, 'SetPickable'): a.SetPickable(False)
+                    
                 prop_picker.Pick(scaled_x, vtk_y, 0, renderer)
                 act = prop_picker.GetActor()
                 
@@ -113,6 +128,26 @@ class MouseEventFilter(QObject):
                             hovered_axis = axis
                             break
                             
+                for a in other_actors:
+                    if hasattr(a, 'SetPickable'): a.SetPickable(True)
+                    
+                # Second pass: pick others if no gizmo
+                hovered_obj = None
+                if hovered_axis is None:
+                    prop_picker.Pick(scaled_x, vtk_y, 0, renderer)
+                    act2 = prop_picker.GetActor()
+                    if act2 is not None:
+                        act2_addr = act2.GetAddressAsString("vtkProp")
+                        for t in getattr(self.main, 'transducer_actors', []):
+                            if t.GetAddressAsString("vtkProp") == act2_addr:
+                                hovered_obj = t
+                                break
+                        if hovered_obj is None:
+                            for p in getattr(self.main, 'control_points', []):
+                                if p["actor"].GetAddressAsString("vtkProp") == act2_addr:
+                                    hovered_obj = p["actor"]
+                                    break
+                                    
                 base_colors = {'x':'red', 'y':'green', 'z':'blue', 'center':'white'}
                 hover_colors = {'x':'#FF6666', 'y':'#66FF66', 'z':'#6666FF', 'center':'yellow'}
                 
@@ -123,24 +158,10 @@ class MouseEventFilter(QObject):
                         g.prop.color = target_color
                         g._current_color = target_color
                         needs_render = True
-                
-                
-                # --- Object Hover Logic ---
-                hovered_obj = None
-                if act is not None and hovered_axis is None:
-                    for t in self.main.transducer_actors:
-                        if t.GetAddressAsString("vtkProp") == act_addr:
-                            hovered_obj = t
-                            break
-                    if hovered_obj is None:
-                        for p in self.main.control_points:
-                            if p["actor"].GetAddressAsString("vtkProp") == act_addr:
-                                hovered_obj = p["actor"]
-                                break
-                                
-                for t in self.main.transducer_actors + [p["actor"] for p in self.main.control_points]:
+                        
+                for t in other_actors:
                     if hasattr(t, 'prop'):
-                        is_selected = (t in self.main.selected_actors)
+                        is_selected = (t in getattr(self.main, 'selected_actors', []))
                         is_hovered = (t == hovered_obj)
                         
                         if is_selected: target_op = 0.5
@@ -166,10 +187,12 @@ class MouseEventFilter(QObject):
                 def get_ray(px, py):
                     renderer.SetDisplayPoint(px, py, 0.0)
                     renderer.DisplayToWorld()
-                    p1 = np.array(renderer.GetWorldPoint()[:3])
+                    wp1 = renderer.GetWorldPoint()
+                    p1 = np.array([wp1[0]/wp1[3], wp1[1]/wp1[3], wp1[2]/wp1[3]])
                     renderer.SetDisplayPoint(px, py, 1.0)
                     renderer.DisplayToWorld()
-                    p2 = np.array(renderer.GetWorldPoint()[:3])
+                    wp2 = renderer.GetWorldPoint()
+                    p2 = np.array([wp2[0]/wp2[3], wp2[1]/wp2[3], wp2[2]/wp2[3]])
                     d = p2 - p1
                     norm = np.linalg.norm(d)
                     if norm > 0: d = d / norm
@@ -1075,6 +1098,8 @@ class AcousticStudioMain(QMainWindow):
         
         # 2. Check selection
         if not self.selected_actors:
+            for act in getattr(self, 'gizmo_actors', {}).values():
+                act.SetVisibility(False)
             self.sel_x.setValue(0); self.sel_y.setValue(0); self.sel_z.setValue(0)
             self.sel_rx.setValue(0); self.sel_ry.setValue(0); self.sel_rz.setValue(0)
             self._is_updating_ui = False
