@@ -72,7 +72,7 @@ class MouseEventFilter(QObject):
                         self.main.gizmo_start_pos = pos
                         self.main.gizmo_start_values = (self.main.sel_x.value(), self.main.sel_y.value(), self.main.sel_z.value())
                         for a, g in self.main.gizmo_actors.items():
-                            g.prop.color = "yellow" if a == gizmo_clicked else {'x':'red','y':'green','z':'blue'}[a]
+                            g.prop.color = "yellow" if a == gizmo_clicked else {'x':'red','y':'green','z':'blue','center':'white'}.get(a, 'white')
                         self.main.plotter.render()
                         return True
 
@@ -184,7 +184,7 @@ class MouseEventFilter(QObject):
             if event.button() == Qt.LeftButton and getattr(self.main, 'active_gizmo_axis', None) is not None:
                 self.main.active_gizmo_axis = None
                 for a, g in self.main.gizmo_actors.items():
-                    g.prop.color = {'x':'red','y':'green','z':'blue'}[a]
+                    g.prop.color = {'x':'red','y':'green','z':'blue','center':'white'}.get(a, 'white')
                 self.main.plotter.render()
                 return True
 
@@ -262,6 +262,12 @@ class AcousticStudioMain(QMainWindow):
             act.SetPickable(True)
             act.SetVisibility(False)
             self.gizmo_actors[axis] = act
+            
+        center_mesh = pv.Sphere(center=(0,0,0), radius=d*0.04)
+        c_act = self.plotter.add_mesh(center_mesh, color='white', lighting=True)
+        c_act.SetPickable(True)
+        c_act.SetVisibility(False)
+        self.gizmo_actors['center'] = c_act
             
         self.active_gizmo_axis = None
         self.gizmo_start_pos = None
@@ -1069,6 +1075,7 @@ class AcousticStudioMain(QMainWindow):
                 if d < 8.0: d = 8.0 # Make minimum size smaller
                 
                 import pyvista as pv
+                import vtk
                 for axis, dir_vec in [('x', (1,0,0)), ('y', (0,1,0)), ('z', (0,0,1))]:
                     # Make cylinder thinner and shorter
                     mesh = pv.Cylinder(center=(cx + d/2*dir_vec[0], cy + d/2*dir_vec[1], cz + d/2*dir_vec[2]), direction=dir_vec, radius=d*0.015, height=d).merge(
@@ -1077,8 +1084,14 @@ class AcousticStudioMain(QMainWindow):
                         self.gizmo_actors[axis].mapper.dataset = mesh
                         self.gizmo_actors[axis].SetVisibility(True)
                         self.gizmo_actors[axis].prop.color = {'x':'red','y':'green','z':'blue'}[axis]
-                        import vtk
                         self.gizmo_actors[axis].SetUserMatrix(vtk.vtkMatrix4x4())
+                        
+                if 'center' in getattr(self, 'gizmo_actors', {}):
+                    c_mesh = pv.Sphere(center=(cx, cy, cz), radius=d*0.04)
+                    self.gizmo_actors['center'].mapper.dataset = c_mesh
+                    self.gizmo_actors['center'].SetVisibility(True)
+                    self.gizmo_actors['center'].prop.color = 'white'
+                    self.gizmo_actors['center'].SetUserMatrix(vtk.vtkMatrix4x4())
             
         self._is_updating_ui = False
 
