@@ -60,10 +60,12 @@ class MouseEventFilter(QObject):
                     act = prop_picker.GetActor()
                     
                     gizmo_clicked = None
-                    for axis, g_act in self.main.gizmo_actors.items():
-                        if act == g_act and g_act.GetVisibility():
-                            gizmo_clicked = axis
-                            break
+                    if act is not None:
+                        act_addr = act.GetAddressAsString("vtkProp")
+                        for axis, g_act in self.main.gizmo_actors.items():
+                            if g_act.GetAddressAsString("vtkProp") == act_addr and g_act.GetVisibility():
+                                gizmo_clicked = axis
+                                break
                             
                     if gizmo_clicked:
                         self.main.active_gizmo_axis = gizmo_clicked
@@ -223,8 +225,8 @@ class AcousticStudioMain(QMainWindow):
         self.gizmo_actors = {}
         d = 1.0
         for axis, color, dir_vec in [('x', 'red', (1,0,0)), ('y', 'green', (0,1,0)), ('z', 'blue', (0,0,1))]:
-            mesh = pv.Cylinder(center=(d/2*dir_vec[0], d/2*dir_vec[1], d/2*dir_vec[2]), direction=dir_vec, radius=d*0.05, height=d).merge(
-                   pv.Sphere(center=(d*dir_vec[0], d*dir_vec[1], d*dir_vec[2]), radius=d*0.15))
+            mesh = pv.Cylinder(center=(d/2*dir_vec[0], d/2*dir_vec[1], d/2*dir_vec[2]), direction=dir_vec, radius=d*0.015, height=d).merge(
+                   pv.Sphere(center=(d*dir_vec[0], d*dir_vec[1], d*dir_vec[2]), radius=d*0.06))
             act = self.plotter.add_mesh(mesh, color=color, lighting=True)
             act.SetPickable(True)
             act.SetVisibility(False)
@@ -840,7 +842,6 @@ class AcousticStudioMain(QMainWindow):
         # 기즈모 위치 업데이트
         if hasattr(self, 'gizmo_actors') and self.gizmo_actors:
             if not getattr(self, '_is_gizmo_dragging', False):
-                import vtk
                 t2 = vtk.vtkTransform()
                 t2.Translate(dx, dy, dz)
                 for act in self.gizmo_actors.values():
@@ -1034,13 +1035,14 @@ class AcousticStudioMain(QMainWindow):
                 dy_b = (max_y - min_y)
                 dz_b = (max_z - min_z)
                 
-                d = max(dx_b, dy_b, dz_b) * 0.8
-                if d < 15.0: d = 15.0
+                d = max(dx_b, dy_b, dz_b) * 1.0
+                if d < 8.0: d = 8.0 # Make minimum size smaller
                 
                 import pyvista as pv
                 for axis, dir_vec in [('x', (1,0,0)), ('y', (0,1,0)), ('z', (0,0,1))]:
-                    mesh = pv.Cylinder(center=(cx + d/2*dir_vec[0], cy + d/2*dir_vec[1], cz + d/2*dir_vec[2]), direction=dir_vec, radius=d*0.03, height=d).merge(
-                           pv.Sphere(center=(cx + d*dir_vec[0], cy + d*dir_vec[1], cz + d*dir_vec[2]), radius=d*0.1))
+                    # Make cylinder thinner and shorter
+                    mesh = pv.Cylinder(center=(cx + d/2*dir_vec[0], cy + d/2*dir_vec[1], cz + d/2*dir_vec[2]), direction=dir_vec, radius=d*0.015, height=d).merge(
+                           pv.Sphere(center=(cx + d*dir_vec[0], cy + d*dir_vec[1], cz + d*dir_vec[2]), radius=d*0.06))
                     if axis in getattr(self, 'gizmo_actors', {}):
                         self.gizmo_actors[axis].mapper.dataset = mesh
                         self.gizmo_actors[axis].SetVisibility(True)
