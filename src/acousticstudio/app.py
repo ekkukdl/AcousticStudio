@@ -93,6 +93,7 @@ class MouseEventFilter(QObject):
         elif event.type() == QEvent.MouseMove:
             scale = self.main.plotter.interactor.devicePixelRatioF()
             pos = event.position().toPoint()
+            scaled_x = int(round(pos.x() * scale))
             scaled_y = int(round(pos.y() * scale))
             vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
             
@@ -101,7 +102,7 @@ class MouseEventFilter(QObject):
                 import vtk
                 prop_picker = vtk.vtkPropPicker()
                 renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
-                prop_picker.Pick(int(round(pos.x() * scale)), vtk_y, 0, renderer)
+                prop_picker.Pick(scaled_x, vtk_y, 0, renderer)
                 act = prop_picker.GetActor()
                 
                 hovered_axis = None
@@ -112,12 +113,12 @@ class MouseEventFilter(QObject):
                             hovered_axis = axis
                             break
                             
-                base_colors = {'x':'red', 'y':'green', 'z':'blue'}
-                hover_colors = {'x':'#FF6666', 'y':'#66FF66', 'z':'#6666FF'}
+                base_colors = {'x':'red', 'y':'green', 'z':'blue', 'center':'white'}
+                hover_colors = {'x':'#FF6666', 'y':'#66FF66', 'z':'#6666FF', 'center':'yellow'}
                 
                 needs_render = False
                 for a, g in self.main.gizmo_actors.items():
-                    target_color = hover_colors[a] if a == hovered_axis else base_colors[a]
+                    target_color = hover_colors.get(a, base_colors.get(a, 'white')) if a == hovered_axis else base_colors.get(a, 'white')
                     if getattr(g, '_current_color', None) != target_color:
                         g.prop.color = target_color
                         g._current_color = target_color
@@ -130,36 +131,78 @@ class MouseEventFilter(QObject):
             if getattr(self.main, 'active_gizmo_axis', None) is not None:
                 axis = self.main.active_gizmo_axis
                 cx, cy, cz = self.main._sel_base_centroid
-                dir_vec = {'x':(1,0,0), 'y':(0,1,0), 'z':(0,0,1)}[axis]
-                
                 renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
                 
-                def w2d(px, py, pz):
-                    renderer.SetWorldPoint(px, py, pz, 1.0)
-                    renderer.WorldToDisplay()
-                    return renderer.GetDisplayPoint()
+                import numpy as np
                 
-                c_screen = w2d(cx, cy, cz)
-                c_end = w2d(cx+dir_vec[0], cy+dir_vec[1], cz+dir_vec[2])
+                def get_ray(px, py):
+                    renderer.SetDisplayPoint(px, py, 0.0)
+                    renderer.DisplayToWorld()
+                    p1 = np.array(renderer.GetWorldPoint()[:3])
+                    renderer.SetDisplayPoint(px, py, 1.0)
+                    renderer.DisplayToWorld()
+                    p2 = np.array(renderer.GetWorldPoint()[:3])
+                    d = p2 - p1
+                    norm = np.linalg.norm(d)
+                    if norm > 0: d = d / norm
+                    return p1, d
+                    
+                ray_p1, ray_dir = get_ray(scaled_x, vtk_y)
                 
-                screen_dx = c_end[0] - c_screen[0]
-                screen_dy = c_end[1] - c_screen[1]
+                scaled_x_start = int(round(self.main.gizmo_start_pos.x() * scale))
+                vtk_y_start = self.main.plotter.window_size[1] - int(round(self.main.gizmo_start_pos.y() * scale)) - 1
+                s_ray_p1, s_ray_dir = get_ray(scaled_x_start, vtk_y_start)
                 
-                import math
-                length = math.sqrt(screen_dx**2 + screen_dy**2) + 1e-6
-                nx = screen_dx / length
-                ny = screen_dy / length
-                
-                mx = (pos.x() - self.main.gizmo_start_pos.x())
-                my = -(pos.y() - self.main.gizmo_start_pos.y())
-                
-                delta_world = (mx * nx + my * ny) * 0.5 
-                
-                self.main._is_gizmo_dragging = True
-                if axis == 'x': self.main.sel_x.setValue(self.main.gizmo_start_values[0] + delta_world)
-                if axis == 'y': self.main.sel_y.setValue(self.main.gizmo_start_values[1] + delta_world)
-                if axis == 'z': self.main.sel_z.setValue(self.main.gizmo_start_values[2] + delta_world)
-                self.main._is_gizmo_dragging = False
+                if axis == 'center':
+                    cam = renderer.GetActiveCamera()
+                    cam_dir = np.array(cam.GetDirectionOfProjection())
+                    
+                    denom = np.dot(cam_dir, ray_dir)
+                    if abs(denom) > 1e-6:
+                        t = np.dot(cam_dir, np.array([cx, cy, cz]) - ray_p1) / denom
+                        curr_world = ray_p1 + t * ray_dir
+                    else: curr_world = np.array([cx, cy, cz])
+                    
+                    denom_s = np.dot(cam_dir, s_ray_dir)
+                    if abs(denom_s) > 1e-6:
+                        t_s = np.dot(cam_dir, np.array([cx, cy, cz]) - s_ray_p1) / denom_s
+                        start_world = s_ray_p1 + t_s * s_ray_dir
+                    else: start_world = np.array([cx, cy, cz])
+                    
+                    dx, dy, dz = curr_world - start_world
+                    
+                    self.main._is_gizmo_dragging = True
+                    self.main.sel_x.setValue(self.main.gizmo_start_values[0] + dx)
+                    self.main.sel_y.setValue(self.main.gizmo_start_values[1] + dy)
+                    self.main.sel_z.setValue(self.main.gizmo_start_values[2] + dz)
+                    self.main._is_gizmo_dragging = False
+                    
+                else:
+                    dir_vec = np.array({'x':[1,0,0], 'y':[0,1,0], 'z':[0,0,1]}[axis])
+                    center = np.array([cx, cy, cz])
+                    
+                    def closest_t_on_axis(rp, rd):
+                        w0 = rp - center
+                        a = np.dot(rd, rd)
+                        b = np.dot(rd, dir_vec)
+                        c = np.dot(dir_vec, dir_vec)
+                        d = np.dot(rd, w0)
+                        e = np.dot(dir_vec, w0)
+                        denom = a*c - b*b
+                        if abs(denom) > 1e-6:
+                            return (a*e - b*d) / denom
+                        return 0.0
+                        
+                    t_axis = closest_t_on_axis(ray_p1, ray_dir)
+                    t_axis_start = closest_t_on_axis(s_ray_p1, s_ray_dir)
+                    
+                    delta_world = t_axis - t_axis_start
+                    
+                    self.main._is_gizmo_dragging = True
+                    if axis == 'x': self.main.sel_x.setValue(self.main.gizmo_start_values[0] + delta_world)
+                    if axis == 'y': self.main.sel_y.setValue(self.main.gizmo_start_values[1] + delta_world)
+                    if axis == 'z': self.main.sel_z.setValue(self.main.gizmo_start_values[2] + delta_world)
+                    self.main._is_gizmo_dragging = False
                 
                 return True
 
@@ -263,7 +306,7 @@ class AcousticStudioMain(QMainWindow):
             act.SetVisibility(False)
             self.gizmo_actors[axis] = act
             
-        center_mesh = pv.Sphere(center=(0,0,0), radius=d*0.04)
+        center_mesh = pv.Sphere(center=(0,0,0), radius=d*0.06)
         c_act = self.plotter.add_mesh(center_mesh, color='white', lighting=True)
         c_act.SetPickable(True)
         c_act.SetVisibility(False)
@@ -1054,9 +1097,23 @@ class AcousticStudioMain(QMainWindow):
 
         # 5. Update Gizmo
         if not getattr(self, '_is_gizmo_dragging', False):
-            if not self.selected_actors:
-                for act in getattr(self, 'gizmo_actors', {}).values(): act.SetVisibility(False)
+            if not getattr(self, 'selected_actors', []):
+                for act in getattr(self, 'gizmo_actors', {}).values():
+                    act.SetVisibility(False)
+                # Reset all opacity
+                for act in getattr(self, 'transducer_actors', []) + [p["actor"] for p in getattr(self, 'control_points', [])]:
+                    if hasattr(act, 'prop'):
+                        act.prop.opacity = 1.0
             else:
+                # Reset all actors opacity
+                for act in self.transducer_actors + [p["actor"] for p in self.control_points]:
+                    if hasattr(act, 'prop'):
+                        act.prop.opacity = 1.0
+                # Set selected actors opacity
+                for act in self.selected_actors:
+                    if hasattr(act, 'prop'):
+                        act.prop.opacity = 0.5
+                        
                 min_x, max_x, min_y, max_y, min_z, max_z = float('inf'), float('-inf'), float('inf'), float('-inf'), float('inf'), float('-inf')
                 for act in self.selected_actors:
                     b = act.bounds
@@ -1087,7 +1144,7 @@ class AcousticStudioMain(QMainWindow):
                         self.gizmo_actors[axis].SetUserMatrix(vtk.vtkMatrix4x4())
                         
                 if 'center' in getattr(self, 'gizmo_actors', {}):
-                    c_mesh = pv.Sphere(center=(cx, cy, cz), radius=d*0.04)
+                    c_mesh = pv.Sphere(center=(cx, cy, cz), radius=d*0.06)
                     self.gizmo_actors['center'].mapper.dataset = c_mesh
                     self.gizmo_actors['center'].SetVisibility(True)
                     self.gizmo_actors['center'].prop.color = 'white'
