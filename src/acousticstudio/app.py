@@ -51,138 +51,131 @@ class MouseEventFilter(QObject):
             scaled_y = int(round(pos.y() * scale))
             vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
 
-
-            
-
             if event.button() == Qt.LeftButton:
-
-                # 1. 3D 기즈??살?? ?에 마우?? ?라가 ?는지(Hover) 먼? ?인
-
-                if hasattr(self.main, 'gizmo_widget') and self.main.gizmo_widget and self.main.gizmo_widget.GetEnabled():
-
-                    rep = self.main.gizmo_widget.GetRepresentation()
-
-                    if rep.GetInteractionState() != 0:
-
-                        # 기즈?조작 중이므??도??PyQt) ?택 박스?그리지 ?고 VTK???릭 ?벤?? ??
-
-                        return False
-
-                        
-
-                # 2. 기즈�?밖을 ?�릭??경우 ?�도???�택 박스(RubberBand) ?�작
+                if hasattr(self.main, 'gizmo_actors') and self.main.gizmo_actors:
+                    import vtk
+                    prop_picker = vtk.vtkPropPicker()
+                    renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
+                    prop_picker.Pick(scaled_x, vtk_y, 0, renderer)
+                    act = prop_picker.GetActor()
+                    
+                    gizmo_clicked = None
+                    for axis, g_act in self.main.gizmo_actors.items():
+                        if act == g_act and g_act.GetVisibility():
+                            gizmo_clicked = axis
+                            break
+                            
+                    if gizmo_clicked:
+                        self.main.active_gizmo_axis = gizmo_clicked
+                        self.main.gizmo_start_pos = pos
+                        self.main.gizmo_start_values = (self.main.sel_x.value(), self.main.sel_y.value(), self.main.sel_z.value())
+                        for a, g in self.main.gizmo_actors.items():
+                            g.prop.color = "yellow" if a == gizmo_clicked else {'x':'red','y':'green','z':'blue'}[a]
+                        self.main.plotter.render()
+                        return True
 
                 self.origin = pos
-
                 self.rubber_band.setGeometry(self.origin.x(), self.origin.y(), 0, 0)
-
                 self.rubber_band.show()
-
                 return True
-
                 
-
             elif event.button() == Qt.RightButton:
-
                 self.right_dragging = True
-
                 iren = self.main.plotter.interactor
-
-                iren.SetEventPosition(scaled_x if "scaled_x" in locals() else int(round(pos.x() * scale)), vtk_y)
-
-                # 기즈모�? ?�벤?��? 가로채지 못하?�록 ?�터?�터 ?��??�의 ?�수�?직접 ?�출?�여 ?�수?�게 ?�면�??�전?�킵?�다.
-
+                iren.SetEventPosition(scaled_x, vtk_y)
                 style = iren.GetInteractorStyle()
-
                 if hasattr(style, 'OnLeftButtonDown'):
-
                     style.OnLeftButtonDown()
-
                 return True
+                
         elif event.type() == QEvent.MouseMove:
             scale = self.main.plotter.interactor.devicePixelRatioF()
             pos = event.position().toPoint()
             scaled_y = int(round(pos.y() * scale))
             vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
-
-
             
+            if getattr(self.main, 'active_gizmo_axis', None) is not None:
+                axis = self.main.active_gizmo_axis
+                cx, cy, cz = self.main._sel_base_centroid
+                dir_vec = {'x':(1,0,0), 'y':(0,1,0), 'z':(0,0,1)}[axis]
+                
+                renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
+                
+                def w2d(px, py, pz):
+                    renderer.SetWorldPoint(px, py, pz, 1.0)
+                    renderer.WorldToDisplay()
+                    return renderer.GetDisplayPoint()
+                
+                c_screen = w2d(cx, cy, cz)
+                c_end = w2d(cx+dir_vec[0], cy+dir_vec[1], cz+dir_vec[2])
+                
+                screen_dx = c_end[0] - c_screen[0]
+                screen_dy = c_end[1] - c_screen[1]
+                
+                import math
+                length = math.sqrt(screen_dx**2 + screen_dy**2) + 1e-6
+                nx = screen_dx / length
+                ny = screen_dy / length
+                
+                mx = (pos.x() - self.main.gizmo_start_pos.x())
+                my = -(pos.y() - self.main.gizmo_start_pos.y())
+                
+                delta_world = (mx * nx + my * ny) * 0.5 
+                
+                self.main._is_gizmo_dragging = True
+                if axis == 'x': self.main.sel_x.setValue(self.main.gizmo_start_values[0] + delta_world)
+                if axis == 'y': self.main.sel_y.setValue(self.main.gizmo_start_values[1] + delta_world)
+                if axis == 'z': self.main.sel_z.setValue(self.main.gizmo_start_values[2] + delta_world)
+                self.main._is_gizmo_dragging = False
+                
+                return True
 
             if self.origin is not None:
-
                 self.rubber_band.setGeometry(QRect(self.origin, pos).normalized())
-
                 return True
-
                 
-
             elif self.right_dragging:
-
                 iren = self.main.plotter.interactor
-
-                iren.SetEventPosition(scaled_x if "scaled_x" in locals() else int(round(pos.x() * scale)), vtk_y)
-
+                iren.SetEventPosition(int(round(pos.x() * scale)), vtk_y)
                 style = iren.GetInteractorStyle()
-
                 if hasattr(style, 'OnMouseMove'):
-
                     style.OnMouseMove()
-
                 return True
+                
         elif event.type() == QEvent.MouseButtonRelease:
             scale = self.main.plotter.interactor.devicePixelRatioF()
             pos = event.position().toPoint()
             scaled_y = int(round(pos.y() * scale))
             vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
 
-
-            
+            if event.button() == Qt.LeftButton and getattr(self.main, 'active_gizmo_axis', None) is not None:
+                self.main.active_gizmo_axis = None
+                for a, g in self.main.gizmo_actors.items():
+                    g.prop.color = {'x':'red','y':'green','z':'blue'}[a]
+                self.main.plotter.render()
+                return True
 
             if event.button() == Qt.LeftButton and self.origin is not None:
-
                 self.rubber_band.hide()
-
                 end_pos = pos
-
                 start_pos = self.origin
-
-                self.origin = None # �??�수 ?�출 ?�에 None?�로 초기??(?�러 발생 ?�에???�태가 꼬이지 ?�도�?
-
+                self.origin = None 
                 try:
-
                     self.main.process_selection(start_pos, end_pos, event.modifiers())
-
                 except Exception as e:
-
                     import traceback; traceback.print_exc()
-
                 return True
-
                 
-
             elif event.button() == Qt.RightButton and self.right_dragging:
-
                 self.right_dragging = False
-
                 iren = self.main.plotter.interactor
-
-                iren.SetEventPosition(scaled_x if "scaled_x" in locals() else int(round(pos.x() * scale)), vtk_y)
-
+                iren.SetEventPosition(int(round(pos.x() * scale)), vtk_y)
                 style = iren.GetInteractorStyle()
-
                 if hasattr(style, 'OnLeftButtonUp'):
-
                     style.OnLeftButtonUp()
-
                 return True
-
-                
 
         return False
-
-
-
-
 
 class AcousticStudioMain(QMainWindow):
 
