@@ -1154,7 +1154,7 @@ class AcousticStudioMain(QMainWindow):
                 dy_b = (max_y - min_y)
                 dz_b = (max_z - min_z)
                 
-                d = 18.0 # Fixed size for Gizmo to prevent massive scaling when multiple objects are selected
+                d = 10.0 # Make it smaller and constant
                 
                 import pyvista as pv
                 import vtk
@@ -1167,12 +1167,23 @@ class AcousticStudioMain(QMainWindow):
                         self.gizmo_actors[axis].prop.color = {'x':'red','y':'green','z':'blue'}[axis]
                         self.gizmo_actors[axis].SetUserMatrix(vtk.vtkMatrix4x4())
                         
+                        # Render on top
+                        mapper = self.gizmo_actors[axis].GetMapper()
+                        mapper.SetResolveCoincidentTopologyToPolygonOffset()
+                        mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-10, -10)
+                        mapper.SetRelativeCoincidentTopologyLineOffsetParameters(-10, -10)
+                        
                 if 'center' in getattr(self, 'gizmo_actors', {}):
-                    c_mesh = pv.Sphere(center=(cx, cy, cz), radius=d*0.1)
+                    c_mesh = pv.Sphere(center=(cx, cy, cz), radius=d*0.12)
                     self.gizmo_actors['center'].mapper.dataset = c_mesh
                     self.gizmo_actors['center'].SetVisibility(True)
                     self.gizmo_actors['center'].prop.color = 'white'
                     self.gizmo_actors['center'].SetUserMatrix(vtk.vtkMatrix4x4())
+                    
+                    mapper = self.gizmo_actors['center'].GetMapper()
+                    mapper.SetResolveCoincidentTopologyToPolygonOffset()
+                    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-10, -10)
+                    mapper.SetRelativeCoincidentTopologyLineOffsetParameters(-10, -10)
             
         self._is_updating_ui = False
 
