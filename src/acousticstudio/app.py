@@ -219,25 +219,22 @@ class AcousticStudioMain(QMainWindow):
         self.plotter.add_axes()
         
         # 3D Gizmo Initialization
-        import vtk
-        self.gizmo_rep = vtk.vtkBoxRepresentation()
-        self.gizmo_rep.SetPlaceFactor(1.1)
+        import pyvista as pv
+        self.gizmo_actors = {}
+        d = 1.0
+        for axis, color, dir_vec in [('x', 'red', (1,0,0)), ('y', 'green', (0,1,0)), ('z', 'blue', (0,0,1))]:
+            mesh = pv.Cylinder(center=(d/2*dir_vec[0], d/2*dir_vec[1], d/2*dir_vec[2]), direction=dir_vec, radius=d*0.05, height=d).merge(
+                   pv.Sphere(center=(d*dir_vec[0], d*dir_vec[1], d*dir_vec[2]), radius=d*0.15))
+            act = self.plotter.add_mesh(mesh, color=color, lighting=True)
+            act.SetPickable(True)
+            act.SetVisibility(False)
+            self.gizmo_actors[axis] = act
+            
+        self.active_gizmo_axis = None
+        self.gizmo_start_pos = None
+        self.gizmo_start_values = None
         
-        # NOTE: vtkAxesTransformRepresentation may throw vtkVectorText errors in console,
-        # and arrows may be transparent due to depth peeling. 
-        self.plotter.disable_depth_peeling() # Fix for transparent arrows
-        
-        self.gizmo_widget = vtk.vtkBoxWidget2()
-        self.gizmo_widget.SetRepresentation(self.gizmo_rep)
-        self.gizmo_widget.TranslationEnabledOn()
-        self.gizmo_widget.RotationEnabledOff()
-        self.gizmo_widget.ScalingEnabledOff()
-        
-        self.gizmo_widget.SetInteractor(self.plotter.iren.interactor)
-        self.gizmo_widget.SetCurrentRenderer(self.plotter.renderer)
-        self.gizmo_widget.SetDefaultRenderer(self.plotter.renderer)
-        self.gizmo_widget.AddObserver("InteractionEvent", self.on_gizmo_interaction)
-        self.gizmo_widget.Off()
+        self.plotter.disable_depth_peeling()
 
 
         
@@ -841,11 +838,13 @@ class AcousticStudioMain(QMainWindow):
                     
 
         # 기즈모 위치 업데이트
-        if hasattr(self, 'gizmo_widget') and self.gizmo_widget:
+        if hasattr(self, 'gizmo_actors') and self.gizmo_actors:
             if not getattr(self, '_is_gizmo_dragging', False):
+                import vtk
                 t2 = vtk.vtkTransform()
                 t2.Translate(dx, dy, dz)
-                self.gizmo_rep.SetTransform(t2)
+                for act in self.gizmo_actors.values():
+                    act.SetUserMatrix(t2.GetMatrix())
 
             
 
@@ -1018,31 +1017,36 @@ class AcousticStudioMain(QMainWindow):
 
         # 5. Update Gizmo
         if not getattr(self, '_is_gizmo_dragging', False):
-            self.gizmo_widget.On()
-            
-            # Calculate object-relative bounding box size
-            min_x, max_x, min_y, max_y, min_z, max_z = float('inf'), float('-inf'), float('inf'), float('-inf'), float('inf'), float('-inf')
-            for act in self.selected_actors:
-                b = act.bounds
-                if b[0] < min_x: min_x = b[0]
-                if b[1] > max_x: max_x = b[1]
-                if b[2] < min_y: min_y = b[2]
-                if b[3] > max_y: max_y = b[3]
-                if b[4] < min_z: min_z = b[4]
-                if b[5] > max_z: max_z = b[5]
+            if not self.selected_actors:
+                for act in getattr(self, 'gizmo_actors', {}).values(): act.SetVisibility(False)
+            else:
+                min_x, max_x, min_y, max_y, min_z, max_z = float('inf'), float('-inf'), float('inf'), float('-inf'), float('inf'), float('-inf')
+                for act in self.selected_actors:
+                    b = act.bounds
+                    if b[0] < min_x: min_x = b[0]
+                    if b[1] > max_x: max_x = b[1]
+                    if b[2] < min_y: min_y = b[2]
+                    if b[3] > max_y: max_y = b[3]
+                    if b[4] < min_z: min_z = b[4]
+                    if b[5] > max_z: max_z = b[5]
+                    
+                dx_b = (max_x - min_x)
+                dy_b = (max_y - min_y)
+                dz_b = (max_z - min_z)
                 
-            dx_b = (max_x - min_x)
-            dy_b = (max_y - min_y)
-            dz_b = (max_z - min_z)
-            
-            pad = 2.0
-            if dx_b < 5.0: min_x -= pad; max_x += pad
-            if dy_b < 5.0: min_y -= pad; max_y += pad
-            if dz_b < 5.0: min_z -= pad; max_z += pad
-            
-            self.gizmo_rep.PlaceWidget([min_x, max_x, min_y, max_y, min_z, max_z])
-            t2 = vtk.vtkTransform()
-            self.gizmo_rep.SetTransform(t2) # Reset transform
+                d = max(dx_b, dy_b, dz_b) * 0.8
+                if d < 15.0: d = 15.0
+                
+                import pyvista as pv
+                for axis, dir_vec in [('x', (1,0,0)), ('y', (0,1,0)), ('z', (0,0,1))]:
+                    mesh = pv.Cylinder(center=(cx + d/2*dir_vec[0], cy + d/2*dir_vec[1], cz + d/2*dir_vec[2]), direction=dir_vec, radius=d*0.03, height=d).merge(
+                           pv.Sphere(center=(cx + d*dir_vec[0], cy + d*dir_vec[1], cz + d*dir_vec[2]), radius=d*0.1))
+                    if axis in getattr(self, 'gizmo_actors', {}):
+                        self.gizmo_actors[axis].mapper.dataset = mesh
+                        self.gizmo_actors[axis].SetVisibility(True)
+                        self.gizmo_actors[axis].prop.color = {'x':'red','y':'green','z':'blue'}[axis]
+                        import vtk
+                        self.gizmo_actors[axis].SetUserMatrix(vtk.vtkMatrix4x4())
             
         self._is_updating_ui = False
 
