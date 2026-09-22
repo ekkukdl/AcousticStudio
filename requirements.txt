@@ -1,0 +1,8 @@
+PySide6
+pyvista
+pyvistaqt
+vtk
+numpy
+matplotlib
+levitate
+pyserial
