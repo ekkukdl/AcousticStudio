@@ -96,6 +96,37 @@ class MouseEventFilter(QObject):
             scaled_y = int(round(pos.y() * scale))
             vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
             
+            # --- Hover Logic ---
+            if event.buttons() == Qt.NoButton and hasattr(self.main, 'gizmo_actors') and self.main.gizmo_actors:
+                import vtk
+                prop_picker = vtk.vtkPropPicker()
+                renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
+                prop_picker.Pick(int(round(pos.x() * scale)), vtk_y, 0, renderer)
+                act = prop_picker.GetActor()
+                
+                hovered_axis = None
+                if act is not None:
+                    act_addr = act.GetAddressAsString("vtkProp")
+                    for axis, g_act in self.main.gizmo_actors.items():
+                        if g_act.GetAddressAsString("vtkProp") == act_addr and g_act.GetVisibility():
+                            hovered_axis = axis
+                            break
+                            
+                base_colors = {'x':'red', 'y':'green', 'z':'blue'}
+                hover_colors = {'x':'#FF6666', 'y':'#66FF66', 'z':'#6666FF'}
+                
+                needs_render = False
+                for a, g in self.main.gizmo_actors.items():
+                    target_color = hover_colors[a] if a == hovered_axis else base_colors[a]
+                    if getattr(g, '_current_color', None) != target_color:
+                        g.prop.color = target_color
+                        g._current_color = target_color
+                        needs_render = True
+                
+                if needs_render:
+                    self.main.plotter.render()
+            # -------------------
+            
             if getattr(self.main, 'active_gizmo_axis', None) is not None:
                 axis = self.main.active_gizmo_axis
                 cx, cy, cz = self.main._sel_base_centroid
@@ -841,11 +872,10 @@ class AcousticStudioMain(QMainWindow):
 
         # 기즈모 위치 업데이트
         if hasattr(self, 'gizmo_actors') and self.gizmo_actors:
-            if not getattr(self, '_is_gizmo_dragging', False):
-                t2 = vtk.vtkTransform()
-                t2.Translate(dx, dy, dz)
-                for act in self.gizmo_actors.values():
-                    act.SetUserMatrix(t2.GetMatrix())
+            t2 = vtk.vtkTransform()
+            t2.Translate(dx, dy, dz)
+            for act in self.gizmo_actors.values():
+                act.SetUserMatrix(t2.GetMatrix())
 
             
 
