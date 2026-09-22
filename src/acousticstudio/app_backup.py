@@ -11,6 +11,7 @@ import numpy as np
 import pyvista as pv
 
 import vtk
+vtk.vtkObject.GlobalWarningDisplayOff() # VTK의 불필요한 내부 에러(vtkVectorText 등) 출력 방지
 
 from pyvistaqt import QtInteractor
 
@@ -28,8 +29,6 @@ from PySide6.QtCore import Qt, QObject, QEvent, QRect
 
 class MouseEventFilter(QObject):
 
-    """doc"""""
-
     def __init__(self, main_window):
 
         super().__init__()
@@ -57,94 +56,15 @@ class MouseEventFilter(QObject):
 
             if event.button() == Qt.LeftButton:
 
-                # 1. 기즈�??�살??�?�??�확???�릭?�는지 Hit Test
+                # 1. 3D 기즈??살?? ?에 마우?? ?라가 ?는지(Hover) 먼? ?인
 
-                picker = vtk.vtkPropPicker()
+                if hasattr(self.main, 'gizmo_widget') and self.main.gizmo_widget and self.main.gizmo_widget.GetEnabled():
 
-                picker.Pick(pos.x(), vtk_y, 0, self.main.plotter.renderer)
-
-                prop = picker.GetViewProp()
-
-                
-
-                # 기즈모�? ?�성???�태?�고, ?�릭??객체가 ?�서???��??�인?��? ?�니?�면 기즈모일 ?�률???�음
-
-                if hasattr(self.main, 'gizmo') and self.main.gizmo and self.main.gizmo.GetEnabled():
-
-                    if prop and prop not in self.main.transducer_actors and prop not in self.main.get_control_point_actors():
-
-                        # VTK가 기즈�??�래그�? 처리?�도�??�버?�둠
-
-                        return False 
-
-                
-
-                # 기즈모�? ?�닌 ?�공/객체 ?�릭 ?? ?�택 박스 ?�래�??�작
-
-                self.origin = pos
-
-                self.rubber_band.setGeometry(self.origin.x(), self.origin.y(), 0, 0)
-
-                self.rubber_band.show()
-
-                return True # ?�벤??강제 종료 (VTK�??�어가지 ?�게 ?�여 카메???�전 방�?)
-
-                
-
-            elif event.button() == Qt.RightButton:
-
-                # ?�클�???VTK??기본 카메?�인 TrackballCamera??'좌클�?Orbit)' 기능??강제�??�출
-
-                self.right_dragging = True
-
-                iren = self.main.plotter.interactor
-
-                iren.SetEventPosition(scaled_x if "scaled_x" in locals() else int(round(pos.x() * scale)), vtk_y)
-
-                iren.LeftButtonPressEvent()
-
-                return True
-
-                
-
-class MouseEventFilter(QObject):
-
-    def __init__(self, main_window):
-
-        super().__init__()
-
-        self.main = main_window
-
-        self.rubber_band = QRubberBand(QRubberBand.Rectangle, self.main.plotter.interactor)
-
-        self.origin = None
-
-        self.right_dragging = False
-
-
-
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.MouseButtonPress:
-            scale = self.main.plotter.interactor.devicePixelRatioF()
-            pos = event.position().toPoint()
-            scaled_x = int(round(pos.x() * scale))
-            scaled_y = int(round(pos.y() * scale))
-            vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
-
-
-            
-
-            if event.button() == Qt.LeftButton:
-
-                # 1. 3D 기즈�??�살?? ?�에 마우?��? ?�라가 ?�는지(Hover) 먼�? ?�인
-
-                if hasattr(self.main, 'gizmo') and self.main.gizmo and self.main.gizmo.GetEnabled():
-
-                    rep = self.main.gizmo.GetRepresentation()
+                    rep = self.main.gizmo_widget.GetRepresentation()
 
                     if rep.GetInteractionState() != 0:
 
-                        # 기즈�?조작 중이므�??�도??PyQt) ?�택 박스�?그리지 ?�고 VTK???�릭 ?�벤?��? ?��?
+                        # 기즈?조작 중이므??도??PyQt) ?택 박스?그리지 ?고 VTK???릭 ?벤?? ??
 
                         return False
 
@@ -307,10 +227,19 @@ class AcousticStudioMain(QMainWindow):
         
         # 3D Gizmo Initialization
         import vtk
-        self.gizmo_rep = vtk.vtkAxesTransformRepresentation()
-         # Hide coordinate labels to avoid clutter
-        self.gizmo_widget = vtk.vtkAxesTransformWidget()
+        self.gizmo_rep = vtk.vtkBoxRepresentation()
+        self.gizmo_rep.SetPlaceFactor(1.1)
+        
+        # NOTE: vtkAxesTransformRepresentation may throw vtkVectorText errors in console,
+        # and arrows may be transparent due to depth peeling. 
+        self.plotter.disable_depth_peeling() # Fix for transparent arrows
+        
+        self.gizmo_widget = vtk.vtkBoxWidget2()
         self.gizmo_widget.SetRepresentation(self.gizmo_rep)
+        self.gizmo_widget.TranslationEnabledOn()
+        self.gizmo_widget.RotationEnabledOff()
+        self.gizmo_widget.ScalingEnabledOff()
+        
         self.gizmo_widget.SetInteractor(self.plotter.iren.interactor)
         self.gizmo_widget.SetCurrentRenderer(self.plotter.renderer)
         self.gizmo_widget.SetDefaultRenderer(self.plotter.renderer)
@@ -734,6 +663,33 @@ class AcousticStudioMain(QMainWindow):
 
         control_layout.addWidget(visual_group)
 
+        # --- 6. Hardware Connection ---
+        hw_group = QGroupBox("6. Hardware Connection (하드웨어 제어)")
+        hw_layout = QFormLayout()
+        
+        from PySide6.QtWidgets import QLineEdit
+        self.serial_port_edit = QLineEdit("COM3")
+        self.serial_baud_edit = QLineEdit("115200")
+        
+        self.btn_connect_hw = QPushButton("Connect (연결)")
+        self.btn_send_phase = QPushButton("Send Phase Data")
+        self.btn_send_phase.setEnabled(False)
+        
+        hw_layout.addRow("Port:", self.serial_port_edit)
+        hw_layout.addRow("Baud Rate:", self.serial_baud_edit)
+        
+        btn_hw_layout = QHBoxLayout()
+        btn_hw_layout.addWidget(self.btn_connect_hw)
+        btn_hw_layout.addWidget(self.btn_send_phase)
+        hw_layout.addRow(btn_hw_layout)
+        
+        hw_group.setLayout(hw_layout)
+        control_layout.addWidget(hw_group)
+
+        self.btn_connect_hw.clicked.connect(self.connect_hw)
+        self.btn_send_phase.clicked.connect(self.send_phase_data)
+
+
         
 
         self.field_actors = [] # ?�중 ?�라?�스 ?�터�?관리하�??�한 리스??        
@@ -764,6 +720,59 @@ class AcousticStudioMain(QMainWindow):
 
 
 
+
+    def connect_hw(self):
+        if not hasattr(self, 'serial_port') or self.serial_port is None:
+            port = self.serial_port_edit.text()
+            try:
+                baud = int(self.serial_baud_edit.text())
+            except ValueError:
+                QMessageBox.critical(self, "Error", "Invalid Baud Rate.")
+                return
+                
+            try:
+                import serial
+                self.serial_port = serial.Serial(port, baud, timeout=1)
+                self.btn_connect_hw.setText("Disconnect (연결 해제)")
+                self.btn_send_phase.setEnabled(True)
+                QMessageBox.information(self, "Hardware", f"Connected to {port} at {baud} baud.")
+            except Exception as e:
+                QMessageBox.critical(self, "Connection Error", f"Failed to connect to {port}:\n{str(e)}")
+        else:
+            try:
+                self.serial_port.close()
+            except:
+                pass
+            self.serial_port = None
+            self.btn_connect_hw.setText("Connect (연결)")
+            self.btn_send_phase.setEnabled(False)
+            QMessageBox.information(self, "Hardware", "Disconnected.")
+
+    def send_phase_data(self):
+        if not hasattr(self, 'serial_port') or self.serial_port is None:
+            return
+            
+        import numpy as np
+        phases = []
+        for act in self.transducer_actors:
+            phase = getattr(act, '_phase', 0.0)
+            # Map 0 ~ 2*pi to 0 ~ 255 (8-bit)
+            val = int(round((phase / (2.0 * np.pi)) * 255))
+            val = max(0, min(255, val))
+            phases.append(val)
+            
+        if not phases:
+            return
+            
+        try:
+            data = bytes(phases)
+            # Protocol: 'S' (1 byte) + Length (2 bytes) + Data (N bytes)
+            header = b'S' + len(data).to_bytes(2, byteorder='little')
+            self.serial_port.write(header + data)
+            print(f"HW: Sent phase data for {len(phases)} transducers.")
+        except Exception as e:
+            print(f"HW Send Error: {e}")
+            
     def apply_ui_transform(self):
 
         """doc"""""
@@ -838,15 +847,12 @@ class AcousticStudioMain(QMainWindow):
 
                     
 
-        # 기즈�??�치 ?�데?�트
-
-        if hasattr(self, 'gizmo') and self.gizmo:
-
-            cx, cy, cz = self._sel_base_centroid[0] + dx, self._sel_base_centroid[1] + dy, self._sel_base_centroid[2] + dz
-
-            d = 30.0
-
-            self.gizmo.GetRepresentation().PlaceWidget([cx-d, cx+d, cy-d, cy+d, cz-d, cz+d])
+        # 기즈모 위치 업데이트
+        if hasattr(self, 'gizmo_widget') and self.gizmo_widget:
+            if not getattr(self, '_is_gizmo_dragging', False):
+                t2 = vtk.vtkTransform()
+                t2.Translate(dx, dy, dz)
+                self.gizmo_rep.SetTransform(t2)
 
             
 
@@ -860,15 +866,16 @@ class AcousticStudioMain(QMainWindow):
 
     def on_gizmo_interaction(self, caller, event):
         if not self.selected_actors: return
-        pos = self.gizmo_rep.GetOriginWorldPosition()
+        t = vtk.vtkTransform()
+        self.gizmo_rep.GetTransform(t)
+        delta_pos = t.GetPosition()
         
-        # Temporarily disconnect spinboxes to avoid double-triggering or loops if needed,
-        # but apply_ui_transform is exactly what we need to move the actors.
-        # We just set the values and let the spinbox signals do the rest!
-        # Wait, if we drag the gizmo, it updates the spinbox.
-        # The spinbox triggers apply_ui_transform.
-        # apply_ui_transform will move the actors, but it also tries to update the gizmo position...
-        # We need to make sure apply_ui_transform doesn't reset the gizmo while we are dragging it!
+        pos = [
+            self._sel_base_centroid[0] + delta_pos[0],
+            self._sel_base_centroid[1] + delta_pos[1],
+            self._sel_base_centroid[2] + delta_pos[2]
+        ]
+        
         self._is_gizmo_dragging = True
         self.sel_x.setValue(pos[0])
         self.sel_y.setValue(pos[1])
@@ -929,36 +936,25 @@ class AcousticStudioMain(QMainWindow):
         
 
         if not is_ctrl:
-
             for act in self.selected_actors:
-
                 if hasattr(act, '_original_color'):
-
                     act.prop.color = act._original_color
-
+                act.prop.opacity = getattr(act, '_original_opacity', 1.0)
             self.selected_actors.clear()
-
             
-
         for prop in picked_props:
-
             if is_ctrl and prop in self.selected_actors:
-
                 self.selected_actors.remove(prop)
-
                 if hasattr(prop, '_original_color'):
-
                     prop.prop.color = prop._original_color
-
+                prop.prop.opacity = getattr(prop, '_original_opacity', 1.0)
             else:
-
                 if prop not in self.selected_actors:
-
+                    if not hasattr(prop, '_original_opacity'):
+                        prop._original_opacity = prop.prop.opacity
                     self.selected_actors.append(prop)
-
                     prop.prop.color = "pink"
-
-                    
+                    prop.prop.opacity = 0.4
 
         self.update_gizmo()
 
@@ -969,21 +965,23 @@ class AcousticStudioMain(QMainWindow):
 
 
     def update_ui_from_selection(self):
-
-        """doc"""""
-
+        """doc"""
         self._is_updating_ui = True
 
-        if not self.selected_actors:
-
-            self.sel_x.setValue(0); self.sel_y.setValue(0); self.sel_z.setValue(0)
-
-            self.sel_rx.setValue(0); self.sel_ry.setValue(0); self.sel_rz.setValue(0)
-
+        # 1. Reset UI to defaults
         self.prop_sensor_cb.setEnabled(False)
         self.prop_radius_spin.setEnabled(False)
         self.prop_type_lbl.setText("-")
         
+        # 2. Check selection
+        if not self.selected_actors:
+            self.sel_x.setValue(0); self.sel_y.setValue(0); self.sel_z.setValue(0)
+            self.sel_rx.setValue(0); self.sel_ry.setValue(0); self.sel_rz.setValue(0)
+            self.gizmo_widget.Off()
+            self._is_updating_ui = False
+            return
+
+        # 3. Analyze selection types
         has_sensor = any(a in self.transducer_actors for a in self.selected_actors)
         cp_actor = None
         has_cp = False
@@ -1005,78 +1003,55 @@ class AcousticStudioMain(QMainWindow):
                     break
         elif has_sensor and has_cp:
             self.prop_type_lbl.setText("다중 선택 (혼합)")
-
-
             self._sel_base_centroid = [0.0, 0.0, 0.0]
-
             self._sel_base_rot = [0.0, 0.0, 0.0]
-
-            
             self.gizmo_widget.Off()
             self._is_updating_ui = False
-
-
             return
 
-            
-
+        # 4. Calculate centroid for Gizmo
         cx, cy, cz = 0.0, 0.0, 0.0
-
         for act in self.selected_actors:
-
             c = act.center
-
             cx += c[0]; cy += c[1]; cz += c[2]
-
         n = len(self.selected_actors)
-
         cx /= n; cy /= n; cz /= n
-
         
-
         self._sel_base_centroid = [cx, cy, cz]
-
-        # ?�중 ?�택 ???�전?� 0?�로 기�????�음
-
         self._sel_base_rot = [0.0, 0.0, 0.0] 
-
-        
-
         
         self.sel_x.setValue(cx); self.sel_y.setValue(cy); self.sel_z.setValue(cz)
         self.sel_rx.setValue(0); self.sel_ry.setValue(0); self.sel_rz.setValue(0)
 
-        self.prop_sensor_cb.setEnabled(False)
-        self.prop_radius_spin.setEnabled(False)
-        self.prop_type_lbl.setText("-")
-        
-        has_sensor = any(a in self.transducer_actors for a in self.selected_actors)
-        cp_actor = None
-        has_cp = False
-        for a in self.selected_actors:
-            if any(pt["actor"] == a for pt in self.control_points):
-                has_cp = True
-                cp_actor = a
-                break
+        # 5. Update Gizmo
+        if not getattr(self, '_is_gizmo_dragging', False):
+            self.gizmo_widget.On()
+            
+            # Calculate object-relative bounding box size
+            min_x, max_x, min_y, max_y, min_z, max_z = float('inf'), float('-inf'), float('inf'), float('-inf'), float('inf'), float('-inf')
+            for act in self.selected_actors:
+                b = act.bounds
+                if b[0] < min_x: min_x = b[0]
+                if b[1] > max_x: max_x = b[1]
+                if b[2] < min_y: min_y = b[2]
+                if b[3] > max_y: max_y = b[3]
+                if b[4] < min_z: min_z = b[4]
+                if b[5] > max_z: max_z = b[5]
                 
-        if has_sensor and not has_cp:
-            self.prop_type_lbl.setText("초음파 센서")
-            self.prop_sensor_cb.setEnabled(True)
-        elif has_cp and not has_sensor:
-            self.prop_type_lbl.setText("타겟 (Control Point)")
-            self.prop_radius_spin.setEnabled(True)
-            for pt in self.control_points:
-                if pt["actor"] == cp_actor:
-                    self.prop_radius_spin.setValue(pt.get("radius", 5.0))
-                    break
-        elif has_sensor and has_cp:
-            self.prop_type_lbl.setText("다중 선택 (혼합)")
-
-
-
-        
+            dx_b = (max_x - min_x)
+            dy_b = (max_y - min_y)
+            dz_b = (max_z - min_z)
+            
+            pad = 2.0
+            if dx_b < 5.0: min_x -= pad; max_x += pad
+            if dy_b < 5.0: min_y -= pad; max_y += pad
+            if dz_b < 5.0: min_z -= pad; max_z += pad
+            
+            self.gizmo_rep.PlaceWidget([min_x, max_x, min_y, max_y, min_z, max_z])
+            t2 = vtk.vtkTransform()
+            self.gizmo_rep.SetTransform(t2) # Reset transform
+            
         self._is_updating_ui = False
-
 
 
 
@@ -1108,7 +1083,9 @@ class AcousticStudioMain(QMainWindow):
                     new_act.SetUserMatrix(mat)
                     new_act._initial_matrix = mat
                 new_act._original_color = color
+                new_act._original_opacity = getattr(act, '_original_opacity', 1.0)
                 new_act.prop.color = "pink"
+                new_act.prop.opacity = 0.4
                 self.transducer_actors.append(new_act)
                 new_actors.append(new_act)
             else:
@@ -1132,7 +1109,9 @@ class AcousticStudioMain(QMainWindow):
                     sphere = pv.Sphere(radius=val, center=(x, y, z))
                     new_act = self.plotter.add_mesh(sphere, color="green", show_edges=False)
                     new_act._original_color = "green"
+                    new_act._original_opacity = getattr(act, '_original_opacity', 1.0)
                     new_act.prop.color = "pink"
+                    new_act.prop.opacity = 0.4
                     pt["actor"] = new_act
                     
                     mat = act.GetUserMatrix()
@@ -1220,88 +1199,6 @@ class AcousticStudioMain(QMainWindow):
         pass
 
 
-
-        for act in self.selected_actors:
-
-            mat = vtk.vtkMatrix4x4()
-
-            if act.GetUserMatrix():
-
-                mat.DeepCopy(act.GetUserMatrix())
-
-            else:
-
-                mat.Identity()
-
-            act._initial_matrix = mat
-
-
-
-    def on_gizmo_interaction(self, caller, event):
-
-        transform = vtk.vtkTransform()
-
-        caller.GetRepresentation().GetTransform(transform)
-
-        gizmo_matrix = transform.GetMatrix()
-
-        
-
-        for act in self.selected_actors:
-
-            m_new = vtk.vtkMatrix4x4()
-
-            vtk.vtkMatrix4x4.Multiply4x4(gizmo_matrix, act._initial_matrix, m_new)
-
-            act.SetUserMatrix(m_new)
-
-            
-
-            for pt in self.control_points:
-
-                if pt["actor"] == act:
-
-                    c = act.center 
-
-                    pt["x"], pt["y"], pt["z"] = c[0], c[1], c[2]
-
-        
-
-        # 기즈�??�동 �?UI ?�데?�트
-
-        cx, cy, cz = 0.0, 0.0, 0.0
-
-        for act in self.selected_actors:
-
-            c = act.center
-
-            cx += c[0]; cy += c[1]; cz += c[2]
-
-        n = len(self.selected_actors)
-
-        cx /= n; cy /= n; cz /= n
-
-        
-
-        self._is_updating_ui = True
-
-        self.sel_x.setValue(cx); self.sel_y.setValue(cy); self.sel_z.setValue(cz)
-
-        
-        self._is_updating_ui = False
-
-
-        
-
-        self.plotter.render()
-
-        
-
-    def on_gizmo_interaction_end(self, caller, event):
-
-        """doc"""
-
-        self.update_ui_from_selection()
 
         for act in self.selected_actors:
 
@@ -1899,14 +1796,18 @@ class AcousticStudioMain(QMainWindow):
 
             
 
-            # ?�터 ?�상 ?�데?�트 �??��? ?�상�??�??            
-            actor.prop.color = rgba[:3]
-
+            # 센서 위상 업데이트 및 내부 위상값 저장            
             actor._original_color = rgba[:3]
+            if hasattr(self, 'selected_actors') and actor in self.selected_actors:
+                actor.prop.color = "pink"
+                actor.prop.opacity = 0.4
+            else:
+                actor.prop.color = rgba[:3]
+                actor.prop.opacity = getattr(actor, '_original_opacity', 1.0)
 
             
 
-            # ?�기??복소 진폭??최종 ?�상???�?�해???�니??
+            # ?기??복소 진폭??최종 ?상????해???니??
 
             actor._phase = total_phase
 
@@ -1925,6 +1826,10 @@ class AcousticStudioMain(QMainWindow):
             
 
         print("위상 연산 및 시각화 완료!")
+        
+        # Real-time hardware transmission
+        if hasattr(self, 'serial_port') and self.serial_port is not None:
+            self.send_phase_data()
 
 
 
