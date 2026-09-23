@@ -1238,11 +1238,14 @@ class AcousticStudioMain(QMainWindow):
         if getattr(self, '_is_updating_ui', False) or not self.selected_actors: return
         sensor_type = self.prop_sensor_cb.currentText()
         if "10mm" in sensor_type:
-            r_wide, r_narrow, height, color = 5.0, 3.5, 4.0, "lightblue"
+            height, color, amplitude = 4.0, "lightblue", 1.0
+            mesh = self.make_truncated_cone(5.0, 3.5, height)
         elif "16mm" in sensor_type:
-            r_wide, r_narrow, height, color = 8.0, 5.0, 6.0, "orange"
+            height, color, amplitude = 6.0, "orange", 2.0
+            mesh = self.make_truncated_cone(8.0, 5.0, height)
         else: # Langevin
-            r_wide, r_narrow, height, color = 25.0, 15.0, 40.0, "gray"
+            height, color, amplitude = 40.0, "silver", 20.0
+            mesh = getattr(self, 'make_langevin_mesh', lambda h: self.make_truncated_cone(25.0, 15.0, h))(height)
             
         new_actors = []
         for act in self.selected_actors:
@@ -1251,12 +1254,8 @@ class AcousticStudioMain(QMainWindow):
                 self.plotter.remove_actor(act)
                 self.transducer_actors.remove(act)
                 
-                pts = self.make_truncated_cone(r_wide, r_narrow, height)
-                faces = [[len(pts)] + list(range(len(pts)))]
-                import pyvista as pv
-                mesh = pv.PolyData(pts, faces)
-                
-                new_act = self.plotter.add_mesh(mesh, color=color, show_edges=True)
+                new_act = self.plotter.add_mesh(mesh.copy(), color=color, show_edges=True)
+                new_act._amplitude = amplitude
                 if mat:
                     new_act.SetUserMatrix(mat)
                     new_act._initial_matrix = mat
@@ -1580,7 +1579,13 @@ class AcousticStudioMain(QMainWindow):
 
         return mesh
 
-
+    def make_langevin_mesh(self, height=40.0):
+        import pyvista as pv
+        horn = pv.Cylinder(center=(0, 0, height*0.25), direction=(0, 0, 1), radius=25, height=height*0.5)
+        piezo = pv.Cylinder(center=(0, 0, -height*0.125), direction=(0, 0, 1), radius=15, height=height*0.25)
+        backing = pv.Cylinder(center=(0, 0, -height*0.375), direction=(0, 0, 1), radius=20, height=height*0.25)
+        mesh = horn.merge(piezo).merge(backing)
+        return mesh
 
     def generate_array(self):
 
@@ -1594,153 +1599,62 @@ class AcousticStudioMain(QMainWindow):
         if "10mm" in sensor_type:
             r_wide, r_narrow, height = 5.0, 3.5, 4.0
             color = "lightblue"
+            base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+            self._current_amplitude = 1.0
         elif "16mm" in sensor_type:
             r_wide, r_narrow, height = 8.0, 5.0, 6.0
             color = "orange"
+            base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+            self._current_amplitude = 2.0
         else: # Langevin
-            r_wide, r_narrow, height = 25.0, 15.0, 25.0
-            color = "white"
+            r_wide, r_narrow, height = 25.0, 15.0, 40.0
+            color = "silver"
+            base_mesh = self.make_langevin_mesh(height)
+            self._current_amplitude = 20.0
 
-            
-
-        base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
-
-        meshes_to_add = []
-
-
+        transforms_to_add = []
 
         if "Matrix" in array_type:
-
             start_x = -(x_count - 1) * spacing / 2.0
-
             start_y = -(y_count - 1) * spacing / 2.0
-
             for i in range(x_count):
-
                 for j in range(y_count):
-
-                    px = start_x + i * spacing
-
-                    py = start_y + j * spacing
-
-                    pz = -height / 2.0
-
-                    mesh = base_mesh.copy()
-
-                    mesh.translate((px, py, pz), inplace=True)
-
-                    meshes_to_add.append(mesh)
-
+                    px_m = start_x + i * spacing
+                    py_m = start_y + j * spacing
+                    pz_m = -height / 2.0
+                    transforms_to_add.append([("translate", (px_m, py_m, pz_m))])
                     
-
         elif "4" in array_type:
-
-            # 8x8 ??배열???�기가 줄어?�었????멀찍이 ?�어지지 ?�고 ?�사각형 ?�브 ?�브가 ?�벽??맞물리도�?거리 최적??            # 면의 가�?길이(?????�반만큼�?중심?�서 ?�우�?4면이 ??맞게 조립?�니??
-
             tunnel_radius = (spacing * x_count) / 2.0
-
-            
-
             start_u = -(x_count - 1) * spacing / 2.0
-
             start_v = -(y_count - 1) * spacing / 2.0
-
             for i in range(x_count):
-
                 for j in range(y_count):
-
                     u = start_u + i * spacing
-
                     v = start_v + j * spacing
-
                     
-
-                    mesh_b = base_mesh.copy()
-
-                    mesh_b.translate((u, v, -tunnel_radius - height/2), inplace=True)
-
-                    meshes_to_add.append(mesh_b)
-
+                    transforms_to_add.append([("translate", (u, v, -tunnel_radius - height/2))])
+                    transforms_to_add.append([("rotate_y", 180), ("translate", (u, v, tunnel_radius + height/2))])
+                    transforms_to_add.append([("rotate_y", 90), ("translate", (-tunnel_radius - height/2, u, v))])
+                    transforms_to_add.append([("rotate_y", -90), ("translate", (tunnel_radius + height/2, u, v))])
                     
-
-                    mesh_t = base_mesh.copy()
-
-                    mesh_t.rotate_y(180, inplace=True)
-
-                    mesh_t.translate((u, v, tunnel_radius + height/2), inplace=True)
-
-                    meshes_to_add.append(mesh_t)
-
-                    
-
-                    mesh_l = base_mesh.copy()
-
-                    mesh_l.rotate_y(90, inplace=True)
-
-                    mesh_l.translate((-tunnel_radius - height/2, u, v), inplace=True)
-
-                    meshes_to_add.append(mesh_l)
-
-                    
-
-                    mesh_r = base_mesh.copy()
-
-                    mesh_r.rotate_y(-90, inplace=True)
-
-                    mesh_r.translate((tunnel_radius + height/2, u, v), inplace=True)
-
-                    meshes_to_add.append(mesh_r)
-
-                    
-
         elif "2" in array_type:
-
             distance = max(100.0, spacing * max(x_count, y_count))
-
             start_x = -(x_count - 1) * spacing / 2.0
-
             start_y = -(y_count - 1) * spacing / 2.0
-
             for i in range(x_count):
-
                 for j in range(y_count):
-
-                    px = start_x + i * spacing
-
-                    py = start_y + j * spacing
-
+                    px_m = start_x + i * spacing
+                    py_m = start_y + j * spacing
                     
-
-                    # Bottom plate (facing up)
-
-                    mesh_b = base_mesh.copy()
-
-                    mesh_b.translate((px, py, -distance/2 - height/2), inplace=True)
-
-                    meshes_to_add.append(mesh_b)
-
+                    transforms_to_add.append([("translate", (px_m, py_m, -distance/2 - height/2))])
+                    transforms_to_add.append([("rotate_x", 180), ("translate", (px_m, py_m, distance/2 + height/2))])
                     
-
-                    # Top plate (facing down)
-
-                    mesh_t = base_mesh.copy()
-
-                    mesh_t.rotate_x(180, inplace=True)
-
-                    mesh_t.translate((px, py, distance/2 + height/2), inplace=True)
-
-                    meshes_to_add.append(mesh_t)
-
-                    
-
         elif "Tube" in array_type or "튜브" in array_type:
-            # columns = x_count (emitters per ring)
-            # rows = y_count (number of rings)
             import math
             columns = x_count
             rows = y_count
-            
-            if columns < 3: columns = 3 # Tube needs at least 3 sides
+            if columns < 3: columns = 3
             
             angleInc = 2.0 * math.pi / columns
             radious = (spacing / 2.0) / math.tan(angleInc / 2.0)
@@ -1748,7 +1662,6 @@ class AcousticStudioMain(QMainWindow):
             SQRT3_2 = math.sqrt(3.0) / 2.0
             spaceOdd = spacing * SQRT3_2
             
-            # hexagonal packing shift implies tube length is (rows-1)*spaceOdd
             tubeLength = spaceOdd * (rows - 1)
             start_x = -tubeLength / 2.0
             
@@ -1758,135 +1671,81 @@ class AcousticStudioMain(QMainWindow):
                 angle = 0.0
                 for col in range(columns):
                     cAngle = angle if oddRow else angle + angleInc / 2.0
-                    
-                    # Position calculation so emitting face is at 'radious' from center
-                    # base_mesh emitting face is at +height/2 in local Z.
-                    # We will rotate it to face the center, so local +Z points to (0, -sin, -cos)
-                    # To do this, we rotate around X by cAngle + 180 degrees.
-                    # Its local center needs to be at radious + height/2
                     dist = radious + height / 2.0
                     y_pos = math.sin(cAngle) * dist
                     z_pos = math.cos(cAngle) * dist
                     
-                    mesh_t = base_mesh.copy()
                     cAngle_deg = cAngle * 180.0 / math.pi
-                    mesh_t.rotate_x(180.0 - cAngle_deg, inplace=True)
-                    mesh_t.translate((x_pos, y_pos, z_pos), inplace=True)
-                    meshes_to_add.append(mesh_t)
-                    
+                    transforms_to_add.append([("rotate_x", 180.0 - cAngle_deg), ("translate", (x_pos, y_pos, z_pos))])
                     angle += angleInc
-                    
                 x_pos += spaceOdd
 
         elif "Hemisphere" in array_type:
-
             N = x_count * y_count
-
-            R = max(100.0, r_wide * np.sqrt(N * 0.8)) # Radius enough to fit N transducers
-
+            R = max(100.0, r_wide * np.sqrt(N * 0.8))
             phi_golden = np.pi * (3.0 - np.sqrt(5.0))
-
             
-
+            import vtk
             for i in range(N):
-
-                # ?�프 ??(?�래�?반구) ?�면 좌표 계산
-
-                z = -1.0 + (i / float(N)) # -1 (bottom) to 0 (equator)
-
+                z = -1.0 + (i / float(N))
                 radius_at_z = np.sqrt(1.0 - z*z)
-
                 theta = phi_golden * i
-
                 
-
-                px = np.cos(theta) * radius_at_z * R
-
-                py = np.sin(theta) * radius_at_z * R
-
-                pz = z * R
-
+                px_m = np.cos(theta) * radius_at_z * R
+                py_m = np.sin(theta) * radius_at_z * R
+                pz_m = z * R
                 
-
-                # ?�점??바라보는 벡터 방향
-
-                v_dir = np.array([-px, -py, -pz])
-
+                v_dir = np.array([-px_m, -py_m, -pz_m])
                 v_dir = v_dir / np.linalg.norm(v_dir)
-
-                
-
                 Z_axis = np.array([0, 0, 1])
-
                 v_cross = np.cross(Z_axis, v_dir)
-
                 s = np.linalg.norm(v_cross)
-
                 c = np.dot(Z_axis, v_dir)
-
                 
-
                 mat = np.eye(4)
-
                 if s < 1e-6:
-
                     if c < 0:
-
                         mat[0,0] = -1; mat[1,1] = -1; mat[2,2] = -1
-
                 else:
-
                     vx = np.array([[0, -v_cross[2], v_cross[1]], 
-
                                    [v_cross[2], 0, -v_cross[0]], 
-
                                    [-v_cross[1], v_cross[0], 0]])
-
                     R_mat = np.eye(3) + vx + (vx @ vx) * ((1 - c)/(s**2))
-
                     mat[:3, :3] = R_mat
-
                 
-
-                mat[:3, 3] = [px, py, pz]
-
-                
-
-                mesh = base_mesh.copy()
-
-                mesh.transform(mat, inplace=True)
-
-                meshes_to_add.append(mesh)
-
-        
+                mat[:3, 3] = [px_m, py_m, pz_m]
+                vtk_mat = vtk.vtkMatrix4x4()
+                for r in range(4):
+                    for c_idx in range(4):
+                        vtk_mat.SetElement(r, c_idx, mat[r, c_idx])
+                        
+                transforms_to_add.append([("transform", vtk_mat)])
 
         rx, ry, rz = self.gen_rot_x.value(), self.gen_rot_y.value(), self.gen_rot_z.value()
-
         px, py, pz = self.gen_pos_x.value(), self.gen_pos_y.value(), self.gen_pos_z.value()
-
         
-
-        for mesh in meshes_to_add:
-
-            # 지?�된 초기 각도 �?좌표 ?�용
-
-            mesh.rotate_x(rx, inplace=True)
-
-            mesh.rotate_y(ry, inplace=True)
-
-            mesh.rotate_z(rz, inplace=True)
-
-            mesh.translate((px, py, pz), inplace=True)
-
+        import vtk
+        for ops in transforms_to_add:
+            transform = vtk.vtkTransform()
+            transform.PostMultiply()
+            for op, val in ops:
+                if op == "translate": transform.Translate(val)
+                elif op == "rotate_x": transform.RotateX(val)
+                elif op == "rotate_y": transform.RotateY(val)
+                elif op == "rotate_z": transform.RotateZ(val)
+                elif op == "transform": transform.Concatenate(val)
+                
+            transform.RotateX(rx)
+            transform.RotateY(ry)
+            transform.RotateZ(rz)
+            transform.Translate(px, py, pz)
             
-
-            actor = self.plotter.add_mesh(mesh, color=color, show_edges=False)
-
+            actor = self.plotter.add_mesh(base_mesh, color=color, show_edges=False)
+            actor.SetUserMatrix(transform.GetMatrix())
+            actor._initial_matrix = transform.GetMatrix()
             actor._original_color = color
-
+            actor._amplitude = getattr(self, '_current_amplitude', 1.0)
             self.transducer_actors.append(actor)
-
-            
 
         self.plotter.reset_camera()
 
@@ -1955,7 +1814,8 @@ class AcousticStudioMain(QMainWindow):
                     signature = np.zeros_like(dx)
                     
                 pt_phase = phase_focal + signature
-                complex_p += np.exp(1j * pt_phase)
+                tx_amplitudes = np.array([getattr(a, '_amplitude', 1.0) for a in self.transducer_actors])
+                complex_p += tx_amplitudes * np.exp(1j * pt_phase)
                 
         total_phases = np.angle(complex_p) % (2.0 * np.pi)
         total_phases[total_phases < 0] += 2.0 * np.pi
@@ -2047,8 +1907,8 @@ class AcousticStudioMain(QMainWindow):
         
 
         tx_centers = np.array([a.center for a in self.transducer_actors])
-
         tx_phases = np.array([getattr(a, '_phase', 0.0) for a in self.transducer_actors])
+        tx_amplitudes = np.array([getattr(a, '_amplitude', 1.0) for a in self.transducer_actors])
 
         
 
@@ -2140,7 +2000,7 @@ class AcousticStudioMain(QMainWindow):
 
             
 
-            complex_p = np.sum((1.0 / dist) * np.exp(1j * (k * dist + tx_phases)), axis=1)
+            complex_p = np.sum((tx_amplitudes / dist) * np.exp(1j * (k * dist + tx_phases)), axis=1)
 
             pressure_mag = np.abs(complex_p)
 
