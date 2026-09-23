@@ -16,6 +16,12 @@
    - vtkAxesTransformWidget을 적용하여 선택한 객체(단일/다중)에 X, Y, Z 드래그 화살표 표시.
    - 마우스 드래그 이동과 우측 패널의 SpinBox 숫자가 실시간으로 상호 연동되도록 Two-way Binding 성공적 구현.
 
+6. **Clear All 버그 수정** (완료)
+   - Clear all 실행 시 객체는 지워지나 기즈모 UI가 화면에 남는 현상을 해결하기 위해 clear_view에 self.on_selection_changed() 호출을 추가하여 기즈모를 숨김 처리함.
+
+7. **Tube 어레이 안쪽 방향(Inward-facing) 정렬 수정** (완료)
+   - Tube 생성 시 트랜스듀서들이 바깥쪽(Outward)을 향하던 회전 각도 오류(cAngle_deg + 180)를 180 - cAngle_deg로 수정하여, Ultraino 프로그램과 동일하게 원통의 중심을 향하도록(Inward) 정상적으로 배치되게 함.
+
 ---
 
 ## 🎯 남은 과제 및 향후 개발 목표 (To-Do)

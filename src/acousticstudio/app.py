@@ -528,12 +528,7 @@ class AcousticStudioMain(QMainWindow):
 
         self.array_type_cb = QComboBox()
 
-        self.array_type_cb.addItems([
-            "NxM Matrix (평면형)", 
-            "터널형 (상하좌우 4면)", 
-            "대향형 (상하 2면)", 
-            "반구형 (Hemisphere)"
-        ])
+        self.array_type_cb.addItems(["NxM Matrix (평면)", "터널형 (상하좌우 4면)", "대향형 (상하 2면)", "반구형 (Hemisphere)", "튜브형 (Tube)"])
 
         
 
@@ -1494,7 +1489,7 @@ class AcousticStudioMain(QMainWindow):
         
 
         self.update_gizmo()
-
+        self.update_ui_from_selection()
         self.plotter.render()
 
 
@@ -1730,6 +1725,51 @@ class AcousticStudioMain(QMainWindow):
                     meshes_to_add.append(mesh_t)
 
                     
+
+        elif "Tube" in array_type or "튜브" in array_type:
+            # columns = x_count (emitters per ring)
+            # rows = y_count (number of rings)
+            import math
+            columns = x_count
+            rows = y_count
+            
+            if columns < 3: columns = 3 # Tube needs at least 3 sides
+            
+            angleInc = 2.0 * math.pi / columns
+            radious = (spacing / 2.0) / math.tan(angleInc / 2.0)
+            
+            SQRT3_2 = math.sqrt(3.0) / 2.0
+            spaceOdd = spacing * SQRT3_2
+            
+            # hexagonal packing shift implies tube length is (rows-1)*spaceOdd
+            tubeLength = spaceOdd * (rows - 1)
+            start_x = -tubeLength / 2.0
+            
+            x_pos = start_x
+            for row in range(rows):
+                oddRow = (row % 2 == 0)
+                angle = 0.0
+                for col in range(columns):
+                    cAngle = angle if oddRow else angle + angleInc / 2.0
+                    
+                    # Position calculation so emitting face is at 'radious' from center
+                    # base_mesh emitting face is at +height/2 in local Z.
+                    # We will rotate it to face the center, so local +Z points to (0, -sin, -cos)
+                    # To do this, we rotate around X by cAngle + 180 degrees.
+                    # Its local center needs to be at radious + height/2
+                    dist = radious + height / 2.0
+                    y_pos = math.sin(cAngle) * dist
+                    z_pos = math.cos(cAngle) * dist
+                    
+                    mesh_t = base_mesh.copy()
+                    cAngle_deg = cAngle * 180.0 / math.pi
+                    mesh_t.rotate_x(180.0 - cAngle_deg, inplace=True)
+                    mesh_t.translate((x_pos, y_pos, z_pos), inplace=True)
+                    meshes_to_add.append(mesh_t)
+                    
+                    angle += angleInc
+                    
+                x_pos += spaceOdd
 
         elif "Hemisphere" in array_type:
 
