@@ -785,16 +785,32 @@ class AcousticStudioMain(QMainWindow):
         hw_group = QGroupBox("6. Hardware Connection (하드웨어 제어)")
         hw_layout = QFormLayout()
         
-        from PySide6.QtWidgets import QLineEdit
-        self.serial_port_edit = QLineEdit("COM3")
-        self.serial_baud_edit = QLineEdit("115200")
+        from PySide6.QtWidgets import QComboBox, QHBoxLayout, QPushButton
+        import serial.tools.list_ports
+        
+        self.serial_port_cb = QComboBox()
+        self.btn_refresh_ports = QPushButton("↻")
+        self.btn_refresh_ports.setFixedWidth(30)
+        self.btn_refresh_ports.clicked.connect(self.refresh_ports)
+        
+        port_layout = QHBoxLayout()
+        port_layout.setContentsMargins(0,0,0,0)
+        port_layout.addWidget(self.serial_port_cb)
+        port_layout.addWidget(self.btn_refresh_ports)
+        
+        self.serial_baud_cb = QComboBox()
+        baud_rates = ["9600", "19200", "38400", "57600", "115200", "230400", "250000", "500000", "1000000"]
+        self.serial_baud_cb.addItems(baud_rates)
+        self.serial_baud_cb.setCurrentText("115200")
         
         self.btn_connect_hw = QPushButton("Connect (연결)")
         self.btn_send_phase = QPushButton("Send Phase Data")
         self.btn_send_phase.setEnabled(False)
         
-        hw_layout.addRow("Port:", self.serial_port_edit)
-        hw_layout.addRow("Baud Rate:", self.serial_baud_edit)
+        hw_layout.addRow("Port:", port_layout)
+        hw_layout.addRow("Baud Rate:", self.serial_baud_cb)
+        
+        self.refresh_ports()
         
         btn_hw_layout = QHBoxLayout()
         btn_hw_layout.addWidget(self.btn_connect_hw)
@@ -839,11 +855,25 @@ class AcousticStudioMain(QMainWindow):
 
 
 
+    def refresh_ports(self):
+        import serial.tools.list_ports
+        self.serial_port_cb.clear()
+        ports = serial.tools.list_ports.comports()
+        for p in ports:
+            # Add port device name (e.g., COM3) and display description if needed
+            self.serial_port_cb.addItem(p.device, userData=p.device)
+        
+        if not ports:
+            self.serial_port_cb.addItem("No Ports Found")
+
     def connect_hw(self):
         if not hasattr(self, 'serial_port') or self.serial_port is None:
-            port = self.serial_port_edit.text()
+            port = self.serial_port_cb.currentText()
+            if port == "No Ports Found" or not port:
+                QMessageBox.critical(self, "Error", "No valid COM port selected.")
+                return
             try:
-                baud = int(self.serial_baud_edit.text())
+                baud = int(self.serial_baud_cb.currentText())
             except ValueError:
                 QMessageBox.critical(self, "Error", "Invalid Baud Rate.")
                 return
