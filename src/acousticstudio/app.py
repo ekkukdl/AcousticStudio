@@ -533,10 +533,8 @@ class AcousticStudioMain(QMainWindow):
         
 
         self.grid_x_spin = QSpinBox(); self.grid_x_spin.setValue(16); self.grid_x_spin.setRange(1, 100)
-
         self.grid_y_spin = QSpinBox(); self.grid_y_spin.setValue(16); self.grid_y_spin.setRange(1, 100)
-
-        
+        self.spacing_spin = QDoubleSpinBox(); self.spacing_spin.setValue(10.5); self.spacing_spin.setRange(1.0, 200.0); self.spacing_spin.setDecimals(2)
 
         # 배열 ?�성 ???�치/각도 지??        
         self.gen_pos_x = QDoubleSpinBox(); self.gen_pos_x.setRange(-1000, 1000); self.gen_pos_x.setValue(0.0)
@@ -562,16 +560,17 @@ class AcousticStudioMain(QMainWindow):
         
 
         grid_layout = QHBoxLayout()
-
         grid_layout.addWidget(self.grid_x_spin)
-
         grid_layout.addWidget(self.grid_y_spin)
-
         array_layout.addRow("Grid X, Y:", grid_layout) 
-
         
-
+        array_layout.addRow("Spacing (간격 mm):", self.spacing_spin)
         
+        def on_transducer_type_changed(t):
+            if "10mm" in t: self.spacing_spin.setValue(10.5)
+            elif "16mm" in t: self.spacing_spin.setValue(16.5)
+            else: self.spacing_spin.setValue(50.0)
+        self.transducer_type_cb.currentTextChanged.connect(on_transducer_type_changed)
         gen_grid = QGridLayout()
         gen_grid.addWidget(QLabel("생성 위치 (mm):"), 0, 0)
         gen_grid.addWidget(QLabel("X:"), 0, 1)
@@ -662,9 +661,7 @@ class AcousticStudioMain(QMainWindow):
         
 
         self.auto_calc_cb = QCheckBox("Point 위치 변동 시 위상/음압 실시간 자동 계산")
-
-        self.auto_calc_cb.setChecked(False) # 기본?�으�?켜둠
-
+        self.auto_calc_cb.setChecked(True) # 기본적으로 켜둠
         points_layout.addWidget(self.auto_calc_cb)
 
         
@@ -784,8 +781,6 @@ class AcousticStudioMain(QMainWindow):
         # --- 6. Hardware Connection ---
         hw_group = QGroupBox("6. Hardware Connection (하드웨어 제어)")
         hw_layout = QFormLayout()
-        
-        from PySide6.QtWidgets import QComboBox, QHBoxLayout, QPushButton
         import serial.tools.list_ports
         
         self.serial_port_cb = QComboBox()
@@ -917,7 +912,6 @@ class AcousticStudioMain(QMainWindow):
             # Protocol: 'S' (1 byte) + Length (2 bytes) + Data (N bytes)
             header = b'S' + len(data).to_bytes(2, byteorder='little')
             self.serial_port.write(header + data)
-            print(f"HW: Sent phase data for {len(phases)} transducers.")
         except Exception as e:
             print(f"HW Send Error: {e}")
             
@@ -1591,37 +1585,20 @@ class AcousticStudioMain(QMainWindow):
     def generate_array(self):
 
         sensor_type = self.transducer_type_cb.currentText()
-
         array_type = self.array_type_cb.currentText()
-
         x_count = self.grid_x_spin.value()
-
         y_count = self.grid_y_spin.value()
-
         
-
+        spacing = self.spacing_spin.value()
+        
         if "10mm" in sensor_type:
-
-            spacing = 10.5
-
             r_wide, r_narrow, height = 5.0, 3.5, 4.0
-
             color = "lightblue"
-
         elif "16mm" in sensor_type:
-
-            spacing = 16.5
-
             r_wide, r_narrow, height = 8.0, 5.0, 6.0
-
             color = "orange"
-
         else: # Langevin
-
-            spacing = 50.0
-
             r_wide, r_narrow, height = 25.0, 15.0, 25.0
-
             color = "white"
 
             
@@ -1939,106 +1916,62 @@ class AcousticStudioMain(QMainWindow):
 
         f = 40000.0 # 주파??(Hz)
 
-        k = 2.0 * np.pi / (c / f) # ?�수 (Wavenumber)
+        k = 2.0 * np.pi / (c / f) # ?수 (Wavenumber)
 
         
 
         import matplotlib.cm as cm
 
-        cmap = cm.get_cmap('hsv') # 0~360?��? 무�?개색?�로 매핑
-
+        cmap = cm.get_cmap('hsv') # 0~360도를 무지개색으로 매핑
         
-
-        for actor in self.transducer_actors:
-
-            cx, cy, cz = actor.center
-
-            
-
-            # ?�중 ?�겟에 ?�???�로그???�상 중첩(Superposition)
-
-            
-            complex_p = 0.0 + 0.0j
-            
-            # Check which points are active
-            active_pts = []
-            for idx, pt in enumerate(self.control_points):
-                item = self.points_list.item(idx)
-                if item and item.checkState() == Qt.Checked:
-                    active_pts.append(pt)
+        active_pts = []
+        for idx, pt in enumerate(self.control_points):
+            item = self.points_list.item(idx)
+            if item and item.checkState() == Qt.Checked:
+                active_pts.append(pt)
+                
+        centers = np.array([actor.center for actor in self.transducer_actors])
+        complex_p = np.zeros(len(centers), dtype=np.complex128)
+        
+        if active_pts:
+            cx = centers[:, 0]
+            cy = centers[:, 1]
+            cz = centers[:, 2]
             
             for pt in active_pts:
-
-
                 tx, ty, tz = pt["x"], pt["y"], pt["z"]
-
-                dx, dy, dz = cx - tx, cy - ty, cz - tz
-
+                dx = cx - tx
+                dy = cy - ty
+                dz = cz - tz
+                
                 d = np.sqrt(dx**2 + dy**2 + dz**2)
-
-                
-
-                # 기본 초점 ?�상 (Focal Phase)
-
                 phase_focal = -d * k
-
-                signature = 0.0
-
                 
-
-                # ?�랩 ?�고리즘???�른 ?�명(Signature) ?�상 추�?
-
                 if "Twin Trap" in algorithm:
-
-                    if dx > 0:
-                        signature = np.pi
-
+                    signature = np.where(dx > 0, np.pi, 0.0)
                 elif "Vortex Trap" in algorithm:
-
-                    # ?��?Vortex) m=1 ?�성 (각도??비�?)
-
                     signature = np.arctan2(dy, dx)
-
+                else:
+                    signature = np.zeros_like(dx)
                     
-
                 pt_phase = phase_focal + signature
-
                 complex_p += np.exp(1j * pt_phase)
-
                 
-
-            # 최종 ?�성???�상 추출 (0 ~ 2pi)
-
-            total_phase = np.angle(complex_p) % (2.0 * np.pi)
-
-            if total_phase < 0:
-
-                total_phase += 2.0 * np.pi
-
-                
-
-            # ?�상 매핑 (0 ~ 1)
-
-            color_val = total_phase / (2.0 * np.pi)
-
-            rgba = cmap(color_val)
-
-            
-
-            # 센서 위상 업데이트 및 내부 위상값 저장            
-            actor._original_color = rgba[:3]
+        total_phases = np.angle(complex_p) % (2.0 * np.pi)
+        total_phases[total_phases < 0] += 2.0 * np.pi
+        
+        color_vals = total_phases / (2.0 * np.pi)
+        rgbas = cmap(color_vals)
+        
+        for i, actor in enumerate(self.transducer_actors):
+            actor._original_color = rgbas[i, :3]
             if hasattr(self, 'selected_actors') and actor in self.selected_actors:
                 actor.prop.color = "pink"
                 actor.prop.opacity = 0.4
             else:
-                actor.prop.color = rgba[:3]
+                actor.prop.color = rgbas[i, :3]
                 actor.prop.opacity = getattr(actor, '_original_opacity', 1.0)
-
-            
-
-            # ?기??복소 진폭??최종 ?상????해???니??
-
-            actor._phase = total_phase
+            actor._phase = total_phases[i]
 
             
 
@@ -2046,7 +1979,7 @@ class AcousticStudioMain(QMainWindow):
 
         
 
-        # ?�압 ?�각?��? 켜져?�다�??�동 ?�데?�트
+        # ?압 ?각?? 켜져?다??동 ?데?트
 
         if self.show_field_btn.isChecked():
 
@@ -2054,7 +1987,7 @@ class AcousticStudioMain(QMainWindow):
 
             
 
-        print("위상 연산 및 시각화 완료!")
+        
         
         # Real-time hardware transmission
         if hasattr(self, 'serial_port') and self.serial_port is not None:
