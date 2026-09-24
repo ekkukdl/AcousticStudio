@@ -1693,21 +1693,40 @@ class AcousticStudioMain(QMainWindow):
         if 'point_size' in data: self.point_size_spin.setValue(data['point_size'])
         if 'prop_radius' in data: self.prop_radius_spin.setValue(data['prop_radius'])
         
-        # Recreate Array
-        self.generate_array()
-        
-        # Restore Transducers Matrices
+        # Recreate Array directly from saved matrices
         tx_data = data.get('transducers', [])
-        if tx_data and len(tx_data) == len(self.transducer_actors):
-            for i, tx in enumerate(tx_data):
-                actor = self.transducer_actors[i]
+        if tx_data:
+            sensor_type = data.get('transducer_type', self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else '')
+            if "10mm" in sensor_type:
+                r_wide, r_narrow, height = 5.0, 3.5, 4.0
+                color = "lightblue"
+                base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+                self._current_amplitude = 1.0
+            elif "16mm" in sensor_type:
+                r_wide, r_narrow, height = 8.0, 5.0, 6.0
+                color = "orange"
+                base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+                self._current_amplitude = 2.0
+            else: # Langevin
+                r_wide, r_narrow, height = 25.0, 15.0, 40.0
+                color = "silver"
+                base_mesh = self.make_langevin_mesh(height)
+                self._current_amplitude = 20.0
+                
+            for tx in tx_data:
                 matrix_vals = tx.get('matrix')
                 if matrix_vals:
                     mat = vtk.vtkMatrix4x4()
                     for r in range(4):
                         for c in range(4):
                             mat.SetElement(r, c, matrix_vals[r*4 + c])
+                    actor = self.plotter.add_mesh(base_mesh, color=color, show_edges=False)
                     actor.SetUserMatrix(mat)
+                    actor._initial_matrix = mat
+                    actor._original_color = color
+                    actor._amplitude = self._current_amplitude
+                    self.transducer_actors.append(actor)
+        self.plotter.reset_camera()
                     
         # Restore Targets
         from PySide6.QtCore import Qt
