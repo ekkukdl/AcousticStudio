@@ -867,16 +867,13 @@ class AcousticStudioMain(QMainWindow):
 
         self.show_field_btn.clicked.connect(self.toggle_field_slice)
 
-        visual_layout.addWidget(self.show_field_btn)
+        show_field_lyt = QHBoxLayout()
+        show_field_lyt.addWidget(self.show_field_btn)
         self.field_mode_combo = QComboBox()
         self.field_mode_combo.addItems(['음압 분포 (Pressure Magnitude)', '위상 분포 (Phase Angle)'])
         self.field_mode_combo.currentIndexChanged.connect(self.update_field_slice)
-        visual_layout.addWidget(self.field_mode_combo)
-        
-        self.calc_phase_check = QCheckBox('위상 시각화 (Calculate Phase)')
-        self.calc_phase_check.setChecked(True)
-        self.calc_phase_check.toggled.connect(self.simulate_colors)
-        visual_layout.addWidget(self.calc_phase_check)
+        show_field_lyt.addWidget(self.field_mode_combo)
+        visual_layout.addLayout(show_field_lyt)
 
         
 
@@ -1839,7 +1836,7 @@ class AcousticStudioMain(QMainWindow):
 
     def simulate_colors(self):
         import time
-        if hasattr(self, 'calc_phase_check') and not self.calc_phase_check.isChecked():
+        if hasattr(self, 'run_btn') and self.run_btn.isCheckable() and not self.run_btn.isChecked():
             return
         current_time = time.time()
         if hasattr(self, '_last_sim_time') and (current_time - self._last_sim_time) < 0.016:
@@ -2070,14 +2067,18 @@ class AcousticStudioMain(QMainWindow):
                 p_min, p_max = 0, np.percentile(scalar_data, 99.5)
                 cmap = 'hot'
 
+            import pyvista as pv
             if cache_key in self._cached_field_grids:
                 grid, actor = self._cached_field_grids[cache_key]
                 grid.point_data['Pressure'][:] = scalar_data
-                actor.mapper.scalar_range = [p_min, p_max]
-                actor.mapper.lookup_table.cmap = cmap
-                actor.SetVisibility(True)
+                # To change cmap dynamically in PyVista, we re-add the mesh with the same name
+                actor = self.plotter.add_mesh(
+                    grid, scalars='Pressure', cmap=cmap, opacity=1.0,
+                    show_scalar_bar=False, clim=[p_min, p_max],
+                    reset_camera=False, name=cache_key
+                )
+                self._cached_field_grids[cache_key] = (grid, actor)
             else:
-                import pyvista as pv
                 grid = pv.StructuredGrid()
                 grid.points = pts
                 grid.dimensions = [res, res, 1]
@@ -2085,8 +2086,10 @@ class AcousticStudioMain(QMainWindow):
                 actor = self.plotter.add_mesh(
                     grid, scalars='Pressure', cmap=cmap, opacity=1.0,
                     show_scalar_bar=False, clim=[p_min, p_max],
-                    reset_camera=False
+                    reset_camera=False, name=cache_key
                 )
+                self.field_actors.append(actor)
+                self._cached_field_grids[cache_key] = (grid, actor)
                 self.field_actors.append(actor)
                 self._cached_field_grids[cache_key] = (grid, actor)
 
