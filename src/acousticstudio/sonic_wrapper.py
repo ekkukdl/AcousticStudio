@@ -24,6 +24,22 @@ if os.path.exists(_lib_path):
             np.ctypeslib.ndpointer(dtype=np.uint8, ndim=1, flags='C_CONTIGUOUS'),   # out_packet
         ]
         _cpp_lib.calculate_phases_and_packet.restype = None
+        
+        _cpp_lib.calculate_field_slice.argtypes = [
+            np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+            np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+            np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+            np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+            np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+            np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+            np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+            np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_double,
+            np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'),
+        ]
+        _cpp_lib.calculate_field_slice.restype = None
     except Exception as e:
         print(f"[SonicSurface C++] Failed to load DLL: {e}")
         _cpp_lib = None
@@ -65,3 +81,27 @@ def calculate_phases_sonic(cx, cy, cz, tx, ty, tz, amplitudes, algorithm_str, k)
     )
     
     return out_phases, out_packet.tobytes()
+
+def calculate_field_slice_sonic(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k):
+    if _cpp_lib is None or not hasattr(_cpp_lib, 'calculate_field_slice'):
+        return None
+        
+    num_pts = len(pts_x)
+    num_tx = len(tx_x)
+    out_pressure = np.zeros(num_pts, dtype=np.float64)
+    
+    _cpp_lib.calculate_field_slice(
+        np.ascontiguousarray(pts_x, dtype=np.float64),
+        np.ascontiguousarray(pts_y, dtype=np.float64),
+        np.ascontiguousarray(pts_z, dtype=np.float64),
+        np.ascontiguousarray(tx_x, dtype=np.float64),
+        np.ascontiguousarray(tx_y, dtype=np.float64),
+        np.ascontiguousarray(tx_z, dtype=np.float64),
+        np.ascontiguousarray(tx_phases, dtype=np.float64),
+        np.ascontiguousarray(tx_amplitudes, dtype=np.float64),
+        num_pts,
+        num_tx,
+        k,
+        out_pressure
+    )
+    return out_pressure

@@ -8,7 +8,7 @@ where g++ >nul 2>nul
 if %ERRORLEVEL% equ 0 (
     echo [OK] g++ compiler found.
     echo Building sonic_core.dll using g++...
-    g++ -O3 -shared -fPIC sonic_core.cpp -o sonic_core.dll
+    g++ -O3 -shared -fPIC -fopenmp sonic_core.cpp -o sonic_core.dll
     if %ERRORLEVEL% equ 0 (
         echo [SUCCESS] sonic_core.dll generated successfully!
         exit /b 0
@@ -23,7 +23,7 @@ where cl >nul 2>nul
 if %ERRORLEVEL% equ 0 (
     echo [OK] MSVC compiler found.
     echo Building sonic_core.dll using cl.exe...
-    cl /LD /O2 /EHsc sonic_core.cpp /link /OUT:sonic_core.dll
+    cl /LD /O2 /EHsc /openmp sonic_core.cpp /link /OUT:sonic_core.dll
     if %ERRORLEVEL% equ 0 (
         echo [SUCCESS] sonic_core.dll generated successfully!
         del sonic_core.obj

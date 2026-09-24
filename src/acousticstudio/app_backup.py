@@ -1911,7 +1911,7 @@ class AcousticStudioMain(QMainWindow):
 
         # ?압 ?각?? 켜져?다??동 ?데?트
 
-        if self.show_field_btn.isChecked() and not getattr(self, '_is_gizmo_dragging', False):
+        if self.show_field_btn.isChecked():
             self.update_field_slice()
 
             

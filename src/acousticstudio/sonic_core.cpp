@@ -75,4 +75,42 @@ extern "C" {
         
         out_packet[num_transducers + 1] = 253;
     }
+
+#ifdef _WIN32
+    __declspec(dllexport)
+#endif
+    void calculate_field_slice(
+        const double* pts_x, const double* pts_y, const double* pts_z,
+        const double* tx_x, const double* tx_y, const double* tx_z,
+        const double* tx_phases, const double* tx_amplitudes,
+        int num_pts, int num_tx, double k,
+        double* out_pressure
+    ) {
+        #pragma omp parallel for
+        for (int p = 0; p < num_pts; ++p) {
+            double px = pts_x[p];
+            double py = pts_y[p];
+            double pz = pts_z[p];
+            
+            double real_sum = 0.0;
+            double imag_sum = 0.0;
+            
+            for (int t = 0; t < num_tx; ++t) {
+                double dx = px - tx_x[t];
+                double dy = py - tx_y[t];
+                double dz = pz - tx_z[t];
+                
+                double dist = std::sqrt(dx*dx + dy*dy + dz*dz);
+                if (dist < 1e-3) dist = 1e-3;
+                
+                double amp = tx_amplitudes[t] / dist;
+                double phase = k * dist + tx_phases[t];
+                
+                real_sum += amp * std::cos(phase);
+                imag_sum += amp * std::sin(phase);
+            }
+            
+            out_pressure[p] = std::sqrt(real_sum*real_sum + imag_sum*imag_sum);
+        }
+    }
 }
