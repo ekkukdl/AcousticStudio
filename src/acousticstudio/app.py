@@ -33,8 +33,8 @@ class MouseEventFilter(QObject):
 
         super().__init__()
 
-        self.no_scroll_filter = NoScrollEventFilter(self)
-        QApplication.instance().installEventFilter(self.no_scroll_filter)
+        
+        
 
         self.main = main_window
 
@@ -308,18 +308,18 @@ class MouseEventFilter(QObject):
         return False
 
 
-class NoScrollEventFilter(QObject):
+class WheelBlocker(QObject):
+    def __init__(self, scroll_area):
+        super().__init__()
+        self.scroll_area = scroll_area
     def eventFilter(self, obj, event):
         from PySide6.QtCore import QEvent
         if event.type() == QEvent.Wheel:
-            from PySide6.QtWidgets import QAbstractSpinBox, QComboBox, QApplication
-            if isinstance(obj, (QAbstractSpinBox, QComboBox)):
-                event.ignore()
-                parent = obj.parent()
-                if parent:
-                    QApplication.sendEvent(parent, event)
-                return True
-        return super().eventFilter(obj, event)
+            from PySide6.QtWidgets import QApplication
+            # 스크롤바에 이벤트를 직접 전달하여 스크롤이 되게 함
+            QApplication.sendEvent(self.scroll_area.verticalScrollBar(), event)
+            return True # SpinBox/ComboBox가 이벤트를 처리하지 못하게 완전 차단
+        return False
 
 class AcousticStudioMain(QMainWindow):
 
@@ -327,8 +327,8 @@ class AcousticStudioMain(QMainWindow):
 
         super().__init__()
 
-        self.no_scroll_filter = NoScrollEventFilter(self)
-        QApplication.instance().installEventFilter(self.no_scroll_filter)
+        
+        
 
         self.setWindowTitle("Acoustic Control Studio - PyVista 3D Viewer")
 
@@ -342,41 +342,7 @@ class AcousticStudioMain(QMainWindow):
 
         main_layout = QVBoxLayout(main_widget)
 
-        # --- Hardware Connection (Top Bar) ---
-        top_bar = QWidget()
-        top_bar.setMaximumHeight(50)
-        top_layout = QHBoxLayout(top_bar)
-        top_layout.setContentsMargins(10, 5, 10, 5)
 
-        import serial.tools.list_ports
-        self.serial_port_cb = QComboBox()
-        self.btn_refresh_ports = QPushButton("↻")
-        self.btn_refresh_ports.setFixedWidth(30)
-        self.btn_refresh_ports.clicked.connect(self.refresh_ports)
-        
-        self.serial_baud_cb = QComboBox()
-        baud_rates = ["9600", "19200", "38400", "57600", "115200", "230400", "250000", "500000", "1000000"]
-        self.serial_baud_cb.addItems(baud_rates)
-        self.serial_baud_cb.setCurrentText("115200")
-        
-        self.btn_connect_hw = QPushButton("Connect (연결)")
-        self.btn_send_phase = QPushButton("Send Phase Data")
-        self.btn_send_phase.setEnabled(False)
-        self.btn_connect_hw.clicked.connect(self.connect_hw)
-        self.btn_send_phase.clicked.connect(self.send_phase_data)
-
-        self.refresh_ports()
-
-        top_layout.addWidget(QLabel("하드웨어 제어 (USB Port):"))
-        top_layout.addWidget(self.serial_port_cb)
-        top_layout.addWidget(self.btn_refresh_ports)
-        top_layout.addWidget(QLabel("Baud Rate:"))
-        top_layout.addWidget(self.serial_baud_cb)
-        top_layout.addWidget(self.btn_connect_hw)
-        top_layout.addWidget(self.btn_send_phase)
-        top_layout.addStretch()
-
-        main_layout.addWidget(top_bar)
 
         
 
@@ -469,6 +435,8 @@ class AcousticStudioMain(QMainWindow):
         control_panel = QWidget()
         control_panel.setMinimumWidth(380)
         control_layout = QVBoxLayout(control_panel)
+
+
         from PySide6.QtCore import Qt
         control_layout.setAlignment(Qt.AlignTop)
         control_layout.setContentsMargins(5, 10, 15, 10)
@@ -480,8 +448,50 @@ class AcousticStudioMain(QMainWindow):
         from PySide6.QtWidgets import QSplitter
         from PySide6.QtCore import Qt
         
+        # --- Create Left Panel for 3D Viewer & Hardware Control ---
+        left_panel = QWidget()
+        left_layout = QVBoxLayout(left_panel)
+        left_layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Hardware Control (Top Bar)
+        hw_top_bar = QWidget()
+        hw_top_bar.setMaximumHeight(50)
+        hw_layout = QHBoxLayout(hw_top_bar)
+        hw_layout.setContentsMargins(10, 5, 10, 5)
+        
+        import serial.tools.list_ports
+        self.serial_port_cb = QComboBox()
+        self.btn_refresh_ports = QPushButton("↻")
+        self.btn_refresh_ports.setFixedWidth(30)
+        self.btn_refresh_ports.clicked.connect(self.refresh_ports)
+        
+        self.serial_baud_cb = QComboBox()
+        baud_rates = ["9600", "19200", "38400", "57600", "115200", "230400", "250000", "500000", "1000000"]
+        self.serial_baud_cb.addItems(baud_rates)
+        self.serial_baud_cb.setCurrentText("115200")
+        
+        self.btn_connect_hw = QPushButton("Connect (연결)")
+        self.btn_send_phase = QPushButton("Send Phase Data")
+        self.btn_send_phase.setEnabled(False)
+        self.btn_connect_hw.clicked.connect(self.connect_hw)
+        self.btn_send_phase.clicked.connect(self.send_phase_data)
+        self.refresh_ports()
+        
+        hw_layout.addWidget(QLabel("하드웨어 제어 (USB Port):"))
+        hw_layout.addWidget(self.serial_port_cb)
+        hw_layout.addWidget(self.btn_refresh_ports)
+        hw_layout.addWidget(QLabel("Baud Rate:"))
+        hw_layout.addWidget(self.serial_baud_cb)
+        hw_layout.addWidget(self.btn_connect_hw)
+        hw_layout.addWidget(self.btn_send_phase)
+        hw_layout.addStretch()
+        
+        left_layout.addWidget(hw_top_bar)
+        left_layout.addWidget(self.view_panel)
+        
+        # --- Splitter Setup ---
         self.splitter = QSplitter(Qt.Horizontal)
-        self.splitter.addWidget(self.view_panel)
+        self.splitter.addWidget(left_panel)
         self.splitter.addWidget(scroll_area)
         self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 0)
@@ -576,7 +586,8 @@ class AcousticStudioMain(QMainWindow):
 
         array_group = QGroupBox("2. Transducer Array Setup (초음파 배열 설정)")
 
-        array_layout = QFormLayout()
+        array_layout = QVBoxLayout()
+        array_form = QFormLayout()
 
         
 
@@ -611,18 +622,19 @@ class AcousticStudioMain(QMainWindow):
 
         
 
-        array_layout.addRow("센서 형태:", self.transducer_type_cb)
+        array_form.addRow("센서 형태:", self.transducer_type_cb)
 
-        array_layout.addRow("배열 방식:", self.array_type_cb)
+        array_form.addRow("배열 방식:", self.array_type_cb)
 
         
 
         grid_layout = QHBoxLayout()
         grid_layout.addWidget(self.grid_x_spin)
         grid_layout.addWidget(self.grid_y_spin)
-        array_layout.addRow("Grid X, Y:", grid_layout) 
+        array_form.addRow("Grid X, Y:", grid_layout) 
         
-        array_layout.addRow("Spacing (간격 mm):", self.spacing_spin)
+        array_form.addRow("Spacing (간격 mm):", self.spacing_spin)
+        array_layout.addLayout(array_form)
         
         def on_transducer_type_changed(t):
             if "10mm" in t: self.spacing_spin.setValue(10.5)
@@ -646,7 +658,7 @@ class AcousticStudioMain(QMainWindow):
         gen_grid.addWidget(QLabel("Rz:"), 1, 5)
         gen_grid.addWidget(self.gen_rot_z, 1, 6)
 
-        array_layout.addRow(gen_grid)
+        array_layout.addLayout(gen_grid)
 
 
         
@@ -661,9 +673,9 @@ class AcousticStudioMain(QMainWindow):
 
         
 
-        array_layout.addRow(self.add_array_btn)
+        array_layout.addWidget(self.add_array_btn)
 
-        array_layout.addRow(self.clear_btn)
+        array_layout.addWidget(self.clear_btn)
 
         array_group.setLayout(array_layout)
 
@@ -851,6 +863,13 @@ class AcousticStudioMain(QMainWindow):
         self._sel_base_centroid = [0.0, 0.0, 0.0]
 
         self._sel_base_rot = [0.0, 0.0, 0.0]
+
+        # Apply wheel blocker AFTER all widgets are created
+        self.wheel_blocker = WheelBlocker(scroll_area)
+        widgets = self.findChildren(QDoubleSpinBox) + self.findChildren(QSpinBox) + self.findChildren(QComboBox)
+        for widget in widgets:
+            widget.installEventFilter(self.wheel_blocker)
+
 
 
 
@@ -1169,6 +1188,13 @@ class AcousticStudioMain(QMainWindow):
             self.prop_type_lbl.setText("다중 선택 (혼합)")
             self._sel_base_centroid = [0.0, 0.0, 0.0]
             self._sel_base_rot = [0.0, 0.0, 0.0]
+
+        # Apply wheel blocker AFTER all widgets are created
+        self.wheel_blocker = WheelBlocker(scroll_area)
+        widgets = self.findChildren(QDoubleSpinBox) + self.findChildren(QSpinBox) + self.findChildren(QComboBox)
+        for widget in widgets:
+            widget.installEventFilter(self.wheel_blocker)
+
             self._is_updating_ui = False
             return
 
@@ -1181,7 +1207,14 @@ class AcousticStudioMain(QMainWindow):
         cx /= n; cy /= n; cz /= n
         
         self._sel_base_centroid = [cx, cy, cz]
-        self._sel_base_rot = [0.0, 0.0, 0.0] 
+        self._sel_base_rot = [0.0, 0.0, 0.0]
+
+        # Apply wheel blocker AFTER all widgets are created
+        self.wheel_blocker = WheelBlocker(scroll_area)
+        widgets = self.findChildren(QDoubleSpinBox) + self.findChildren(QSpinBox) + self.findChildren(QComboBox)
+        for widget in widgets:
+            widget.installEventFilter(self.wheel_blocker)
+ 
         
         self.sel_x.setValue(cx); self.sel_y.setValue(cy); self.sel_z.setValue(cz)
         self.sel_rx.setValue(0); self.sel_ry.setValue(0); self.sel_rz.setValue(0)
