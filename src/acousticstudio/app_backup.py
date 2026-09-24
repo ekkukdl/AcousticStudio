@@ -7,6 +7,30 @@ import os
 os.environ["QT_API"] = "pyside6"
 
 import numpy as np
+import numba
+@numba.njit(parallel=True)
+def calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k):
+    num_pts = len(pts_x)
+    num_tx = len(tx_x)
+    real_out = np.zeros(num_pts, dtype=np.float64)
+    imag_out = np.zeros(num_pts, dtype=np.float64)
+    for p in numba.prange(num_pts):
+        px, py, pz = pts_x[p], pts_y[p], pts_z[p]
+        r_sum, i_sum = 0.0, 0.0
+        for t in range(num_tx):
+            dx = px - tx_x[t]
+            dy = py - tx_y[t]
+            dz = pz - tx_z[t]
+            dist = np.sqrt(dx*dx + dy*dy + dz*dz)
+            if dist < 1e-3: dist = 1e-3
+            amp = tx_amplitudes[t] / dist
+            phase = k * dist + tx_phases[t]
+            r_sum += amp * np.cos(phase)
+            i_sum += amp * np.sin(phase)
+        real_out[p] = r_sum
+        imag_out[p] = i_sum
+    return real_out, imag_out
+
 
 import pyvista as pv
 
@@ -307,6 +331,12 @@ class MouseEventFilter(QObject):
                     style.OnLeftButtonUp()
                 return True
 
+        
+        if event.type() == QEvent.MouseButtonRelease:
+            if event.button() == Qt.LeftButton:
+                if hasattr(self.main, 'push_state'):
+                    # To avoid spamming, only push if state changed. push_state already checks this.
+                    self.main.push_state()
         return False
 
 
@@ -321,6 +351,12 @@ class WheelBlocker(QObject):
             # 스크롤바에 이벤트를 직접 전달하여 스크롤이 되게 함
             QApplication.sendEvent(self.scroll_area.verticalScrollBar(), event)
             return True # SpinBox/ComboBox가 이벤트를 처리하지 못하게 완전 차단
+        
+        if event.type() == QEvent.MouseButtonRelease:
+            if event.button() == Qt.LeftButton:
+                if hasattr(self.main, 'push_state'):
+                    # To avoid spamming, only push if state changed. push_state already checks this.
+                    self.main.push_state()
         return False
 
 class AcousticStudioMain(QMainWindow):
@@ -335,6 +371,49 @@ class AcousticStudioMain(QMainWindow):
         self.setWindowTitle("Acoustic Control Studio - PyVista 3D Viewer")
 
         self.resize(1400, 950)
+
+        # File Menu
+        from PySide6.QtGui import QAction
+        from PySide6.QtCore import Qt
+        menubar = self.menuBar()
+        file_menu = menubar.addMenu("파일 (File)")
+        
+        save_action = QAction("저장 (Save)", self)
+        save_action.setShortcut("Ctrl+S")
+        save_action.setShortcutContext(Qt.ApplicationShortcut)
+        save_action.triggered.connect(self.save_project)
+        file_menu.addAction(save_action)
+        
+        save_as_action = QAction("다른 이름으로 저장 (Save As...)", self)
+        save_as_action.setShortcut("Ctrl+Shift+S")
+        save_as_action.setShortcutContext(Qt.ApplicationShortcut)
+        save_as_action.triggered.connect(self.save_project_as)
+        file_menu.addAction(save_as_action)
+        
+        load_action = QAction("불러오기 (Load)", self)
+        load_action.setShortcut("Ctrl+O")
+        load_action.triggered.connect(self.load_project)
+        file_menu.addAction(load_action)
+        
+        edit_menu = menubar.addMenu("편집 (Edit)")
+        
+        undo_action = QAction("되돌리기 (Undo)", self)
+        undo_action.setShortcut("Ctrl+Z")
+        from PySide6.QtCore import Qt
+        undo_action.setShortcutContext(Qt.ApplicationShortcut)
+        undo_action.triggered.connect(self.undo)
+        edit_menu.addAction(undo_action)
+        
+        redo_action = QAction("다시 실행 (Redo)", self)
+        redo_action.setShortcut("Ctrl+Y")
+        redo_action.setShortcutContext(Qt.ApplicationShortcut)
+        redo_action.triggered.connect(self.redo)
+        edit_menu.addAction(redo_action)
+        
+        # Initialize undo stack
+        self.push_state()
+        self._initial_state = self.get_state()
+
 
         
 
@@ -571,16 +650,22 @@ class AcousticStudioMain(QMainWindow):
         # UI 값이 바�???3D 객체??즉시 반영
 
         self.sel_x.valueChanged.connect(self.apply_ui_transform)
+        self.sel_x.editingFinished.connect(self.push_state)
 
         self.sel_y.valueChanged.connect(self.apply_ui_transform)
+        self.sel_y.editingFinished.connect(self.push_state)
 
         self.sel_z.valueChanged.connect(self.apply_ui_transform)
+        self.sel_z.editingFinished.connect(self.push_state)
 
         self.sel_rx.valueChanged.connect(self.apply_ui_transform)
+        self.sel_rx.editingFinished.connect(self.push_state)
 
         self.sel_ry.valueChanged.connect(self.apply_ui_transform)
+        self.sel_ry.editingFinished.connect(self.push_state)
 
         self.sel_rz.valueChanged.connect(self.apply_ui_transform)
+        self.sel_rz.editingFinished.connect(self.push_state)
 
         
 
@@ -667,11 +752,11 @@ class AcousticStudioMain(QMainWindow):
 
         self.add_array_btn = QPushButton("배열 3D 뷰어에 생성하기")
 
-        self.add_array_btn.clicked.connect(self.generate_array)
+        self.add_array_btn.clicked.connect(self._hooked_generate_array)
 
         self.clear_btn = QPushButton("Clear All")
 
-        self.clear_btn.clicked.connect(self.clear_view)
+        self.clear_btn.clicked.connect(self._hooked_clear_view)
 
         
 
@@ -704,7 +789,8 @@ class AcousticStudioMain(QMainWindow):
         points_layout.addLayout(size_layout)
         
         self.points_list = QListWidget()
-        self.points_list.setMaximumHeight(100)
+        self.points_list.setMinimumHeight(200)
+        self.points_list.setMaximumHeight(600)
 
 
         self.points_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -719,11 +805,11 @@ class AcousticStudioMain(QMainWindow):
 
         self.add_pt_btn = QPushButton("Add Point")
 
-        self.add_pt_btn.clicked.connect(self.add_control_point)
+        self.add_pt_btn.clicked.connect(self._hooked_add_control_point)
 
         self.del_pt_btn = QPushButton("Delete Point")
 
-        self.del_pt_btn.clicked.connect(self.delete_control_point)
+        self.del_pt_btn.clicked.connect(self._hooked_del_control_point)
 
         btn_layout.addWidget(self.add_pt_btn)
 
@@ -789,11 +875,18 @@ class AcousticStudioMain(QMainWindow):
 
         self.xz_check.stateChanged.connect(self.update_field_slice)
 
-        self.xz_slider = QSlider(Qt.Horizontal); self.xz_slider.setRange(-500, 500)
+        self.xz_slider = QSlider(Qt.Horizontal); self.xz_slider.setRange(-200, 200)
 
-        self.xz_slider.valueChanged.connect(self.update_field_slice)
+        self.xz_spin = QSpinBox(); self.xz_spin.setRange(-200, 200); self.xz_spin.setFixedWidth(60)
 
-        xz_lyt.addWidget(self.xz_check); xz_lyt.addWidget(self.xz_slider)
+        def on_xz_sl(v): self.xz_spin.blockSignals(True); self.xz_spin.setValue(v); self.xz_spin.blockSignals(False); self.draw_ghost_plane('xz', v)
+        def on_xz_sp(v): self.xz_slider.blockSignals(True); self.xz_slider.setValue(v); self.xz_slider.blockSignals(False); self.draw_ghost_plane('xz', v); self.update_field_slice()
+
+        self.xz_slider.valueChanged.connect(on_xz_sl)
+        self.xz_slider.sliderReleased.connect(self.update_field_slice)
+        self.xz_spin.valueChanged.connect(on_xz_sp)
+
+        xz_lyt.addWidget(self.xz_check); xz_lyt.addWidget(self.xz_slider); xz_lyt.addWidget(self.xz_spin)
 
         visual_layout.addLayout(xz_lyt)
 
@@ -807,11 +900,17 @@ class AcousticStudioMain(QMainWindow):
 
         self.yz_check.stateChanged.connect(self.update_field_slice)
 
-        self.yz_slider = QSlider(Qt.Horizontal); self.yz_slider.setRange(-500, 500)
+        self.yz_slider = QSlider(Qt.Horizontal); self.yz_slider.setRange(-200, 200)
+        self.yz_spin = QSpinBox(); self.yz_spin.setRange(-200, 200); self.yz_spin.setFixedWidth(60)
 
-        self.yz_slider.valueChanged.connect(self.update_field_slice)
+        def on_yz_sl(v): self.yz_spin.blockSignals(True); self.yz_spin.setValue(v); self.yz_spin.blockSignals(False); self.draw_ghost_plane('yz', v)
+        def on_yz_sp(v): self.yz_slider.blockSignals(True); self.yz_slider.setValue(v); self.yz_slider.blockSignals(False); self.draw_ghost_plane('yz', v); self.update_field_slice()
 
-        yz_lyt.addWidget(self.yz_check); yz_lyt.addWidget(self.yz_slider)
+        self.yz_slider.valueChanged.connect(on_yz_sl)
+        self.yz_slider.sliderReleased.connect(self.update_field_slice)
+        self.yz_spin.valueChanged.connect(on_yz_sp)
+
+        yz_lyt.addWidget(self.yz_check); yz_lyt.addWidget(self.yz_slider); yz_lyt.addWidget(self.yz_spin)
 
         visual_layout.addLayout(yz_lyt)
 
@@ -825,11 +924,17 @@ class AcousticStudioMain(QMainWindow):
 
         self.xy_check.stateChanged.connect(self.update_field_slice)
 
-        self.xy_slider = QSlider(Qt.Horizontal); self.xy_slider.setRange(-500, 500)
+        self.xy_slider = QSlider(Qt.Horizontal); self.xy_slider.setRange(-200, 200)
+        self.xy_spin = QSpinBox(); self.xy_spin.setRange(-200, 200); self.xy_spin.setFixedWidth(60)
 
-        self.xy_slider.valueChanged.connect(self.update_field_slice)
+        def on_xy_sl(v): self.xy_spin.blockSignals(True); self.xy_spin.setValue(v); self.xy_spin.blockSignals(False); self.draw_ghost_plane('xy', v)
+        def on_xy_sp(v): self.xy_slider.blockSignals(True); self.xy_slider.setValue(v); self.xy_slider.blockSignals(False); self.draw_ghost_plane('xy', v); self.update_field_slice()
 
-        xy_lyt.addWidget(self.xy_check); xy_lyt.addWidget(self.xy_slider)
+        self.xy_slider.valueChanged.connect(on_xy_sl)
+        self.xy_slider.sliderReleased.connect(self.update_field_slice)
+        self.xy_spin.valueChanged.connect(on_xy_sp)
+
+        xy_lyt.addWidget(self.xy_check); xy_lyt.addWidget(self.xy_slider); xy_lyt.addWidget(self.xy_spin)
 
         visual_layout.addLayout(xy_lyt)
 
@@ -843,7 +948,13 @@ class AcousticStudioMain(QMainWindow):
 
         self.show_field_btn.clicked.connect(self.toggle_field_slice)
 
-        visual_layout.addWidget(self.show_field_btn)
+        show_field_lyt = QHBoxLayout()
+        show_field_lyt.addWidget(self.show_field_btn)
+        self.field_mode_combo = QComboBox()
+        self.field_mode_combo.addItems(['음압 분포 (Pressure Magnitude)', '위상 분포 (Phase Angle)'])
+        self.field_mode_combo.currentIndexChanged.connect(self.update_field_slice)
+        show_field_lyt.addWidget(self.field_mode_combo)
+        visual_layout.addLayout(show_field_lyt)
 
         
 
@@ -1408,6 +1519,28 @@ class AcousticStudioMain(QMainWindow):
 
 
 
+    def has_unsaved_changes(self):
+        current = self.get_state()
+        saved = getattr(self, '_last_saved_state', getattr(self, '_initial_state', None))
+        return current != saved
+
+    def closeEvent(self, event):
+        if self.has_unsaved_changes():
+            from PySide6.QtWidgets import QMessageBox
+            reply = QMessageBox.question(self, '저장 확인', 
+                                         '저장되지 않은 변경사항이 있습니다. 종료하기 전에 저장하시겠습니까?',
+                                         QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel, 
+                                         QMessageBox.Save)
+            if reply == QMessageBox.Save:
+                self.save_project()
+                event.accept()
+            elif reply == QMessageBox.Cancel:
+                event.ignore()
+            else:
+                event.accept()
+        else:
+            event.accept()
+
     def update_gizmo(self):
 
         if hasattr(self, 'gizmo') and self.gizmo is not None:
@@ -1448,6 +1581,22 @@ class AcousticStudioMain(QMainWindow):
 
 
 
+
+    def _hooked_add_control_point(self):
+        self.add_control_point()
+        self.push_state()
+        
+    def _hooked_del_control_point(self):
+        self.delete_control_point()
+        self.push_state()
+        
+    def _hooked_clear_view(self):
+        self.clear_view()
+        self.push_state()
+        
+    def _hooked_generate_array(self):
+        self.generate_array()
+        self.push_state()
     def add_control_point(self):
 
         idx = len(self.control_points)
@@ -1536,6 +1685,299 @@ class AcousticStudioMain(QMainWindow):
 
             self.plotter.render()
 
+
+
+
+
+    def get_state(self):
+        data = {}
+        # Array UI Params
+        data['transducer_type'] = self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else ""
+        data['array_type'] = self.array_type_cb.currentText() if hasattr(self, 'array_type_cb') else ""
+        data['spacing'] = self.spacing_spin.value() if hasattr(self, 'spacing_spin') else 10.5
+        
+        # Field UI Params
+        data['trap_type'] = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else ""
+        data['grid_x'] = self.grid_x_spin.value() if hasattr(self, 'grid_x_spin') else 16
+        data['grid_y'] = self.grid_y_spin.value() if hasattr(self, 'grid_y_spin') else 16
+        data['point_size'] = self.point_size_spin.value() if hasattr(self, 'point_size_spin') else 5.0
+        data['prop_radius'] = self.prop_radius_spin.value() if hasattr(self, 'prop_radius_spin') else 5.0
+        
+        # Field Slice Visualization Params
+        data['show_field'] = self.show_field_btn.isChecked() if hasattr(self, 'show_field_btn') else False
+        data['field_mode'] = self.field_mode_combo.currentText() if hasattr(self, 'field_mode_combo') else ""
+        data['xz_check'] = self.xz_check.isChecked() if hasattr(self, 'xz_check') else False
+        data['xz_slider'] = self.xz_slider.value() if hasattr(self, 'xz_slider') else 0
+        data['yz_check'] = self.yz_check.isChecked() if hasattr(self, 'yz_check') else False
+        data['yz_slider'] = self.yz_slider.value() if hasattr(self, 'yz_slider') else 0
+        data['xy_check'] = self.xy_check.isChecked() if hasattr(self, 'xy_check') else False
+        data['xy_slider'] = self.xy_slider.value() if hasattr(self, 'xy_slider') else 0
+        
+        # Targets (Save true updated world position)
+        data['control_points'] = []
+        for pt in getattr(self, 'control_points', []):
+            try:
+                center = self._get_actor_world_center(pt['actor'])
+            except:
+                center = pt['actor'].center
+            data['control_points'].append({
+                'name': pt['name'], 'x': float(center[0]), 'y': float(center[1]), 'z': float(center[2]), 'radius': pt['radius']
+            })
+            
+        # Transducers Matrices
+        data['transducers'] = []
+        for actor in getattr(self, 'transducer_actors', []):
+            mat = actor.GetUserMatrix()
+            matrix_vals = []
+            if mat:
+                for r in range(4):
+                    for c in range(4):
+                        matrix_vals.append(mat.GetElement(r, c))
+            data['transducers'].append({'matrix': matrix_vals})
+        return data
+
+    def set_state(self, data):
+        import pyvista as pv
+        import vtk
+
+        # Array UI Params
+        if 'transducer_type' in data and hasattr(self, 'transducer_type_cb'):
+            idx = self.transducer_type_cb.findText(data['transducer_type'])
+            if idx >= 0: self.transducer_type_cb.setCurrentIndex(idx)
+        if 'array_type' in data and hasattr(self, 'array_type_cb'):
+            idx = self.array_type_cb.findText(data['array_type'])
+            if idx >= 0: self.array_type_cb.setCurrentIndex(idx)
+        if 'spacing' in data and hasattr(self, 'spacing_spin'): self.spacing_spin.setValue(data['spacing'])
+
+        # Restore parameters
+        if 'trap_type' in data:
+            idx = self.trap_type_cb.findText(data['trap_type'])
+            if idx >= 0: self.trap_type_cb.setCurrentIndex(idx)
+        if 'grid_x' in data: self.grid_x_spin.setValue(data['grid_x'])
+        if 'grid_y' in data: self.grid_y_spin.setValue(data['grid_y'])
+        if 'point_size' in data: self.point_size_spin.setValue(data['point_size'])
+        if 'prop_radius' in data: self.prop_radius_spin.setValue(data['prop_radius'])
+        
+        # Field Slice Visualization Params
+        if hasattr(self, 'xz_check'):
+            self.xz_check.blockSignals(True); self.xz_slider.blockSignals(True)
+            self.yz_check.blockSignals(True); self.yz_slider.blockSignals(True)
+            self.xy_check.blockSignals(True); self.xy_slider.blockSignals(True)
+            if hasattr(self, 'show_field_btn'): self.show_field_btn.blockSignals(True)
+            if hasattr(self, 'field_mode_combo'): self.field_mode_combo.blockSignals(True)
+            
+            if 'xz_check' in data: self.xz_check.setChecked(data['xz_check'])
+            if 'xz_slider' in data: 
+                self.xz_slider.setValue(data['xz_slider'])
+                if hasattr(self, 'xz_spin'): self.xz_spin.blockSignals(True); self.xz_spin.setValue(data['xz_slider']); self.xz_spin.blockSignals(False)
+            if 'yz_check' in data: self.yz_check.setChecked(data['yz_check'])
+            if 'yz_slider' in data: 
+                self.yz_slider.setValue(data['yz_slider'])
+                if hasattr(self, 'yz_spin'): self.yz_spin.blockSignals(True); self.yz_spin.setValue(data['yz_slider']); self.yz_spin.blockSignals(False)
+            if 'xy_check' in data: self.xy_check.setChecked(data['xy_check'])
+            if 'xy_slider' in data: 
+                self.xy_slider.setValue(data['xy_slider'])
+                if hasattr(self, 'xy_spin'): self.xy_spin.blockSignals(True); self.xy_spin.setValue(data['xy_slider']); self.xy_spin.blockSignals(False)
+            
+            if 'show_field' in data and hasattr(self, 'show_field_btn'):
+                self.show_field_btn.setChecked(data['show_field'])
+                
+            if 'field_mode' in data and hasattr(self, 'field_mode_combo'):
+                idx = self.field_mode_combo.findText(data['field_mode'])
+                if idx >= 0: self.field_mode_combo.setCurrentIndex(idx)
+                
+            self.xz_check.blockSignals(False); self.xz_slider.blockSignals(False)
+            self.yz_check.blockSignals(False); self.yz_slider.blockSignals(False)
+            self.xy_check.blockSignals(False); self.xy_slider.blockSignals(False)
+            if hasattr(self, 'show_field_btn'): self.show_field_btn.blockSignals(False)
+            if hasattr(self, 'field_mode_combo'): self.field_mode_combo.blockSignals(False)
+            
+            if hasattr(self, 'toggle_field_slice'):
+                self.toggle_field_slice()
+
+        # Optimize Transducer update
+        tx_data = data.get('transducers', [])
+        if tx_data:
+            needs_rebuild = len(tx_data) != len(self.transducer_actors)
+            
+            if needs_rebuild:
+                from PySide6.QtWidgets import QApplication
+                for i, actor in enumerate(self.transducer_actors):
+                    if actor in self.selected_actors: self.selected_actors.remove(actor)
+                    self.plotter.remove_actor(actor)
+                    if i % 20 == 0: QApplication.processEvents()
+                self.transducer_actors.clear()
+                
+                sensor_type = data.get('transducer_type', self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else '')
+                if "10mm" in sensor_type:
+                    r_wide, r_narrow, height = 5.0, 3.5, 4.0
+                    color = "lightblue"
+                    base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+                    self._current_amplitude = 1.0
+                elif "16mm" in sensor_type:
+                    r_wide, r_narrow, height = 8.0, 5.0, 6.0
+                    color = "orange"
+                    base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+                    self._current_amplitude = 2.0
+                else: # Langevin
+                    r_wide, r_narrow, height = 25.0, 15.0, 40.0
+                    color = "silver"
+                    base_mesh = self.make_langevin_mesh(height)
+                    self._current_amplitude = 20.0
+                    
+                for i, tx in enumerate(tx_data):
+                    matrix_vals = tx.get('matrix')
+                    if matrix_vals:
+                        mat = vtk.vtkMatrix4x4()
+                        for r in range(4):
+                            for c in range(4):
+                                mat.SetElement(r, c, matrix_vals[r*4 + c])
+                        actor = self.plotter.add_mesh(base_mesh, color=color, show_edges=False)
+                        actor.SetUserMatrix(mat)
+                        actor._initial_matrix = mat
+                        actor._original_color = color
+                        actor._amplitude = self._current_amplitude
+                        self.transducer_actors.append(actor)
+                        if i % 20 == 0: QApplication.processEvents()
+            else:
+                # Optimized fast path! Just update matrices!
+                for i, tx in enumerate(tx_data):
+                    matrix_vals = tx.get('matrix')
+                    if matrix_vals:
+                        mat = vtk.vtkMatrix4x4()
+                        for r in range(4):
+                            for c in range(4):
+                                mat.SetElement(r, c, matrix_vals[r*4 + c])
+                        self.transducer_actors[i].SetUserMatrix(mat)
+
+        # Optimize Control Points update
+        from PySide6.QtCore import Qt
+        from PySide6.QtWidgets import QListWidgetItem
+        pt_data = data.get('control_points', [])
+        
+        needs_pt_rebuild = len(pt_data) != len(self.control_points)
+        if needs_pt_rebuild:
+            for p in self.control_points:
+                if p["actor"] in self.selected_actors: self.selected_actors.remove(p["actor"])
+                self.plotter.remove_actor(p["actor"])
+            self.control_points.clear()
+            self.points_list.clear()
+            
+            for pt in pt_data:
+                idx = len(self.control_points)
+                name = pt.get('name', f"Point {idx+1}")
+                x, y, z = pt.get('x',0), pt.get('y',0), pt.get('z',50)
+                r = pt.get('radius', 5.0)
+                sphere = pv.Sphere(radius=r, center=(0, 0, 0)) # Base at origin
+                actor = self.plotter.add_mesh(sphere, color="green", show_edges=False)
+                # Translate it to x,y,z using matrix so Gizmo works properly
+                mat = vtk.vtkMatrix4x4()
+                mat.Identity()
+                mat.SetElement(0, 3, x)
+                mat.SetElement(1, 3, y)
+                mat.SetElement(2, 3, z)
+                actor.SetUserMatrix(mat)
+                
+                actor._original_color = "green"
+                self.control_points.append({"name": name, "actor": actor, "x": x, "y": y, "z": z, "radius": r})
+                
+                item = QListWidgetItem(name)
+                item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+                item.setCheckState(Qt.Checked)
+                self.points_list.addItem(item)
+        else:
+            # Optimized fast path!
+            for i, pt in enumerate(pt_data):
+                x, y, z = pt.get('x',0), pt.get('y',0), pt.get('z',50)
+                actor = self.control_points[i]['actor']
+                mat = vtk.vtkMatrix4x4()
+                mat.Identity()
+                mat.SetElement(0, 3, x)
+                mat.SetElement(1, 3, y)
+                mat.SetElement(2, 3, z)
+                actor.SetUserMatrix(mat)
+                
+        # Update UI state correctly after state restore
+        if hasattr(self, 'update_gizmo'):
+            self.update_gizmo()
+        if hasattr(self, 'update_ui_from_selection'):
+            self.update_ui_from_selection()
+            
+        # self.plotter.reset_camera() # Do not reset camera on undo, it's annoying!
+        self.simulate_colors()
+
+    def save_project(self):
+        import json
+        if not getattr(self, 'current_project_file', None):
+            self.save_project_as()
+            return
+            
+        data = self.get_state()
+        with open(self.current_project_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
+        self._last_saved_state = data
+
+    def save_project_as(self):
+        from PySide6.QtWidgets import QFileDialog
+        import json
+        filename, _ = QFileDialog.getSaveFileName(self, "다른 이름으로 프로젝트 저장", "", "Acoustic Project (*.json)")
+        if not filename: return
+        self.current_project_file = filename
+        self.save_project()
+
+    def load_project(self):
+        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        import json
+        filename, _ = QFileDialog.getOpenFileName(self, "프로젝트 불러오기", "", "Acoustic Project (*.json)")
+        if not filename: return
+        
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except Exception as e:
+            QMessageBox.critical(self, "오류", f"파일을 읽는 중 오류가 발생했습니다: {str(e)}")
+            return
+            
+        self.current_project_file = filename
+        self.set_state(data)
+        self.push_state()
+        self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
+        self._last_saved_state = data
+
+    def push_state(self):
+        if not hasattr(self, 'undo_stack'):
+            self.undo_stack = []
+            self.redo_stack = []
+            
+        state = self.get_state()
+        # Only push if different from last state
+        if not self.undo_stack or self.undo_stack[-1] != state:
+            self.undo_stack.append(state)
+            self.redo_stack.clear()
+            
+            # limit stack size to 20
+            if len(self.undo_stack) > 20:
+                self.undo_stack.pop(0)
+
+    def undo(self):
+        if not hasattr(self, 'undo_stack') or len(self.undo_stack) < 1:
+            return
+        current_actual_state = self.get_state()
+        if self.undo_stack[-1] != current_actual_state:
+            self.undo_stack.append(current_actual_state)
+            self.redo_stack.clear()
+        if len(self.undo_stack) > 1:
+            current_state = self.undo_stack.pop()
+            self.redo_stack.append(current_state)
+            previous_state = self.undo_stack[-1]
+            self.set_state(previous_state)
+
+    def redo(self):
+        if hasattr(self, 'redo_stack') and self.redo_stack:
+            next_state = self.redo_stack.pop()
+            self.undo_stack.append(next_state)
+            self.set_state(next_state)
 
 
     def clear_view(self):
@@ -1804,10 +2246,24 @@ class AcousticStudioMain(QMainWindow):
 
         self.plotter.reset_camera()
 
-
-
     def simulate_colors(self):
-
+        import time
+        if hasattr(self, 'run_btn') and self.run_btn.isCheckable() and not self.run_btn.isChecked():
+            return
+        current_time = time.time()
+        if hasattr(self, '_last_sim_time') and (current_time - self._last_sim_time) < 0.016:
+            if not hasattr(self, '_sim_timer'):
+                from PySide6.QtCore import QTimer
+                self._sim_timer = QTimer()
+                self._sim_timer.setSingleShot(True)
+                self._sim_timer.timeout.connect(self.simulate_colors)
+            if not self._sim_timer.isActive():
+                self._sim_timer.start(16)
+            return
+        self._last_sim_time = current_time
+        if hasattr(self, '_sim_timer'):
+            self._sim_timer.stop()
+            
         if not self.transducer_actors:
 
             return
@@ -1946,7 +2402,60 @@ class AcousticStudioMain(QMainWindow):
 
 
 
+    def draw_ghost_plane(self, axis_name, offset):
+        if not self.show_field_btn.isChecked() or not self.transducer_actors: return
+        import numpy as np
+        import pyvista as pv
+        
+        tx_centers = np.array([a.center for a in self.transducer_actors])
+        min_x, max_x = np.min(tx_centers[:, 0]), np.max(tx_centers[:, 0])
+        min_y, max_y = np.min(tx_centers[:, 1]), np.max(tx_centers[:, 1])
+        min_z, max_z = np.min(tx_centers[:, 2]), np.max(tx_centers[:, 2])
+        
+        pad = 30.0
+        bx_min, bx_max = min_x - pad, max_x + pad
+        by_min, by_max = min_y - pad, max_y + pad
+        bz_min, bz_max = min_z - pad, max_z + pad
+        if bx_max - bx_min < 50: bx_min -= 25; bx_max += 25
+        if by_max - by_min < 50: by_min -= 25; by_max += 25
+        if bz_max - bz_min < 50: bz_min -= 25; bz_max += 25
+        
+        cx, cy, cz = (bx_min+bx_max)/2, (by_min+by_max)/2, (bz_min+bz_max)/2
+        wx, wy, wz = bx_max-bx_min, by_max-by_min, bz_max-bz_min
+        
+        if axis_name == 'xz': center, d, i, j = (cx, offset, cz), (0,1,0), wx, wz
+        elif axis_name == 'yz': center, d, i, j = (offset, cy, cz), (1,0,0), wy, wz
+        else: center, d, i, j = (cx, cy, offset), (0,0,1), wx, wy
+            
+        plane = pv.Plane(center=center, direction=d, i_size=i, j_size=j)
+        
+        if not hasattr(self, '_ghost_actors'):
+            self._ghost_actors = {}
+            
+        if axis_name not in self._ghost_actors:
+            plane = pv.Plane(center=(0,0,0), direction=d, i_size=i, j_size=j)
+            act = self.plotter.add_mesh(plane, color='white', opacity=0.4, show_edges=True, name=f'ghost_{axis_name}')
+            self._ghost_actors[axis_name] = act
+        else:
+            plane = pv.Plane(center=center, direction=d, i_size=i, j_size=j)
+            act = self.plotter.add_mesh(plane, color='white', opacity=0.4, show_edges=True, name=f'ghost_{axis_name}')
+            self._ghost_actors[axis_name] = act
+            
+        # Hide ONLY the active plane being moved
+        axis_idx_map = {'xz': '0', 'yz': '1', 'xy': '2'}
+        moving_key = axis_idx_map[axis_name]
+        
+        if hasattr(self, '_cached_field_grids') and moving_key in self._cached_field_grids:
+            _, act = self._cached_field_grids[moving_key]
+            act.SetVisibility(False)
+            
+        self.plotter.render()
+
     def update_field_slice(self, *args):
+        if hasattr(self, '_ghost_actors'):
+            for act in self._ghost_actors.values():
+                act.SetVisibility(False)
+            
         if not hasattr(self, '_cached_field_grids'):
             self._cached_field_grids = {}
 
@@ -1991,7 +2500,7 @@ class AcousticStudioMain(QMainWindow):
         active_plane_keys = set()
         
         for plane_idx, offset in planes_to_draw:
-            cache_key = f'{plane_idx}_{offset}'
+            cache_key = str(plane_idx)
             active_plane_keys.add(cache_key)
             
             if plane_idx == 0:
@@ -2012,32 +2521,38 @@ class AcousticStudioMain(QMainWindow):
             tx_y = np.ascontiguousarray(tx_centers[:, 1], dtype=np.float64)
             tx_z = np.ascontiguousarray(tx_centers[:, 2], dtype=np.float64)
             
-            pressure_mag = calculate_field_slice_sonic(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
-            if pressure_mag is None:
-                diff = pts[:, np.newaxis, :] - tx_centers[np.newaxis, :, :]
-                dist = np.linalg.norm(diff, axis=-1)
-                dist[dist < 1e-3] = 1e-3
-                complex_p = np.sum((tx_amplitudes / dist) * np.exp(1j * (k * dist + tx_phases)), axis=1)
-                pressure_mag = np.abs(complex_p)
+            is_phase_mode = hasattr(self, 'field_mode_combo') and self.field_mode_combo.currentIndex() == 1
+            real_p, imag_p = calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
+            if is_phase_mode:
+                scalar_data = np.arctan2(imag_p, real_p)
+                p_min, p_max = -np.pi, np.pi
+                cmap = 'hsv'
+            else:
+                scalar_data = np.sqrt(real_p**2 + imag_p**2)
+                p_min, p_max = 0, np.percentile(scalar_data, 99.5)
+                cmap = 'hot'
 
-            p_max = np.percentile(pressure_mag, 99.5)
-            
+            import pyvista as pv
             if cache_key in self._cached_field_grids:
                 grid, actor = self._cached_field_grids[cache_key]
-                # In-place scalar update
-                grid.point_data['Pressure'][:] = pressure_mag
-                actor.mapper.scalar_range = [0, p_max]
+                grid.points = pts
+                grid.point_data['Pressure'][:] = scalar_data
+                actor = self.plotter.add_mesh(
+                    grid, scalars='Pressure', cmap=cmap, opacity=1.0,
+                    show_scalar_bar=False, clim=[p_min, p_max],
+                    reset_camera=False, name=f'field_{cache_key}'
+                )
                 actor.SetVisibility(True)
+                self._cached_field_grids[cache_key] = (grid, actor)
             else:
-                import pyvista as pv
                 grid = pv.StructuredGrid()
                 grid.points = pts
                 grid.dimensions = [res, res, 1]
-                grid.point_data['Pressure'] = pressure_mag
+                grid.point_data['Pressure'] = scalar_data
                 actor = self.plotter.add_mesh(
-                    grid, scalars='Pressure', cmap='hot', opacity=1.0, 
-                    show_scalar_bar=False, clim=[0, p_max],
-                    reset_camera=False
+                    grid, scalars='Pressure', cmap=cmap, opacity=1.0,
+                    show_scalar_bar=False, clim=[p_min, p_max],
+                    reset_camera=False, name=f'field_{cache_key}'
                 )
                 self.field_actors.append(actor)
                 self._cached_field_grids[cache_key] = (grid, actor)

@@ -412,7 +412,7 @@ class AcousticStudioMain(QMainWindow):
         
         # Initialize undo stack
         self.push_state()
-
+        self._initial_state = self.get_state()
 
 
         
@@ -650,16 +650,22 @@ class AcousticStudioMain(QMainWindow):
         # UI 값이 바�???3D 객체??즉시 반영
 
         self.sel_x.valueChanged.connect(self.apply_ui_transform)
+        self.sel_x.editingFinished.connect(self.push_state)
 
         self.sel_y.valueChanged.connect(self.apply_ui_transform)
+        self.sel_y.editingFinished.connect(self.push_state)
 
         self.sel_z.valueChanged.connect(self.apply_ui_transform)
+        self.sel_z.editingFinished.connect(self.push_state)
 
         self.sel_rx.valueChanged.connect(self.apply_ui_transform)
+        self.sel_rx.editingFinished.connect(self.push_state)
 
         self.sel_ry.valueChanged.connect(self.apply_ui_transform)
+        self.sel_ry.editingFinished.connect(self.push_state)
 
         self.sel_rz.valueChanged.connect(self.apply_ui_transform)
+        self.sel_rz.editingFinished.connect(self.push_state)
 
         
 
@@ -869,11 +875,18 @@ class AcousticStudioMain(QMainWindow):
 
         self.xz_check.stateChanged.connect(self.update_field_slice)
 
-        self.xz_slider = QSlider(Qt.Horizontal); self.xz_slider.setRange(-500, 500)
+        self.xz_slider = QSlider(Qt.Horizontal); self.xz_slider.setRange(-200, 200)
 
-        self.xz_slider.valueChanged.connect(self.update_field_slice)
+        self.xz_spin = QSpinBox(); self.xz_spin.setRange(-200, 200); self.xz_spin.setFixedWidth(60)
 
-        xz_lyt.addWidget(self.xz_check); xz_lyt.addWidget(self.xz_slider)
+        def on_xz_sl(v): self.xz_spin.blockSignals(True); self.xz_spin.setValue(v); self.xz_spin.blockSignals(False); self.draw_ghost_plane('xz', v)
+        def on_xz_sp(v): self.xz_slider.blockSignals(True); self.xz_slider.setValue(v); self.xz_slider.blockSignals(False); self.draw_ghost_plane('xz', v); self.update_field_slice()
+
+        self.xz_slider.valueChanged.connect(on_xz_sl)
+        self.xz_slider.sliderReleased.connect(self.update_field_slice)
+        self.xz_spin.valueChanged.connect(on_xz_sp)
+
+        xz_lyt.addWidget(self.xz_check); xz_lyt.addWidget(self.xz_slider); xz_lyt.addWidget(self.xz_spin)
 
         visual_layout.addLayout(xz_lyt)
 
@@ -887,11 +900,17 @@ class AcousticStudioMain(QMainWindow):
 
         self.yz_check.stateChanged.connect(self.update_field_slice)
 
-        self.yz_slider = QSlider(Qt.Horizontal); self.yz_slider.setRange(-500, 500)
+        self.yz_slider = QSlider(Qt.Horizontal); self.yz_slider.setRange(-200, 200)
+        self.yz_spin = QSpinBox(); self.yz_spin.setRange(-200, 200); self.yz_spin.setFixedWidth(60)
 
-        self.yz_slider.valueChanged.connect(self.update_field_slice)
+        def on_yz_sl(v): self.yz_spin.blockSignals(True); self.yz_spin.setValue(v); self.yz_spin.blockSignals(False); self.draw_ghost_plane('yz', v)
+        def on_yz_sp(v): self.yz_slider.blockSignals(True); self.yz_slider.setValue(v); self.yz_slider.blockSignals(False); self.draw_ghost_plane('yz', v); self.update_field_slice()
 
-        yz_lyt.addWidget(self.yz_check); yz_lyt.addWidget(self.yz_slider)
+        self.yz_slider.valueChanged.connect(on_yz_sl)
+        self.yz_slider.sliderReleased.connect(self.update_field_slice)
+        self.yz_spin.valueChanged.connect(on_yz_sp)
+
+        yz_lyt.addWidget(self.yz_check); yz_lyt.addWidget(self.yz_slider); yz_lyt.addWidget(self.yz_spin)
 
         visual_layout.addLayout(yz_lyt)
 
@@ -905,11 +924,17 @@ class AcousticStudioMain(QMainWindow):
 
         self.xy_check.stateChanged.connect(self.update_field_slice)
 
-        self.xy_slider = QSlider(Qt.Horizontal); self.xy_slider.setRange(-500, 500)
+        self.xy_slider = QSlider(Qt.Horizontal); self.xy_slider.setRange(-200, 200)
+        self.xy_spin = QSpinBox(); self.xy_spin.setRange(-200, 200); self.xy_spin.setFixedWidth(60)
 
-        self.xy_slider.valueChanged.connect(self.update_field_slice)
+        def on_xy_sl(v): self.xy_spin.blockSignals(True); self.xy_spin.setValue(v); self.xy_spin.blockSignals(False); self.draw_ghost_plane('xy', v)
+        def on_xy_sp(v): self.xy_slider.blockSignals(True); self.xy_slider.setValue(v); self.xy_slider.blockSignals(False); self.draw_ghost_plane('xy', v); self.update_field_slice()
 
-        xy_lyt.addWidget(self.xy_check); xy_lyt.addWidget(self.xy_slider)
+        self.xy_slider.valueChanged.connect(on_xy_sl)
+        self.xy_slider.sliderReleased.connect(self.update_field_slice)
+        self.xy_spin.valueChanged.connect(on_xy_sp)
+
+        xy_lyt.addWidget(self.xy_check); xy_lyt.addWidget(self.xy_slider); xy_lyt.addWidget(self.xy_spin)
 
         visual_layout.addLayout(xy_lyt)
 
@@ -1494,6 +1519,28 @@ class AcousticStudioMain(QMainWindow):
 
 
 
+    def has_unsaved_changes(self):
+        current = self.get_state()
+        saved = getattr(self, '_last_saved_state', getattr(self, '_initial_state', None))
+        return current != saved
+
+    def closeEvent(self, event):
+        if self.has_unsaved_changes():
+            from PySide6.QtWidgets import QMessageBox
+            reply = QMessageBox.question(self, '저장 확인', 
+                                         '저장되지 않은 변경사항이 있습니다. 종료하기 전에 저장하시겠습니까?',
+                                         QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel, 
+                                         QMessageBox.Save)
+            if reply == QMessageBox.Save:
+                self.save_project()
+                event.accept()
+            elif reply == QMessageBox.Cancel:
+                event.ignore()
+            else:
+                event.accept()
+        else:
+            event.accept()
+
     def update_gizmo(self):
 
         if hasattr(self, 'gizmo') and self.gizmo is not None:
@@ -1656,6 +1703,16 @@ class AcousticStudioMain(QMainWindow):
         data['point_size'] = self.point_size_spin.value() if hasattr(self, 'point_size_spin') else 5.0
         data['prop_radius'] = self.prop_radius_spin.value() if hasattr(self, 'prop_radius_spin') else 5.0
         
+        # Field Slice Visualization Params
+        data['show_field'] = self.show_field_btn.isChecked() if hasattr(self, 'show_field_btn') else False
+        data['field_mode'] = self.field_mode_combo.currentText() if hasattr(self, 'field_mode_combo') else ""
+        data['xz_check'] = self.xz_check.isChecked() if hasattr(self, 'xz_check') else False
+        data['xz_slider'] = self.xz_slider.value() if hasattr(self, 'xz_slider') else 0
+        data['yz_check'] = self.yz_check.isChecked() if hasattr(self, 'yz_check') else False
+        data['yz_slider'] = self.yz_slider.value() if hasattr(self, 'yz_slider') else 0
+        data['xy_check'] = self.xy_check.isChecked() if hasattr(self, 'xy_check') else False
+        data['xy_slider'] = self.xy_slider.value() if hasattr(self, 'xy_slider') else 0
+        
         # Targets (Save true updated world position)
         data['control_points'] = []
         for pt in getattr(self, 'control_points', []):
@@ -1700,6 +1757,43 @@ class AcousticStudioMain(QMainWindow):
         if 'grid_y' in data: self.grid_y_spin.setValue(data['grid_y'])
         if 'point_size' in data: self.point_size_spin.setValue(data['point_size'])
         if 'prop_radius' in data: self.prop_radius_spin.setValue(data['prop_radius'])
+        
+        # Field Slice Visualization Params
+        if hasattr(self, 'xz_check'):
+            self.xz_check.blockSignals(True); self.xz_slider.blockSignals(True)
+            self.yz_check.blockSignals(True); self.yz_slider.blockSignals(True)
+            self.xy_check.blockSignals(True); self.xy_slider.blockSignals(True)
+            if hasattr(self, 'show_field_btn'): self.show_field_btn.blockSignals(True)
+            if hasattr(self, 'field_mode_combo'): self.field_mode_combo.blockSignals(True)
+            
+            if 'xz_check' in data: self.xz_check.setChecked(data['xz_check'])
+            if 'xz_slider' in data: 
+                self.xz_slider.setValue(data['xz_slider'])
+                if hasattr(self, 'xz_spin'): self.xz_spin.blockSignals(True); self.xz_spin.setValue(data['xz_slider']); self.xz_spin.blockSignals(False)
+            if 'yz_check' in data: self.yz_check.setChecked(data['yz_check'])
+            if 'yz_slider' in data: 
+                self.yz_slider.setValue(data['yz_slider'])
+                if hasattr(self, 'yz_spin'): self.yz_spin.blockSignals(True); self.yz_spin.setValue(data['yz_slider']); self.yz_spin.blockSignals(False)
+            if 'xy_check' in data: self.xy_check.setChecked(data['xy_check'])
+            if 'xy_slider' in data: 
+                self.xy_slider.setValue(data['xy_slider'])
+                if hasattr(self, 'xy_spin'): self.xy_spin.blockSignals(True); self.xy_spin.setValue(data['xy_slider']); self.xy_spin.blockSignals(False)
+            
+            if 'show_field' in data and hasattr(self, 'show_field_btn'):
+                self.show_field_btn.setChecked(data['show_field'])
+                
+            if 'field_mode' in data and hasattr(self, 'field_mode_combo'):
+                idx = self.field_mode_combo.findText(data['field_mode'])
+                if idx >= 0: self.field_mode_combo.setCurrentIndex(idx)
+                
+            self.xz_check.blockSignals(False); self.xz_slider.blockSignals(False)
+            self.yz_check.blockSignals(False); self.yz_slider.blockSignals(False)
+            self.xy_check.blockSignals(False); self.xy_slider.blockSignals(False)
+            if hasattr(self, 'show_field_btn'): self.show_field_btn.blockSignals(False)
+            if hasattr(self, 'field_mode_combo'): self.field_mode_combo.blockSignals(False)
+            
+            if hasattr(self, 'toggle_field_slice'):
+                self.toggle_field_slice()
 
         # Optimize Transducer update
         tx_data = data.get('transducers', [])
@@ -1707,9 +1801,11 @@ class AcousticStudioMain(QMainWindow):
             needs_rebuild = len(tx_data) != len(self.transducer_actors)
             
             if needs_rebuild:
-                for actor in self.transducer_actors:
+                from PySide6.QtWidgets import QApplication
+                for i, actor in enumerate(self.transducer_actors):
                     if actor in self.selected_actors: self.selected_actors.remove(actor)
                     self.plotter.remove_actor(actor)
+                    if i % 20 == 0: QApplication.processEvents()
                 self.transducer_actors.clear()
                 
                 sensor_type = data.get('transducer_type', self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else '')
@@ -1729,7 +1825,7 @@ class AcousticStudioMain(QMainWindow):
                     base_mesh = self.make_langevin_mesh(height)
                     self._current_amplitude = 20.0
                     
-                for tx in tx_data:
+                for i, tx in enumerate(tx_data):
                     matrix_vals = tx.get('matrix')
                     if matrix_vals:
                         mat = vtk.vtkMatrix4x4()
@@ -1742,6 +1838,7 @@ class AcousticStudioMain(QMainWindow):
                         actor._original_color = color
                         actor._amplitude = self._current_amplitude
                         self.transducer_actors.append(actor)
+                        if i % 20 == 0: QApplication.processEvents()
             else:
                 # Optimized fast path! Just update matrices!
                 for i, tx in enumerate(tx_data):
@@ -1800,6 +1897,12 @@ class AcousticStudioMain(QMainWindow):
                 mat.SetElement(2, 3, z)
                 actor.SetUserMatrix(mat)
                 
+        # Update UI state correctly after state restore
+        if hasattr(self, 'update_gizmo'):
+            self.update_gizmo()
+        if hasattr(self, 'update_ui_from_selection'):
+            self.update_ui_from_selection()
+            
         # self.plotter.reset_camera() # Do not reset camera on undo, it's annoying!
         self.simulate_colors()
 
@@ -1813,6 +1916,7 @@ class AcousticStudioMain(QMainWindow):
         with open(self.current_project_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
         self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
+        self._last_saved_state = data
 
     def save_project_as(self):
         from PySide6.QtWidgets import QFileDialog
@@ -1839,6 +1943,7 @@ class AcousticStudioMain(QMainWindow):
         self.set_state(data)
         self.push_state()
         self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
+        self._last_saved_state = data
 
     def push_state(self):
         if not hasattr(self, 'undo_stack'):
@@ -1856,7 +1961,13 @@ class AcousticStudioMain(QMainWindow):
                 self.undo_stack.pop(0)
 
     def undo(self):
-        if hasattr(self, 'undo_stack') and len(self.undo_stack) > 1:
+        if not hasattr(self, 'undo_stack') or len(self.undo_stack) < 1:
+            return
+        current_actual_state = self.get_state()
+        if self.undo_stack[-1] != current_actual_state:
+            self.undo_stack.append(current_actual_state)
+            self.redo_stack.clear()
+        if len(self.undo_stack) > 1:
             current_state = self.undo_stack.pop()
             self.redo_stack.append(current_state)
             previous_state = self.undo_stack[-1]
@@ -2291,7 +2402,60 @@ class AcousticStudioMain(QMainWindow):
 
 
 
+    def draw_ghost_plane(self, axis_name, offset):
+        if not self.show_field_btn.isChecked() or not self.transducer_actors: return
+        import numpy as np
+        import pyvista as pv
+        
+        tx_centers = np.array([a.center for a in self.transducer_actors])
+        min_x, max_x = np.min(tx_centers[:, 0]), np.max(tx_centers[:, 0])
+        min_y, max_y = np.min(tx_centers[:, 1]), np.max(tx_centers[:, 1])
+        min_z, max_z = np.min(tx_centers[:, 2]), np.max(tx_centers[:, 2])
+        
+        pad = 30.0
+        bx_min, bx_max = min_x - pad, max_x + pad
+        by_min, by_max = min_y - pad, max_y + pad
+        bz_min, bz_max = min_z - pad, max_z + pad
+        if bx_max - bx_min < 50: bx_min -= 25; bx_max += 25
+        if by_max - by_min < 50: by_min -= 25; by_max += 25
+        if bz_max - bz_min < 50: bz_min -= 25; bz_max += 25
+        
+        cx, cy, cz = (bx_min+bx_max)/2, (by_min+by_max)/2, (bz_min+bz_max)/2
+        wx, wy, wz = bx_max-bx_min, by_max-by_min, bz_max-bz_min
+        
+        if axis_name == 'xz': center, d, i, j = (cx, offset, cz), (0,1,0), wx, wz
+        elif axis_name == 'yz': center, d, i, j = (offset, cy, cz), (1,0,0), wy, wz
+        else: center, d, i, j = (cx, cy, offset), (0,0,1), wx, wy
+            
+        plane = pv.Plane(center=center, direction=d, i_size=i, j_size=j)
+        
+        if not hasattr(self, '_ghost_actors'):
+            self._ghost_actors = {}
+            
+        if axis_name not in self._ghost_actors:
+            plane = pv.Plane(center=(0,0,0), direction=d, i_size=i, j_size=j)
+            act = self.plotter.add_mesh(plane, color='white', opacity=0.4, show_edges=True, name=f'ghost_{axis_name}')
+            self._ghost_actors[axis_name] = act
+        else:
+            plane = pv.Plane(center=center, direction=d, i_size=i, j_size=j)
+            act = self.plotter.add_mesh(plane, color='white', opacity=0.4, show_edges=True, name=f'ghost_{axis_name}')
+            self._ghost_actors[axis_name] = act
+            
+        # Hide ONLY the active plane being moved
+        axis_idx_map = {'xz': '0', 'yz': '1', 'xy': '2'}
+        moving_key = axis_idx_map[axis_name]
+        
+        if hasattr(self, '_cached_field_grids') and moving_key in self._cached_field_grids:
+            _, act = self._cached_field_grids[moving_key]
+            act.SetVisibility(False)
+            
+        self.plotter.render()
+
     def update_field_slice(self, *args):
+        if hasattr(self, '_ghost_actors'):
+            for act in self._ghost_actors.values():
+                act.SetVisibility(False)
+            
         if not hasattr(self, '_cached_field_grids'):
             self._cached_field_grids = {}
 
@@ -2336,7 +2500,7 @@ class AcousticStudioMain(QMainWindow):
         active_plane_keys = set()
         
         for plane_idx, offset in planes_to_draw:
-            cache_key = f'{plane_idx}_{offset}'
+            cache_key = str(plane_idx)
             active_plane_keys.add(cache_key)
             
             if plane_idx == 0:
@@ -2371,13 +2535,14 @@ class AcousticStudioMain(QMainWindow):
             import pyvista as pv
             if cache_key in self._cached_field_grids:
                 grid, actor = self._cached_field_grids[cache_key]
+                grid.points = pts
                 grid.point_data['Pressure'][:] = scalar_data
-                # To change cmap dynamically in PyVista, we re-add the mesh with the same name
                 actor = self.plotter.add_mesh(
                     grid, scalars='Pressure', cmap=cmap, opacity=1.0,
                     show_scalar_bar=False, clim=[p_min, p_max],
-                    reset_camera=False, name=cache_key
+                    reset_camera=False, name=f'field_{cache_key}'
                 )
+                actor.SetVisibility(True)
                 self._cached_field_grids[cache_key] = (grid, actor)
             else:
                 grid = pv.StructuredGrid()
@@ -2387,10 +2552,8 @@ class AcousticStudioMain(QMainWindow):
                 actor = self.plotter.add_mesh(
                     grid, scalars='Pressure', cmap=cmap, opacity=1.0,
                     show_scalar_bar=False, clim=[p_min, p_max],
-                    reset_camera=False, name=cache_key
+                    reset_camera=False, name=f'field_{cache_key}'
                 )
-                self.field_actors.append(actor)
-                self._cached_field_grids[cache_key] = (grid, actor)
                 self.field_actors.append(actor)
                 self._cached_field_grids[cache_key] = (grid, actor)
 
