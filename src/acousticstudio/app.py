@@ -379,11 +379,13 @@ class AcousticStudioMain(QMainWindow):
         
         save_action = QAction("저장 (Save)", self)
         save_action.setShortcut("Ctrl+S")
+        save_action.setShortcutContext(Qt.ApplicationShortcut)
         save_action.triggered.connect(self.save_project)
         file_menu.addAction(save_action)
         
         save_as_action = QAction("다른 이름으로 저장 (Save As...)", self)
         save_as_action.setShortcut("Ctrl+Shift+S")
+        save_as_action.setShortcutContext(Qt.ApplicationShortcut)
         save_as_action.triggered.connect(self.save_project_as)
         file_menu.addAction(save_as_action)
         
@@ -396,11 +398,14 @@ class AcousticStudioMain(QMainWindow):
         
         undo_action = QAction("되돌리기 (Undo)", self)
         undo_action.setShortcut("Ctrl+Z")
+        from PySide6.QtCore import Qt
+        undo_action.setShortcutContext(Qt.ApplicationShortcut)
         undo_action.triggered.connect(self.undo)
         edit_menu.addAction(undo_action)
         
         redo_action = QAction("다시 실행 (Redo)", self)
         redo_action.setShortcut("Ctrl+Y")
+        redo_action.setShortcutContext(Qt.ApplicationShortcut)
         redo_action.triggered.connect(self.redo)
         edit_menu.addAction(redo_action)
         
@@ -777,7 +782,8 @@ class AcousticStudioMain(QMainWindow):
         points_layout.addLayout(size_layout)
         
         self.points_list = QListWidget()
-        self.points_list.setMaximumHeight(300)
+        self.points_list.setMinimumHeight(200)
+        self.points_list.setMaximumHeight(600)
 
 
         self.points_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
