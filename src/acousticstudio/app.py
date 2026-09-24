@@ -374,6 +374,7 @@ class AcousticStudioMain(QMainWindow):
 
         # File Menu
         from PySide6.QtGui import QAction
+        from PySide6.QtCore import Qt
         menubar = self.menuBar()
         file_menu = menubar.addMenu("파일 (File)")
         
