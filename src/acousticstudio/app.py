@@ -1649,11 +1649,15 @@ class AcousticStudioMain(QMainWindow):
         data['point_size'] = self.point_size_spin.value() if hasattr(self, 'point_size_spin') else 5.0
         data['prop_radius'] = self.prop_radius_spin.value() if hasattr(self, 'prop_radius_spin') else 5.0
         
-        # Targets
+        # Targets (Save true updated world position)
         data['control_points'] = []
         for pt in getattr(self, 'control_points', []):
+            try:
+                center = self._get_actor_world_center(pt['actor'])
+            except:
+                center = pt['actor'].center
             data['control_points'].append({
-                'name': pt['name'], 'x': pt['x'], 'y': pt['y'], 'z': pt['z'], 'radius': pt['radius']
+                'name': pt['name'], 'x': float(center[0]), 'y': float(center[1]), 'z': float(center[2]), 'radius': pt['radius']
             })
             
         # Transducers Matrices
@@ -1671,10 +1675,7 @@ class AcousticStudioMain(QMainWindow):
     def set_state(self, data):
         import pyvista as pv
         import vtk
-        
-        # Clear view
-        self.clear_view()
-        
+
         # Array UI Params
         if 'transducer_type' in data and hasattr(self, 'transducer_type_cb'):
             idx = self.transducer_type_cb.findText(data['transducer_type'])
@@ -1683,7 +1684,7 @@ class AcousticStudioMain(QMainWindow):
             idx = self.array_type_cb.findText(data['array_type'])
             if idx >= 0: self.array_type_cb.setCurrentIndex(idx)
         if 'spacing' in data and hasattr(self, 'spacing_spin'): self.spacing_spin.setValue(data['spacing'])
-            
+
         # Restore parameters
         if 'trap_type' in data:
             idx = self.trap_type_cb.findText(data['trap_type'])
@@ -1692,60 +1693,107 @@ class AcousticStudioMain(QMainWindow):
         if 'grid_y' in data: self.grid_y_spin.setValue(data['grid_y'])
         if 'point_size' in data: self.point_size_spin.setValue(data['point_size'])
         if 'prop_radius' in data: self.prop_radius_spin.setValue(data['prop_radius'])
-        
-        # Recreate Array directly from saved matrices
+
+        # Optimize Transducer update
         tx_data = data.get('transducers', [])
         if tx_data:
-            sensor_type = data.get('transducer_type', self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else '')
-            if "10mm" in sensor_type:
-                r_wide, r_narrow, height = 5.0, 3.5, 4.0
-                color = "lightblue"
-                base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
-                self._current_amplitude = 1.0
-            elif "16mm" in sensor_type:
-                r_wide, r_narrow, height = 8.0, 5.0, 6.0
-                color = "orange"
-                base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
-                self._current_amplitude = 2.0
-            else: # Langevin
-                r_wide, r_narrow, height = 25.0, 15.0, 40.0
-                color = "silver"
-                base_mesh = self.make_langevin_mesh(height)
-                self._current_amplitude = 20.0
+            needs_rebuild = len(tx_data) != len(self.transducer_actors)
+            
+            if needs_rebuild:
+                for actor in self.transducer_actors:
+                    if actor in self.selected_actors: self.selected_actors.remove(actor)
+                    self.plotter.remove_actor(actor)
+                self.transducer_actors.clear()
                 
-            for tx in tx_data:
-                matrix_vals = tx.get('matrix')
-                if matrix_vals:
-                    mat = vtk.vtkMatrix4x4()
-                    for r in range(4):
-                        for c in range(4):
-                            mat.SetElement(r, c, matrix_vals[r*4 + c])
-                    actor = self.plotter.add_mesh(base_mesh, color=color, show_edges=False)
-                    actor.SetUserMatrix(mat)
-                    actor._initial_matrix = mat
-                    actor._original_color = color
-                    actor._amplitude = self._current_amplitude
-                    self.transducer_actors.append(actor)
-        self.plotter.reset_camera()
+                sensor_type = data.get('transducer_type', self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else '')
+                if "10mm" in sensor_type:
+                    r_wide, r_narrow, height = 5.0, 3.5, 4.0
+                    color = "lightblue"
+                    base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+                    self._current_amplitude = 1.0
+                elif "16mm" in sensor_type:
+                    r_wide, r_narrow, height = 8.0, 5.0, 6.0
+                    color = "orange"
+                    base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+                    self._current_amplitude = 2.0
+                else: # Langevin
+                    r_wide, r_narrow, height = 25.0, 15.0, 40.0
+                    color = "silver"
+                    base_mesh = self.make_langevin_mesh(height)
+                    self._current_amplitude = 20.0
                     
-        # Restore Targets
+                for tx in tx_data:
+                    matrix_vals = tx.get('matrix')
+                    if matrix_vals:
+                        mat = vtk.vtkMatrix4x4()
+                        for r in range(4):
+                            for c in range(4):
+                                mat.SetElement(r, c, matrix_vals[r*4 + c])
+                        actor = self.plotter.add_mesh(base_mesh, color=color, show_edges=False)
+                        actor.SetUserMatrix(mat)
+                        actor._initial_matrix = mat
+                        actor._original_color = color
+                        actor._amplitude = self._current_amplitude
+                        self.transducer_actors.append(actor)
+            else:
+                # Optimized fast path! Just update matrices!
+                for i, tx in enumerate(tx_data):
+                    matrix_vals = tx.get('matrix')
+                    if matrix_vals:
+                        mat = vtk.vtkMatrix4x4()
+                        for r in range(4):
+                            for c in range(4):
+                                mat.SetElement(r, c, matrix_vals[r*4 + c])
+                        self.transducer_actors[i].SetUserMatrix(mat)
+
+        # Optimize Control Points update
         from PySide6.QtCore import Qt
         from PySide6.QtWidgets import QListWidgetItem
-        for pt in data.get('control_points', []):
-            idx = len(self.control_points)
-            name = pt.get('name', f"Point {idx+1}")
-            x, y, z = pt.get('x',0), pt.get('y',0), pt.get('z',50)
-            r = pt.get('radius', 5.0)
-            sphere = pv.Sphere(radius=r, center=(x, y, z))
-            actor = self.plotter.add_mesh(sphere, color="green", show_edges=False)
-            actor._original_color = "green"
-            self.control_points.append({"name": name, "actor": actor, "x": x, "y": y, "z": z, "radius": r})
+        pt_data = data.get('control_points', [])
+        
+        needs_pt_rebuild = len(pt_data) != len(self.control_points)
+        if needs_pt_rebuild:
+            for p in self.control_points:
+                if p["actor"] in self.selected_actors: self.selected_actors.remove(p["actor"])
+                self.plotter.remove_actor(p["actor"])
+            self.control_points.clear()
+            self.points_list.clear()
             
-            item = QListWidgetItem(name)
-            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            item.setCheckState(Qt.Checked)
-            self.points_list.addItem(item)
-            
+            for pt in pt_data:
+                idx = len(self.control_points)
+                name = pt.get('name', f"Point {idx+1}")
+                x, y, z = pt.get('x',0), pt.get('y',0), pt.get('z',50)
+                r = pt.get('radius', 5.0)
+                sphere = pv.Sphere(radius=r, center=(0, 0, 0)) # Base at origin
+                actor = self.plotter.add_mesh(sphere, color="green", show_edges=False)
+                # Translate it to x,y,z using matrix so Gizmo works properly
+                mat = vtk.vtkMatrix4x4()
+                mat.Identity()
+                mat.SetElement(0, 3, x)
+                mat.SetElement(1, 3, y)
+                mat.SetElement(2, 3, z)
+                actor.SetUserMatrix(mat)
+                
+                actor._original_color = "green"
+                self.control_points.append({"name": name, "actor": actor, "x": x, "y": y, "z": z, "radius": r})
+                
+                item = QListWidgetItem(name)
+                item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+                item.setCheckState(Qt.Checked)
+                self.points_list.addItem(item)
+        else:
+            # Optimized fast path!
+            for i, pt in enumerate(pt_data):
+                x, y, z = pt.get('x',0), pt.get('y',0), pt.get('z',50)
+                actor = self.control_points[i]['actor']
+                mat = vtk.vtkMatrix4x4()
+                mat.Identity()
+                mat.SetElement(0, 3, x)
+                mat.SetElement(1, 3, y)
+                mat.SetElement(2, 3, z)
+                actor.SetUserMatrix(mat)
+                
+        # self.plotter.reset_camera() # Do not reset camera on undo, it's annoying!
         self.simulate_colors()
 
     def save_project(self):
