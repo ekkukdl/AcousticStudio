@@ -2027,21 +2027,27 @@ class AcousticStudioMain(QMainWindow):
             tx_y = np.ascontiguousarray(tx_centers[:, 1], dtype=np.float64)
             tx_z = np.ascontiguousarray(tx_centers[:, 2], dtype=np.float64)
             
-            pressure_mag = calculate_field_slice_sonic(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
-            if pressure_mag is None:
-                diff = pts[:, np.newaxis, :] - tx_centers[np.newaxis, :, :]
-                dist = np.linalg.norm(diff, axis=-1)
-                dist[dist < 1e-3] = 1e-3
-                complex_p = np.sum((tx_amplitudes / dist) * np.exp(1j * (k * dist + tx_phases)), axis=1)
-                pressure_mag = np.abs(complex_p)
+            is_phase_mode = hasattr(self, 'field_mode_combo') and self.field_mode_combo.currentIndex() == 1
+            
+            # Use Numba to calculate complex field
+            real_p, imag_p = calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
+            
+            if is_phase_mode:
+                scalar_data = np.arctan2(imag_p, real_p)
+                p_min, p_max = -np.pi, np.pi
+                cmap = 'hsv'
+            else:
+                scalar_data = np.sqrt(real_p**2 + imag_p**2)
+                p_min, p_max = 0, np.percentile(scalar_data, 99.5)
+                cmap = 'hot'
 
-            p_max = np.percentile(pressure_mag, 99.5)
             
             if cache_key in self._cached_field_grids:
                 grid, actor = self._cached_field_grids[cache_key]
                 # In-place scalar update
-                grid.point_data['Pressure'][:] = pressure_mag
-                actor.mapper.scalar_range = [0, p_max]
+                grid.point_data['Pressure'][:] = scalar_data
+                actor.mapper.scalar_range = [p_min, p_max]
+                actor.mapper.lookup_table.cmap = cmap
                 actor.SetVisibility(True)
             else:
                 import pyvista as pv
