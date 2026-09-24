@@ -360,6 +360,22 @@ class AcousticStudioMain(QMainWindow):
 
         self.resize(1400, 950)
 
+        # File Menu
+        from PySide6.QtGui import QAction
+        menubar = self.menuBar()
+        file_menu = menubar.addMenu("파일 (File)")
+        
+        save_action = QAction("프로젝트 저장 (Save Project)", self)
+        save_action.setShortcut("Ctrl+S")
+        save_action.triggered.connect(self.save_project)
+        file_menu.addAction(save_action)
+        
+        load_action = QAction("프로젝트 불러오기 (Load Project)", self)
+        load_action.setShortcut("Ctrl+O")
+        load_action.triggered.connect(self.load_project)
+        file_menu.addAction(load_action)
+
+
         
 
         main_widget = QWidget()
@@ -1567,6 +1583,119 @@ class AcousticStudioMain(QMainWindow):
             self.plotter.render()
 
 
+
+
+    def save_project(self):
+        from PySide6.QtWidgets import QFileDialog
+        import json
+        filename, _ = QFileDialog.getSaveFileName(self, "프로젝트 저장", "", "Acoustic Project (*.json)")
+        if not filename: return
+        data = {}
+        
+        # Array UI Params
+        data['transducer_type'] = self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else ""
+        data['array_type'] = self.array_type_cb.currentText() if hasattr(self, 'array_type_cb') else ""
+        data['spacing'] = self.spacing_spin.value() if hasattr(self, 'spacing_spin') else 10.5
+        
+        # Field UI Params
+        data['trap_type'] = self.trap_type_cb.currentText()
+        data['freq'] = self.freq_spin.value()
+        data['speed'] = self.speed_spin.value()
+        data['z_offset'] = self.z_offset_spin.value()
+        data['grid_x'] = self.grid_x_spin.value()
+        data['grid_y'] = self.grid_y_spin.value()
+        data['point_size'] = self.point_size_spin.value()
+        data['prop_radius'] = self.prop_radius_spin.value()
+        
+        # Targets
+        data['control_points'] = []
+        for pt in self.control_points:
+            data['control_points'].append({
+                'name': pt['name'], 'x': pt['x'], 'y': pt['y'], 'z': pt['z'], 'radius': pt['radius']
+            })
+            
+        # Transducers Matrices
+        data['transducers'] = []
+        for actor in getattr(self, 'transducer_actors', []):
+            mat = actor.GetUserMatrix()
+            matrix_vals = []
+            if mat:
+                for r in range(4):
+                    for c in range(4):
+                        matrix_vals.append(mat.GetElement(r, c))
+            data['transducers'].append({'matrix': matrix_vals})
+            
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+
+    def load_project(self):
+        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        import json
+        import pyvista as pv
+        import vtk
+        filename, _ = QFileDialog.getOpenFileName(self, "프로젝트 불러오기", "", "Acoustic Project (*.json)")
+        if not filename: return
+        
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except Exception as e:
+            QMessageBox.critical(self, "오류", f"파일을 읽는 중 오류가 발생했습니다: {str(e)}")
+            return
+            
+        # Clear view
+        self.clear_view()
+        
+        # Array UI Params
+        if 'transducer_type' in data and hasattr(self, 'transducer_type_cb'):
+            idx = self.transducer_type_cb.findText(data['transducer_type'])
+            if idx >= 0: self.transducer_type_cb.setCurrentIndex(idx)
+        if 'array_type' in data and hasattr(self, 'array_type_cb'):
+            idx = self.array_type_cb.findText(data['array_type'])
+            if idx >= 0: self.array_type_cb.setCurrentIndex(idx)
+        if 'spacing' in data and hasattr(self, 'spacing_spin'): self.spacing_spin.setValue(data['spacing'])
+            
+        # Restore parameters
+        if 'trap_type' in data:
+            idx = self.trap_type_cb.findText(data['trap_type'])
+            if idx >= 0: self.trap_type_cb.setCurrentIndex(idx)
+        if 'freq' in data: self.freq_spin.setValue(data['freq'])
+        if 'speed' in data: self.speed_spin.setValue(data['speed'])
+        if 'z_offset' in data: self.z_offset_spin.setValue(data['z_offset'])
+        if 'grid_x' in data: self.grid_x_spin.setValue(data['grid_x'])
+        if 'grid_y' in data: self.grid_y_spin.setValue(data['grid_y'])
+        if 'point_size' in data: self.point_size_spin.setValue(data['point_size'])
+        if 'prop_radius' in data: self.prop_radius_spin.setValue(data['prop_radius'])
+        
+        # Recreate Array
+        self.generate_array()
+        
+        # Restore Transducers Matrices
+        tx_data = data.get('transducers', [])
+        if tx_data and len(tx_data) == len(self.transducer_actors):
+            for i, tx in enumerate(tx_data):
+                actor = self.transducer_actors[i]
+                matrix_vals = tx.get('matrix')
+                if matrix_vals:
+                    mat = vtk.vtkMatrix4x4()
+                    for r in range(4):
+                        for c in range(4):
+                            mat.SetElement(r, c, matrix_vals[r*4 + c])
+                    actor.SetUserMatrix(mat)
+                    
+        # Restore Targets
+        for pt in data.get('control_points', []):
+            idx = len(self.control_points)
+            name = pt.get('name', f"Point {idx+1}")
+            x, y, z = pt.get('x',0), pt.get('y',0), pt.get('z',50)
+            r = pt.get('radius', 5.0)
+            sphere = pv.Sphere(radius=r, center=(x, y, z))
+            actor = self.plotter.add_mesh(sphere, color="green", show_edges=False)
+            actor._original_color = "green"
+            self.control_points.append({"name": name, "actor": actor, "x": x, "y": y, "z": z, "radius": r})
+            
+        self.update_points_list()
+        self.simulate_colors()
 
     def clear_view(self):
 
