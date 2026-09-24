@@ -1807,6 +1807,21 @@ class AcousticStudioMain(QMainWindow):
 
 
     def simulate_colors(self):
+        import time
+        current_time = time.time()
+        if hasattr(self, '_last_sim_time') and (current_time - self._last_sim_time) < 0.016:
+            if not hasattr(self, '_sim_timer'):
+                from PySide6.QtCore import QTimer
+                self._sim_timer = QTimer()
+                self._sim_timer.setSingleShot(True)
+                self._sim_timer.timeout.connect(self.simulate_colors)
+            if not self._sim_timer.isActive():
+                self._sim_timer.start(16)
+            return
+        self._last_sim_time = current_time
+        if hasattr(self, '_sim_timer'):
+            self._sim_timer.stop()
+
 
         if not self.transducer_actors:
 
