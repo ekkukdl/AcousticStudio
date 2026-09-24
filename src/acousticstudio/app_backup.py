@@ -1947,169 +1947,104 @@ class AcousticStudioMain(QMainWindow):
 
 
     def update_field_slice(self, *args):
-
-        # 1. 기존 ?�더링된 ?�라?�스 모두 ?�거
-
-        for a in self.field_actors:
-
-            self.plotter.remove_actor(a)
-
-        self.field_actors.clear()
-
-        
+        if not hasattr(self, '_cached_field_grids'):
+            self._cached_field_grids = {}
 
         if not self.show_field_btn.isChecked() or not self.transducer_actors:
-
+            for a in self.field_actors:
+                a.SetVisibility(False)
             self.plotter.render()
-
             return
 
-            
-
-        # 2. ?�수 �??�랜?��????�보 준�?        
         c = 343000.0
-
         f = 40000.0
-
         k = 2.0 * np.pi / (c / f)
-
         
-
         tx_centers = np.array([a.center for a in self.transducer_actors])
         tx_phases = np.array([getattr(a, '_phase', 0.0) for a in self.transducer_actors])
         tx_amplitudes = np.array([getattr(a, '_amplitude', 1.0) for a in self.transducer_actors])
-
         
-
-        # ?�적 바운??박스 계산 (배열 ?�기???�백 30mm 추�?)
-
         min_x, max_x = np.min(tx_centers[:, 0]), np.max(tx_centers[:, 0])
-
         min_y, max_y = np.min(tx_centers[:, 1]), np.max(tx_centers[:, 1])
-
         min_z, max_z = np.min(tx_centers[:, 2]), np.max(tx_centers[:, 2])
-
         
-
         pad = 30.0
-
         bx_min, bx_max = min_x - pad, max_x + pad
-
         by_min, by_max = min_y - pad, max_y + pad
-
         bz_min, bz_max = min_z - pad, max_z + pad
-
         
-
-        # 배열???��? ?�면??경우 최소 ?�각???�역(50mm) 보장
-
         if bx_max - bx_min < 50: bx_min -= 25; bx_max += 25
-
         if by_max - by_min < 50: by_min -= 25; by_max += 25
-
         if bz_max - bz_min < 50: bz_min -= 25; bz_max += 25
-
         
-
         res = 120
-
         x_vals = np.linspace(bx_min, bx_max, res)
-
         y_vals = np.linspace(by_min, by_max, res)
-
         z_vals = np.linspace(bz_min, bz_max, res)
-
         
-
         planes_to_draw = []
+        if self.xz_check.isChecked(): planes_to_draw.append((0, self.xz_slider.value()))
+        if self.yz_check.isChecked(): planes_to_draw.append((1, self.yz_slider.value()))
+        if self.xy_check.isChecked(): planes_to_draw.append((2, self.xy_slider.value()))
 
-        if self.xz_check.isChecked():
-
-            planes_to_draw.append((0, self.xz_slider.value()))
-
-        if self.yz_check.isChecked():
-
-            planes_to_draw.append((1, self.yz_slider.value()))
-
-        if self.xy_check.isChecked():
-
-            planes_to_draw.append((2, self.xy_slider.value()))
-
-            
-
+        # Keep track of active planes to hide unused ones
+        active_plane_keys = set()
+        
         for plane_idx, offset in planes_to_draw:
-
-            if plane_idx == 0: # XZ ?�면 (Y=offset)
-
+            cache_key = f'{plane_idx}_{offset}'
+            active_plane_keys.add(cache_key)
+            
+            if plane_idx == 0:
                 X, Z = np.meshgrid(x_vals, z_vals)
-
                 pts = np.c_[X.ravel(), np.full(res*res, offset), Z.ravel()]
-
-            elif plane_idx == 1: # YZ ?�면 (X=offset)
-
+            elif plane_idx == 1:
                 Y, Z = np.meshgrid(y_vals, z_vals)
-
                 pts = np.c_[np.full(res*res, offset), Y.ravel(), Z.ravel()]
-
-            else: # XY ?�면 (Z=offset)
-
+            else:
                 X, Y = np.meshgrid(x_vals, y_vals)
-
                 pts = np.c_[X.ravel(), Y.ravel(), np.full(res*res, offset)]
-
                 
-
-            # ?�압 계산 (Broadcasting)
-
-            diff = pts[:, np.newaxis, :] - tx_centers[np.newaxis, :, :]
-
-            dist = np.linalg.norm(diff, axis=-1)
-
-            dist[dist < 1e-3] = 1e-3
-
+            from acousticstudio.sonic_wrapper import calculate_field_slice_sonic
+            pts_x = np.ascontiguousarray(pts[:, 0], dtype=np.float64)
+            pts_y = np.ascontiguousarray(pts[:, 1], dtype=np.float64)
+            pts_z = np.ascontiguousarray(pts[:, 2], dtype=np.float64)
+            tx_x = np.ascontiguousarray(tx_centers[:, 0], dtype=np.float64)
+            tx_y = np.ascontiguousarray(tx_centers[:, 1], dtype=np.float64)
+            tx_z = np.ascontiguousarray(tx_centers[:, 2], dtype=np.float64)
             
-
-            complex_p = np.sum((tx_amplitudes / dist) * np.exp(1j * (k * dist + tx_phases)), axis=1)
-
-            pressure_mag = np.abs(complex_p)
-
-            
-
-            grid = pv.StructuredGrid()
-
-            grid.points = pts
-
-            grid.dimensions = [res, res, 1]
-
-            grid.point_data["Pressure"] = pressure_mag
-
-            
-
-            # ?�압 ?�각??개선: 
-
-            # ?�랜?��????�면 근처??거리가 0??가까워 ?�력??무한?�(?�이??�?치솟?�니??
-
-            # ???�문???�제 ?��?초점)???�압???��??�으�??�무 ??�� 보여 ?�면???�둡�??�옵?�다.
-
-            # 99.5% 백분?�수�?최�?�?clim)?�로 지?�하??초점 부근이 ?�주 밝게 빛나?�록 ?��?Contrast)�??�???�어?�립?�다.
+            pressure_mag = calculate_field_slice_sonic(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
+            if pressure_mag is None:
+                diff = pts[:, np.newaxis, :] - tx_centers[np.newaxis, :, :]
+                dist = np.linalg.norm(diff, axis=-1)
+                dist[dist < 1e-3] = 1e-3
+                complex_p = np.sum((tx_amplitudes / dist) * np.exp(1j * (k * dist + tx_phases)), axis=1)
+                pressure_mag = np.abs(complex_p)
 
             p_max = np.percentile(pressure_mag, 99.5)
-
             
+            if cache_key in self._cached_field_grids:
+                grid, actor = self._cached_field_grids[cache_key]
+                # In-place scalar update
+                grid.point_data['Pressure'][:] = pressure_mag
+                actor.mapper.scalar_range = [0, p_max]
+                actor.SetVisibility(True)
+            else:
+                import pyvista as pv
+                grid = pv.StructuredGrid()
+                grid.points = pts
+                grid.dimensions = [res, res, 1]
+                grid.point_data['Pressure'] = pressure_mag
+                actor = self.plotter.add_mesh(
+                    grid, scalars='Pressure', cmap='hot', opacity=1.0, 
+                    show_scalar_bar=False, clim=[0, p_max],
+                    reset_camera=False
+                )
+                self.field_actors.append(actor)
+                self._cached_field_grids[cache_key] = (grid, actor)
 
-            # 불투명도�?1.0(?�전 불투�??�로 ?�정?�여 ?�본 Ultraino?� ?�일???�렷??�??�공
-
-            actor = self.plotter.add_mesh(
-                grid, scalars="Pressure", cmap="hot", opacity=1.0, 
-                show_scalar_bar=False, clim=[0, p_max],
-                reset_camera=False
-            )
-
-            self.field_actors.append(actor)
-
-            
-
+        # Hide actors for planes no longer active
+        for key, (grid, actor) in self._cached_field_grids.items():
+            if key not in active_plane_keys:
+                actor.SetVisibility(False)
+                
         self.plotter.render()
-
-
-
