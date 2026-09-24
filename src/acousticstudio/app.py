@@ -1599,9 +1599,6 @@ class AcousticStudioMain(QMainWindow):
         
         # Field UI Params
         data['trap_type'] = self.trap_type_cb.currentText()
-        data['freq'] = self.freq_spin.value()
-        data['speed'] = self.speed_spin.value()
-        data['z_offset'] = self.z_offset_spin.value()
         data['grid_x'] = self.grid_x_spin.value()
         data['grid_y'] = self.grid_y_spin.value()
         data['point_size'] = self.point_size_spin.value()
@@ -1659,9 +1656,6 @@ class AcousticStudioMain(QMainWindow):
         if 'trap_type' in data:
             idx = self.trap_type_cb.findText(data['trap_type'])
             if idx >= 0: self.trap_type_cb.setCurrentIndex(idx)
-        if 'freq' in data: self.freq_spin.setValue(data['freq'])
-        if 'speed' in data: self.speed_spin.setValue(data['speed'])
-        if 'z_offset' in data: self.z_offset_spin.setValue(data['z_offset'])
         if 'grid_x' in data: self.grid_x_spin.setValue(data['grid_x'])
         if 'grid_y' in data: self.grid_y_spin.setValue(data['grid_y'])
         if 'point_size' in data: self.point_size_spin.setValue(data['point_size'])
@@ -1694,7 +1688,10 @@ class AcousticStudioMain(QMainWindow):
             actor._original_color = "green"
             self.control_points.append({"name": name, "actor": actor, "x": x, "y": y, "z": z, "radius": r})
             
-        self.update_points_list()
+        from PySide6.QtWidgets import QListWidgetItem
+        for pt in self.control_points:
+            item = QListWidgetItem(pt['name'])
+            self.points_list.addItem(item)
         self.simulate_colors()
 
     def clear_view(self):
