@@ -33,6 +33,9 @@ class MouseEventFilter(QObject):
 
         super().__init__()
 
+        self.no_scroll_filter = NoScrollEventFilter(self)
+        QApplication.instance().installEventFilter(self.no_scroll_filter)
+
         self.main = main_window
 
         self.rubber_band = QRubberBand(QRubberBand.Rectangle, self.main.plotter.interactor)
@@ -304,11 +307,28 @@ class MouseEventFilter(QObject):
 
         return False
 
+
+class NoScrollEventFilter(QObject):
+    def eventFilter(self, obj, event):
+        from PySide6.QtCore import QEvent
+        if event.type() == QEvent.Wheel:
+            from PySide6.QtWidgets import QAbstractSpinBox, QComboBox, QApplication
+            if isinstance(obj, (QAbstractSpinBox, QComboBox)):
+                event.ignore()
+                parent = obj.parent()
+                if parent:
+                    QApplication.sendEvent(parent, event)
+                return True
+        return super().eventFilter(obj, event)
+
 class AcousticStudioMain(QMainWindow):
 
     def __init__(self):
 
         super().__init__()
+
+        self.no_scroll_filter = NoScrollEventFilter(self)
+        QApplication.instance().installEventFilter(self.no_scroll_filter)
 
         self.setWindowTitle("Acoustic Control Studio - PyVista 3D Viewer")
 
@@ -320,7 +340,43 @@ class AcousticStudioMain(QMainWindow):
 
         self.setCentralWidget(main_widget)
 
-        main_layout = QHBoxLayout(main_widget)
+        main_layout = QVBoxLayout(main_widget)
+
+        # --- Hardware Connection (Top Bar) ---
+        top_bar = QWidget()
+        top_bar.setMaximumHeight(50)
+        top_layout = QHBoxLayout(top_bar)
+        top_layout.setContentsMargins(10, 5, 10, 5)
+
+        import serial.tools.list_ports
+        self.serial_port_cb = QComboBox()
+        self.btn_refresh_ports = QPushButton("↻")
+        self.btn_refresh_ports.setFixedWidth(30)
+        self.btn_refresh_ports.clicked.connect(self.refresh_ports)
+        
+        self.serial_baud_cb = QComboBox()
+        baud_rates = ["9600", "19200", "38400", "57600", "115200", "230400", "250000", "500000", "1000000"]
+        self.serial_baud_cb.addItems(baud_rates)
+        self.serial_baud_cb.setCurrentText("115200")
+        
+        self.btn_connect_hw = QPushButton("Connect (연결)")
+        self.btn_send_phase = QPushButton("Send Phase Data")
+        self.btn_send_phase.setEnabled(False)
+        self.btn_connect_hw.clicked.connect(self.connect_hw)
+        self.btn_send_phase.clicked.connect(self.send_phase_data)
+
+        self.refresh_ports()
+
+        top_layout.addWidget(QLabel("하드웨어 제어 (USB Port):"))
+        top_layout.addWidget(self.serial_port_cb)
+        top_layout.addWidget(self.btn_refresh_ports)
+        top_layout.addWidget(QLabel("Baud Rate:"))
+        top_layout.addWidget(self.serial_baud_cb)
+        top_layout.addWidget(self.btn_connect_hw)
+        top_layout.addWidget(self.btn_send_phase)
+        top_layout.addStretch()
+
+        main_layout.addWidget(top_bar)
 
         
 
@@ -413,6 +469,8 @@ class AcousticStudioMain(QMainWindow):
         control_panel = QWidget()
         control_panel.setMinimumWidth(380)
         control_layout = QVBoxLayout(control_panel)
+        from PySide6.QtCore import Qt
+        control_layout.setAlignment(Qt.AlignTop)
         control_layout.setContentsMargins(5, 10, 15, 10)
 
         
@@ -632,6 +690,7 @@ class AcousticStudioMain(QMainWindow):
         points_layout.addLayout(size_layout)
         
         self.points_list = QListWidget()
+        self.points_list.setMaximumHeight(100)
 
 
         self.points_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -777,46 +836,8 @@ class AcousticStudioMain(QMainWindow):
         visual_group.setLayout(visual_layout)
 
         control_layout.addWidget(visual_group)
-
-        # --- 6. Hardware Connection ---
-        hw_group = QGroupBox("6. Hardware Connection (하드웨어 제어)")
-        hw_layout = QFormLayout()
-        import serial.tools.list_ports
-        
-        self.serial_port_cb = QComboBox()
-        self.btn_refresh_ports = QPushButton("↻")
-        self.btn_refresh_ports.setFixedWidth(30)
-        self.btn_refresh_ports.clicked.connect(self.refresh_ports)
-        
-        port_layout = QHBoxLayout()
-        port_layout.setContentsMargins(0,0,0,0)
-        port_layout.addWidget(self.serial_port_cb)
-        port_layout.addWidget(self.btn_refresh_ports)
-        
-        self.serial_baud_cb = QComboBox()
-        baud_rates = ["9600", "19200", "38400", "57600", "115200", "230400", "250000", "500000", "1000000"]
-        self.serial_baud_cb.addItems(baud_rates)
-        self.serial_baud_cb.setCurrentText("115200")
-        
-        self.btn_connect_hw = QPushButton("Connect (연결)")
-        self.btn_send_phase = QPushButton("Send Phase Data")
-        self.btn_send_phase.setEnabled(False)
-        
-        hw_layout.addRow("Port:", port_layout)
-        hw_layout.addRow("Baud Rate:", self.serial_baud_cb)
-        
-        self.refresh_ports()
-        
-        btn_hw_layout = QHBoxLayout()
-        btn_hw_layout.addWidget(self.btn_connect_hw)
-        btn_hw_layout.addWidget(self.btn_send_phase)
-        hw_layout.addRow(btn_hw_layout)
-        
-        hw_group.setLayout(hw_layout)
-        control_layout.addWidget(hw_group)
-
-        self.btn_connect_hw.clicked.connect(self.connect_hw)
-        self.btn_send_phase.clicked.connect(self.send_phase_data)
+        control_layout.addStretch(1)
+        # Hardware UI moved to top bar
 
 
         
