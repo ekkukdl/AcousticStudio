@@ -331,6 +331,12 @@ class MouseEventFilter(QObject):
                     style.OnLeftButtonUp()
                 return True
 
+        
+        if event.type() == QEvent.MouseButtonRelease:
+            if event.button() == Qt.LeftButton:
+                if hasattr(self.main, 'push_state'):
+                    # To avoid spamming, only push if state changed. push_state already checks this.
+                    self.main.push_state()
         return False
 
 
@@ -345,6 +351,12 @@ class WheelBlocker(QObject):
             # 스크롤바에 이벤트를 직접 전달하여 스크롤이 되게 함
             QApplication.sendEvent(self.scroll_area.verticalScrollBar(), event)
             return True # SpinBox/ComboBox가 이벤트를 처리하지 못하게 완전 차단
+        
+        if event.type() == QEvent.MouseButtonRelease:
+            if event.button() == Qt.LeftButton:
+                if hasattr(self.main, 'push_state'):
+                    # To avoid spamming, only push if state changed. push_state already checks this.
+                    self.main.push_state()
         return False
 
 class AcousticStudioMain(QMainWindow):
@@ -365,15 +377,36 @@ class AcousticStudioMain(QMainWindow):
         menubar = self.menuBar()
         file_menu = menubar.addMenu("파일 (File)")
         
-        save_action = QAction("프로젝트 저장 (Save Project)", self)
+        save_action = QAction("저장 (Save)", self)
         save_action.setShortcut("Ctrl+S")
         save_action.triggered.connect(self.save_project)
         file_menu.addAction(save_action)
         
-        load_action = QAction("프로젝트 불러오기 (Load Project)", self)
+        save_as_action = QAction("다른 이름으로 저장 (Save As...)", self)
+        save_as_action.setShortcut("Ctrl+Shift+S")
+        save_as_action.triggered.connect(self.save_project_as)
+        file_menu.addAction(save_as_action)
+        
+        load_action = QAction("불러오기 (Load)", self)
         load_action.setShortcut("Ctrl+O")
         load_action.triggered.connect(self.load_project)
         file_menu.addAction(load_action)
+        
+        edit_menu = menubar.addMenu("편집 (Edit)")
+        
+        undo_action = QAction("되돌리기 (Undo)", self)
+        undo_action.setShortcut("Ctrl+Z")
+        undo_action.triggered.connect(self.undo)
+        edit_menu.addAction(undo_action)
+        
+        redo_action = QAction("다시 실행 (Redo)", self)
+        redo_action.setShortcut("Ctrl+Y")
+        redo_action.triggered.connect(self.redo)
+        edit_menu.addAction(redo_action)
+        
+        # Initialize undo stack
+        self.push_state()
+
 
 
         
@@ -707,11 +740,11 @@ class AcousticStudioMain(QMainWindow):
 
         self.add_array_btn = QPushButton("배열 3D 뷰어에 생성하기")
 
-        self.add_array_btn.clicked.connect(self.generate_array)
+        self.add_array_btn.clicked.connect(self._hooked_generate_array)
 
         self.clear_btn = QPushButton("Clear All")
 
-        self.clear_btn.clicked.connect(self.clear_view)
+        self.clear_btn.clicked.connect(self._hooked_clear_view)
 
         
 
@@ -744,7 +777,7 @@ class AcousticStudioMain(QMainWindow):
         points_layout.addLayout(size_layout)
         
         self.points_list = QListWidget()
-        self.points_list.setMaximumHeight(100)
+        self.points_list.setMaximumHeight(300)
 
 
         self.points_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -759,7 +792,7 @@ class AcousticStudioMain(QMainWindow):
 
         self.add_pt_btn = QPushButton("Add Point")
 
-        self.add_pt_btn.clicked.connect(self.add_control_point)
+        self.add_pt_btn.clicked.connect(self._hooked_add_control_point)
 
         self.del_pt_btn = QPushButton("Delete Point")
 
@@ -1494,6 +1527,22 @@ class AcousticStudioMain(QMainWindow):
 
 
 
+
+    def _hooked_add_control_point(self):
+        self.add_control_point()
+        self.push_state()
+        
+    def _hooked_del_control_point(self):
+        self.del_control_point()
+        self.push_state()
+        
+    def _hooked_clear_view(self):
+        self.clear_view()
+        self.push_state()
+        
+    def _hooked_generate_array(self):
+        self.generate_array()
+        self.push_state()
     def add_control_point(self):
 
         idx = len(self.control_points)
@@ -1585,13 +1634,9 @@ class AcousticStudioMain(QMainWindow):
 
 
 
-    def save_project(self):
-        from PySide6.QtWidgets import QFileDialog
-        import json
-        filename, _ = QFileDialog.getSaveFileName(self, "프로젝트 저장", "", "Acoustic Project (*.json)")
-        if not filename: return
+
+    def get_state(self):
         data = {}
-        
         # Array UI Params
         data['transducer_type'] = self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else ""
         data['array_type'] = self.array_type_cb.currentText() if hasattr(self, 'array_type_cb') else ""
@@ -1621,25 +1666,12 @@ class AcousticStudioMain(QMainWindow):
                     for c in range(4):
                         matrix_vals.append(mat.GetElement(r, c))
             data['transducers'].append({'matrix': matrix_vals})
-            
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
+        return data
 
-    def load_project(self):
-        from PySide6.QtWidgets import QFileDialog, QMessageBox
-        import json
+    def set_state(self, data):
         import pyvista as pv
         import vtk
-        filename, _ = QFileDialog.getOpenFileName(self, "프로젝트 불러오기", "", "Acoustic Project (*.json)")
-        if not filename: return
         
-        try:
-            with open(filename, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-        except Exception as e:
-            QMessageBox.critical(self, "오류", f"파일을 읽는 중 오류가 발생했습니다: {str(e)}")
-            return
-            
         # Clear view
         self.clear_view()
         
@@ -1678,6 +1710,8 @@ class AcousticStudioMain(QMainWindow):
                     actor.SetUserMatrix(mat)
                     
         # Restore Targets
+        from PySide6.QtCore import Qt
+        from PySide6.QtWidgets import QListWidgetItem
         for pt in data.get('control_points', []):
             idx = len(self.control_points)
             name = pt.get('name', f"Point {idx+1}")
@@ -1688,11 +1722,78 @@ class AcousticStudioMain(QMainWindow):
             actor._original_color = "green"
             self.control_points.append({"name": name, "actor": actor, "x": x, "y": y, "z": z, "radius": r})
             
-        from PySide6.QtWidgets import QListWidgetItem
-        for pt in self.control_points:
-            item = QListWidgetItem(pt['name'])
+            item = QListWidgetItem(name)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(Qt.Checked)
             self.points_list.addItem(item)
+            
         self.simulate_colors()
+
+    def save_project(self):
+        import json
+        if not getattr(self, 'current_project_file', None):
+            self.save_project_as()
+            return
+            
+        data = self.get_state()
+        with open(self.current_project_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
+
+    def save_project_as(self):
+        from PySide6.QtWidgets import QFileDialog
+        import json
+        filename, _ = QFileDialog.getSaveFileName(self, "다른 이름으로 프로젝트 저장", "", "Acoustic Project (*.json)")
+        if not filename: return
+        self.current_project_file = filename
+        self.save_project()
+
+    def load_project(self):
+        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        import json
+        filename, _ = QFileDialog.getOpenFileName(self, "프로젝트 불러오기", "", "Acoustic Project (*.json)")
+        if not filename: return
+        
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except Exception as e:
+            QMessageBox.critical(self, "오류", f"파일을 읽는 중 오류가 발생했습니다: {str(e)}")
+            return
+            
+        self.current_project_file = filename
+        self.set_state(data)
+        self.push_state()
+        self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
+
+    def push_state(self):
+        if not hasattr(self, 'undo_stack'):
+            self.undo_stack = []
+            self.redo_stack = []
+            
+        state = self.get_state()
+        # Only push if different from last state
+        if not self.undo_stack or self.undo_stack[-1] != state:
+            self.undo_stack.append(state)
+            self.redo_stack.clear()
+            
+            # limit stack size to 20
+            if len(self.undo_stack) > 20:
+                self.undo_stack.pop(0)
+
+    def undo(self):
+        if hasattr(self, 'undo_stack') and len(self.undo_stack) > 1:
+            current_state = self.undo_stack.pop()
+            self.redo_stack.append(current_state)
+            previous_state = self.undo_stack[-1]
+            self.set_state(previous_state)
+
+    def redo(self):
+        if hasattr(self, 'redo_stack') and self.redo_stack:
+            next_state = self.redo_stack.pop()
+            self.undo_stack.append(next_state)
+            self.set_state(next_state)
+
 
     def clear_view(self):
 
