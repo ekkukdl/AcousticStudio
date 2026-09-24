@@ -7,6 +7,30 @@ import os
 os.environ["QT_API"] = "pyside6"
 
 import numpy as np
+import numba
+@numba.njit(parallel=True)
+def calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k):
+    num_pts = len(pts_x)
+    num_tx = len(tx_x)
+    real_out = np.zeros(num_pts, dtype=np.float64)
+    imag_out = np.zeros(num_pts, dtype=np.float64)
+    for p in numba.prange(num_pts):
+        px, py, pz = pts_x[p], pts_y[p], pts_z[p]
+        r_sum, i_sum = 0.0, 0.0
+        for t in range(num_tx):
+            dx = px - tx_x[t]
+            dy = py - tx_y[t]
+            dz = pz - tx_z[t]
+            dist = np.sqrt(dx*dx + dy*dy + dz*dz)
+            if dist < 1e-3: dist = 1e-3
+            amp = tx_amplitudes[t] / dist
+            phase = k * dist + tx_phases[t]
+            r_sum += amp * np.cos(phase)
+            i_sum += amp * np.sin(phase)
+        real_out[p] = r_sum
+        imag_out[p] = i_sum
+    return real_out, imag_out
+
 
 import pyvista as pv
 
@@ -844,6 +868,15 @@ class AcousticStudioMain(QMainWindow):
         self.show_field_btn.clicked.connect(self.toggle_field_slice)
 
         visual_layout.addWidget(self.show_field_btn)
+        self.field_mode_combo = QComboBox()
+        self.field_mode_combo.addItems(['음압 분포 (Pressure Magnitude)', '위상 분포 (Phase Angle)'])
+        self.field_mode_combo.currentIndexChanged.connect(self.update_field_slice)
+        visual_layout.addWidget(self.field_mode_combo)
+        
+        self.calc_phase_check = QCheckBox('위상 시각화 (Calculate Phase)')
+        self.calc_phase_check.setChecked(True)
+        self.calc_phase_check.toggled.connect(self.simulate_colors)
+        visual_layout.addWidget(self.calc_phase_check)
 
         
 
@@ -1804,10 +1837,10 @@ class AcousticStudioMain(QMainWindow):
 
         self.plotter.reset_camera()
 
-
-
     def simulate_colors(self):
         import time
+        if hasattr(self, 'calc_phase_check') and not self.calc_phase_check.isChecked():
+            return
         current_time = time.time()
         if hasattr(self, '_last_sim_time') and (current_time - self._last_sim_time) < 0.016:
             if not hasattr(self, '_sim_timer'):
@@ -1821,8 +1854,7 @@ class AcousticStudioMain(QMainWindow):
         self._last_sim_time = current_time
         if hasattr(self, '_sim_timer'):
             self._sim_timer.stop()
-
-
+            
         if not self.transducer_actors:
 
             return
@@ -2028,10 +2060,7 @@ class AcousticStudioMain(QMainWindow):
             tx_z = np.ascontiguousarray(tx_centers[:, 2], dtype=np.float64)
             
             is_phase_mode = hasattr(self, 'field_mode_combo') and self.field_mode_combo.currentIndex() == 1
-            
-            # Use Numba to calculate complex field
             real_p, imag_p = calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
-            
             if is_phase_mode:
                 scalar_data = np.arctan2(imag_p, real_p)
                 p_min, p_max = -np.pi, np.pi
@@ -2041,10 +2070,8 @@ class AcousticStudioMain(QMainWindow):
                 p_min, p_max = 0, np.percentile(scalar_data, 99.5)
                 cmap = 'hot'
 
-            
             if cache_key in self._cached_field_grids:
                 grid, actor = self._cached_field_grids[cache_key]
-                # In-place scalar update
                 grid.point_data['Pressure'][:] = scalar_data
                 actor.mapper.scalar_range = [p_min, p_max]
                 actor.mapper.lookup_table.cmap = cmap
@@ -2054,10 +2081,10 @@ class AcousticStudioMain(QMainWindow):
                 grid = pv.StructuredGrid()
                 grid.points = pts
                 grid.dimensions = [res, res, 1]
-                grid.point_data['Pressure'] = pressure_mag
+                grid.point_data['Pressure'] = scalar_data
                 actor = self.plotter.add_mesh(
-                    grid, scalars='Pressure', cmap='hot', opacity=1.0, 
-                    show_scalar_bar=False, clim=[0, p_max],
+                    grid, scalars='Pressure', cmap=cmap, opacity=1.0,
+                    show_scalar_bar=False, clim=[p_min, p_max],
                     reset_camera=False
                 )
                 self.field_actors.append(actor)
