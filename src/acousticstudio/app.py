@@ -796,7 +796,7 @@ class AcousticStudioMain(QMainWindow):
 
         self.del_pt_btn = QPushButton("Delete Point")
 
-        self.del_pt_btn.clicked.connect(self.delete_control_point)
+        self.del_pt_btn.clicked.connect(self._hooked_del_control_point)
 
         btn_layout.addWidget(self.add_pt_btn)
 
@@ -1533,7 +1533,7 @@ class AcousticStudioMain(QMainWindow):
         self.push_state()
         
     def _hooked_del_control_point(self):
-        self.del_control_point()
+        self.delete_control_point()
         self.push_state()
         
     def _hooked_clear_view(self):
@@ -1643,15 +1643,15 @@ class AcousticStudioMain(QMainWindow):
         data['spacing'] = self.spacing_spin.value() if hasattr(self, 'spacing_spin') else 10.5
         
         # Field UI Params
-        data['trap_type'] = self.trap_type_cb.currentText()
-        data['grid_x'] = self.grid_x_spin.value()
-        data['grid_y'] = self.grid_y_spin.value()
-        data['point_size'] = self.point_size_spin.value()
-        data['prop_radius'] = self.prop_radius_spin.value()
+        data['trap_type'] = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else ""
+        data['grid_x'] = self.grid_x_spin.value() if hasattr(self, 'grid_x_spin') else 16
+        data['grid_y'] = self.grid_y_spin.value() if hasattr(self, 'grid_y_spin') else 16
+        data['point_size'] = self.point_size_spin.value() if hasattr(self, 'point_size_spin') else 5.0
+        data['prop_radius'] = self.prop_radius_spin.value() if hasattr(self, 'prop_radius_spin') else 5.0
         
         # Targets
         data['control_points'] = []
-        for pt in self.control_points:
+        for pt in getattr(self, 'control_points', []):
             data['control_points'].append({
                 'name': pt['name'], 'x': pt['x'], 'y': pt['y'], 'z': pt['z'], 'radius': pt['radius']
             })
