@@ -1170,7 +1170,7 @@ class AcousticStudioMain(QMainWindow):
         for act in self.selected_actors:
             if act in self.transducer_actors:
                 mat = act.GetUserMatrix() or getattr(act, '_initial_matrix', None)
-                self.plotter.remove_actor(act)
+                self.plotter.remove_actor(act, render=False)
                 self.transducer_actors.remove(act)
                 
                 new_act = self.plotter.add_mesh(mesh.copy(), color=color, show_edges=True)
@@ -1199,7 +1199,7 @@ class AcousticStudioMain(QMainWindow):
                     is_cp = True
                     x, y, z = pt["x"], pt["y"], pt["z"]
                     pt["radius"] = val
-                    self.plotter.remove_actor(act)
+                    self.plotter.remove_actor(act, render=False)
                     import pyvista as pv
                     import vtk
                     sphere = pv.Sphere(radius=val, center=(x, y, z))
@@ -1226,12 +1226,12 @@ class AcousticStudioMain(QMainWindow):
         for actor in self.selected_actors:
             if actor in self.transducer_actors:
                 self.transducer_actors.remove(actor)
-                self.plotter.remove_actor(actor)
+                self.plotter.remove_actor(actor, render=False)
             else:
                 # Check if it's a control point
                 for i, cp in enumerate(self.control_points):
                     if cp["actor"] == actor:
-                        self.plotter.remove_actor(actor)
+                        self.plotter.remove_actor(actor, render=False)
                         del self.control_points[i]
                         self.points_list.takeItem(i)
                         break
@@ -1321,7 +1321,7 @@ class AcousticStudioMain(QMainWindow):
             if actor in self.selected_actors:
                 self.selected_actors.remove(actor)
                 self.update_gizmo()
-            self.plotter.remove_actor(actor)
+            self.plotter.remove_actor(actor, render=False)
             del self.control_points[idx]
             self.points_list.takeItem(idx)
             self.plotter.render()
@@ -1454,7 +1454,7 @@ class AcousticStudioMain(QMainWindow):
                 from PySide6.QtWidgets import QApplication
                 for i, actor in enumerate(self.transducer_actors):
                     if actor in self.selected_actors: self.selected_actors.remove(actor)
-                    self.plotter.remove_actor(actor)
+                    self.plotter.remove_actor(actor, render=False)
                     if i % 20 == 0: QApplication.processEvents()
                 self.transducer_actors.clear()
                 
@@ -1513,7 +1513,7 @@ class AcousticStudioMain(QMainWindow):
         if needs_pt_rebuild:
             for p in self.control_points:
                 if p["actor"] in self.selected_actors: self.selected_actors.remove(p["actor"])
-                self.plotter.remove_actor(p["actor"])
+                self.plotter.remove_actor(p["actor"], render=False)
             self.control_points.clear()
             self.points_list.clear()
             
@@ -1630,13 +1630,13 @@ class AcousticStudioMain(QMainWindow):
         for actor in self.transducer_actors:
             if actor in self.selected_actors:
                 self.selected_actors.remove(actor)
-            self.plotter.remove_actor(actor)
+            self.plotter.remove_actor(actor, render=False)
         self.transducer_actors.clear()
         
         for p in self.control_points:
             if p["actor"] in self.selected_actors:
                 self.selected_actors.remove(p["actor"])
-            self.plotter.remove_actor(p["actor"])
+            self.plotter.remove_actor(p["actor"], render=False)
         self.control_points.clear()
         self.points_list.clear()
         
@@ -1978,7 +1978,7 @@ class AcousticStudioMain(QMainWindow):
         else:
             self.show_field_btn.setText("음압 단면 시각화")
             for a in self.field_actors:
-                self.plotter.remove_actor(a)
+                self.plotter.remove_actor(a, render=False)
             self.field_actors.clear()
             self.plotter.render()
     def draw_ghost_plane(self, axis_name, offset):
