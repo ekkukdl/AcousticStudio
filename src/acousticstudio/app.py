@@ -1474,6 +1474,9 @@ class AcousticStudioMain(QMainWindow):
                     base_mesh = self.make_langevin_mesh(height)
                     self._current_amplitude = 20.0
                     
+                shared_mapper = pv.DataSetMapper(base_mesh)
+                rgb_color = pv.Color(color).float_rgb
+                
                 for i, tx in enumerate(tx_data):
                     matrix_vals = tx.get('matrix')
                     if matrix_vals:
@@ -1481,13 +1484,15 @@ class AcousticStudioMain(QMainWindow):
                         for r in range(4):
                             for c in range(4):
                                 mat.SetElement(r, c, matrix_vals[r*4 + c])
-                        actor = self.plotter.add_mesh(base_mesh, color=color, show_edges=False)
+                        actor = pv.Actor(mapper=shared_mapper)
+                        actor.GetProperty().SetColor(rgb_color)
                         actor.SetUserMatrix(mat)
                         actor._initial_matrix = mat
-                        actor._original_color = color
+                        actor._original_color = rgb_color
                         actor._amplitude = self._current_amplitude
+                        self.plotter.renderer.AddActor(actor)
                         self.transducer_actors.append(actor)
-                        if i % 20 == 0: QApplication.processEvents()
+                        if i % 100 == 0: QApplication.processEvents()
             else:
                 # Optimized fast path! Just update matrices!
                 for i, tx in enumerate(tx_data):
@@ -1808,9 +1813,13 @@ class AcousticStudioMain(QMainWindow):
         px, py, pz = self.gen_pos_x.value(), self.gen_pos_y.value(), self.gen_pos_z.value()
         
         import vtk
+        import pyvista as pv
         from PySide6.QtWidgets import QApplication
         
         qapp = QApplication.instance()
+        shared_mapper = pv.DataSetMapper(base_mesh)
+        rgb_color = pv.Color(color).float_rgb
+        
         for idx, ops in enumerate(transforms_to_add):
             transform = vtk.vtkTransform()
             transform.PostMultiply()
@@ -1826,15 +1835,18 @@ class AcousticStudioMain(QMainWindow):
             transform.RotateZ(rz)
             transform.Translate(px, py, pz)
             
-            actor = self.plotter.add_mesh(base_mesh, color=color, show_edges=False)
+            actor = pv.Actor(mapper=shared_mapper)
+            actor.GetProperty().SetColor(rgb_color)
             actor.SetUserMatrix(transform.GetMatrix())
             actor._initial_matrix = transform.GetMatrix()
-            actor._original_color = color
+            actor._original_color = rgb_color
             actor._amplitude = getattr(self, '_current_amplitude', 1.0)
+            
+            self.plotter.renderer.AddActor(actor)
             self.transducer_actors.append(actor)
             
             # Keep UI responsive for large array generation
-            if idx % 10 == 0 and qapp:
+            if idx % 100 == 0 and qapp:
                 qapp.processEvents()
                 
         self.plotter.reset_camera()
