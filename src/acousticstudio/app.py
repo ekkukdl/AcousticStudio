@@ -1237,7 +1237,8 @@ class AcousticStudioMain(QMainWindow):
                         break
                         
         self.selected_actors.clear()
-        self.update_transform_ui()
+        self.update_ui_from_selection()
+        self.update_gizmo()
         self.plotter.render()
         
     def keyPressEvent(self, event):
