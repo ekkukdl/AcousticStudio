@@ -518,7 +518,7 @@ class AcousticStudioMain(QMainWindow):
         self.compute_mode_cb.setStyleSheet("QComboBox { combobox-popup: 0; }")
         self.compute_mode_cb.addItem(f"CPU: {cpu_name} (보통) (Numba JIT)")
         self.compute_mode_cb.addItem(f"CPU: {cpu_name} (빠름) (C++ 최적화)")
-        self.compute_mode_cb.addItem(f"GPU: 내장/범용 그래픽 (매우 빠름) (Taichi 가속)")
+        self.compute_mode_cb.addItem(f"GPU: 범용 그래픽 (매우 빠름) (Taichi 가속)")
         self.compute_mode_cb.addItem(f"GPU: {gpu_name} (가장 빠름) (PyTorch/CUDA 가속)")
         
         if hasattr(self, "update_compute_mode_styles"):
@@ -1051,7 +1051,7 @@ class AcousticStudioMain(QMainWindow):
             self.prop_type_lbl.setText("珥덉쓬뙆 꽱꽌")
             self.prop_sensor_cb.setEnabled(True)
         elif has_cp and not has_sensor:
-            self.prop_type_lbl.setText("寃 (Control Point)")
+            self.prop_type_lbl.setText("점(Control Point)")
             self.prop_radius_spin.setEnabled(True)
             for pt in self.control_points:
                 if pt["actor"] == cp_actor:
@@ -1806,7 +1806,10 @@ class AcousticStudioMain(QMainWindow):
         px, py, pz = self.gen_pos_x.value(), self.gen_pos_y.value(), self.gen_pos_z.value()
         
         import vtk
-        for ops in transforms_to_add:
+        from PySide6.QtWidgets import QApplication
+        
+        qapp = QApplication.instance()
+        for idx, ops in enumerate(transforms_to_add):
             transform = vtk.vtkTransform()
             transform.PostMultiply()
             for op, val in ops:
@@ -1827,6 +1830,11 @@ class AcousticStudioMain(QMainWindow):
             actor._original_color = color
             actor._amplitude = getattr(self, '_current_amplitude', 1.0)
             self.transducer_actors.append(actor)
+            
+            # Keep UI responsive for large array generation
+            if idx % 10 == 0 and qapp:
+                qapp.processEvents()
+                
         self.plotter.reset_camera()
     def simulate_colors(self):
         import time
@@ -1849,7 +1857,7 @@ class AcousticStudioMain(QMainWindow):
         if not self.transducer_actors:
             return
         if not self.control_points:
-            print("뿉윭: 寃(Control Point)씠 1媛 씠긽 議댁옱빐빞 쐞긽쓣 怨꾩궛븷 닔 엳뒿땲떎.")
+            print("알림: 점(Control Point)을 1개 이상 추가해야 위상을 시뮬레이션할 수 있습니다.")
             return
             
         algorithm = self.trap_type_cb.currentText()
@@ -2133,10 +2141,10 @@ class AcousticStudioMain(QMainWindow):
         if not model: return
         
         if getattr(self, 'has_taichi', False):
-            self.compute_mode_cb.setItemText(2, "GPU: 내장/범용 그래픽 (매우 빠름) (Taichi 가속)")
+            self.compute_mode_cb.setItemText(2, "GPU: 범용 그래픽 (매우 빠름) (Taichi 가속)")
             model.item(2).setForeground(QBrush(QColor(0,0,0)))
         else:
-            self.compute_mode_cb.setItemText(2, "GPU: 내장/범용 그래픽 (미설치 - 클릭 시 설치)")
+            self.compute_mode_cb.setItemText(2, "GPU: 범용 그래픽 (미설치 - 클릭 시 설치)")
             model.item(2).setForeground(QBrush(QColor(150, 150, 150)))
             
         if getattr(self, 'has_pytorch', False):
@@ -2148,7 +2156,7 @@ class AcousticStudioMain(QMainWindow):
             self.compute_mode_cb.setItemText(3, f"GPU: {gpu_name} (가장 빠름) (PyTorch/CUDA 가속)")
             model.item(3).setForeground(QBrush(QColor(0,0,0)))
         else:
-            self.compute_mode_cb.setItemText(3, f"GPU: 외장 그래픽 (미설치 - 클릭 시 설치)")
+            self.compute_mode_cb.setItemText(3, "GPU: CUDA 전용 (미설치 - 클릭 시 설치)")
             model.item(3).setForeground(QBrush(QColor(150, 150, 150)))
             
     def on_compute_mode_changed(self, index):
