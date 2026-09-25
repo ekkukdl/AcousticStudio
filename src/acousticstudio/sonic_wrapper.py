@@ -222,3 +222,151 @@ def get_gpu_name():
             return gpu_name
         except:
             return 'Unknown GPU'
+
+
+# --- GPU Acceleration via Taichi ---
+try:
+    import taichi as ti
+    ti.init(arch=ti.gpu, log_level=ti.ERROR)
+    _has_taichi = True
+except ImportError:
+    _has_taichi = False
+
+if _has_taichi:
+    @ti.kernel
+    def _calculate_phases_taichi_kernel(
+        cx: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        cy: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        cz: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        tx: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        ty: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        tz: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        amp: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        out_real: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        out_imag: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        algorithm: ti.i32,
+        k: ti.f64
+    ):
+        num_tx = cx.shape[0]
+        num_pts = tx.shape[0]
+        
+        for i in range(num_tx):
+            real_sum = 0.0
+            imag_sum = 0.0
+            for p in range(num_pts):
+                dx = cx[i] - tx[p]
+                dy = cy[i] - ty[p]
+                dz = cz[i] - tz[p]
+                
+                d = ti.math.sqrt(dx*dx + dy*dy + dz*dz)
+                phase_focal = -d * k
+                
+                signature = 0.0
+                if algorithm == 1: # Twin Trap
+                    if dx > 0:
+                        signature = 3.14159265358979323846
+                elif algorithm == 2: # Vortex Trap
+                    signature = ti.cast(ti.math.atan2(ti.cast(dy, ti.f32), ti.cast(dx, ti.f32)), ti.f64)
+                    
+                pt_phase = phase_focal + signature
+                
+                real_sum += amp[i] * ti.cast(ti.math.cos(ti.cast(pt_phase, ti.f32)), ti.f64)
+                imag_sum += amp[i] * ti.cast(ti.math.sin(ti.cast(pt_phase, ti.f32)), ti.f64)
+                
+            out_real[i] = real_sum
+            out_imag[i] = imag_sum
+
+    @ti.kernel
+    def _calculate_field_slice_taichi_kernel(
+        pts_x: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        pts_y: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        pts_z: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        tx_x: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        tx_y: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        tx_z: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        tx_p: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        tx_a: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        out_real: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        out_imag: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        k: ti.f64
+    ):
+        num_pts = pts_x.shape[0]
+        num_tx = tx_x.shape[0]
+        
+        for p in range(num_pts):
+            r_sum = 0.0
+            i_sum = 0.0
+            for t in range(num_tx):
+                dx = pts_x[p] - tx_x[t]
+                dy = pts_y[p] - tx_y[t]
+                dz = pts_z[p] - tx_z[t]
+                dist = ti.math.sqrt(dx*dx + dy*dy + dz*dz)
+                if dist < 1e-3:
+                    dist = 1e-3
+                
+                amp = tx_a[t] / dist
+                phase = k * dist + tx_p[t]
+                
+                r_sum += amp * ti.cast(ti.math.cos(ti.cast(phase, ti.f32)), ti.f64)
+                i_sum += amp * ti.cast(ti.math.sin(ti.cast(phase, ti.f32)), ti.f64)
+            out_real[p] = r_sum
+            out_imag[p] = i_sum
+
+def calculate_phases_taichi(cx, cy, cz, tx, ty, tz, amplitudes, algorithm_str, k):
+    if not _has_taichi:
+        return None, None
+    import numpy as np
+    
+    algo_int = 0
+    if "Twin Trap" in algorithm_str:
+        algo_int = 1
+    elif "Vortex Trap" in algorithm_str:
+        algo_int = 2
+        
+    out_real = np.zeros(len(cx), dtype=np.float64)
+    out_imag = np.zeros(len(cx), dtype=np.float64)
+    
+    _calculate_phases_taichi_kernel(
+        np.ascontiguousarray(cx, dtype=np.float64),
+        np.ascontiguousarray(cy, dtype=np.float64),
+        np.ascontiguousarray(cz, dtype=np.float64),
+        np.ascontiguousarray(tx, dtype=np.float64),
+        np.ascontiguousarray(ty, dtype=np.float64),
+        np.ascontiguousarray(tz, dtype=np.float64),
+        np.ascontiguousarray(amplitudes, dtype=np.float64),
+        out_real,
+        out_imag,
+        algo_int,
+        k
+    )
+    
+    total_phases = np.arctan2(out_imag, out_real) % (2.0 * np.pi)
+    total_phases[total_phases < 0] += 2.0 * np.pi
+    
+    phase_disc = np.round((total_phases / (2.0 * np.pi)) * 32.0).astype(np.int32)
+    phase_disc = np.clip(phase_disc, 0, 31)
+    
+    packet = bytearray([254]) + bytearray(phase_disc.astype(np.uint8)) + bytearray([253])
+    return total_phases, bytes(packet)
+
+def calculate_field_slice_taichi(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k):
+    if not _has_taichi:
+        return None
+    import numpy as np
+    out_real = np.zeros(len(pts_x), dtype=np.float64)
+    out_imag = np.zeros(len(pts_x), dtype=np.float64)
+    
+    _calculate_field_slice_taichi_kernel(
+        np.ascontiguousarray(pts_x, dtype=np.float64),
+        np.ascontiguousarray(pts_y, dtype=np.float64),
+        np.ascontiguousarray(pts_z, dtype=np.float64),
+        np.ascontiguousarray(tx_x, dtype=np.float64),
+        np.ascontiguousarray(tx_y, dtype=np.float64),
+        np.ascontiguousarray(tx_z, dtype=np.float64),
+        np.ascontiguousarray(tx_phases, dtype=np.float64),
+        np.ascontiguousarray(tx_amplitudes, dtype=np.float64),
+        out_real,
+        out_imag,
+        k
+    )
+    return out_real, out_imag

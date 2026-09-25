@@ -308,9 +308,10 @@ class MouseEventFilter(QObject):
                     self.main.push_state()
         return False
 class WheelBlocker(QObject):
-    def __init__(self, scroll_area):
+    def __init__(self, scroll_area, main_window=None):
         super().__init__()
         self.scroll_area = scroll_area
+        self.main = main_window
     def eventFilter(self, obj, event):
         from PySide6.QtCore import QEvent
         if event.type() == QEvent.Wheel:
@@ -321,7 +322,7 @@ class WheelBlocker(QObject):
         
         if event.type() == QEvent.MouseButtonRelease:
             if event.button() == Qt.LeftButton:
-                if hasattr(self.main, 'push_state'):
+                if getattr(self, 'main', None) and hasattr(self.main, 'push_state'):
                     # To avoid spamming, only push if state changed. push_state already checks this.
                     self.main.push_state()
         return False
@@ -515,13 +516,22 @@ class AcousticStudioMain(QMainWindow):
             
         self.compute_mode_cb = QComboBox()
         self.compute_mode_cb.setStyleSheet("QComboBox { combobox-popup: 0; }")
-        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (C++ 최적화 - 매우 빠름)")
-        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (Numba JIT - 보통)")
-        self.compute_mode_cb.addItem(f"GPU: 내장/범용 그래픽 (Taichi 가속)")
-        self.compute_mode_cb.addItem(f"GPU: {gpu_name} (PyTorch/CUDA 가속)")
+        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (보통) (Numba JIT)")
+        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (빠름) (C++ 최적화)")
+        self.compute_mode_cb.addItem(f"GPU: 내장/범용 그래픽 (매우 빠름) (Taichi 가속)")
+        self.compute_mode_cb.addItem(f"GPU: {gpu_name} (가장 빠름) (PyTorch/CUDA 가속)")
         
         if hasattr(self, "update_compute_mode_styles"):
             self.update_compute_mode_styles()
+            
+        best_idx = 0
+        try:
+            from acousticstudio.sonic_wrapper import _cpp_lib
+            if _cpp_lib is not None: best_idx = 1
+        except: pass
+        if getattr(self, 'has_taichi', False): best_idx = 2
+        if getattr(self, 'has_pytorch', False): best_idx = 3
+        self.compute_mode_cb.setCurrentIndex(best_idx)
             
         self.compute_mode_cb.currentIndexChanged.connect(self.on_compute_mode_changed)
             
@@ -791,7 +801,7 @@ class AcousticStudioMain(QMainWindow):
         self._sel_base_centroid = [0.0, 0.0, 0.0]
         self._sel_base_rot = [0.0, 0.0, 0.0]
         # Apply wheel blocker AFTER all widgets are created
-        self.wheel_blocker = WheelBlocker(scroll_area)
+        self.wheel_blocker = WheelBlocker(scroll_area, self)
         widgets = self.findChildren(QDoubleSpinBox) + self.findChildren(QSpinBox) + self.findChildren(QComboBox)
         for widget in widgets:
             widget.installEventFilter(self.wheel_blocker)
@@ -919,9 +929,17 @@ class AcousticStudioMain(QMainWindow):
                 act.SetUserMatrix(t2.GetMatrix())
             
         if point_moved and self.auto_calc_cb.isChecked():
-            self.simulate_colors()
+            if not getattr(self, '_sim_pending', False):
+                self._sim_pending = True
+                from PySide6.QtCore import QTimer
+                QTimer.singleShot(0, self._deferred_simulate)
         else:
             self.plotter.render()
+            
+    def _deferred_simulate(self):
+        self._sim_pending = False
+        if hasattr(self, 'simulate_colors'):
+            self.simulate_colors()
     def on_gizmo_interaction(self, caller, event):
         if not self.selected_actors: return
         t = vtk.vtkTransform()
@@ -1679,7 +1697,7 @@ class AcousticStudioMain(QMainWindow):
             base_mesh = self.make_langevin_mesh(height)
             self._current_amplitude = 20.0
         transforms_to_add = []
-        if "Matrix" in array_type:
+        if "Matrix" in array_type or "평면" in array_type:
             start_x = -(x_count - 1) * spacing / 2.0
             start_y = -(y_count - 1) * spacing / 2.0
             for i in range(x_count):
@@ -1689,7 +1707,7 @@ class AcousticStudioMain(QMainWindow):
                     pz_m = -height / 2.0
                     transforms_to_add.append([("translate", (px_m, py_m, pz_m))])
                     
-        elif "4" in array_type:
+        elif "4" in array_type or "다면체" in array_type:
             tunnel_radius = (spacing * x_count) / 2.0
             start_u = -(x_count - 1) * spacing / 2.0
             start_v = -(y_count - 1) * spacing / 2.0
@@ -1703,7 +1721,7 @@ class AcousticStudioMain(QMainWindow):
                     transforms_to_add.append([("rotate_y", 90), ("translate", (-tunnel_radius - height/2, u, v))])
                     transforms_to_add.append([("rotate_y", -90), ("translate", (tunnel_radius + height/2, u, v))])
                     
-        elif "2" in array_type:
+        elif "2" in array_type or "대향형" in array_type:
             distance = max(100.0, spacing * max(x_count, y_count))
             start_x = -(x_count - 1) * spacing / 2.0
             start_y = -(y_count - 1) * spacing / 2.0
@@ -1715,7 +1733,7 @@ class AcousticStudioMain(QMainWindow):
                     transforms_to_add.append([("translate", (px_m, py_m, -distance/2 - height/2))])
                     transforms_to_add.append([("rotate_x", 180), ("translate", (px_m, py_m, distance/2 + height/2))])
                     
-        elif "Tube" in array_type or "뒠釉" in array_type:
+        elif "Tube" in array_type or "튜브" in array_type:
             import math
             columns = x_count
             rows = y_count
@@ -1744,7 +1762,7 @@ class AcousticStudioMain(QMainWindow):
                     transforms_to_add.append([("rotate_x", 180.0 - cAngle_deg), ("translate", (x_pos, y_pos, z_pos))])
                     angle += angleInc
                 x_pos += spaceOdd
-        elif "Hemisphere" in array_type:
+        elif "Hemisphere" in array_type or "반구형" in array_type:
             N = x_count * y_count
             R = max(100.0, r_wide * np.sqrt(N * 0.8))
             phi_golden = np.pi * (3.0 - np.sqrt(5.0))
@@ -1863,8 +1881,18 @@ class AcousticStudioMain(QMainWindow):
             tz_arr = np.array([pt["z"] for pt in active_pts])
             tx_amplitudes = np.array([getattr(a, '_amplitude', 1.0) for a in self.transducer_actors])
             
-            # C++ SonicSurface Acceleration
-            cpp_phases, cpp_packet = calculate_phases_sonic(cx, cy, cz, tx_arr, ty_arr, tz_arr, tx_amplitudes, algorithm, k)
+            mode_idx = self.compute_mode_cb.currentIndex()
+            cpp_phases, cpp_packet = None, None
+            
+            if mode_idx == 3 and getattr(self, 'has_pytorch', False):
+                from acousticstudio.sonic_wrapper import calculate_phases_gpu
+                cpp_phases, cpp_packet = calculate_phases_gpu(cx, cy, cz, tx_arr, ty_arr, tz_arr, tx_amplitudes, algorithm, k)
+            elif mode_idx == 2 and getattr(self, 'has_taichi', False):
+                from acousticstudio.sonic_wrapper import calculate_phases_taichi
+                cpp_phases, cpp_packet = calculate_phases_taichi(cx, cy, cz, tx_arr, ty_arr, tz_arr, tx_amplitudes, algorithm, k)
+            elif mode_idx == 1:
+                from acousticstudio.sonic_wrapper import calculate_phases_sonic
+                cpp_phases, cpp_packet = calculate_phases_sonic(cx, cy, cz, tx_arr, ty_arr, tz_arr, tx_amplitudes, algorithm, k)
             
             if cpp_phases is not None:
                 total_phases = cpp_phases
@@ -1901,19 +1929,19 @@ class AcousticStudioMain(QMainWindow):
         
         for i, actor in enumerate(self.transducer_actors):
             actor._original_color = rgbas[i, :3]
+            prop = actor.GetProperty()
             if hasattr(self, 'selected_actors') and actor in self.selected_actors:
-                actor.prop.color = "pink"
-                actor.prop.opacity = 0.4
+                prop.SetColor(1.0, 0.75, 0.8) # approximate pink
+                prop.SetOpacity(0.4)
             else:
-                actor.prop.color = rgbas[i, :3]
-                actor.prop.opacity = getattr(actor, '_original_opacity', 1.0)
+                prop.SetColor(float(rgbas[i, 0]), float(rgbas[i, 1]), float(rgbas[i, 2]))
+                prop.SetOpacity(float(getattr(actor, '_original_opacity', 1.0)))
             actor._phase = total_phases[i]
             
-        self.plotter.render()
-        
-        # ?븬 ?媛?? 耳쒖졇?떎??룞 ?뜲?듃
         if self.show_field_btn.isChecked():
             self.update_field_slice()
+        else:
+            self.plotter.render()
             
         
         
@@ -2046,7 +2074,20 @@ class AcousticStudioMain(QMainWindow):
             tx_z = np.ascontiguousarray(tx_centers[:, 2], dtype=np.float64)
             
             is_phase_mode = hasattr(self, 'field_mode_combo') and self.field_mode_combo.currentIndex() == 1
-            real_p, imag_p = calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
+            mode_idx = self.compute_mode_cb.currentIndex()
+            
+            calc_res = None
+            if mode_idx == 3 and getattr(self, 'has_pytorch', False):
+                from acousticstudio.sonic_wrapper import calculate_field_slice_gpu
+                calc_res = calculate_field_slice_gpu(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
+            elif mode_idx == 2 and getattr(self, 'has_taichi', False):
+                from acousticstudio.sonic_wrapper import calculate_field_slice_taichi
+                calc_res = calculate_field_slice_taichi(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
+                
+            if calc_res is not None:
+                real_p, imag_p = calc_res
+            else:
+                real_p, imag_p = calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
             if is_phase_mode:
                 scalar_data = np.arctan2(imag_p, real_p)
                 p_min, p_max = -np.pi, np.pi
@@ -2092,7 +2133,7 @@ class AcousticStudioMain(QMainWindow):
         if not model: return
         
         if getattr(self, 'has_taichi', False):
-            self.compute_mode_cb.setItemText(2, "GPU: 내장/범용 그래픽 (Taichi 가속)")
+            self.compute_mode_cb.setItemText(2, "GPU: 내장/범용 그래픽 (매우 빠름) (Taichi 가속)")
             model.item(2).setForeground(QBrush(QColor(0,0,0)))
         else:
             self.compute_mode_cb.setItemText(2, "GPU: 내장/범용 그래픽 (미설치 - 클릭 시 설치)")
@@ -2104,7 +2145,7 @@ class AcousticStudioMain(QMainWindow):
                 from acousticstudio.sonic_wrapper import get_gpu_name
                 gpu_name = get_gpu_name()
             except: pass
-            self.compute_mode_cb.setItemText(3, f"GPU: {gpu_name} (PyTorch/CUDA 가속)")
+            self.compute_mode_cb.setItemText(3, f"GPU: {gpu_name} (가장 빠름) (PyTorch/CUDA 가속)")
             model.item(3).setForeground(QBrush(QColor(0,0,0)))
         else:
             self.compute_mode_cb.setItemText(3, f"GPU: 외장 그래픽 (미설치 - 클릭 시 설치)")
