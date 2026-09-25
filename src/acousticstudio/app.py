@@ -768,7 +768,7 @@ class AcousticStudioMain(QMainWindow):
         xy_lyt.addWidget(self.xy_check); xy_lyt.addWidget(self.xy_slider); xy_lyt.addWidget(self.xy_spin)
         visual_layout.addLayout(xy_lyt)
         
-        self.show_field_btn = QPushButton("음압 단면 시각화 (ON/OFF)")
+        self.show_field_btn = QPushButton("음압 단면 시각화")
         self.show_field_btn.setStyleSheet("background-color: #2196F3; color: white; height: 30px; font-weight: bold;")
         self.show_field_btn.setCheckable(True)
         self.show_field_btn.clicked.connect(self.toggle_field_slice)
@@ -1922,10 +1922,10 @@ class AcousticStudioMain(QMainWindow):
             self.send_phase_data()
     def toggle_field_slice(self):
         if self.show_field_btn.isChecked():
-            self.show_field_btn.setText("음압 단면 숨기기 (ON/OFF)")
+            self.show_field_btn.setText("음압 단면 숨기기")
             self.update_field_slice()
         else:
-            self.show_field_btn.setText("음압 단면 시각화 (ON/OFF)")
+            self.show_field_btn.setText("음압 단면 시각화")
             for a in self.field_actors:
                 self.plotter.remove_actor(a)
             self.field_actors.clear()
