@@ -105,3 +105,120 @@ def calculate_field_slice_sonic(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases
         out_pressure
     )
     return out_pressure
+
+# --- GPU Acceleration via PyTorch ---
+try:
+    import torch
+    _has_torch = True
+    _has_cuda = torch.cuda.is_available()
+except ImportError:
+    _has_torch = False
+    _has_cuda = False
+
+def is_gpu_available():
+    return _has_torch and _has_cuda
+
+def calculate_phases_gpu(cx, cy, cz, tx, ty, tz, amplitudes, algorithm_str, k):
+    if not is_gpu_available():
+        return None, None
+        
+    device = torch.device('cuda')
+    
+    # cx, cy, cz: (N,) transducers
+    # tx, ty, tz: (M,) target points
+    cx_t = torch.tensor(cx, dtype=torch.float64, device=device)
+    cy_t = torch.tensor(cy, dtype=torch.float64, device=device)
+    cz_t = torch.tensor(cz, dtype=torch.float64, device=device)
+    
+    tx_t = torch.tensor(tx, dtype=torch.float64, device=device).unsqueeze(1) # (M, 1)
+    ty_t = torch.tensor(ty, dtype=torch.float64, device=device).unsqueeze(1)
+    tz_t = torch.tensor(tz, dtype=torch.float64, device=device).unsqueeze(1)
+    
+    amp_t = torch.tensor(amplitudes, dtype=torch.float64, device=device)
+    
+    dx = cx_t.unsqueeze(0) - tx_t # (M, N)
+    dy = cy_t.unsqueeze(0) - ty_t
+    dz = cz_t.unsqueeze(0) - tz_t
+    
+    d = torch.sqrt(dx**2 + dy**2 + dz**2)
+    phase_focal = -d * k
+    
+    signature = torch.zeros_like(dx)
+    if "Twin Trap" in algorithm_str:
+        signature = torch.where(dx > 0, torch.tensor(np.pi, dtype=torch.float64, device=device), torch.tensor(0.0, dtype=torch.float64, device=device))
+    elif "Vortex Trap" in algorithm_str:
+        signature = torch.atan2(dy, dx)
+        
+    pt_phase = phase_focal + signature
+    
+    # complex sum across points
+    complex_p = torch.zeros(len(cx), dtype=torch.complex128, device=device)
+    for p_idx in range(len(tx)):
+        complex_p += amp_t * torch.exp(1j * pt_phase[p_idx])
+        
+    total_phases = torch.angle(complex_p) % (2.0 * np.pi)
+    total_phases[total_phases < 0] += 2.0 * np.pi
+    
+    # Hardware packet mapping
+    phase_disc = torch.round((total_phases / (2.0 * np.pi)) * 32.0).to(torch.int32)
+    phase_disc = torch.clamp(phase_disc, 0, 31)
+    
+    packet = bytearray([254]) + bytearray(phase_disc.cpu().numpy().astype(np.uint8)) + bytearray([253])
+    return total_phases.cpu().numpy(), bytes(packet)
+
+def calculate_field_slice_gpu(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k):
+    if not is_gpu_available():
+        return None
+        
+    device = torch.device('cuda')
+    
+    # pts: (P,) grid points
+    # tx: (N,) transducers
+    px = torch.tensor(pts_x, dtype=torch.float64, device=device).unsqueeze(1) # (P, 1)
+    py = torch.tensor(pts_y, dtype=torch.float64, device=device).unsqueeze(1)
+    pz = torch.tensor(pts_z, dtype=torch.float64, device=device).unsqueeze(1)
+    
+    cx = torch.tensor(tx_x, dtype=torch.float64, device=device).unsqueeze(0) # (1, N)
+    cy = torch.tensor(tx_y, dtype=torch.float64, device=device).unsqueeze(0)
+    cz = torch.tensor(tx_z, dtype=torch.float64, device=device).unsqueeze(0)
+    
+    tx_p = torch.tensor(tx_phases, dtype=torch.float64, device=device).unsqueeze(0)
+    tx_a = torch.tensor(tx_amplitudes, dtype=torch.float64, device=device).unsqueeze(0)
+    
+    dx = px - cx # (P, N)
+    dy = py - cy
+    dz = pz - cz
+    
+    dist = torch.sqrt(dx**2 + dy**2 + dz**2)
+    dist = torch.clamp(dist, min=1e-3)
+    
+    amp = tx_a / dist
+    phase = k * dist + tx_p
+    
+    real_sum = torch.sum(amp * torch.cos(phase), dim=1) # (P,)
+    imag_sum = torch.sum(amp * torch.sin(phase), dim=1)
+    
+    return real_sum.cpu().numpy(), imag_sum.cpu().numpy()
+
+def get_cpu_name():
+    import winreg
+    try:
+        key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r'HARDWARE\DESCRIPTION\System\CentralProcessor\0')
+        cpu_name = winreg.QueryValueEx(key, 'ProcessorNameString')[0].strip()
+        return cpu_name
+    except:
+        import platform
+        return platform.processor()
+
+def get_gpu_name():
+    if is_gpu_available():
+        import torch
+        return torch.cuda.get_device_name(0)
+    else:
+        import winreg
+        try:
+            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r'SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000')
+            gpu_name = winreg.QueryValueEx(key, 'DriverDesc')[0].strip()
+            return gpu_name
+        except:
+            return 'Unknown GPU'

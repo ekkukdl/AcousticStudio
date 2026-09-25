@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-
 import sys
-
 import os
-
 os.environ["QT_API"] = "pyside6"
-
 import numpy as np
 import numba
 @numba.njit(parallel=True)
@@ -30,46 +26,25 @@ def calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases
         real_out[p] = r_sum
         imag_out[p] = i_sum
     return real_out, imag_out
-
-
 import pyvista as pv
-
 import vtk
-vtk.vtkObject.GlobalWarningDisplayOff() # VTK의 불필요한 내부 에러(vtkVectorText 등) 출력 방지
-
+vtk.vtkObject.GlobalWarningDisplayOff() # VTK쓽 遺덊븘슂븳 궡遺 뿉윭(vtkVectorText 벑) 異쒕젰 諛⑹
 from pyvistaqt import QtInteractor
-
 from PySide6.QtWidgets import (QApplication, QSplitter, QMainWindow, QWidget, QVBoxLayout, 
                                      QHBoxLayout, QPushButton, QLabel, 
                                      QDoubleSpinBox, QSpinBox, QComboBox, QGroupBox, 
                                      QListWidget, QAbstractItemView, QRubberBand, QSlider, QCheckBox,
                                      QScrollArea, QFormLayout, QListWidgetItem, QMessageBox)
-
 from PySide6.QtCore import Qt, QObject, QEvent, QRect
-
-
-
-
-
 class MouseEventFilter(QObject):
-
     def __init__(self, main_window):
-
         super().__init__()
-
         
         
-
         self.main = main_window
-
         self.rubber_band = QRubberBand(QRubberBand.Rectangle, self.main.plotter.interactor)
-
         self.origin = None
-
         self.right_dragging = False
-
-
-
     def eventFilter(self, obj, event):
         if event.type() == QEvent.MouseButtonPress:
             scale = self.main.plotter.interactor.devicePixelRatioF()
@@ -77,7 +52,6 @@ class MouseEventFilter(QObject):
             scaled_x = int(round(pos.x() * scale))
             scaled_y = int(round(pos.y() * scale))
             vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
-
             if event.button() == Qt.LeftButton:
                 if hasattr(self.main, 'gizmo_actors') and self.main.gizmo_actors:
                     import vtk
@@ -112,7 +86,6 @@ class MouseEventFilter(QObject):
                             g.prop.color = "yellow" if a == gizmo_clicked else {'x':'red','y':'green','z':'blue','center':'white'}.get(a, 'white')
                         self.main.plotter.render()
                         return True
-
                 self.origin = pos
                 self.rubber_band.setGeometry(self.origin.x(), self.origin.y(), 0, 0)
                 self.rubber_band.show()
@@ -283,7 +256,6 @@ class MouseEventFilter(QObject):
                     self.main._is_gizmo_dragging = False
                 
                 return True
-
             if self.origin is not None:
                 self.rubber_band.setGeometry(QRect(self.origin, pos).normalized())
                 return True
@@ -301,7 +273,6 @@ class MouseEventFilter(QObject):
             pos = event.position().toPoint()
             scaled_y = int(round(pos.y() * scale))
             vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
-
             if event.button() == Qt.LeftButton and getattr(self.main, 'active_gizmo_axis', None) is not None:
                 self.main.active_gizmo_axis = None
                 for a, g in self.main.gizmo_actors.items():
@@ -310,7 +281,6 @@ class MouseEventFilter(QObject):
                     self.main.update_field_slice()
                 self.main.plotter.render()
                 return True
-
             if event.button() == Qt.LeftButton and self.origin is not None:
                 self.rubber_band.hide()
                 end_pos = pos
@@ -330,7 +300,6 @@ class MouseEventFilter(QObject):
                 if hasattr(style, 'OnLeftButtonUp'):
                     style.OnLeftButtonUp()
                 return True
-
         
         if event.type() == QEvent.MouseButtonRelease:
             if event.button() == Qt.LeftButton:
@@ -338,8 +307,6 @@ class MouseEventFilter(QObject):
                     # To avoid spamming, only push if state changed. push_state already checks this.
                     self.main.push_state()
         return False
-
-
 class WheelBlocker(QObject):
     def __init__(self, scroll_area):
         super().__init__()
@@ -348,9 +315,9 @@ class WheelBlocker(QObject):
         from PySide6.QtCore import QEvent
         if event.type() == QEvent.Wheel:
             from PySide6.QtWidgets import QApplication
-            # 스크롤바에 이벤트를 직접 전달하여 스크롤이 되게 함
+            # 뒪겕濡ㅻ컮뿉 씠踰ㅽ듃瑜 吏곸젒 쟾떖븯뿬 뒪겕濡ㅼ씠 릺寃 븿
             QApplication.sendEvent(self.scroll_area.verticalScrollBar(), event)
-            return True # SpinBox/ComboBox가 이벤트를 처리하지 못하게 완전 차단
+            return True # SpinBox/ComboBox媛 씠踰ㅽ듃瑜 泥섎━븯吏 紐삵븯寃 셿쟾 李⑤떒
         
         if event.type() == QEvent.MouseButtonRelease:
             if event.button() == Qt.LeftButton:
@@ -358,20 +325,13 @@ class WheelBlocker(QObject):
                     # To avoid spamming, only push if state changed. push_state already checks this.
                     self.main.push_state()
         return False
-
 class AcousticStudioMain(QMainWindow):
-
     def __init__(self):
-
         super().__init__()
-
         
         
-
         self.setWindowTitle("Acoustic Control Studio - PyVista 3D Viewer")
-
         self.resize(1400, 950)
-
         # File Menu
         from PySide6.QtGui import QAction
         from PySide6.QtCore import Qt
@@ -397,7 +357,7 @@ class AcousticStudioMain(QMainWindow):
         
         edit_menu = menubar.addMenu("편집 (Edit)")
         
-        undo_action = QAction("되돌리기 (Undo)", self)
+        undo_action = QAction("실행 취소 (Undo)", self)
         undo_action.setShortcut("Ctrl+Z")
         from PySide6.QtCore import Qt
         undo_action.setShortcutContext(Qt.ApplicationShortcut)
@@ -409,42 +369,29 @@ class AcousticStudioMain(QMainWindow):
         redo_action.setShortcutContext(Qt.ApplicationShortcut)
         redo_action.triggered.connect(self.redo)
         edit_menu.addAction(redo_action)
+        tools_menu = self.menuBar().addMenu("도구(Tools)")
+        lib_mgr_action = tools_menu.addAction("라이브러리 관리자 (Library Manager)")
+        lib_mgr_action.triggered.connect(self.open_library_manager)
+
         
         # Initialize undo stack
         self.push_state()
         self._initial_state = self.get_state()
-
-
         
-
         main_widget = QWidget()
-
         self.setCentralWidget(main_widget)
-
         main_layout = QVBoxLayout(main_widget)
-
-
-
         
-
         self.view_panel = QWidget()
         self.view_panel.setMinimumWidth(50)
-
         view_layout = QVBoxLayout(self.view_panel)
-
         view_layout.setContentsMargins(0, 0, 0, 0)
-
         
-
         self.plotter = QtInteractor(self.view_panel)
         self.plotter.interactor.setMinimumWidth(50)
-
         view_layout.addWidget(self.plotter.interactor)
-
         
-
         self.plotter.set_background("#2b2b2b")
-
         
         self.plotter.add_axes()
         
@@ -471,29 +418,17 @@ class AcousticStudioMain(QMainWindow):
         self.gizmo_start_values = None
         
         self.plotter.disable_depth_peeling()
-
-
         
-
-        # ??�� ??(Del) 바인??        
+        # ??占쏙옙 ??(Del) 諛붿씤??        
         self.plotter.add_key_event('Delete', self.delete_selected_objects)
-
         
-
         self.transducer_actors = []
-
         self.control_points = []
-
         self.selected_actors = []
-
         self.selected_point_index = -1
-
         
-
         self.area_picker = vtk.vtkAreaPicker()
-
         self.mouse_filter = MouseEventFilter(self)
-
         self.plotter.interactor.installEventFilter(self.mouse_filter)
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -516,12 +451,9 @@ class AcousticStudioMain(QMainWindow):
         control_panel = QWidget()
         control_panel.setMinimumWidth(380)
         control_layout = QVBoxLayout(control_panel)
-
-
         from PySide6.QtCore import Qt
         control_layout.setAlignment(Qt.AlignTop)
         control_layout.setContentsMargins(5, 10, 15, 10)
-
         
         
         scroll_area.setWidget(control_panel)
@@ -542,8 +474,8 @@ class AcousticStudioMain(QMainWindow):
         
         import serial.tools.list_ports
         self.serial_port_cb = QComboBox()
-        self.btn_refresh_ports = QPushButton("↻")
-        self.btn_refresh_ports.setFixedWidth(30)
+        self.btn_refresh_ports = QPushButton("새로고침")
+        self.btn_refresh_ports.setFixedWidth(60)
         self.btn_refresh_ports.clicked.connect(self.refresh_ports)
         
         self.serial_baud_cb = QComboBox()
@@ -565,31 +497,53 @@ class AcousticStudioMain(QMainWindow):
         hw_layout.addWidget(self.serial_baud_cb)
         hw_layout.addWidget(self.btn_connect_hw)
         hw_layout.addWidget(self.btn_send_phase)
+        
+        # Add Compute Mode UI
+        try:
+            from acousticstudio.sonic_wrapper import is_gpu_available, get_cpu_name, get_gpu_name
+            has_gpu = is_gpu_available()
+            cpu_name = get_cpu_name()
+            gpu_name = get_gpu_name()
+        except ImportError:
+            has_gpu = False
+            cpu_name = "Unknown CPU"
+            gpu_name = "Unknown GPU"
+            
+        import importlib.util
+        self.has_taichi = importlib.util.find_spec("taichi") is not None
+        self.has_pytorch = importlib.util.find_spec("torch") is not None
+            
+        self.compute_mode_cb = QComboBox()
+        self.compute_mode_cb.setStyleSheet("QComboBox { combobox-popup: 0; }")
+        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (C++ 최적화 - 매우 빠름)")
+        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (Numba JIT - 보통)")
+        self.compute_mode_cb.addItem(f"GPU: 내장/범용 그래픽 (Taichi 가속)")
+        self.compute_mode_cb.addItem(f"GPU: {gpu_name} (PyTorch/CUDA 가속)")
+        
+        if hasattr(self, "update_compute_mode_styles"):
+            self.update_compute_mode_styles()
+            
+        self.compute_mode_cb.currentIndexChanged.connect(self.on_compute_mode_changed)
+            
+        hw_layout.addWidget(QLabel(" | 연산 모드:"))
+        hw_layout.addWidget(self.compute_mode_cb)
         hw_layout.addStretch()
         
-        left_layout.addWidget(hw_top_bar)
-        left_layout.addWidget(self.view_panel)
+        main_layout.addWidget(hw_top_bar)
         
         # --- Splitter Setup ---
         self.splitter = QSplitter(Qt.Horizontal)
-        self.splitter.addWidget(left_panel)
+        self.splitter.addWidget(self.view_panel)
         self.splitter.addWidget(scroll_area)
         self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 0)
         self.splitter.setSizes([1020, 380])
         
         main_layout.addWidget(self.splitter)
-
-
-
         
-
-        # [1. Transform Properties (?�택??객체 ?�동/?�전)] - ?�로 추�???
-
+        # [1. Transform Properties (?占쏀깮??媛앹껜 ?占쎈룞/?占쎌쟾)] - ?占쎈줈 異뷂옙???
         transform_group = QGroupBox("1. Selected Object Transform (선택된 객체 이동/회전)")
-
         transform_group.setStyleSheet("QGroupBox { font-weight: bold; color: #2196F3; }")
-
         
         
         self.sel_x = QDoubleSpinBox(); self.sel_x.setRange(-2000, 2000)
@@ -600,16 +554,14 @@ class AcousticStudioMain(QMainWindow):
         self.sel_rz = QDoubleSpinBox(); self.sel_rz.setRange(-360, 360)
         
         from PySide6.QtWidgets import QGridLayout
-
         t_layout = QGridLayout()
-        t_layout.addWidget(QLabel("위치 (mm):"), 0, 0)
+        t_layout.addWidget(QLabel("이동 (mm):"), 0, 0)
         t_layout.addWidget(QLabel("X:"), 0, 1)
         t_layout.addWidget(self.sel_x, 0, 2)
         t_layout.addWidget(QLabel("Y:"), 0, 3)
         t_layout.addWidget(self.sel_y, 0, 4)
         t_layout.addWidget(QLabel("Z:"), 0, 5)
         t_layout.addWidget(self.sel_z, 0, 6)
-
         t_layout.addWidget(QLabel("회전 (deg):"), 1, 0)
         t_layout.addWidget(QLabel("Rx:"), 1, 1)
         t_layout.addWidget(self.sel_rx, 1, 2)
@@ -617,108 +569,72 @@ class AcousticStudioMain(QMainWindow):
         t_layout.addWidget(self.sel_ry, 1, 4)
         t_layout.addWidget(QLabel("Rz:"), 1, 5)
         t_layout.addWidget(self.sel_rz, 1, 6)
-
         transform_group.setLayout(t_layout)
         control_layout.addWidget(transform_group)
-
-
         # Properties Group
-        self.prop_group = QGroupBox("Selected Properties (속성 조절)")
+        self.prop_group = QGroupBox("Selected Properties (선택 속성)")
         prop_layout = QFormLayout()
         
         self.prop_type_lbl = QLabel("-")
         self.prop_sensor_cb = QComboBox()
-        self.prop_sensor_cb.addItems(["소형 초음파센서 (10mm)", "소형 초음파센서 (16mm)", "랑주뱅 진동자 (Langevin)"])
+        self.prop_sensor_cb.addItems(["일반 초음파 (10mm)", "일반 초음파 (16mm)", "랑주뱅 진동자 (Langevin)"])
         
         self.prop_radius_spin = QDoubleSpinBox()
         self.prop_radius_spin.setRange(0.1, 100.0)
         self.prop_radius_spin.setSuffix(" mm")
         
-        prop_layout.addRow("선택 객체:", self.prop_type_lbl)
-        prop_layout.addRow("센서 변경:", self.prop_sensor_cb)
-        prop_layout.addRow("반경 조절:", self.prop_radius_spin)
+        prop_layout.addRow("객체 종류:", self.prop_type_lbl)
+        prop_layout.addRow("트랜스듀서 반경:", self.prop_sensor_cb)
+        prop_layout.addRow("초점 반경:", self.prop_radius_spin)
         
         self.prop_group.setLayout(prop_layout)
         control_layout.addWidget(self.prop_group)
-
         self.prop_sensor_cb.currentIndexChanged.connect(self.on_prop_sensor_changed)
         self.prop_radius_spin.valueChanged.connect(self.on_prop_radius_changed)
-
-
         
-
-        # UI 값이 바�???3D 객체??즉시 반영
-
+        # UI 媛믪씠 諛뷂옙???3D 媛앹껜??利됱떆 諛섏쁺
         self.sel_x.valueChanged.connect(self.apply_ui_transform)
         self.sel_x.editingFinished.connect(self.push_state)
-
         self.sel_y.valueChanged.connect(self.apply_ui_transform)
         self.sel_y.editingFinished.connect(self.push_state)
-
         self.sel_z.valueChanged.connect(self.apply_ui_transform)
         self.sel_z.editingFinished.connect(self.push_state)
-
         self.sel_rx.valueChanged.connect(self.apply_ui_transform)
         self.sel_rx.editingFinished.connect(self.push_state)
-
         self.sel_ry.valueChanged.connect(self.apply_ui_transform)
         self.sel_ry.editingFinished.connect(self.push_state)
-
         self.sel_rz.valueChanged.connect(self.apply_ui_transform)
         self.sel_rz.editingFinished.connect(self.push_state)
-
         
-
-        # [2. 배열 ?�정 그룹]
-
-        array_group = QGroupBox("2. Transducer Array Setup (초음파 배열 설정)")
-
+        # [2. 諛곗뿴 ?占쎌젙 洹몃９]
+        array_group = QGroupBox("2. Transducer Array Setup (트랜스듀서 배열 설정)")
         array_layout = QVBoxLayout()
         array_form = QFormLayout()
-
         
-
         self.transducer_type_cb = QComboBox()
-
-        self.transducer_type_cb.addItems(["소형 초음파센서 (10mm)", "소형 초음파센서 (16mm)", "랑주뱅 진동자 (Langevin)"])
-
+        self.transducer_type_cb.addItems(["일반 초음파 (10mm)", "일반 초음파 (16mm)", "랑주뱅 진동자 (Langevin)"])
         self.array_type_cb = QComboBox()
-
-        self.array_type_cb.addItems(["NxM Matrix (평면)", "터널형 (상하좌우 4면)", "대향형 (상하 2면)", "반구형 (Hemisphere)", "튜브형 (Tube)"])
-
+        self.array_type_cb.addItems(["NxM Matrix (평면)", "다면체 (상하좌우)", "대향형 (상하)", "반구형 (Hemisphere)", "튜브형 (Tube)"])
         
-
         self.grid_x_spin = QSpinBox(); self.grid_x_spin.setValue(16); self.grid_x_spin.setRange(1, 100)
         self.grid_y_spin = QSpinBox(); self.grid_y_spin.setValue(16); self.grid_y_spin.setRange(1, 100)
         self.spacing_spin = QDoubleSpinBox(); self.spacing_spin.setValue(10.5); self.spacing_spin.setRange(1.0, 200.0); self.spacing_spin.setDecimals(2)
-
-        # 배열 ?�성 ???�치/각도 지??        
+        # 諛곗뿴 ?占쎌꽦 ???占쎌튂/媛곷룄 吏??        
         self.gen_pos_x = QDoubleSpinBox(); self.gen_pos_x.setRange(-1000, 1000); self.gen_pos_x.setValue(0.0)
-
         self.gen_pos_y = QDoubleSpinBox(); self.gen_pos_y.setRange(-1000, 1000); self.gen_pos_y.setValue(0.0)
-
         self.gen_pos_z = QDoubleSpinBox(); self.gen_pos_z.setRange(-1000, 1000); self.gen_pos_z.setValue(0.0)
-
         
-
         self.gen_rot_x = QDoubleSpinBox(); self.gen_rot_x.setRange(-360, 360); self.gen_rot_x.setValue(0.0)
-
         self.gen_rot_y = QDoubleSpinBox(); self.gen_rot_y.setRange(-360, 360); self.gen_rot_y.setValue(0.0)
-
         self.gen_rot_z = QDoubleSpinBox(); self.gen_rot_z.setRange(-360, 360); self.gen_rot_z.setValue(0.0)
-
         
-
-        array_form.addRow("센서 형태:", self.transducer_type_cb)
-
-        array_form.addRow("배열 방식:", self.array_type_cb)
-
+        array_form.addRow("트랜스듀서 모델:", self.transducer_type_cb)
+        array_form.addRow("배열 형태:", self.array_type_cb)
         
-
         grid_layout = QHBoxLayout()
         grid_layout.addWidget(self.grid_x_spin)
         grid_layout.addWidget(self.grid_y_spin)
-        array_form.addRow("Grid X, Y:", grid_layout) 
+        array_form.addRow("Grid X, Y:", grid_layout)
         
         array_form.addRow("Spacing (간격 mm):", self.spacing_spin)
         array_layout.addLayout(array_form)
@@ -729,263 +645,156 @@ class AcousticStudioMain(QMainWindow):
             else: self.spacing_spin.setValue(50.0)
         self.transducer_type_cb.currentTextChanged.connect(on_transducer_type_changed)
         gen_grid = QGridLayout()
-        gen_grid.addWidget(QLabel("생성 위치 (mm):"), 0, 0)
+        gen_grid.addWidget(QLabel("배열 이동 (mm):"), 0, 0)
         gen_grid.addWidget(QLabel("X:"), 0, 1)
         gen_grid.addWidget(self.gen_pos_x, 0, 2)
         gen_grid.addWidget(QLabel("Y:"), 0, 3)
         gen_grid.addWidget(self.gen_pos_y, 0, 4)
         gen_grid.addWidget(QLabel("Z:"), 0, 5)
         gen_grid.addWidget(self.gen_pos_z, 0, 6)
-
-        gen_grid.addWidget(QLabel("생성 각도 (deg):"), 1, 0)
+        gen_grid.addWidget(QLabel("배열 회전 (deg):"), 1, 0)
         gen_grid.addWidget(QLabel("Rx:"), 1, 1)
         gen_grid.addWidget(self.gen_rot_x, 1, 2)
         gen_grid.addWidget(QLabel("Ry:"), 1, 3)
         gen_grid.addWidget(self.gen_rot_y, 1, 4)
         gen_grid.addWidget(QLabel("Rz:"), 1, 5)
         gen_grid.addWidget(self.gen_rot_z, 1, 6)
-
         array_layout.addLayout(gen_grid)
-
-
         
-
-        self.add_array_btn = QPushButton("배열 3D 뷰어에 생성하기")
-
+        self.add_array_btn = QPushButton("배열 3D 렌더링 생성")
         self.add_array_btn.clicked.connect(self._hooked_generate_array)
-
         self.clear_btn = QPushButton("Clear All")
-
         self.clear_btn.clicked.connect(self._hooked_clear_view)
-
         
-
         array_layout.addWidget(self.add_array_btn)
-
         array_layout.addWidget(self.clear_btn)
-
         array_group.setLayout(array_layout)
-
         control_layout.addWidget(array_group)
-
         
-
-        # [3. 컨트�??�인??(?��? 그룹]
-
-        points_group = QGroupBox("3. Control Points (타겟 설정)")
-
+        # [3. 而⑦듃占??占쎌씤??(?占쏙옙? 洹몃９]
+        points_group = QGroupBox("3. Control Points (제어점 설정)")
         points_layout = QVBoxLayout()
-
         
-
         
         self.point_size_spin = QDoubleSpinBox()
         self.point_size_spin.setRange(0.1, 50.0)
         self.point_size_spin.setValue(5.0)
         
         size_layout = QHBoxLayout()
-        size_layout.addWidget(QLabel("타겟 반경 (mm):"))
+        size_layout.addWidget(QLabel("제어점 반경 (mm):"))
         size_layout.addWidget(self.point_size_spin)
         points_layout.addLayout(size_layout)
         
         self.points_list = QListWidget()
         self.points_list.setMinimumHeight(200)
         self.points_list.setMaximumHeight(600)
-
-
         self.points_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-
         self.points_list.currentRowChanged.connect(self.on_point_selected)
-
         points_layout.addWidget(self.points_list)
-
         
-
         btn_layout = QHBoxLayout()
-
         self.add_pt_btn = QPushButton("Add Point")
-
         self.add_pt_btn.clicked.connect(self._hooked_add_control_point)
-
         self.del_pt_btn = QPushButton("Delete Point")
-
         self.del_pt_btn.clicked.connect(self._hooked_del_control_point)
-
         btn_layout.addWidget(self.add_pt_btn)
-
         btn_layout.addWidget(self.del_pt_btn)
-
         points_layout.addLayout(btn_layout)
-
         
-
-        self.auto_calc_cb = QCheckBox("Point 위치 변동 시 위상/음압 실시간 자동 계산")
-        self.auto_calc_cb.setChecked(True) # 기본적으로 켜둠
+        self.auto_calc_cb = QCheckBox("Point 이동 시 실시간 위상 업데이트")
+        self.auto_calc_cb.setChecked(True) # 湲곕낯쟻쑝濡 耳쒕몺
         points_layout.addWidget(self.auto_calc_cb)
-
         
-
         points_group.setLayout(points_layout)
-
         control_layout.addWidget(points_group)
-
         
-
-        # [4. ?�랩 �??��??�이??그룹]
-
-        field_group = QGroupBox("4. Phase Simulation (위상 연산)")
-
+        # [4. ?占쎈옪 占??占쏙옙??占쎌씠??洹몃９]
+        field_group = QGroupBox("4. Phase Simulation (위상 계산)")
         field_layout = QFormLayout()
-
         self.trap_type_cb = QComboBox()
-
         self.trap_type_cb.addItems(["Twin Trap", "Vortex Trap"])
-
-        field_layout.addRow("알고리즘:", self.trap_type_cb)
-
+        field_layout.addRow("트랩 종류:", self.trap_type_cb)
         
-
         self.run_btn = QPushButton("Calculate Phase (위상 계산 및 시각화)")
-
         self.run_btn.setStyleSheet("background-color: #4CAF50; color: white; height: 30px; font-weight: bold;")
-
         self.run_btn.clicked.connect(self.simulate_colors)
-
         field_layout.addRow(self.run_btn)
-
         field_group.setLayout(field_layout)
-
         control_layout.addWidget(field_group)
-
         
-
-        # [5. ?�압 ?�각??그룹]
-
+        # [5. ?占쎌븬 ?占쎄컖??洹몃９]
         visual_group = QGroupBox("5. Acoustic Field Visualization (음압 단면 시각화)")
-
         visual_layout = QVBoxLayout()
-
         
-
         # XZ Plane
-
         xz_lyt = QHBoxLayout()
-
-        self.xz_check = QCheckBox("XZ (측면)")
-
+        self.xz_check = QCheckBox("XZ (정면)")
         self.xz_check.stateChanged.connect(self.update_field_slice)
-
         self.xz_slider = QSlider(Qt.Horizontal); self.xz_slider.setRange(-200, 200)
-
         self.xz_spin = QSpinBox(); self.xz_spin.setRange(-200, 200); self.xz_spin.setFixedWidth(60)
-
-        def on_xz_sl(v): self.xz_spin.blockSignals(True); self.xz_spin.setValue(v); self.xz_spin.blockSignals(False); self.draw_ghost_plane('xz', v)
+        def on_xz_sl(v): self.xz_spin.blockSignals(True); self.xz_spin.setValue(v); self.xz_spin.blockSignals(False); self.draw_ghost_plane('xz', v); (self.update_field_slice() if not self.xz_slider.isSliderDown() else None)
         def on_xz_sp(v): self.xz_slider.blockSignals(True); self.xz_slider.setValue(v); self.xz_slider.blockSignals(False); self.draw_ghost_plane('xz', v); self.update_field_slice()
-
         self.xz_slider.valueChanged.connect(on_xz_sl)
         self.xz_slider.sliderReleased.connect(self.update_field_slice)
         self.xz_spin.valueChanged.connect(on_xz_sp)
-
         xz_lyt.addWidget(self.xz_check); xz_lyt.addWidget(self.xz_slider); xz_lyt.addWidget(self.xz_spin)
-
         visual_layout.addLayout(xz_lyt)
-
         
-
         # YZ Plane
-
         yz_lyt = QHBoxLayout()
-
-        self.yz_check = QCheckBox("YZ (정면)")
-
+        self.yz_check = QCheckBox("YZ (측면)")
         self.yz_check.stateChanged.connect(self.update_field_slice)
-
         self.yz_slider = QSlider(Qt.Horizontal); self.yz_slider.setRange(-200, 200)
         self.yz_spin = QSpinBox(); self.yz_spin.setRange(-200, 200); self.yz_spin.setFixedWidth(60)
-
-        def on_yz_sl(v): self.yz_spin.blockSignals(True); self.yz_spin.setValue(v); self.yz_spin.blockSignals(False); self.draw_ghost_plane('yz', v)
+        def on_yz_sl(v): self.yz_spin.blockSignals(True); self.yz_spin.setValue(v); self.yz_spin.blockSignals(False); self.draw_ghost_plane('yz', v); (self.update_field_slice() if not self.yz_slider.isSliderDown() else None)
         def on_yz_sp(v): self.yz_slider.blockSignals(True); self.yz_slider.setValue(v); self.yz_slider.blockSignals(False); self.draw_ghost_plane('yz', v); self.update_field_slice()
-
         self.yz_slider.valueChanged.connect(on_yz_sl)
         self.yz_slider.sliderReleased.connect(self.update_field_slice)
         self.yz_spin.valueChanged.connect(on_yz_sp)
-
         yz_lyt.addWidget(self.yz_check); yz_lyt.addWidget(self.yz_slider); yz_lyt.addWidget(self.yz_spin)
-
         visual_layout.addLayout(yz_lyt)
-
         
-
         # XY Plane
-
         xy_lyt = QHBoxLayout()
-
-        self.xy_check = QCheckBox("XY (바닥)")
-
+        self.xy_check = QCheckBox("XY (평면)")
         self.xy_check.stateChanged.connect(self.update_field_slice)
-
         self.xy_slider = QSlider(Qt.Horizontal); self.xy_slider.setRange(-200, 200)
         self.xy_spin = QSpinBox(); self.xy_spin.setRange(-200, 200); self.xy_spin.setFixedWidth(60)
-
-        def on_xy_sl(v): self.xy_spin.blockSignals(True); self.xy_spin.setValue(v); self.xy_spin.blockSignals(False); self.draw_ghost_plane('xy', v)
+        def on_xy_sl(v): self.xy_spin.blockSignals(True); self.xy_spin.setValue(v); self.xy_spin.blockSignals(False); self.draw_ghost_plane('xy', v); (self.update_field_slice() if not self.xy_slider.isSliderDown() else None)
         def on_xy_sp(v): self.xy_slider.blockSignals(True); self.xy_slider.setValue(v); self.xy_slider.blockSignals(False); self.draw_ghost_plane('xy', v); self.update_field_slice()
-
         self.xy_slider.valueChanged.connect(on_xy_sl)
         self.xy_slider.sliderReleased.connect(self.update_field_slice)
         self.xy_spin.valueChanged.connect(on_xy_sp)
-
         xy_lyt.addWidget(self.xy_check); xy_lyt.addWidget(self.xy_slider); xy_lyt.addWidget(self.xy_spin)
-
         visual_layout.addLayout(xy_lyt)
-
         
-
-        self.show_field_btn = QPushButton("음압 단면 보기 (ON/OFF)")
-
+        self.show_field_btn = QPushButton("음압 단면 시각화 (ON/OFF)")
         self.show_field_btn.setStyleSheet("background-color: #2196F3; color: white; height: 30px; font-weight: bold;")
-
         self.show_field_btn.setCheckable(True)
-
         self.show_field_btn.clicked.connect(self.toggle_field_slice)
-
         show_field_lyt = QHBoxLayout()
         show_field_lyt.addWidget(self.show_field_btn)
         self.field_mode_combo = QComboBox()
-        self.field_mode_combo.addItems(['음압 분포 (Pressure Magnitude)', '위상 분포 (Phase Angle)'])
+        self.field_mode_combo.addItems(["음압 분포 (Pressure Magnitude)", "위상 분포 (Phase Angle)"])
         self.field_mode_combo.currentIndexChanged.connect(self.update_field_slice)
         show_field_lyt.addWidget(self.field_mode_combo)
         visual_layout.addLayout(show_field_lyt)
-
         
-
         visual_group.setLayout(visual_layout)
-
         control_layout.addWidget(visual_group)
         control_layout.addStretch(1)
         # Hardware UI moved to top bar
-
-
         
-
-        self.field_actors = [] # ?�중 ?�라?�스 ?�터�?관리하�??�한 리스??        
-
+        self.field_actors = [] # ?占쎌쨷 ?占쎈씪?占쎌뒪 ?占쏀꽣占?愿由ы븯占??占쏀븳 由ъ뒪??        
         
         self._is_updating_ui = False
-
-
         self._sel_base_centroid = [0.0, 0.0, 0.0]
-
         self._sel_base_rot = [0.0, 0.0, 0.0]
-
         # Apply wheel blocker AFTER all widgets are created
         self.wheel_blocker = WheelBlocker(scroll_area)
         widgets = self.findChildren(QDoubleSpinBox) + self.findChildren(QSpinBox) + self.findChildren(QComboBox)
         for widget in widgets:
             widget.installEventFilter(self.wheel_blocker)
-
-
-
-
     
     def get_pyvista_actor(self, vtk_prop):
         if vtk_prop is None: return None
@@ -995,14 +804,8 @@ class AcousticStudioMain(QMainWindow):
         for a in self.get_control_point_actors():
             if a.GetAddressAsString("vtkProp") == addr: return a
         return None
-
     def get_control_point_actors(self):
-
         return [p["actor"] for p in self.control_points]
-
-
-
-
     def refresh_ports(self):
         import serial.tools.list_ports
         self.serial_port_cb.clear()
@@ -1013,7 +816,6 @@ class AcousticStudioMain(QMainWindow):
         
         if not ports:
             self.serial_port_cb.addItem("No Ports Found")
-
     def connect_hw(self):
         if not hasattr(self, 'serial_port') or self.serial_port is None:
             port = self.serial_port_cb.currentText()
@@ -1029,21 +831,20 @@ class AcousticStudioMain(QMainWindow):
             try:
                 import serial
                 self.serial_port = serial.Serial(port, baud, timeout=1)
-                self.btn_connect_hw.setText("Disconnect (연결 해제)")
+                self.btn_connect_hw.setText("Disconnect (뿰寃 빐젣)")
                 self.btn_send_phase.setEnabled(True)
                 QMessageBox.information(self, "Hardware", f"Connected to {port} at {baud} baud.")
             except Exception as e:
-                QMessageBox.critical(self, "Connection Error", f"Failed to connect to {port}:\n{str(e)}")
+                QMessageBox.critical(self, "오류", f"작업 중 오류가 발생했습니다: {str(e)}")
         else:
             try:
                 self.serial_port.close()
             except:
                 pass
             self.serial_port = None
-            self.btn_connect_hw.setText("Connect (연결)")
+            self.btn_connect_hw.setText("Connect (뿰寃)")
             self.btn_send_phase.setEnabled(False)
             QMessageBox.information(self, "Hardware", "Disconnected.")
-
     def send_phase_data(self):
         if not hasattr(self, 'serial_port') or self.serial_port is None:
             return
@@ -1073,96 +874,54 @@ class AcousticStudioMain(QMainWindow):
             print(f"HW Send Error: {e}")
             
     def apply_ui_transform(self):
-
         """doc"""""
-
         if self._is_updating_ui or not self.selected_actors:
-
             return
-
             
-
         dx = self.sel_x.value() - self._sel_base_centroid[0]
-
         dy = self.sel_y.value() - self._sel_base_centroid[1]
-
         dz = self.sel_z.value() - self._sel_base_centroid[2]
-
         
-
         drx = self.sel_rx.value() - self._sel_base_rot[0]
-
         dry = self.sel_ry.value() - self._sel_base_rot[1]
-
         drz = self.sel_rz.value() - self._sel_base_rot[2]
-
         if abs(dx) < 1e-5 and abs(dy) < 1e-5 and abs(dz) < 1e-5 and abs(drx) < 1e-5 and abs(dry) < 1e-5 and abs(drz) < 1e-5:
             return
-
         
-
-        # 변??매트�?�� ?�성
-
+        # 蹂??留ㅽ듃占?占쏙옙 ?占쎌꽦
         t = vtk.vtkTransform()
-
         t.Translate(self._sel_base_centroid[0] + dx, self._sel_base_centroid[1] + dy, self._sel_base_centroid[2] + dz)
-
         t.RotateX(drx)
-
         t.RotateY(dry)
-
         t.RotateZ(drz)
-
         t.Translate(-self._sel_base_centroid[0], -self._sel_base_centroid[1], -self._sel_base_centroid[2])
-
         
-
         delta_matrix = t.GetMatrix()
-
         
-
         point_moved = False
-
         for act in self.selected_actors:
-
             new_mat = vtk.vtkMatrix4x4()
-
             vtk.vtkMatrix4x4.Multiply4x4(delta_matrix, act._initial_matrix, new_mat)
-
             act.SetUserMatrix(new_mat)
-
             
-
-            # 컨트�??�인?�인 경우 ?��? ?�이???�기??            
+            # 而⑦듃占??占쎌씤?占쎌씤 寃쎌슦 ?占쏙옙? ?占쎌씠???占쎄린??            
             for pt in self.control_points:
-
                 if pt["actor"] == act:
-
                     c = act.center
-
                     pt["x"], pt["y"], pt["z"] = c[0], c[1], c[2]
-
                     point_moved = True
-
                     
-
-        # 기즈모 위치 업데이트
+        # 湲곗쫰紐 쐞移 뾽뜲씠듃
         if hasattr(self, 'gizmo_actors') and self.gizmo_actors:
             t2 = vtk.vtkTransform()
             t2.Translate(dx, dy, dz)
             for act in self.gizmo_actors.values():
                 act.SetUserMatrix(t2.GetMatrix())
-
             
-
         if point_moved and self.auto_calc_cb.isChecked():
-
             self.simulate_colors()
-
         else:
-
             self.plotter.render()
-
     def on_gizmo_interaction(self, caller, event):
         if not self.selected_actors: return
         t = vtk.vtkTransform()
@@ -1182,7 +941,6 @@ class AcousticStudioMain(QMainWindow):
         self._is_gizmo_dragging = False
         
     def process_selection(self, start_pos, end_pos, modifiers):
-
         scale = self.plotter.interactor.devicePixelRatioF()
         x0 = int(round(start_pos.x() * scale))
         y0 = int(round(start_pos.y() * scale))
@@ -1191,24 +949,14 @@ class AcousticStudioMain(QMainWindow):
         
         vtk_y0 = self.plotter.window_size[1] - y0 - 1
         vtk_y1 = self.plotter.window_size[1] - y1 - 1
-
-
         
-
         dx = abs(x1 - x0)
-
         dy = abs(vtk_y1 - vtk_y0)
-
         
-
         cp_actors = self.get_control_point_actors()
-
         picked_props = []
-
         renderer = self.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
-
         
-
         
         if dx < 5 and dy < 5:
             prop_picker = vtk.vtkPropPicker()
@@ -1231,9 +979,7 @@ class AcousticStudioMain(QMainWindow):
                     picked_props.append(pv_act)
                 prop = props.GetNextProp3D()
         is_ctrl = bool(int(modifiers) & int(Qt.KeyboardModifier.ControlModifier)) if hasattr(modifiers, "__int__") else bool(modifiers & Qt.KeyboardModifier.ControlModifier.value) if type(modifiers) == int else bool(modifiers & Qt.KeyboardModifier.ControlModifier)
-
         
-
         if not is_ctrl:
             for act in self.selected_actors:
                 if hasattr(act, '_original_color'):
@@ -1254,19 +1000,12 @@ class AcousticStudioMain(QMainWindow):
                     self.selected_actors.append(prop)
                     prop.prop.color = "pink"
                     prop.prop.opacity = 0.4
-
         self.update_gizmo()
-
         self.update_ui_from_selection()
-
         self.plotter.render()
-
-
-
     def update_ui_from_selection(self):
         """doc"""
         self._is_updating_ui = True
-
         # 1. Reset UI to defaults
         self.prop_sensor_cb.setEnabled(False)
         self.prop_radius_spin.setEnabled(False)
@@ -1280,7 +1019,6 @@ class AcousticStudioMain(QMainWindow):
             self.sel_rx.setValue(0); self.sel_ry.setValue(0); self.sel_rz.setValue(0)
             self._is_updating_ui = False
             return
-
         # 3. Analyze selection types
         has_sensor = any(a in self.transducer_actors for a in self.selected_actors)
         cp_actor = None
@@ -1292,22 +1030,21 @@ class AcousticStudioMain(QMainWindow):
                 break
                 
         if has_sensor and not has_cp:
-            self.prop_type_lbl.setText("초음파 센서")
+            self.prop_type_lbl.setText("珥덉쓬뙆 꽱꽌")
             self.prop_sensor_cb.setEnabled(True)
         elif has_cp and not has_sensor:
-            self.prop_type_lbl.setText("타겟 (Control Point)")
+            self.prop_type_lbl.setText("寃 (Control Point)")
             self.prop_radius_spin.setEnabled(True)
             for pt in self.control_points:
                 if pt["actor"] == cp_actor:
                     self.prop_radius_spin.setValue(pt.get("radius", 5.0))
                     break
         elif has_sensor and has_cp:
-            self.prop_type_lbl.setText("다중 선택 (혼합)")
+            self.prop_type_lbl.setText("떎以 꽑깮 (샎빀)")
             self._sel_base_centroid = [0.0, 0.0, 0.0]
             self._sel_base_rot = [0.0, 0.0, 0.0]
             self._is_updating_ui = False
             return
-
         # 4. Calculate centroid for Gizmo
         import vtk
         cx, cy, cz = 0.0, 0.0, 0.0
@@ -1330,7 +1067,6 @@ class AcousticStudioMain(QMainWindow):
         
         self.sel_x.setValue(cx); self.sel_y.setValue(cy); self.sel_z.setValue(cz)
         self.sel_rx.setValue(0); self.sel_ry.setValue(0); self.sel_rz.setValue(0)
-
         # 5. Update Gizmo
         if not getattr(self, '_is_gizmo_dragging', False):
             if not getattr(self, 'selected_actors', []):
@@ -1396,9 +1132,6 @@ class AcousticStudioMain(QMainWindow):
                     mapper.SetRelativeCoincidentTopologyLineOffsetParameters(-10, -10)
             
         self._is_updating_ui = False
-
-
-
     
     def on_prop_sensor_changed(self, idx):
         if getattr(self, '_is_updating_ui', False) or not self.selected_actors: return
@@ -1466,71 +1199,39 @@ class AcousticStudioMain(QMainWindow):
                 new_actors.append(act)
         self.selected_actors = new_actors
         self.plotter.render()
-
     def delete_selected_objects(self):
-
         if not self.selected_actors:
-
             return
-
             
-
         for actor in self.selected_actors:
-
             if actor in self.transducer_actors:
-
                 self.transducer_actors.remove(actor)
-
                 self.plotter.remove_actor(actor)
-
             else:
-
                 # Check if it's a control point
-
                 for i, cp in enumerate(self.control_points):
-
                     if cp["actor"] == actor:
-
                         self.plotter.remove_actor(actor)
-
                         del self.control_points[i]
-
                         self.points_list.takeItem(i)
-
                         break
-
                         
-
         self.selected_actors.clear()
-
         self.update_transform_ui()
-
         self.plotter.render()
-
         
-
     def keyPressEvent(self, event):
-
         if event.key() == Qt.Key_Delete:
-
             self.delete_selected_objects()
-
         super().keyPressEvent(event)
-
-
-
     def has_unsaved_changes(self):
         current = self.get_state()
         saved = getattr(self, '_last_saved_state', getattr(self, '_initial_state', None))
         return current != saved
-
     def closeEvent(self, event):
         if self.has_unsaved_changes():
             from PySide6.QtWidgets import QMessageBox
-            reply = QMessageBox.question(self, '저장 확인', 
-                                         '저장되지 않은 변경사항이 있습니다. 종료하기 전에 저장하시겠습니까?',
-                                         QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel, 
-                                         QMessageBox.Save)
+            reply = QMessageBox.question(self, '앱 종료', '프로젝트가 수정되었습니다. 저장하시겠습니까?', QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel, QMessageBox.Save)
             if reply == QMessageBox.Save:
                 self.save_project()
                 event.accept()
@@ -1540,48 +1241,24 @@ class AcousticStudioMain(QMainWindow):
                 event.accept()
         else:
             event.accept()
-
     def update_gizmo(self):
-
         if hasattr(self, 'gizmo') and self.gizmo is not None:
-
             self.gizmo.Off()
-
             self.gizmo = None
-
             
-
         if not self.selected_actors:
-
             return
-
             
-
-        # [?�시 비활?�화] vtkVectorText ?�러 문제�??�해 ?�면?�의 3D ?�살??기즈모는 ?�시 꺼둡?�다.
-
-        # ?�치 ?�동?� ?�측 ?�널??'1. Selected Object Transform' ?��?박스�??�해 ?�벽??조작 가?�합?�다.
-
+        # [?占쎌떆 鍮꾪솢?占쏀솕] vtkVectorText ?占쎈윭 臾몄젣占??占쏀빐 ?占쎈㈃?占쎌쓽 3D ?占쎌궡??湲곗쫰紐⑤뒗 ?占쎌떆 爰쇰몼?占쎈떎.
+        # ?占쎌튂 ?占쎈룞?占 ?占쎌륫 ?占쎈꼸??'1. Selected Object Transform' ?占쏙옙?諛뺤뒪占??占쏀빐 ?占쎈꼍??議곗옉 媛?占쏀빀?占쎈떎.
         pass
-
-
-
         for act in self.selected_actors:
-
             mat = vtk.vtkMatrix4x4()
-
             if act.GetUserMatrix():
-
                 mat.DeepCopy(act.GetUserMatrix())
-
             else:
-
                 mat.Identity()
-
             act._initial_matrix = mat
-
-
-
-
     def _hooked_add_control_point(self):
         self.add_control_point()
         self.push_state()
@@ -1598,13 +1275,9 @@ class AcousticStudioMain(QMainWindow):
         self.generate_array()
         self.push_state()
     def add_control_point(self):
-
         idx = len(self.control_points)
-
         name = f"Point {idx+1}"
-
         x, y, z = 0.0, 0.0, 50.0 + (idx * 20)
-
         
         radius = getattr(self, 'point_size_spin', None)
         r = radius.value() if radius else 5.0
@@ -1619,76 +1292,36 @@ class AcousticStudioMain(QMainWindow):
         item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
         item.setCheckState(Qt.Checked)
         self.points_list.addItem(item)
-
-
         self.points_list.setCurrentRow(idx)
-
-
-
     def delete_control_point(self):
-
         idx = self.points_list.currentRow()
-
         if idx >= 0 and idx < len(self.control_points):
-
             actor = self.control_points[idx]["actor"]
-
             if actor in self.selected_actors:
-
                 self.selected_actors.remove(actor)
-
                 self.update_gizmo()
-
             self.plotter.remove_actor(actor)
-
             del self.control_points[idx]
-
             self.points_list.takeItem(idx)
-
             self.plotter.render()
-
-
-
     def on_point_selected(self, idx):
-
         self.selected_point_index = idx
-
         if idx >= 0 and idx < len(self.control_points):
-
             pt = self.control_points[idx]
-
-            # ?�인??리스???�릭 ???�당 ?�인?��? ?�독 ?�택 ?�태�?만듦
-
+            # ?占쎌씤??由ъ뒪???占쎈┃ ???占쎈떦 ?占쎌씤?占쏙옙? ?占쎈룆 ?占쏀깮 ?占쏀깭占?留뚮벀
             if not (QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier):
-
                 for act in self.selected_actors:
-
                     if hasattr(act, '_original_color'):
-
                         act.prop.color = act._original_color
-
                 self.selected_actors.clear()
-
             
-
             if pt["actor"] not in self.selected_actors:
-
                 self.selected_actors.append(pt["actor"])
-
                 pt["actor"].prop.color = "pink"
-
                 
-
             self.update_gizmo()
-
             self.update_ui_from_selection()
-
             self.plotter.render()
-
-
-
-
-
     def get_state(self):
         data = {}
         # Array UI Params
@@ -1735,11 +1368,9 @@ class AcousticStudioMain(QMainWindow):
                         matrix_vals.append(mat.GetElement(r, c))
             data['transducers'].append({'matrix': matrix_vals})
         return data
-
     def set_state(self, data):
         import pyvista as pv
         import vtk
-
         # Array UI Params
         if 'transducer_type' in data and hasattr(self, 'transducer_type_cb'):
             idx = self.transducer_type_cb.findText(data['transducer_type'])
@@ -1748,7 +1379,6 @@ class AcousticStudioMain(QMainWindow):
             idx = self.array_type_cb.findText(data['array_type'])
             if idx >= 0: self.array_type_cb.setCurrentIndex(idx)
         if 'spacing' in data and hasattr(self, 'spacing_spin'): self.spacing_spin.setValue(data['spacing'])
-
         # Restore parameters
         if 'trap_type' in data:
             idx = self.trap_type_cb.findText(data['trap_type'])
@@ -1794,7 +1424,6 @@ class AcousticStudioMain(QMainWindow):
             
             if hasattr(self, 'toggle_field_slice'):
                 self.toggle_field_slice()
-
         # Optimize Transducer update
         tx_data = data.get('transducers', [])
         if tx_data:
@@ -1849,7 +1478,6 @@ class AcousticStudioMain(QMainWindow):
                             for c in range(4):
                                 mat.SetElement(r, c, matrix_vals[r*4 + c])
                         self.transducer_actors[i].SetUserMatrix(mat)
-
         # Optimize Control Points update
         from PySide6.QtCore import Qt
         from PySide6.QtWidgets import QListWidgetItem
@@ -1905,7 +1533,6 @@ class AcousticStudioMain(QMainWindow):
             
         # self.plotter.reset_camera() # Do not reset camera on undo, it's annoying!
         self.simulate_colors()
-
     def save_project(self):
         import json
         if not getattr(self, 'current_project_file', None):
@@ -1917,26 +1544,24 @@ class AcousticStudioMain(QMainWindow):
             json.dump(data, f, indent=4, ensure_ascii=False)
         self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
         self._last_saved_state = data
-
     def save_project_as(self):
         from PySide6.QtWidgets import QFileDialog
         import json
-        filename, _ = QFileDialog.getSaveFileName(self, "다른 이름으로 프로젝트 저장", "", "Acoustic Project (*.json)")
+        filename, _ = QFileDialog.getSaveFileName(self, "떎瑜 씠由꾩쑝濡 봽濡쒖젥듃 옣", "", "Acoustic Project (*.json)")
         if not filename: return
         self.current_project_file = filename
         self.save_project()
-
     def load_project(self):
         from PySide6.QtWidgets import QFileDialog, QMessageBox
         import json
-        filename, _ = QFileDialog.getOpenFileName(self, "프로젝트 불러오기", "", "Acoustic Project (*.json)")
+        filename, _ = QFileDialog.getOpenFileName(self, "봽濡쒖젥듃 遺덈윭삤湲", "", "Acoustic Project (*.json)")
         if not filename: return
         
         try:
             with open(filename, 'r', encoding='utf-8') as f:
                 data = json.load(f)
         except Exception as e:
-            QMessageBox.critical(self, "오류", f"파일을 읽는 중 오류가 발생했습니다: {str(e)}")
+            QMessageBox.critical(self, "오류", f"작업 중 오류가 발생했습니다: {str(e)}")
             return
             
         self.current_project_file = filename
@@ -1944,7 +1569,6 @@ class AcousticStudioMain(QMainWindow):
         self.push_state()
         self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
         self._last_saved_state = data
-
     def push_state(self):
         if not hasattr(self, 'undo_stack'):
             self.undo_stack = []
@@ -1959,7 +1583,6 @@ class AcousticStudioMain(QMainWindow):
             # limit stack size to 20
             if len(self.undo_stack) > 20:
                 self.undo_stack.pop(0)
-
     def undo(self):
         if not hasattr(self, 'undo_stack') or len(self.undo_stack) < 1:
             return
@@ -1972,110 +1595,59 @@ class AcousticStudioMain(QMainWindow):
             self.redo_stack.append(current_state)
             previous_state = self.undo_stack[-1]
             self.set_state(previous_state)
-
     def redo(self):
         if hasattr(self, 'redo_stack') and self.redo_stack:
             next_state = self.redo_stack.pop()
             self.undo_stack.append(next_state)
             self.set_state(next_state)
-
-
     def clear_view(self):
-
         for actor in self.transducer_actors:
-
             if actor in self.selected_actors:
-
                 self.selected_actors.remove(actor)
-
             self.plotter.remove_actor(actor)
-
         self.transducer_actors.clear()
-
         
-
         for p in self.control_points:
-
             if p["actor"] in self.selected_actors:
-
                 self.selected_actors.remove(p["actor"])
-
             self.plotter.remove_actor(p["actor"])
-
         self.control_points.clear()
-
         self.points_list.clear()
-
         
-
         self.update_gizmo()
         self.update_ui_from_selection()
         self.plotter.render()
-
-
-
     def make_truncated_cone(self, radius_wide, radius_narrow, height, resolution=36):
-
         angles = np.linspace(0, 2*np.pi, resolution, endpoint=False)
-
         pts = []
-
         for a in angles:
-
             pts.append([radius_wide * np.cos(a), radius_wide * np.sin(a), height / 2.0])
-
         for a in angles:
-
             pts.append([radius_narrow * np.cos(a), radius_narrow * np.sin(a), -height / 2.0])
-
         
-
         faces = []
-
         for i in range(resolution):
-
             nxt = (i + 1) % resolution
-
             faces.extend([4, i, nxt, resolution + nxt, resolution + i])
-
             
-
-        # ?�단�?(Z ?�방?�이므�?반시계방??CCW)
-
+        # ?占쎈떒占?(Z ?占쎈갑?占쎌씠誘占?諛섏떆怨꾨갑??CCW)
         top_c = len(pts)
-
         pts.append([0, 0, height / 2.0])
-
         for i in range(resolution):
-
             nxt = (i + 1) % resolution
-
             faces.extend([3, top_c, i, nxt])
-
             
-
-        # ?�단�?(Z ??��?�이므�??�계방향 CW)
-
+        # ?占쎈떒占?(Z ??占쏙옙?占쎌씠誘占??占쎄퀎諛⑺뼢 CW)
         bot_c = len(pts)
-
         pts.append([0, 0, -height / 2.0])
-
         for i in range(resolution):
-
             nxt = (i + 1) % resolution
-
             faces.extend([3, bot_c, resolution + nxt, resolution + i])
-
             
-
         mesh = pv.PolyData(np.array(pts), np.array(faces))
-
-        # CAD ?�로그램처럼 ?�카로운 모서�?가?�자�????�영??깨끗?�게 ?�림
-
+        # CAD ?占쎈줈洹몃옩泥섎읆 ?占쎌뭅濡쒖슫 紐⑥꽌占?媛?占쎌옄占????占쎌쁺??源⑤걮?占쎄쾶 ?占쎈┝
         mesh = mesh.compute_normals(split_vertices=True, feature_angle=60)
-
         return mesh
-
     def make_langevin_mesh(self, height=40.0):
         import pyvista as pv
         horn = pv.Cylinder(center=(0, 0, height*0.25), direction=(0, 0, 1), radius=25, height=height*0.5)
@@ -2083,9 +1655,7 @@ class AcousticStudioMain(QMainWindow):
         backing = pv.Cylinder(center=(0, 0, -height*0.375), direction=(0, 0, 1), radius=20, height=height*0.25)
         mesh = horn.merge(piezo).merge(backing)
         return mesh
-
     def generate_array(self):
-
         sensor_type = self.transducer_type_cb.currentText()
         array_type = self.array_type_cb.currentText()
         x_count = self.grid_x_spin.value()
@@ -2108,9 +1678,7 @@ class AcousticStudioMain(QMainWindow):
             color = "silver"
             base_mesh = self.make_langevin_mesh(height)
             self._current_amplitude = 20.0
-
         transforms_to_add = []
-
         if "Matrix" in array_type:
             start_x = -(x_count - 1) * spacing / 2.0
             start_y = -(y_count - 1) * spacing / 2.0
@@ -2147,7 +1715,7 @@ class AcousticStudioMain(QMainWindow):
                     transforms_to_add.append([("translate", (px_m, py_m, -distance/2 - height/2))])
                     transforms_to_add.append([("rotate_x", 180), ("translate", (px_m, py_m, distance/2 + height/2))])
                     
-        elif "Tube" in array_type or "튜브" in array_type:
+        elif "Tube" in array_type or "뒠釉" in array_type:
             import math
             columns = x_count
             rows = y_count
@@ -2176,7 +1744,6 @@ class AcousticStudioMain(QMainWindow):
                     transforms_to_add.append([("rotate_x", 180.0 - cAngle_deg), ("translate", (x_pos, y_pos, z_pos))])
                     angle += angleInc
                 x_pos += spaceOdd
-
         elif "Hemisphere" in array_type:
             N = x_count * y_count
             R = max(100.0, r_wide * np.sqrt(N * 0.8))
@@ -2217,7 +1784,6 @@ class AcousticStudioMain(QMainWindow):
                         vtk_mat.SetElement(r, c_idx, mat[r, c_idx])
                         
                 transforms_to_add.append([("transform", vtk_mat)])
-
         rx, ry, rz = self.gen_rot_x.value(), self.gen_rot_y.value(), self.gen_rot_z.value()
         px, py, pz = self.gen_pos_x.value(), self.gen_pos_y.value(), self.gen_pos_z.value()
         
@@ -2243,9 +1809,7 @@ class AcousticStudioMain(QMainWindow):
             actor._original_color = color
             actor._amplitude = getattr(self, '_current_amplitude', 1.0)
             self.transducer_actors.append(actor)
-
         self.plotter.reset_camera()
-
     def simulate_colors(self):
         import time
         if hasattr(self, 'run_btn') and self.run_btn.isCheckable() and not self.run_btn.isChecked():
@@ -2265,34 +1829,20 @@ class AcousticStudioMain(QMainWindow):
             self._sim_timer.stop()
             
         if not self.transducer_actors:
-
             return
-
         if not self.control_points:
-
-            print("에러: 타겟(Control Point)이 1개 이상 존재해야 위상을 계산할 수 있습니다.")
-
+            print("뿉윭: 寃(Control Point)씠 1媛 씠긽 議댁옱빐빞 쐞긽쓣 怨꾩궛븷 닔 엳뒿땲떎.")
             return
-
             
-
         algorithm = self.trap_type_cb.currentText()
-
         
-
-        # 초음??물리 ?�수
-
-        c = 343000.0 # ?�속 (mm/s)
-
-        f = 40000.0 # 주파??(Hz)
-
-        k = 2.0 * np.pi / (c / f) # ?수 (Wavenumber)
-
+        # 珥덉쓬??臾쇰━ ?占쎌닔
+        c = 343000.0 # ?占쎌냽 (mm/s)
+        f = 40000.0 # 二쇳뙆??(Hz)
+        k = 2.0 * np.pi / (c / f) # ?닔 (Wavenumber)
         
-
         import matplotlib.cm as cm
-
-        cmap = cm.get_cmap('hsv') # 0~360도를 무지개색으로 매핑
+        cmap = cm.get_cmap('hsv') # 0~360룄瑜 臾댁媛쒖깋쑝濡 留ㅽ븨
         
         active_pts = []
         for idx, pt in enumerate(self.control_points):
@@ -2358,50 +1908,28 @@ class AcousticStudioMain(QMainWindow):
                 actor.prop.color = rgbas[i, :3]
                 actor.prop.opacity = getattr(actor, '_original_opacity', 1.0)
             actor._phase = total_phases[i]
-
             
-
         self.plotter.render()
-
         
-
-        # ?압 ?각?? 켜져?다??동 ?데?트
-
+        # ?븬 ?媛?? 耳쒖졇?떎??룞 ?뜲?듃
         if self.show_field_btn.isChecked():
             self.update_field_slice()
-
             
-
         
         
         # Real-time hardware transmission
         if hasattr(self, 'serial_port') and self.serial_port is not None:
             self.send_phase_data()
-
-
-
     def toggle_field_slice(self):
-
         if self.show_field_btn.isChecked():
-
-            self.show_field_btn.setText("음압 단면 숨기기")
-
+            self.show_field_btn.setText("음압 단면 숨기기 (ON/OFF)")
             self.update_field_slice()
-
         else:
-
-            self.show_field_btn.setText("음압 단면 보기 (ON/OFF)")
-
+            self.show_field_btn.setText("음압 단면 시각화 (ON/OFF)")
             for a in self.field_actors:
-
                 self.plotter.remove_actor(a)
-
             self.field_actors.clear()
-
             self.plotter.render()
-
-
-
     def draw_ghost_plane(self, axis_name, offset):
         if not self.show_field_btn.isChecked() or not self.transducer_actors: return
         import numpy as np
@@ -2450,7 +1978,6 @@ class AcousticStudioMain(QMainWindow):
             act.SetVisibility(False)
             
         self.plotter.render()
-
     def update_field_slice(self, *args):
         if hasattr(self, '_ghost_actors'):
             for act in self._ghost_actors.values():
@@ -2458,13 +1985,11 @@ class AcousticStudioMain(QMainWindow):
             
         if not hasattr(self, '_cached_field_grids'):
             self._cached_field_grids = {}
-
         if not self.show_field_btn.isChecked() or not self.transducer_actors:
             for a in self.field_actors:
                 a.SetVisibility(False)
             self.plotter.render()
             return
-
         c = 343000.0
         f = 40000.0
         k = 2.0 * np.pi / (c / f)
@@ -2495,7 +2020,6 @@ class AcousticStudioMain(QMainWindow):
         if self.xz_check.isChecked(): planes_to_draw.append((0, self.xz_slider.value()))
         if self.yz_check.isChecked(): planes_to_draw.append((1, self.yz_slider.value()))
         if self.xy_check.isChecked(): planes_to_draw.append((2, self.xy_slider.value()))
-
         # Keep track of active planes to hide unused ones
         active_plane_keys = set()
         
@@ -2531,7 +2055,6 @@ class AcousticStudioMain(QMainWindow):
                 scalar_data = np.sqrt(real_p**2 + imag_p**2)
                 p_min, p_max = 0, np.percentile(scalar_data, 99.5)
                 cmap = 'hot'
-
             import pyvista as pv
             if cache_key in self._cached_field_grids:
                 grid, actor = self._cached_field_grids[cache_key]
@@ -2556,10 +2079,80 @@ class AcousticStudioMain(QMainWindow):
                 )
                 self.field_actors.append(actor)
                 self._cached_field_grids[cache_key] = (grid, actor)
-
         # Hide actors for planes no longer active
         for key, (grid, actor) in self._cached_field_grids.items():
             if key not in active_plane_keys:
                 actor.SetVisibility(False)
                 
         self.plotter.render()
+    def update_compute_mode_styles(self):
+        from PySide6.QtGui import QColor, QBrush
+        if not hasattr(self, 'compute_mode_cb'): return
+        model = self.compute_mode_cb.model()
+        if not model: return
+        
+        if getattr(self, 'has_taichi', False):
+            self.compute_mode_cb.setItemText(2, "GPU: 내장/범용 그래픽 (Taichi 가속)")
+            model.item(2).setForeground(QBrush(QColor(0,0,0)))
+        else:
+            self.compute_mode_cb.setItemText(2, "GPU: 내장/범용 그래픽 (미설치 - 클릭 시 설치)")
+            model.item(2).setForeground(QBrush(QColor(150, 150, 150)))
+            
+        if getattr(self, 'has_pytorch', False):
+            gpu_name = "GPU"
+            try:
+                from acousticstudio.sonic_wrapper import get_gpu_name
+                gpu_name = get_gpu_name()
+            except: pass
+            self.compute_mode_cb.setItemText(3, f"GPU: {gpu_name} (PyTorch/CUDA 가속)")
+            model.item(3).setForeground(QBrush(QColor(0,0,0)))
+        else:
+            self.compute_mode_cb.setItemText(3, f"GPU: 외장 그래픽 (미설치 - 클릭 시 설치)")
+            model.item(3).setForeground(QBrush(QColor(150, 150, 150)))
+            
+    def on_compute_mode_changed(self, index):
+        if index == 2 and not getattr(self, 'has_taichi', False):
+            self._prompt_install_from_cb("taichi")
+        elif index == 3 and not getattr(self, 'has_pytorch', False):
+            self._prompt_install_from_cb("torch")
+        else:
+            if hasattr(self, 'simulate_colors'):
+                self.simulate_colors()
+            if hasattr(self, 'update_field_slice'):
+                self.update_field_slice()
+                
+    def _prompt_install_from_cb(self, pkg):
+        from PySide6.QtWidgets import QMessageBox
+        reply = QMessageBox.question(self, "라이브러리 설치 필요", f"해당 기능을 사용하려면 '{pkg}' 라이브러리가 필요합니다.\n지금 다운로드 및 설치하시겠습니까?", QMessageBox.Yes | QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            from acousticstudio.installer_ui import LiveInstallerDialog
+            dlg = LiveInstallerDialog([pkg], self)
+            dlg.exec()
+            import importlib.util
+            if pkg == "taichi":
+                self.has_taichi = importlib.util.find_spec("taichi") is not None
+            elif pkg == "torch":
+                self.has_pytorch = importlib.util.find_spec("torch") is not None
+            self.update_compute_mode_styles()
+            
+            if (pkg == "taichi" and self.has_taichi) or (pkg == "torch" and self.has_pytorch):
+                if hasattr(self, 'simulate_colors'):
+                    self.simulate_colors()
+            else:
+                self.compute_mode_cb.blockSignals(True)
+                self.compute_mode_cb.setCurrentIndex(0)
+                self.compute_mode_cb.blockSignals(False)
+        else:
+            self.compute_mode_cb.blockSignals(True)
+            self.compute_mode_cb.setCurrentIndex(0)
+            self.compute_mode_cb.blockSignals(False)
+            
+    def open_library_manager(self):
+        from acousticstudio.installer_ui import LibraryManagerDialog
+        dlg = LibraryManagerDialog(self)
+        dlg.exec()
+        import importlib.util
+        self.has_taichi = importlib.util.find_spec("taichi") is not None
+        self.has_pytorch = importlib.util.find_spec("torch") is not None
+        if hasattr(self, 'update_compute_mode_styles'):
+            self.update_compute_mode_styles()
