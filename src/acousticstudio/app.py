@@ -579,6 +579,7 @@ class AcousticStudioMain(QMainWindow):
         t_layout.addWidget(self.sel_ry, 1, 4)
         t_layout.addWidget(QLabel("Rz:"), 1, 5)
         t_layout.addWidget(self.sel_rz, 1, 6)
+        t_layout.setColumnStretch(7, 1)
         transform_group.setLayout(t_layout)
         control_layout.addWidget(transform_group)
         # Properties Group
@@ -669,6 +670,7 @@ class AcousticStudioMain(QMainWindow):
         gen_grid.addWidget(self.gen_rot_y, 1, 4)
         gen_grid.addWidget(QLabel("Rz:"), 1, 5)
         gen_grid.addWidget(self.gen_rot_z, 1, 6)
+        gen_grid.setColumnStretch(7, 1)
         array_layout.addLayout(gen_grid)
         
         self.add_array_btn = QPushButton("배열 3D 렌더링 생성")
