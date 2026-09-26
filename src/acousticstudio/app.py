@@ -35,7 +35,48 @@ from PySide6.QtWidgets import (QApplication, QSplitter, QMainWindow, QWidget, QV
                                      QDoubleSpinBox, QSpinBox, QComboBox, QGroupBox, 
                                      QListWidget, QAbstractItemView, QRubberBand, QSlider, QCheckBox,
                                      QScrollArea, QFormLayout, QListWidgetItem, QMessageBox)
-from PySide6.QtCore import Qt, QObject, QEvent, QRect
+from PySide6.QtCore import Qt, QObject, QEvent, QRect, QThread, Signal
+import time
+
+class ResourceMonitorThread(QThread):
+    updated = Signal(dict)
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.running = True
+        self.show_cpu = False
+        self.show_gpu = False
+        
+    def run(self):
+        while self.running:
+            data = {}
+            if self.show_cpu:
+                try:
+                    import psutil
+                    data['cpu'] = psutil.cpu_percent()
+                except ImportError:
+                    data['cpu_err'] = "psutil 미설치"
+                    
+            if self.show_gpu:
+                try:
+                    import GPUtil
+                    gpus = GPUtil.getGPUs()
+                    if gpus:
+                        data['gpu'] = gpus[0].load * 100
+                    else:
+                        data['gpu_err'] = "GPU 없음"
+                except ImportError:
+                    data['gpu_err'] = "GPUtil 미설치"
+                except Exception as e:
+                    data['gpu_err'] = f"GPU 오류: {str(e)}"
+                    
+            self.updated.emit(data)
+            time.sleep(1.5)
+            
+    def stop(self):
+        self.running = False
+        self.wait()
+
 class MouseEventFilter(QObject):
     def __init__(self, main_window):
         super().__init__()
@@ -339,6 +380,14 @@ class AcousticStudioMain(QMainWindow):
         menubar = self.menuBar()
         file_menu = menubar.addMenu("파일 (File)")
         
+        new_action = QAction("새로 만들기 (New)", self)
+        new_action.setShortcut("Ctrl+N")
+        new_action.setShortcutContext(Qt.ApplicationShortcut)
+        new_action.triggered.connect(self.new_project)
+        file_menu.addAction(new_action)
+        
+        file_menu.addSeparator()
+        
         save_action = QAction("저장 (Save)", self)
         save_action.setShortcut("Ctrl+S")
         save_action.setShortcutContext(Qt.ApplicationShortcut)
@@ -373,6 +422,15 @@ class AcousticStudioMain(QMainWindow):
         tools_menu = self.menuBar().addMenu("도구(Tools)")
         lib_mgr_action = tools_menu.addAction("라이브러리 관리자 (Library Manager)")
         lib_mgr_action.triggered.connect(self.open_library_manager)
+
+        view_menu = self.menuBar().addMenu("보기(View)")
+        self.action_show_cpu = QAction("CPU 사용량 표시", self, checkable=True)
+        self.action_show_cpu.triggered.connect(self.toggle_cpu_monitoring)
+        view_menu.addAction(self.action_show_cpu)
+        
+        self.action_show_gpu = QAction("GPU 사용량 표시", self, checkable=True)
+        self.action_show_gpu.triggered.connect(self.toggle_gpu_monitoring)
+        view_menu.addAction(self.action_show_gpu)
 
         
         # Initialize undo stack
@@ -794,6 +852,132 @@ class AcousticStudioMain(QMainWindow):
         
         visual_group.setLayout(visual_layout)
         control_layout.addWidget(visual_group)
+        
+        # [6. Linear Transport Trajectory (선형 이송 궤적)]
+        trajectory_group = QGroupBox("6. Linear Transport Trajectory (선형 이송 궤적)")
+        trajectory_layout = QVBoxLayout()
+        
+        from PySide6.QtWidgets import QGridLayout
+        t_grid = QGridLayout()
+        self.traj_start_x = QDoubleSpinBox(); self.traj_start_x.setRange(-2000, 2000)
+        self.traj_start_y = QDoubleSpinBox(); self.traj_start_y.setRange(-2000, 2000)
+        self.traj_start_z = QDoubleSpinBox(); self.traj_start_z.setRange(-2000, 2000)
+        
+        self.traj_end_x = QDoubleSpinBox(); self.traj_end_x.setRange(-2000, 2000)
+        self.traj_end_y = QDoubleSpinBox(); self.traj_end_y.setRange(-2000, 2000)
+        self.traj_end_z = QDoubleSpinBox(); self.traj_end_z.setRange(-2000, 2000)
+
+        self.btn_set_start = QPushButton("선택된 객체의 위치를 시작점으로 설정")
+        self.btn_set_start.clicked.connect(self.set_traj_start_from_selected)
+        self.btn_set_end = QPushButton("선택된 객체의 위치를 목표점으로 설정")
+        self.btn_set_end.clicked.connect(self.set_traj_end_from_selected)
+
+        t_grid.addWidget(QLabel("시작점:"), 0, 0)
+        t_grid.addWidget(QLabel("X:"), 0, 1); t_grid.addWidget(self.traj_start_x, 0, 2)
+        t_grid.addWidget(QLabel("Y:"), 0, 3); t_grid.addWidget(self.traj_start_y, 0, 4)
+        t_grid.addWidget(QLabel("Z:"), 0, 5); t_grid.addWidget(self.traj_start_z, 0, 6)
+        t_grid.addWidget(self.btn_set_start, 1, 0, 1, 7)
+
+        t_grid.addWidget(QLabel("목표점:"), 2, 0)
+        t_grid.addWidget(QLabel("X:"), 2, 1); t_grid.addWidget(self.traj_end_x, 2, 2)
+        t_grid.addWidget(QLabel("Y:"), 2, 3); t_grid.addWidget(self.traj_end_y, 2, 4)
+        t_grid.addWidget(QLabel("Z:"), 2, 5); t_grid.addWidget(self.traj_end_z, 2, 6)
+        t_grid.addWidget(self.btn_set_end, 3, 0, 1, 7)
+        
+        trajectory_layout.addLayout(t_grid)
+
+        res_lyt = QHBoxLayout()
+        res_lyt.addWidget(QLabel("궤적 해상도:"))
+        self.traj_steps = QSpinBox()
+        self.traj_steps.setRange(2, 500)
+        self.traj_steps.setValue(20)
+        res_lyt.addWidget(self.traj_steps)
+
+        res_lyt.addWidget(QLabel("간격 (ms):"))
+        self.traj_delay = QSpinBox()
+        self.traj_delay.setRange(0, 5000)
+        self.traj_delay.setValue(50)
+        res_lyt.addWidget(self.traj_delay)
+
+        self.lbl_traj_time = QLabel("타이머 시간: 3.00초 (+렌더링)")
+        self.lbl_traj_time.setStyleSheet("color: #FFC107; font-weight: bold;")
+        res_lyt.addWidget(self.lbl_traj_time)
+        
+        self.traj_steps.valueChanged.connect(self.update_traj_time)
+        self.traj_delay.valueChanged.connect(self.update_traj_time)
+
+        res_lyt.addStretch()
+        trajectory_layout.addLayout(res_lyt)
+
+        chk_lyt = QHBoxLayout()
+        self.chk_show_traj = QCheckBox("궤적 보이기")
+        self.chk_show_traj.setChecked(True)
+        self.chk_show_traj.stateChanged.connect(self.toggle_trajectory_visibility)
+        chk_lyt.addWidget(self.chk_show_traj)
+
+        self.chk_send_hw_traj = QCheckBox("보드로 위상 전송")
+        self.chk_send_hw_traj.setEnabled(False)
+        chk_lyt.addWidget(self.chk_send_hw_traj)
+        trajectory_layout.addLayout(chk_lyt)
+
+        self.btn_gen_traj = QPushButton("궤적 생성")
+        self.btn_gen_traj.setStyleSheet("background-color: #9C27B0; color: white; font-weight: bold; height: 30px;")
+        self.btn_gen_traj.clicked.connect(self.generate_trajectory)
+        
+        self.btn_clear_traj = QPushButton("지우기")
+        self.btn_clear_traj.clicked.connect(self.clear_trajectory)
+
+        btn_lyt = QHBoxLayout()
+        btn_lyt.addWidget(self.btn_gen_traj)
+        btn_lyt.addWidget(self.btn_clear_traj)
+        trajectory_layout.addLayout(btn_lyt)
+
+        # Media Player Buttons
+        media_label = QLabel("시뮬레이션 재생 컨트롤:")
+        media_label.setStyleSheet("font-weight: bold; margin-top: 10px;")
+        trajectory_layout.addWidget(media_label)
+        
+        media_lyt = QHBoxLayout()
+        
+        self.btn_traj_reset = QPushButton("⏹")
+        self.btn_traj_reset.setToolTip("원래 위치로 정지")
+        self.btn_traj_reset.setFixedSize(40, 40)
+        self.btn_traj_reset.clicked.connect(self.reset_traj_playback)
+        media_lyt.addWidget(self.btn_traj_reset)
+        
+        self.btn_traj_bw = QPushButton("⏪")
+        self.btn_traj_bw.setToolTip("뒤로 재생")
+        self.btn_traj_bw.setFixedSize(40, 40)
+        self.btn_traj_bw.clicked.connect(lambda: self.start_traj_playback(-1))
+        media_lyt.addWidget(self.btn_traj_bw)
+        
+        self.btn_traj_play = QPushButton("▶")
+        self.btn_traj_play.setToolTip("재생")
+        self.btn_traj_play.setFixedSize(40, 40)
+        self.btn_traj_play.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold; font-size: 16px;")
+        self.btn_traj_play.clicked.connect(lambda: self.start_traj_playback(1))
+        media_lyt.addWidget(self.btn_traj_play)
+        
+        self.btn_traj_pause = QPushButton("⏸")
+        self.btn_traj_pause.setToolTip("일시정지")
+        self.btn_traj_pause.setFixedSize(40, 40)
+        self.btn_traj_pause.clicked.connect(self.pause_traj_playback)
+        media_lyt.addWidget(self.btn_traj_pause)
+        
+        trajectory_layout.addLayout(media_lyt)
+        
+        # Trajectory List
+        # QListWidget is imported globally at the top
+        self.traj_list = QListWidget()
+        self.traj_list.setMinimumHeight(120)
+        self.traj_list.setMaximumHeight(200)
+        trajectory_layout.addWidget(QLabel("생성된 궤적 목록 (다중 궤적 테스트용):"))
+        trajectory_layout.addWidget(self.traj_list)
+        self.traj_list.itemClicked.connect(self.on_traj_item_clicked)
+
+        trajectory_group.setLayout(trajectory_layout)
+        control_layout.addWidget(trajectory_group)
+
         control_layout.addStretch(1)
         # Hardware UI moved to top bar
         
@@ -807,6 +991,13 @@ class AcousticStudioMain(QMainWindow):
         widgets = self.findChildren(QDoubleSpinBox) + self.findChildren(QSpinBox) + self.findChildren(QComboBox)
         for widget in widgets:
             widget.installEventFilter(self.wheel_blocker)
+            
+        self._last_saved_state = self.get_state(for_file=True)
+        
+        self.statusBar().showMessage("준비 완료 (Ready)")
+        self.resource_monitor = ResourceMonitorThread(self)
+        self.resource_monitor.updated.connect(self.on_resource_updated)
+        self.resource_monitor.start()
     
     def get_pyvista_actor(self, vtk_prop):
         if vtk_prop is None: return None
@@ -843,8 +1034,9 @@ class AcousticStudioMain(QMainWindow):
             try:
                 import serial
                 self.serial_port = serial.Serial(port, baud, timeout=1)
-                self.btn_connect_hw.setText("Disconnect (뿰寃 빐젣)")
+                self.btn_connect_hw.setText("Disconnect (연결 해제)")
                 self.btn_send_phase.setEnabled(True)
+                if hasattr(self, 'chk_send_hw_traj'): self.chk_send_hw_traj.setEnabled(True)
                 QMessageBox.information(self, "Hardware", f"Connected to {port} at {baud} baud.")
             except Exception as e:
                 QMessageBox.critical(self, "오류", f"작업 중 오류가 발생했습니다: {str(e)}")
@@ -854,8 +1046,9 @@ class AcousticStudioMain(QMainWindow):
             except:
                 pass
             self.serial_port = None
-            self.btn_connect_hw.setText("Connect (뿰寃)")
+            self.btn_connect_hw.setText("Connect (연결)")
             self.btn_send_phase.setEnabled(False)
+            if hasattr(self, 'chk_send_hw_traj'): self.chk_send_hw_traj.setEnabled(False)
             QMessageBox.information(self, "Hardware", "Disconnected.")
     def send_phase_data(self):
         if not hasattr(self, 'serial_port') or self.serial_port is None:
@@ -1245,23 +1438,13 @@ class AcousticStudioMain(QMainWindow):
         if event.key() == Qt.Key_Delete:
             self.delete_selected_objects()
         super().keyPressEvent(event)
-    def has_unsaved_changes(self):
-        current = self.get_state()
-        saved = getattr(self, '_last_saved_state', getattr(self, '_initial_state', None))
-        return current != saved
     def closeEvent(self, event):
-        if self.has_unsaved_changes():
-            from PySide6.QtWidgets import QMessageBox
-            reply = QMessageBox.question(self, '앱 종료', '프로젝트가 수정되었습니다. 저장하시겠습니까?', QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel, QMessageBox.Save)
-            if reply == QMessageBox.Save:
-                self.save_project()
-                event.accept()
-            elif reply == QMessageBox.Cancel:
-                event.ignore()
-            else:
-                event.accept()
-        else:
+        if self.check_unsaved_changes():
+            if hasattr(self, 'resource_monitor'):
+                self.resource_monitor.stop()
             event.accept()
+        else:
+            event.ignore()
     def update_gizmo(self):
         if hasattr(self, 'gizmo') and self.gizmo is not None:
             self.gizmo.Off()
@@ -1343,7 +1526,7 @@ class AcousticStudioMain(QMainWindow):
             self.update_gizmo()
             self.update_ui_from_selection()
             self.plotter.render()
-    def get_state(self):
+    def get_state(self, for_file=False):
         data = {}
         # Array UI Params
         data['transducer_type'] = self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else ""
@@ -1357,15 +1540,20 @@ class AcousticStudioMain(QMainWindow):
         data['point_size'] = self.point_size_spin.value() if hasattr(self, 'point_size_spin') else 5.0
         data['prop_radius'] = self.prop_radius_spin.value() if hasattr(self, 'prop_radius_spin') else 5.0
         
-        # Field Slice Visualization Params
-        data['show_field'] = self.show_field_btn.isChecked() if hasattr(self, 'show_field_btn') else False
-        data['field_mode'] = self.field_mode_combo.currentText() if hasattr(self, 'field_mode_combo') else ""
-        data['xz_check'] = self.xz_check.isChecked() if hasattr(self, 'xz_check') else False
-        data['xz_slider'] = self.xz_slider.value() if hasattr(self, 'xz_slider') else 0
-        data['yz_check'] = self.yz_check.isChecked() if hasattr(self, 'yz_check') else False
-        data['yz_slider'] = self.yz_slider.value() if hasattr(self, 'yz_slider') else 0
-        data['xy_check'] = self.xy_check.isChecked() if hasattr(self, 'xy_check') else False
-        data['xy_slider'] = self.xy_slider.value() if hasattr(self, 'xy_slider') else 0
+        if for_file:
+            # Save field slices ONLY for file save (so they don't break Undo/Redo)
+            data['show_field'] = self.show_field_btn.isChecked() if hasattr(self, 'show_field_btn') else False
+            data['field_mode'] = self.field_mode_combo.currentText() if hasattr(self, 'field_mode_combo') else ""
+            data['xz_check'] = self.xz_check.isChecked() if hasattr(self, 'xz_check') else False
+            data['xz_slider'] = self.xz_slider.value() if hasattr(self, 'xz_slider') else 0
+            data['yz_check'] = self.yz_check.isChecked() if hasattr(self, 'yz_check') else False
+            data['yz_slider'] = self.yz_slider.value() if hasattr(self, 'yz_slider') else 0
+            data['xy_check'] = self.xy_check.isChecked() if hasattr(self, 'xy_check') else False
+            data['xy_slider'] = self.xy_slider.value() if hasattr(self, 'xy_slider') else 0
+            
+            # Save generated trajectory waypoints if they exist
+            if hasattr(self, 'traj_points_data'):
+                data['traj_points_data'] = [pt.tolist() for pt in self.traj_points_data] if type(self.traj_points_data).__name__ == 'ndarray' else self.traj_points_data
         
         # Targets (Save true updated world position)
         data['control_points'] = []
@@ -1388,10 +1576,31 @@ class AcousticStudioMain(QMainWindow):
                     for c in range(4):
                         matrix_vals.append(mat.GetElement(r, c))
             data['transducers'].append({'matrix': matrix_vals})
+            
+        # Trajectory
+        if hasattr(self, 'traj_start_x'):
+            data['traj_start'] = [self.traj_start_x.value(), self.traj_start_y.value(), self.traj_start_z.value()]
+            data['traj_end'] = [self.traj_end_x.value(), self.traj_end_y.value(), self.traj_end_z.value()]
+            data['traj_steps'] = self.traj_steps.value()
+            data['traj_delay'] = self.traj_delay.value()
+            data['traj_send_hw'] = self.chk_send_hw_traj.isChecked()
+            data['traj_show'] = self.chk_show_traj.isChecked()
+        
         return data
     def set_state(self, data):
         import pyvista as pv
         import vtk
+        
+        # Block signals to prevent UI triggers (e.g. generate_array) while loading state
+        ui_elements = [
+            getattr(self, 'transducer_type_cb', None), getattr(self, 'array_type_cb', None), 
+            getattr(self, 'spacing_spin', None), getattr(self, 'trap_type_cb', None), 
+            getattr(self, 'grid_x_spin', None), getattr(self, 'grid_y_spin', None), 
+            getattr(self, 'point_size_spin', None), getattr(self, 'prop_radius_spin', None)
+        ]
+        for ui in ui_elements:
+            if ui: ui.blockSignals(True)
+            
         # Array UI Params
         if 'transducer_type' in data and hasattr(self, 'transducer_type_cb'):
             idx = self.transducer_type_cb.findText(data['transducer_type'])
@@ -1409,93 +1618,60 @@ class AcousticStudioMain(QMainWindow):
         if 'point_size' in data: self.point_size_spin.setValue(data['point_size'])
         if 'prop_radius' in data: self.prop_radius_spin.setValue(data['prop_radius'])
         
-        # Field Slice Visualization Params
-        if hasattr(self, 'xz_check'):
-            self.xz_check.blockSignals(True); self.xz_slider.blockSignals(True)
-            self.yz_check.blockSignals(True); self.yz_slider.blockSignals(True)
-            self.xy_check.blockSignals(True); self.xy_slider.blockSignals(True)
-            if hasattr(self, 'show_field_btn'): self.show_field_btn.blockSignals(True)
-            if hasattr(self, 'field_mode_combo'): self.field_mode_combo.blockSignals(True)
-            
-            if 'xz_check' in data: self.xz_check.setChecked(data['xz_check'])
-            if 'xz_slider' in data: 
-                self.xz_slider.setValue(data['xz_slider'])
-                if hasattr(self, 'xz_spin'): self.xz_spin.blockSignals(True); self.xz_spin.setValue(data['xz_slider']); self.xz_spin.blockSignals(False)
-            if 'yz_check' in data: self.yz_check.setChecked(data['yz_check'])
-            if 'yz_slider' in data: 
-                self.yz_slider.setValue(data['yz_slider'])
-                if hasattr(self, 'yz_spin'): self.yz_spin.blockSignals(True); self.yz_spin.setValue(data['yz_slider']); self.yz_spin.blockSignals(False)
-            if 'xy_check' in data: self.xy_check.setChecked(data['xy_check'])
-            if 'xy_slider' in data: 
-                self.xy_slider.setValue(data['xy_slider'])
-                if hasattr(self, 'xy_spin'): self.xy_spin.blockSignals(True); self.xy_spin.setValue(data['xy_slider']); self.xy_spin.blockSignals(False)
-            
-            if 'show_field' in data and hasattr(self, 'show_field_btn'):
-                self.show_field_btn.setChecked(data['show_field'])
-                
-            if 'field_mode' in data and hasattr(self, 'field_mode_combo'):
-                idx = self.field_mode_combo.findText(data['field_mode'])
-                if idx >= 0: self.field_mode_combo.setCurrentIndex(idx)
-                
-            self.xz_check.blockSignals(False); self.xz_slider.blockSignals(False)
-            self.yz_check.blockSignals(False); self.yz_slider.blockSignals(False)
-            self.xy_check.blockSignals(False); self.xy_slider.blockSignals(False)
-            if hasattr(self, 'show_field_btn'): self.show_field_btn.blockSignals(False)
-            if hasattr(self, 'field_mode_combo'): self.field_mode_combo.blockSignals(False)
-            
-            if hasattr(self, 'toggle_field_slice'):
-                self.toggle_field_slice()
+        for ui in ui_elements:
+            if ui: ui.blockSignals(False)
+        
+        # Field Slice Visualization Params are excluded from state tracking to prevent Undo/Redo zombie actors
         # Optimize Transducer update
         tx_data = data.get('transducers', [])
-        if tx_data:
-            needs_rebuild = len(tx_data) != len(self.transducer_actors)
+        needs_rebuild = len(tx_data) != len(self.transducer_actors)
+        
+        if needs_rebuild:
+            from PySide6.QtWidgets import QApplication
+            for i, actor in enumerate(self.transducer_actors):
+                if actor in self.selected_actors: self.selected_actors.remove(actor)
+                self.plotter.remove_actor(actor, render=False)
+                if i % 20 == 0: QApplication.processEvents()
+            self.transducer_actors.clear()
             
-            if needs_rebuild:
-                from PySide6.QtWidgets import QApplication
-                for i, actor in enumerate(self.transducer_actors):
-                    if actor in self.selected_actors: self.selected_actors.remove(actor)
-                    self.plotter.remove_actor(actor, render=False)
-                    if i % 20 == 0: QApplication.processEvents()
-                self.transducer_actors.clear()
+            sensor_type = data.get('transducer_type', self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else '')
+            if "10mm" in sensor_type:
+                r_wide, r_narrow, height = 5.0, 3.5, 4.0
+                color = "lightblue"
+                base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+                self._current_amplitude = 1.0
+            elif "16mm" in sensor_type:
+                r_wide, r_narrow, height = 8.0, 5.0, 6.0
+                color = "orange"
+                base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
+                self._current_amplitude = 2.0
+            else: # Langevin
+                r_wide, r_narrow, height = 25.0, 15.0, 40.0
+                color = "silver"
+                base_mesh = self.make_langevin_mesh(height)
+                self._current_amplitude = 20.0
                 
-                sensor_type = data.get('transducer_type', self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else '')
-                if "10mm" in sensor_type:
-                    r_wide, r_narrow, height = 5.0, 3.5, 4.0
-                    color = "lightblue"
-                    base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
-                    self._current_amplitude = 1.0
-                elif "16mm" in sensor_type:
-                    r_wide, r_narrow, height = 8.0, 5.0, 6.0
-                    color = "orange"
-                    base_mesh = self.make_truncated_cone(r_wide, r_narrow, height)
-                    self._current_amplitude = 2.0
-                else: # Langevin
-                    r_wide, r_narrow, height = 25.0, 15.0, 40.0
-                    color = "silver"
-                    base_mesh = self.make_langevin_mesh(height)
-                    self._current_amplitude = 20.0
-                    
-                shared_mapper = pv.DataSetMapper(base_mesh)
-                rgb_color = pv.Color(color).float_rgb
-                
-                for i, tx in enumerate(tx_data):
-                    matrix_vals = tx.get('matrix')
-                    if matrix_vals:
-                        mat = vtk.vtkMatrix4x4()
-                        for r in range(4):
-                            for c in range(4):
-                                mat.SetElement(r, c, matrix_vals[r*4 + c])
-                        actor = pv.Actor(mapper=shared_mapper)
-                        actor.GetProperty().SetColor(rgb_color)
-                        actor.SetUserMatrix(mat)
-                        actor._initial_matrix = mat
-                        actor._original_color = rgb_color
-                        actor._amplitude = self._current_amplitude
-                        self.plotter.renderer.AddActor(actor)
-                        self.transducer_actors.append(actor)
-                        if i % 100 == 0: QApplication.processEvents()
-            else:
-                # Optimized fast path! Just update matrices!
+            shared_mapper = pv.DataSetMapper(base_mesh)
+            rgb_color = pv.Color(color).float_rgb
+            
+            for i, tx in enumerate(tx_data):
+                matrix_vals = tx.get('matrix')
+                if matrix_vals:
+                    mat = vtk.vtkMatrix4x4()
+                    for r in range(4):
+                        for c in range(4):
+                            mat.SetElement(r, c, matrix_vals[r*4 + c])
+                    actor = pv.Actor(mapper=shared_mapper)
+                    actor.GetProperty().SetColor(rgb_color)
+                    actor.SetUserMatrix(mat)
+                    actor._initial_matrix = mat
+                    actor._original_color = rgb_color
+                    actor._amplitude = self._current_amplitude
+                    self.plotter.renderer.AddActor(actor)
+                    self.transducer_actors.append(actor)
+                    if i % 100 == 0: QApplication.processEvents()
+        else:
+            # Optimized fast path! Just update matrices!
                 for i, tx in enumerate(tx_data):
                     matrix_vals = tx.get('matrix')
                     if matrix_vals:
@@ -1551,6 +1727,56 @@ class AcousticStudioMain(QMainWindow):
                 mat.SetElement(2, 3, z)
                 actor.SetUserMatrix(mat)
                 
+        # Trajectory
+        if 'traj_start' in data:
+            self.traj_start_x.setValue(data['traj_start'][0])
+            self.traj_start_y.setValue(data['traj_start'][1])
+            self.traj_start_z.setValue(data['traj_start'][2])
+        if 'traj_end' in data:
+            self.traj_end_x.setValue(data['traj_end'][0])
+            self.traj_end_y.setValue(data['traj_end'][1])
+            self.traj_end_z.setValue(data['traj_end'][2])
+        if 'traj_steps' in data: self.traj_steps.setValue(data['traj_steps'])
+        if 'traj_delay' in data: self.traj_delay.setValue(data['traj_delay'])
+        if 'traj_send_hw' in data: self.chk_send_hw_traj.setChecked(data['traj_send_hw'])
+        if 'traj_show' in data and hasattr(self, 'chk_show_traj'):
+            self.chk_show_traj.setChecked(data['traj_show'])
+            if hasattr(self, 'toggle_trajectory_visibility'):
+                self.toggle_trajectory_visibility()
+                
+        if 'traj_points_data' in data:
+            if hasattr(self, 'generate_trajectory'):
+                self.generate_trajectory()
+                
+        # Field Slice Recovery (only when loaded from file)
+        if 'show_field' in data and hasattr(self, 'xz_check'):
+            self.xz_check.blockSignals(True); self.xz_slider.blockSignals(True)
+            self.yz_check.blockSignals(True); self.yz_slider.blockSignals(True)
+            self.xy_check.blockSignals(True); self.xy_slider.blockSignals(True)
+            if hasattr(self, 'show_field_btn'): self.show_field_btn.blockSignals(True)
+            if hasattr(self, 'field_mode_combo'): self.field_mode_combo.blockSignals(True)
+            
+            self.xz_check.setChecked(data.get('xz_check', False))
+            if 'xz_slider' in data: self.xz_slider.setValue(data['xz_slider'])
+            self.yz_check.setChecked(data.get('yz_check', False))
+            if 'yz_slider' in data: self.yz_slider.setValue(data['yz_slider'])
+            self.xy_check.setChecked(data.get('xy_check', False))
+            if 'xy_slider' in data: self.xy_slider.setValue(data['xy_slider'])
+            
+            if hasattr(self, 'show_field_btn'): self.show_field_btn.setChecked(data.get('show_field', False))
+            if hasattr(self, 'field_mode_combo') and 'field_mode' in data:
+                idx = self.field_mode_combo.findText(data['field_mode'])
+                if idx >= 0: self.field_mode_combo.setCurrentIndex(idx)
+                
+            self.xz_check.blockSignals(False); self.xz_slider.blockSignals(False)
+            self.yz_check.blockSignals(False); self.yz_slider.blockSignals(False)
+            self.xy_check.blockSignals(False); self.xy_slider.blockSignals(False)
+            if hasattr(self, 'show_field_btn'): self.show_field_btn.blockSignals(False)
+            if hasattr(self, 'field_mode_combo'): self.field_mode_combo.blockSignals(False)
+            
+            if hasattr(self, 'toggle_field_slice'):
+                self.toggle_field_slice()
+                
         # Update UI state correctly after state restore
         if hasattr(self, 'update_gizmo'):
             self.update_gizmo()
@@ -1559,13 +1785,46 @@ class AcousticStudioMain(QMainWindow):
             
         # self.plotter.reset_camera() # Do not reset camera on undo, it's annoying!
         self.simulate_colors()
+
+    def check_unsaved_changes(self):
+        """
+        Checks if there are unsaved changes. Prompts the user to save if so.
+        Returns True if it is safe to proceed (saved, discarded, or no changes).
+        Returns False if the user cancelled the action.
+        """
+        current_state = self.get_state(for_file=True)
+        
+        is_dirty = False
+        if hasattr(self, '_last_saved_state'):
+            # Compare states. Because dicts can contain floats, it might be tricky, 
+            # but get_state outputs basic types, so == is usually sufficient.
+            is_dirty = (self._last_saved_state != current_state)
+        else:
+            # If there's no last_saved_state, it's dirty if they made ANY points or trajectories
+            is_dirty = len(self.control_points) > 0 or hasattr(self, 'trajectories_list') and len(self.trajectories_list) > 0
+            
+        if is_dirty:
+            from PySide6.QtWidgets import QMessageBox
+            reply = QMessageBox.question(self, "저장되지 않은 변경사항", 
+                                         "현재 프로젝트에 저장되지 않은 변경사항이 있습니다.\n진행하기 전에 저장하시겠습니까?", 
+                                         QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            if reply == QMessageBox.Cancel:
+                return False
+            elif reply == QMessageBox.Yes:
+                if getattr(self, 'current_project_file', None):
+                    self.save_project()
+                else:
+                    self.save_project_as()
+                    if not getattr(self, 'current_project_file', None):
+                        return False # Cancelled save as dialog
+        return True
     def save_project(self):
         import json
         if not getattr(self, 'current_project_file', None):
             self.save_project_as()
             return
             
-        data = self.get_state()
+        data = self.get_state(for_file=True)
         with open(self.current_project_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
         self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
@@ -1573,14 +1832,56 @@ class AcousticStudioMain(QMainWindow):
     def save_project_as(self):
         from PySide6.QtWidgets import QFileDialog
         import json
-        filename, _ = QFileDialog.getSaveFileName(self, "떎瑜 씠由꾩쑝濡 봽濡쒖젥듃 옣", "", "Acoustic Project (*.json)")
+        filename, _ = QFileDialog.getSaveFileName(self, "다른 이름으로 프로젝트 저장", "", "Acoustic Project (*.json)")
         if not filename: return
         self.current_project_file = filename
         self.save_project()
+        
+    def new_project(self):
+        if not self.check_unsaved_changes():
+            return
+            
+        # Clear transducers
+        for actor in self.transducer_actors:
+            self.plotter.remove_actor(actor, render=False)
+        self.transducer_actors.clear()
+        
+        # Clear control points
+        for p in self.control_points:
+            if p["actor"] in self.selected_actors: self.selected_actors.remove(p["actor"])
+            self.plotter.remove_actor(p["actor"], render=False)
+        self.control_points.clear()
+        self.points_list.clear()
+        self.selected_actors.clear()
+        
+        # Clear trajectory if active
+        if hasattr(self, 'clear_trajectory'):
+            self.clear_trajectory()
+            
+        # Reset UI blocks to default state
+        if hasattr(self, 'xz_check'):
+            self.xz_check.setChecked(False)
+            self.yz_check.setChecked(False)
+            self.xy_check.setChecked(False)
+            if hasattr(self, 'show_field_btn'): self.show_field_btn.setChecked(False)
+        if hasattr(self, 'toggle_field_slice'):
+            self.toggle_field_slice()
+        self.current_project_file = None
+        self.setWindowTitle("Acoustic Control Studio - 새 프로젝트")
+        self._last_saved_state = self.get_state(for_file=True)
+        if hasattr(self, 'undo_stack'):
+            self.undo_stack.clear()
+            self.redo_stack.clear()
+            
+        self.plotter.render()
+        self.push_state()
     def load_project(self):
+        if not self.check_unsaved_changes():
+            return
+            
         from PySide6.QtWidgets import QFileDialog, QMessageBox
         import json
-        filename, _ = QFileDialog.getOpenFileName(self, "봽濡쒖젥듃 遺덈윭삤湲", "", "Acoustic Project (*.json)")
+        filename, _ = QFileDialog.getOpenFileName(self, "프로젝트 불러오기", "", "Acoustic Project (*.json)")
         if not filename: return
         
         try:
@@ -2220,3 +2521,249 @@ class AcousticStudioMain(QMainWindow):
         self.has_pytorch = importlib.util.find_spec("torch") is not None
         if hasattr(self, 'update_compute_mode_styles'):
             self.update_compute_mode_styles()
+
+    def set_traj_start_from_selected(self):
+        if not getattr(self, 'selected_actors', []):
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "경고", "위치를 가져올 객체(제어점 등)를 먼저 선택해주세요.")
+            return
+        self.traj_start_x.setValue(self.sel_x.value())
+        self.traj_start_y.setValue(self.sel_y.value())
+        self.traj_start_z.setValue(self.sel_z.value())
+
+    def set_traj_end_from_selected(self):
+        if not getattr(self, 'selected_actors', []):
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "경고", "위치를 가져올 객체(제어점 등)를 먼저 선택해주세요.")
+            return
+        self.traj_end_x.setValue(self.sel_x.value())
+        self.traj_end_y.setValue(self.sel_y.value())
+        self.traj_end_z.setValue(self.sel_z.value())
+
+    def generate_trajectory(self):
+        sx, sy, sz = self.traj_start_x.value(), self.traj_start_y.value(), self.traj_start_z.value()
+        ex, ey, ez = self.traj_end_x.value(), self.traj_end_y.value(), self.traj_end_z.value()
+        steps = self.traj_steps.value()
+        
+        if steps < 2: return
+        
+        import numpy as np
+        points = np.zeros((steps, 3))
+        for i in range(steps):
+            t = i / (steps - 1)
+            points[i] = [sx + (ex - sx) * t, sy + (ey - sy) * t, sz + (ez - sz) * t]
+            
+        if not hasattr(self, 'trajectories_list'):
+            self.trajectories_list = []
+            
+        traj_name = f"궤적 {len(self.trajectories_list)+1}: ({sx:.1f}, {sy:.1f}, {sz:.1f}) ➜ ({ex:.1f}, {ey:.1f}, {ez:.1f})"
+        traj_dict = {'name': traj_name, 'points': points, 'steps': steps}
+        self.trajectories_list.append(traj_dict)
+        
+        if hasattr(self, 'traj_list'):
+            self.traj_list.addItem(traj_name)
+            # Select the newly added one
+            self.traj_list.setCurrentRow(len(self.trajectories_list) - 1)
+            self.load_selected_trajectory(len(self.trajectories_list) - 1)
+
+    def load_selected_trajectory(self, idx):
+        if not hasattr(self, 'trajectories_list') or idx < 0 or idx >= len(self.trajectories_list):
+            return
+            
+        # Remove old actors
+        if hasattr(self, 'traj_actors'):
+            for act in self.traj_actors:
+                try: self.plotter.remove_actor(act, render=False)
+                except: pass
+        self.traj_actors = []
+        
+        traj = self.trajectories_list[idx]
+        points = traj['points']
+        self.traj_points_data = points
+        self.traj_steps.setValue(traj['steps'])
+        
+        import numpy as np
+        import pyvista as pv
+        # Draw Line
+        steps = len(points)
+        lines = np.hstack([[steps], np.arange(steps)])
+        poly = pv.PolyData(points)
+        poly.lines = lines
+        self.traj_line_actor = self.plotter.add_mesh(poly, color='magenta', line_width=3, render=False)
+        
+        # Draw Points
+        self.traj_points_actor = self.plotter.add_mesh(pv.PolyData(points), color='cyan', point_size=6, render=False)
+        
+        self.traj_actors.extend([self.traj_line_actor, self.traj_points_actor])
+        
+        if hasattr(self, 'toggle_trajectory_visibility'):
+            self.toggle_trajectory_visibility()
+            
+        self.plotter.render()
+        
+    def clear_trajectory(self):
+        if hasattr(self, 'traj_actors'):
+            for act in self.traj_actors:
+                try: self.plotter.remove_actor(act, render=False)
+                except: pass
+            self.traj_actors = []
+            self.plotter.render()
+        if hasattr(self, 'trajectories_list'):
+            self.trajectories_list.clear()
+        if hasattr(self, 'traj_list'):
+            self.traj_list.clear()
+
+    def on_traj_item_clicked(self, item):
+        idx = self.traj_list.row(item)
+        self.load_selected_trajectory(idx)
+
+    def start_traj_playback(self, direction=1):
+        if not hasattr(self, 'traj_actors') or not self.traj_actors:
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "경고", "먼저 궤적을 생성하거나 선택해주세요.")
+            return
+        if not getattr(self, 'selected_actors', []):
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "경고", "궤적을 따라 이동시킬 제어점을 선택해주세요.")
+            return
+            
+        self.traj_play_direction = direction
+        if not hasattr(self, 'traj_timer'):
+            from PySide6.QtCore import QTimer
+            self.traj_timer = QTimer(self)
+            self.traj_timer.timeout.connect(self._on_traj_timer_step)
+            self.traj_current_step = 0
+            
+        if not hasattr(self, 'traj_current_step'):
+            self.traj_current_step = 0
+            
+        # If playing forward and already at the end, restart from beginning
+        if direction == 1 and hasattr(self, 'traj_points_data') and self.traj_current_step >= len(self.traj_points_data) - 1:
+            self.traj_current_step = -1
+        # If playing backward and already at the beginning, restart from end
+        elif direction == -1 and hasattr(self, 'traj_points_data') and self.traj_current_step <= 0:
+            self.traj_current_step = len(self.traj_points_data)
+            
+        # Restore auto calc to original state if we stopped completely
+        if not self.traj_timer.isActive():
+            self._prev_auto_calc = self.auto_calc_cb.isChecked()
+            self.auto_calc_cb.setChecked(False)
+            
+        delay_ms = self.traj_delay.value()
+        self.traj_timer.start(delay_ms if delay_ms > 0 else 10)
+        self.btn_traj_play.setStyleSheet("background-color: #2E7D32; color: white; font-weight: bold; font-size: 16px;")
+
+    def pause_traj_playback(self):
+        if hasattr(self, 'traj_timer') and self.traj_timer.isActive():
+            self.traj_timer.stop()
+            self.btn_traj_play.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
+            self.auto_calc_cb.setChecked(getattr(self, '_prev_auto_calc', False))
+            if hasattr(self, 'push_state'): self.push_state()
+
+    def reset_traj_playback(self):
+        self.pause_traj_playback()
+        self.traj_current_step = 0
+        if hasattr(self, 'traj_points_data') and len(self.traj_points_data) > 0:
+            pt = self.traj_points_data[0]
+            if getattr(self, 'selected_actors', []):
+                self.sel_x.setValue(pt[0])
+                self.sel_y.setValue(pt[1])
+                self.sel_z.setValue(pt[2])
+                if hasattr(self, 'simulate_colors'): self.simulate_colors()
+                if hasattr(self, 'update_field_slice'): self.update_field_slice()
+                self.plotter.render()
+        if hasattr(self, 'traj_list'):
+            self.traj_list.setCurrentRow(0)
+
+    def _on_traj_timer_step(self):
+        if not hasattr(self, 'traj_points_data') or len(self.traj_points_data) == 0:
+            self.pause_traj_playback()
+            return
+            
+        pts = self.traj_points_data
+        self.traj_current_step += self.traj_play_direction
+        
+        if self.traj_current_step < 0:
+            self.traj_current_step = 0
+            self.pause_traj_playback()
+        elif self.traj_current_step >= len(pts):
+            self.traj_current_step = len(pts) - 1
+            self.pause_traj_playback()
+            
+        pt = pts[self.traj_current_step]
+        self.sel_x.setValue(pt[0])
+        self.sel_y.setValue(pt[1])
+        self.sel_z.setValue(pt[2])
+        
+        if hasattr(self, 'traj_list'):
+            self.traj_list.setCurrentRow(self.traj_current_step)
+        
+        if hasattr(self, 'simulate_colors'):
+            self.simulate_colors()
+            
+        if self.chk_send_hw_traj.isChecked() and hasattr(self, 'send_phase_data'):
+            self.send_phase_data()
+            
+        if hasattr(self, 'update_field_slice'):
+            self.update_field_slice()
+            
+        self.plotter.render()
+
+    def update_traj_time(self):
+        if not hasattr(self, 'traj_steps') or not hasattr(self, 'traj_delay') or not hasattr(self, 'lbl_traj_time'):
+            return
+        steps = self.traj_steps.value()
+        delay_ms = self.traj_delay.value()
+        total_seconds = (steps * delay_ms) / 1000.0
+        self.lbl_traj_time.setText(f"타이머 시간: {total_seconds:.2f}초 (+렌더링)")
+
+    def toggle_trajectory_visibility(self):
+        if not hasattr(self, 'traj_actors') or not hasattr(self, 'chk_show_traj'):
+            return
+        visible = self.chk_show_traj.isChecked()
+        for act in self.traj_actors:
+            try:
+                act.SetVisibility(visible)
+            except: pass
+        self.plotter.render()
+
+    def toggle_cpu_monitoring(self):
+        if self.action_show_cpu.isChecked():
+            try:
+                import psutil
+            except ImportError:
+                self.action_show_cpu.setChecked(False)
+                self._prompt_install_from_cb("psutil")
+                return
+        if hasattr(self, 'resource_monitor'):
+            self.resource_monitor.show_cpu = self.action_show_cpu.isChecked()
+            
+    def toggle_gpu_monitoring(self):
+        if self.action_show_gpu.isChecked():
+            try:
+                import GPUtil
+            except ImportError:
+                self.action_show_gpu.setChecked(False)
+                self._prompt_install_from_cb("GPUtil")
+                return
+        if hasattr(self, 'resource_monitor'):
+            self.resource_monitor.show_gpu = self.action_show_gpu.isChecked()
+            
+    def on_resource_updated(self, data):
+        msg = "준비 완료 (Ready)"
+        parts = []
+        if self.action_show_cpu.isChecked():
+            if 'cpu' in data:
+                parts.append(f"CPU: {data['cpu']:.1f}%")
+            elif 'cpu_err' in data:
+                parts.append(f"CPU: {data['cpu_err']}")
+        if self.action_show_gpu.isChecked():
+            if 'gpu' in data:
+                parts.append(f"GPU: {data['gpu']:.1f}%")
+            elif 'gpu_err' in data:
+                parts.append(f"GPU: {data['gpu_err']}")
+                
+        if parts:
+            self.statusBar().showMessage(" | ".join(parts))
+        else:
+            self.statusBar().showMessage(msg)
