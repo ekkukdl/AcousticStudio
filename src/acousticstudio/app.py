@@ -379,6 +379,46 @@ class KeepOpenMenu(QMenu):
         super().mouseReleaseEvent(e)
 
 class AcousticStudioMain(QMainWindow):
+    def show_silent_msg(self, title, message, is_question=False, cancel_btn=False):
+        from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
+        from PySide6.QtCore import Qt
+        dlg = QDialog(self)
+        dlg.setWindowTitle(title)
+        dlg.setWindowFlags(dlg.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        dlg.setMinimumWidth(300)
+        
+        layout = QVBoxLayout(dlg)
+        lbl = QLabel(message)
+        lbl.setWordWrap(True)
+        lbl.setStyleSheet("font-size: 13px; margin: 10px 0;")
+        layout.addWidget(lbl)
+        
+        btn_layout = QHBoxLayout()
+        btn_layout.addStretch()
+        
+        if is_question:
+            btn_yes = QPushButton("예 (Yes)")
+            btn_no = QPushButton("아니오 (No)")
+            btn_yes.clicked.connect(lambda: dlg.done(1))
+            btn_no.clicked.connect(lambda: dlg.done(0))
+            btn_layout.addWidget(btn_yes)
+            btn_layout.addWidget(btn_no)
+            if cancel_btn:
+                btn_c = QPushButton("취소 (Cancel)")
+                btn_c.clicked.connect(lambda: dlg.done(-1))
+                btn_layout.addWidget(btn_c)
+        else:
+            btn_ok = QPushButton("확인")
+            btn_ok.clicked.connect(lambda: dlg.done(1))
+            btn_layout.addWidget(btn_ok)
+            
+        layout.addLayout(btn_layout)
+        
+        from PySide6.QtWidgets import QApplication
+        QApplication.beep()
+        
+        return dlg.exec()
+
     def __init__(self):
         super().__init__()
         
@@ -573,6 +613,12 @@ class AcousticStudioMain(QMainWindow):
         self.btn_send_phase.setEnabled(False)
         self.btn_connect_hw.clicked.connect(self.connect_hw)
         self.btn_send_phase.clicked.connect(self.send_phase_data)
+        
+        from PySide6.QtCore import QTimer
+        self.hw_health_timer = QTimer(self)
+        self.hw_health_timer.timeout.connect(self.check_hw_health)
+        self.hw_health_timer.start(1000)
+        
         self.refresh_ports()
         
         self.chk_realtime_send = QCheckBox("실시간 전송")
@@ -746,14 +792,15 @@ class AcousticStudioMain(QMainWindow):
             else: self.spacing_spin.setValue(50.0)
         self.transducer_type_cb.currentTextChanged.connect(on_transducer_type_changed)
         gen_grid = QGridLayout()
-        gen_grid.addWidget(QLabel("배열 이동 (mm):"), 0, 0)
+        gen_grid.addWidget(QLabel("이동 (mm):"), 0, 0)
         gen_grid.addWidget(QLabel("X:"), 0, 1)
         gen_grid.addWidget(self.gen_pos_x, 0, 2)
         gen_grid.addWidget(QLabel("Y:"), 0, 3)
         gen_grid.addWidget(self.gen_pos_y, 0, 4)
         gen_grid.addWidget(QLabel("Z:"), 0, 5)
         gen_grid.addWidget(self.gen_pos_z, 0, 6)
-        gen_grid.addWidget(QLabel("배열 회전 (deg):"), 1, 0)
+        
+        gen_grid.addWidget(QLabel("회전 (deg):"), 1, 0)
         gen_grid.addWidget(QLabel("Rx:"), 1, 1)
         gen_grid.addWidget(self.gen_rot_x, 1, 2)
         gen_grid.addWidget(QLabel("Ry:"), 1, 3)
@@ -931,10 +978,6 @@ class AcousticStudioMain(QMainWindow):
         self.traj_delay.setValue(50)
         res_lyt.addWidget(self.traj_delay)
 
-        self.lbl_traj_time = QLabel("타이머 시간: 3.00초 (+렌더링)")
-        self.lbl_traj_time.setStyleSheet("color: #FFC107; font-weight: bold;")
-        res_lyt.addWidget(self.lbl_traj_time)
-        
         self.traj_steps.valueChanged.connect(self.update_traj_time)
         self.traj_delay.valueChanged.connect(self.update_traj_time)
 
@@ -947,9 +990,7 @@ class AcousticStudioMain(QMainWindow):
         self.chk_show_traj.stateChanged.connect(self.toggle_trajectory_visibility)
         chk_lyt.addWidget(self.chk_show_traj)
 
-        self.chk_send_hw_traj = QCheckBox("보드로 위상 전송 (연결된 보드 없음)")
-        self.chk_send_hw_traj.setEnabled(False)
-        chk_lyt.addWidget(self.chk_send_hw_traj)
+
         trajectory_layout.addLayout(chk_lyt)
         
         self.chk_optim_traj = QCheckBox("물리 연산 기반 궤적 최적화 (levitate)")
@@ -989,9 +1030,18 @@ class AcousticStudioMain(QMainWindow):
         trajectory_layout.addLayout(btn_lyt)
 
         # Media Player Buttons UI Improved
+        media_header_lyt = QHBoxLayout()
         media_label = QLabel("시뮬레이션 재생 컨트롤:")
         media_label.setStyleSheet("font-weight: bold; margin-top: 10px;")
-        trajectory_layout.addWidget(media_label)
+        media_header_lyt.addWidget(media_label)
+        
+        self.lbl_traj_time = QLabel("예상 시간: 3.00초 (+렌더링)")
+        self.lbl_traj_time.setStyleSheet("color: #E65100; font-weight: bold; margin-top: 10px;")
+        self.lbl_traj_time.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        media_header_lyt.addStretch()
+        media_header_lyt.addWidget(self.lbl_traj_time)
+        
+        trajectory_layout.addLayout(media_header_lyt)
         
         media_lyt = QHBoxLayout()
         media_lyt.setSpacing(5)
@@ -1048,6 +1098,10 @@ class AcousticStudioMain(QMainWindow):
         self._last_saved_state = self.get_state(for_file=True)
         
         self.statusBar().showMessage("준비 완료 (Ready)")
+        self.resource_label = QLabel("")
+        self.resource_label.setStyleSheet("color: #555; font-weight: bold; padding-right: 10px;")
+        self.statusBar().addPermanentWidget(self.resource_label)
+        
         self.resource_monitor = ResourceMonitorThread(self)
         self.resource_monitor.show_cpu = self.show_cpu
         self.resource_monitor.show_gpu = self.show_gpu
@@ -1078,12 +1132,12 @@ class AcousticStudioMain(QMainWindow):
         if not hasattr(self, 'serial_port') or self.serial_port is None:
             port = self.serial_port_cb.currentText()
             if port == "No Ports Found" or not port:
-                QMessageBox.critical(self, "Error", "No valid COM port selected.")
+                self.show_silent_msg("Error", "No valid COM port selected.")
                 return
             try:
                 baud = int(self.serial_baud_cb.currentText())
             except ValueError:
-                QMessageBox.critical(self, "Error", "Invalid Baud Rate.")
+                self.show_silent_msg("Error", "Invalid Baud Rate.")
                 return
                 
             try:
@@ -1093,11 +1147,13 @@ class AcousticStudioMain(QMainWindow):
                 self.btn_send_phase.setEnabled(True)
                 if hasattr(self, 'chk_realtime_send'):
                     self.chk_realtime_send.setEnabled(True)
-                if hasattr(self, 'chk_send_hw_traj'): 
-                    self.chk_send_hw_traj.setEnabled(True)
-                    self.chk_send_hw_traj.setText("보드로 위상 전송")
             except Exception as e:
-                QMessageBox.critical(self, "오류", f"작업 중 오류가 발생했습니다: {str(e)}")
+                error_msg = str(e)
+                if "could not open port" in error_msg:
+                    clean_msg = f"포트({port})를 열 수 없습니다.\n\n장치가 올바르게 연결되어 있는지, 또는 다른 프로그램에서 사용 중이지 않은지 확인해 주세요."
+                else:
+                    clean_msg = f"하드웨어 연결 중 예기치 않은 오류가 발생했습니다.\n\n상세 내용: {error_msg}"
+                self.show_silent_msg("하드웨어 연결 실패", clean_msg)
         else:
             try:
                 self.serial_port.close()
@@ -1108,9 +1164,6 @@ class AcousticStudioMain(QMainWindow):
             self.btn_send_phase.setEnabled(False)
             if hasattr(self, 'chk_realtime_send'):
                 self.chk_realtime_send.setEnabled(False)
-            if hasattr(self, 'chk_send_hw_traj'): 
-                self.chk_send_hw_traj.setEnabled(False)
-                self.chk_send_hw_traj.setText("보드로 위상 전송 (연결된 보드 없음)")
     def send_phase_data(self):
         if not hasattr(self, 'serial_port') or self.serial_port is None:
             return
@@ -1138,6 +1191,25 @@ class AcousticStudioMain(QMainWindow):
                 self.serial_port.write(bytes(packet))
         except Exception as e:
             print(f"HW Send Error: {e}")
+            self.handle_hw_disconnect()
+            
+    def handle_hw_disconnect(self):
+        if hasattr(self, 'serial_port') and self.serial_port is not None:
+            try: self.serial_port.close()
+            except: pass
+            self.serial_port = None
+            self.btn_connect_hw.setText("Connect (연결)")
+            self.btn_send_phase.setEnabled(False)
+            if hasattr(self, 'chk_realtime_send'):
+                self.chk_realtime_send.setEnabled(False)
+            self.show_silent_msg("하드웨어 연결 끊김", "보드와의 연결이 끊어졌습니다.\n장치가 분리되었거나 통신 오류가 발생했습니다.")
+            
+    def check_hw_health(self):
+        if hasattr(self, 'serial_port') and self.serial_port is not None:
+            try:
+                _ = self.serial_port.in_waiting
+            except Exception:
+                self.handle_hw_disconnect()
             
     def apply_ui_transform(self):
         """doc"""""
@@ -1644,7 +1716,6 @@ class AcousticStudioMain(QMainWindow):
             data['traj_end'] = [self.traj_end_x.value(), self.traj_end_y.value(), self.traj_end_z.value()]
             data['traj_steps'] = self.traj_steps.value()
             data['traj_delay'] = self.traj_delay.value()
-            data['traj_send_hw'] = self.chk_send_hw_traj.isChecked()
             data['traj_optim'] = self.chk_optim_traj.isChecked()
             data['traj_show'] = self.chk_show_traj.isChecked()
         
@@ -1800,7 +1871,6 @@ class AcousticStudioMain(QMainWindow):
             self.traj_end_z.setValue(data['traj_end'][2])
         if 'traj_steps' in data: self.traj_steps.setValue(data['traj_steps'])
         if 'traj_delay' in data: self.traj_delay.setValue(data['traj_delay'])
-        if 'traj_send_hw' in data: self.chk_send_hw_traj.setChecked(data['traj_send_hw'])
         if 'traj_optim' in data: self.chk_optim_traj.setChecked(data['traj_optim'])
         if 'traj_show' in data and hasattr(self, 'chk_show_traj'):
             self.chk_show_traj.setChecked(data['traj_show'])
@@ -1868,12 +1938,10 @@ class AcousticStudioMain(QMainWindow):
             
         if is_dirty:
             from PySide6.QtWidgets import QMessageBox
-            reply = QMessageBox.question(self, "저장되지 않은 변경사항", 
-                                         "현재 프로젝트에 저장되지 않은 변경사항이 있습니다.\n진행하기 전에 저장하시겠습니까?", 
-                                         QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
-            if reply == QMessageBox.Cancel:
+            reply = self.show_silent_msg("저장되지 않은 변경사항", "현재 프로젝트에 저장되지 않은 변경사항이 있습니다.\n진행하기 전에 저장하시겠습니까?", is_question=True, cancel_btn=True)
+            if reply == -1:
                 return False
-            elif reply == QMessageBox.Yes:
+            elif reply == 1:
                 if getattr(self, 'current_project_file', None):
                     self.save_project()
                 else:
@@ -1963,7 +2031,7 @@ class AcousticStudioMain(QMainWindow):
             with open(filename, 'r', encoding='utf-8') as f:
                 data = json.load(f)
         except Exception as e:
-            QMessageBox.critical(self, "오류", f"작업 중 오류가 발생했습니다: {str(e)}")
+            self.show_silent_msg("오류", f"작업 중 오류가 발생했습니다: {str(e)}")
             return
             
         self.current_project_file = filename
@@ -2573,8 +2641,8 @@ class AcousticStudioMain(QMainWindow):
                 
     def _prompt_install_from_cb(self, pkg):
         from PySide6.QtWidgets import QMessageBox
-        reply = QMessageBox.question(self, "라이브러리 설치 필요", f"해당 기능을 사용하려면 '{pkg}' 라이브러리가 필요합니다.\n지금 다운로드 및 설치하시겠습니까?", QMessageBox.Yes | QMessageBox.No)
-        if reply == QMessageBox.Yes:
+        reply = self.show_silent_msg("라이브러리 설치 필요", f"해당 기능을 사용하려면 '{pkg}' 라이브러리가 필요합니다.\n지금 다운로드 및 설치하시겠습니까?", is_question=True)
+        if reply == 1:
             from acousticstudio.installer_ui import LiveInstallerDialog
             dlg = LiveInstallerDialog([pkg], self)
             dlg.exec()
@@ -2610,7 +2678,7 @@ class AcousticStudioMain(QMainWindow):
     def set_traj_start_from_selected(self):
         if not getattr(self, 'selected_actors', []):
             from PySide6.QtWidgets import QMessageBox
-            QMessageBox.warning(self, "경고", "위치를 가져올 객체(제어점 등)를 먼저 선택해주세요.")
+            self.show_silent_msg("경고", "위치를 가져올 객체(제어점 등)를 먼저 선택해주세요.")
             return
         self.traj_start_x.setValue(self.sel_x.value())
         self.traj_start_y.setValue(self.sel_y.value())
@@ -2619,7 +2687,7 @@ class AcousticStudioMain(QMainWindow):
     def set_traj_end_from_selected(self):
         if not getattr(self, 'selected_actors', []):
             from PySide6.QtWidgets import QMessageBox
-            QMessageBox.warning(self, "경고", "위치를 가져올 객체(제어점 등)를 먼저 선택해주세요.")
+            self.show_silent_msg("경고", "위치를 가져올 객체(제어점 등)를 먼저 선택해주세요.")
             return
         self.traj_end_x.setValue(self.sel_x.value())
         self.traj_end_y.setValue(self.sel_y.value())
@@ -2712,7 +2780,12 @@ class AcousticStudioMain(QMainWindow):
         import numpy as np
         self.traj_points_data = points
         self.traj_delays_data = traj.get('delays', np.ones(len(points)) * self.traj_delay.value())
+        self.traj_steps.blockSignals(True)
         self.traj_steps.setValue(traj['steps'])
+        self.traj_steps.blockSignals(False)
+        
+        actual_time = np.sum(self.traj_delays_data) / 1000.0
+        self.lbl_traj_time.setText(f"예상 시간: {actual_time:.2f}초 (+렌더링)")
         
         import pyvista as pv
         # Draw Line
@@ -2774,11 +2847,11 @@ class AcousticStudioMain(QMainWindow):
     def start_traj_playback(self, direction=1):
         if not hasattr(self, 'traj_actors') or not self.traj_actors:
             from PySide6.QtWidgets import QMessageBox
-            QMessageBox.warning(self, "경고", "먼저 궤적을 생성하거나 선택해주세요.")
+            self.show_silent_msg("경고", "먼저 궤적을 생성하거나 선택해주세요.")
             return
         if not getattr(self, 'selected_actors', []):
             from PySide6.QtWidgets import QMessageBox
-            QMessageBox.warning(self, "경고", "궤적을 따라 이동시킬 제어점을 선택해주세요.")
+            self.show_silent_msg("경고", "궤적을 따라 이동시킬 제어점을 선택해주세요.")
             return
             
         self.traj_play_direction = direction
@@ -2860,9 +2933,6 @@ class AcousticStudioMain(QMainWindow):
         if hasattr(self, 'simulate_colors'):
             self.simulate_colors()
             
-        if self.chk_send_hw_traj.isChecked() and hasattr(self, 'send_phase_data'):
-            self.send_phase_data()
-            
         if hasattr(self, 'update_field_slice'):
             self.update_field_slice()
             
@@ -2874,7 +2944,7 @@ class AcousticStudioMain(QMainWindow):
         steps = self.traj_steps.value()
         delay_ms = self.traj_delay.value()
         total_seconds = (steps * delay_ms) / 1000.0
-        self.lbl_traj_time.setText(f"타이머 시간: {total_seconds:.2f}초 (+렌더링)")
+        self.lbl_traj_time.setText(f"예상 시간: {total_seconds:.2f}초 (+렌더링)")
 
     def toggle_trajectory_visibility(self):
         if not hasattr(self, 'traj_actors') or not hasattr(self, 'chk_show_traj'):
@@ -2929,6 +2999,8 @@ class AcousticStudioMain(QMainWindow):
                 parts.append(f"GPU: {data['gpu_err']}")
                 
         if parts:
-            self.statusBar().showMessage(" | ".join(parts))
+            if hasattr(self, 'resource_label'):
+                self.resource_label.setText(" | ".join(parts))
         else:
-            self.statusBar().showMessage(msg)
+            if hasattr(self, 'resource_label'):
+                self.resource_label.setText("")
