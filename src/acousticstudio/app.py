@@ -367,6 +367,17 @@ class WheelBlocker(QObject):
                     # To avoid spamming, only push if state changed. push_state already checks this.
                     self.main.push_state()
         return False
+from PySide6.QtWidgets import QMenu
+class KeepOpenMenu(QMenu):
+    def mouseReleaseEvent(self, e):
+        action = self.actionAt(e.pos())
+        if action and action.isCheckable():
+            action.trigger()
+            self.update()
+            e.accept()
+            return
+        super().mouseReleaseEvent(e)
+
 class AcousticStudioMain(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -424,13 +435,27 @@ class AcousticStudioMain(QMainWindow):
         lib_mgr_action.triggered.connect(self.open_library_manager)
 
         view_menu = self.menuBar().addMenu("보기(View)")
-        self.action_show_cpu = QAction("CPU 사용량 표시", self, checkable=True)
-        self.action_show_cpu.triggered.connect(self.toggle_cpu_monitoring)
-        view_menu.addAction(self.action_show_cpu)
         
-        self.action_show_gpu = QAction("GPU 사용량 표시", self, checkable=True)
+        from PySide6.QtCore import QSettings
+        self.settings = QSettings("AcousticStudioTeam", "AcousticStudio")
+        
+        self.show_cpu = self.settings.value("show_cpu", False, type=bool)
+        self.show_gpu = self.settings.value("show_gpu", False, type=bool)
+        
+        display_settings_menu = KeepOpenMenu("화면 설정 (Display Settings)", self)
+        view_menu.addMenu(display_settings_menu)
+        
+        self.action_show_cpu = QAction("CPU 사용량 표시", self)
+        self.action_show_cpu.setCheckable(True)
+        self.action_show_cpu.setChecked(self.show_cpu)
+        self.action_show_cpu.triggered.connect(self.toggle_cpu_monitoring)
+        display_settings_menu.addAction(self.action_show_cpu)
+        
+        self.action_show_gpu = QAction("GPU 사용량 표시", self)
+        self.action_show_gpu.setCheckable(True)
+        self.action_show_gpu.setChecked(self.show_gpu)
         self.action_show_gpu.triggered.connect(self.toggle_gpu_monitoring)
-        view_menu.addAction(self.action_show_gpu)
+        display_settings_menu.addAction(self.action_show_gpu)
 
         
         # Initialize undo stack
@@ -996,6 +1021,8 @@ class AcousticStudioMain(QMainWindow):
         
         self.statusBar().showMessage("준비 완료 (Ready)")
         self.resource_monitor = ResourceMonitorThread(self)
+        self.resource_monitor.show_cpu = self.show_cpu
+        self.resource_monitor.show_gpu = self.show_gpu
         self.resource_monitor.updated.connect(self.on_resource_updated)
         self.resource_monitor.start()
     
@@ -2728,36 +2755,42 @@ class AcousticStudioMain(QMainWindow):
         self.plotter.render()
 
     def toggle_cpu_monitoring(self):
+        self.settings.setValue("show_cpu", self.action_show_cpu.isChecked())
         if self.action_show_cpu.isChecked():
             try:
                 import psutil
             except ImportError:
                 self.action_show_cpu.setChecked(False)
+                self.settings.setValue("show_cpu", False)
                 self._prompt_install_from_cb("psutil")
                 return
         if hasattr(self, 'resource_monitor'):
-            self.resource_monitor.show_cpu = self.action_show_cpu.isChecked()
+            self.show_cpu = self.action_show_cpu.isChecked()
+            self.resource_monitor.show_cpu = self.show_cpu
             
     def toggle_gpu_monitoring(self):
+        self.settings.setValue("show_gpu", self.action_show_gpu.isChecked())
         if self.action_show_gpu.isChecked():
             try:
                 import GPUtil
             except ImportError:
                 self.action_show_gpu.setChecked(False)
+                self.settings.setValue("show_gpu", False)
                 self._prompt_install_from_cb("GPUtil")
                 return
         if hasattr(self, 'resource_monitor'):
-            self.resource_monitor.show_gpu = self.action_show_gpu.isChecked()
+            self.show_gpu = self.action_show_gpu.isChecked()
+            self.resource_monitor.show_gpu = self.show_gpu
             
     def on_resource_updated(self, data):
         msg = "준비 완료 (Ready)"
         parts = []
-        if self.action_show_cpu.isChecked():
+        if self.show_cpu:
             if 'cpu' in data:
                 parts.append(f"CPU: {data['cpu']:.1f}%")
             elif 'cpu_err' in data:
                 parts.append(f"CPU: {data['cpu_err']}")
-        if self.action_show_gpu.isChecked():
+        if self.show_gpu:
             if 'gpu' in data:
                 parts.append(f"GPU: {data['gpu']:.1f}%")
             elif 'gpu_err' in data:

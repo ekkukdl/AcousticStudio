@@ -99,7 +99,9 @@ class LibraryManagerDialog(QDialog):
             'pyserial': {'type': '필수', 'size': '~2MB', 'desc': '하드웨어 USB 통신'},
             'numba': {'type': '필수', 'size': '~10MB', 'desc': 'CPU 병렬 최적화'},
             'taichi': {'type': '선택', 'size': '~30MB', 'desc': '다중/GPU 병렬 가속 연산'},
-            'torch': {'type': '선택', 'size': '~2.5GB', 'desc': 'NVIDIA 그래픽카드 초고속 연산'}
+            'torch': {'type': '선택', 'size': '~2.5GB', 'desc': 'NVIDIA 그래픽카드 초고속 연산'},
+            'psutil': {'type': '선택', 'size': '~1MB', 'desc': 'CPU 리소스 실시간 모니터링'},
+            'GPUtil': {'type': '선택', 'size': '~1MB', 'desc': 'GPU 리소스 실시간 모니터링'}
         }
 
         layout = QVBoxLayout(self)
