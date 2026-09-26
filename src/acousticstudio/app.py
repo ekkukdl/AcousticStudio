@@ -558,6 +558,7 @@ class AcousticStudioMain(QMainWindow):
         
         import serial.tools.list_ports
         self.serial_port_cb = QComboBox()
+        self.serial_port_cb.setMinimumWidth(80) # Fix narrow COM port combobox
         self.btn_refresh_ports = QPushButton("새로고침")
         self.btn_refresh_ports.setFixedWidth(60)
         self.btn_refresh_ports.clicked.connect(self.refresh_ports)
@@ -574,6 +575,10 @@ class AcousticStudioMain(QMainWindow):
         self.btn_send_phase.clicked.connect(self.send_phase_data)
         self.refresh_ports()
         
+        self.chk_realtime_send = QCheckBox("실시간 전송")
+        self.chk_realtime_send.setEnabled(False)
+        self.chk_realtime_send.setToolTip("활성화 시, 화면에서 점을 움직이면 연결된 보드로 즉시 위상 데이터가 전송됩니다.")
+        
         hw_layout.addWidget(QLabel("하드웨어 제어 (USB Port):"))
         hw_layout.addWidget(self.serial_port_cb)
         hw_layout.addWidget(self.btn_refresh_ports)
@@ -581,6 +586,8 @@ class AcousticStudioMain(QMainWindow):
         hw_layout.addWidget(self.serial_baud_cb)
         hw_layout.addWidget(self.btn_connect_hw)
         hw_layout.addWidget(self.btn_send_phase)
+        hw_layout.addWidget(self.chk_realtime_send)
+        hw_layout.addStretch()
         
         # Add Compute Mode UI
         try:
@@ -940,65 +947,86 @@ class AcousticStudioMain(QMainWindow):
         self.chk_show_traj.stateChanged.connect(self.toggle_trajectory_visibility)
         chk_lyt.addWidget(self.chk_show_traj)
 
-        self.chk_send_hw_traj = QCheckBox("보드로 위상 전송")
+        self.chk_send_hw_traj = QCheckBox("보드로 위상 전송 (연결된 보드 없음)")
         self.chk_send_hw_traj.setEnabled(False)
         chk_lyt.addWidget(self.chk_send_hw_traj)
         trajectory_layout.addLayout(chk_lyt)
-
-        self.btn_gen_traj = QPushButton("궤적 생성")
-        self.btn_gen_traj.setStyleSheet("background-color: #9C27B0; color: white; font-weight: bold; height: 30px;")
-        self.btn_gen_traj.clicked.connect(self.generate_trajectory)
         
-        self.btn_clear_traj = QPushButton("지우기")
-        self.btn_clear_traj.clicked.connect(self.clear_trajectory)
+        self.chk_optim_traj = QCheckBox("물리 연산 기반 궤적 최적화 (levitate)")
+        self.chk_optim_traj.setToolTip("포획력(Stiffness)을 계산하여 트랩이 약한 구간은 속도를 늦추어 물체의 추락을 방지합니다.")
+        trajectory_layout.addWidget(self.chk_optim_traj)
+
+        self.btn_gen_traj = QPushButton("새로운 궤적 생성")
+        self.btn_gen_traj.setStyleSheet("background-color: #9C27B0; color: white; font-weight: bold; height: 32px; border-radius: 4px; margin-bottom: 5px;")
+        self.btn_gen_traj.clicked.connect(self.generate_trajectory)
+        trajectory_layout.addWidget(self.btn_gen_traj)
+        
+        # Trajectory List Moved Here
+        list_lbl = QLabel("생성된 궤적 목록:")
+        list_lbl.setStyleSheet("font-weight: bold; margin-top: 5px;")
+        trajectory_layout.addWidget(list_lbl)
+        
+        self.traj_list = QListWidget()
+        self.traj_list.setMinimumHeight(100)
+        self.traj_list.setMaximumHeight(150)
+        self.traj_list.setStyleSheet("border: 1px solid #ccc; border-radius: 4px;")
+        trajectory_layout.addWidget(self.traj_list)
+        self.traj_list.itemClicked.connect(self.on_traj_item_clicked)
+        
+        # Clear Buttons Moved Here
+        self.btn_clear_sel_traj = QPushButton("선택 궤적 삭제")
+        self.btn_clear_sel_traj.setStyleSheet("height: 28px; border-radius: 4px; background-color: #f44336; color: white;")
+        self.btn_clear_sel_traj.clicked.connect(self.clear_selected_trajectory)
+        
+        self.btn_clear_all_traj = QPushButton("모든 궤적 삭제")
+        self.btn_clear_all_traj.setStyleSheet("height: 28px; border-radius: 4px; background-color: #d32f2f; color: white;")
+        self.btn_clear_all_traj.clicked.connect(self.clear_all_trajectories)
 
         btn_lyt = QHBoxLayout()
-        btn_lyt.addWidget(self.btn_gen_traj)
-        btn_lyt.addWidget(self.btn_clear_traj)
+        btn_lyt.setSpacing(5)
+        btn_lyt.addWidget(self.btn_clear_sel_traj)
+        btn_lyt.addWidget(self.btn_clear_all_traj)
         trajectory_layout.addLayout(btn_lyt)
 
-        # Media Player Buttons
+        # Media Player Buttons UI Improved
         media_label = QLabel("시뮬레이션 재생 컨트롤:")
         media_label.setStyleSheet("font-weight: bold; margin-top: 10px;")
         trajectory_layout.addWidget(media_label)
         
         media_lyt = QHBoxLayout()
+        media_lyt.setSpacing(5)
         
-        self.btn_traj_reset = QPushButton("⏹")
+        from PySide6.QtWidgets import QStyle
+        
+        self.btn_traj_reset = QPushButton()
+        self.btn_traj_reset.setIcon(self.style().standardIcon(QStyle.SP_MediaStop))
         self.btn_traj_reset.setToolTip("원래 위치로 정지")
-        self.btn_traj_reset.setFixedSize(40, 40)
+        self.btn_traj_reset.setFixedHeight(30)
         self.btn_traj_reset.clicked.connect(self.reset_traj_playback)
         media_lyt.addWidget(self.btn_traj_reset)
         
-        self.btn_traj_bw = QPushButton("⏪")
+        self.btn_traj_bw = QPushButton()
+        self.btn_traj_bw.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
         self.btn_traj_bw.setToolTip("뒤로 재생")
-        self.btn_traj_bw.setFixedSize(40, 40)
+        self.btn_traj_bw.setFixedHeight(30)
         self.btn_traj_bw.clicked.connect(lambda: self.start_traj_playback(-1))
         media_lyt.addWidget(self.btn_traj_bw)
         
-        self.btn_traj_play = QPushButton("▶")
+        self.btn_traj_play = QPushButton()
+        self.btn_traj_play.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.btn_traj_play.setToolTip("재생")
-        self.btn_traj_play.setFixedSize(40, 40)
-        self.btn_traj_play.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold; font-size: 16px;")
+        self.btn_traj_play.setFixedHeight(30)
         self.btn_traj_play.clicked.connect(lambda: self.start_traj_playback(1))
         media_lyt.addWidget(self.btn_traj_play)
         
-        self.btn_traj_pause = QPushButton("⏸")
+        self.btn_traj_pause = QPushButton()
+        self.btn_traj_pause.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
         self.btn_traj_pause.setToolTip("일시정지")
-        self.btn_traj_pause.setFixedSize(40, 40)
+        self.btn_traj_pause.setFixedHeight(30)
         self.btn_traj_pause.clicked.connect(self.pause_traj_playback)
         media_lyt.addWidget(self.btn_traj_pause)
         
         trajectory_layout.addLayout(media_lyt)
-        
-        # Trajectory List
-        # QListWidget is imported globally at the top
-        self.traj_list = QListWidget()
-        self.traj_list.setMinimumHeight(120)
-        self.traj_list.setMaximumHeight(200)
-        trajectory_layout.addWidget(QLabel("생성된 궤적 목록 (다중 궤적 테스트용):"))
-        trajectory_layout.addWidget(self.traj_list)
-        self.traj_list.itemClicked.connect(self.on_traj_item_clicked)
 
         trajectory_group.setLayout(trajectory_layout)
         control_layout.addWidget(trajectory_group)
@@ -1013,7 +1041,7 @@ class AcousticStudioMain(QMainWindow):
         self._sel_base_rot = [0.0, 0.0, 0.0]
         # Apply wheel blocker AFTER all widgets are created
         self.wheel_blocker = WheelBlocker(scroll_area, self)
-        widgets = self.findChildren(QDoubleSpinBox) + self.findChildren(QSpinBox) + self.findChildren(QComboBox)
+        widgets = self.findChildren(QDoubleSpinBox) + self.findChildren(QSpinBox) + self.findChildren(QComboBox) + self.findChildren(QSlider)
         for widget in widgets:
             widget.installEventFilter(self.wheel_blocker)
             
@@ -1063,8 +1091,11 @@ class AcousticStudioMain(QMainWindow):
                 self.serial_port = serial.Serial(port, baud, timeout=1)
                 self.btn_connect_hw.setText("Disconnect (연결 해제)")
                 self.btn_send_phase.setEnabled(True)
-                if hasattr(self, 'chk_send_hw_traj'): self.chk_send_hw_traj.setEnabled(True)
-                QMessageBox.information(self, "Hardware", f"Connected to {port} at {baud} baud.")
+                if hasattr(self, 'chk_realtime_send'):
+                    self.chk_realtime_send.setEnabled(True)
+                if hasattr(self, 'chk_send_hw_traj'): 
+                    self.chk_send_hw_traj.setEnabled(True)
+                    self.chk_send_hw_traj.setText("보드로 위상 전송")
             except Exception as e:
                 QMessageBox.critical(self, "오류", f"작업 중 오류가 발생했습니다: {str(e)}")
         else:
@@ -1075,8 +1106,11 @@ class AcousticStudioMain(QMainWindow):
             self.serial_port = None
             self.btn_connect_hw.setText("Connect (연결)")
             self.btn_send_phase.setEnabled(False)
-            if hasattr(self, 'chk_send_hw_traj'): self.chk_send_hw_traj.setEnabled(False)
-            QMessageBox.information(self, "Hardware", "Disconnected.")
+            if hasattr(self, 'chk_realtime_send'):
+                self.chk_realtime_send.setEnabled(False)
+            if hasattr(self, 'chk_send_hw_traj'): 
+                self.chk_send_hw_traj.setEnabled(False)
+                self.chk_send_hw_traj.setText("보드로 위상 전송 (연결된 보드 없음)")
     def send_phase_data(self):
         if not hasattr(self, 'serial_port') or self.serial_port is None:
             return
@@ -1611,6 +1645,7 @@ class AcousticStudioMain(QMainWindow):
             data['traj_steps'] = self.traj_steps.value()
             data['traj_delay'] = self.traj_delay.value()
             data['traj_send_hw'] = self.chk_send_hw_traj.isChecked()
+            data['traj_optim'] = self.chk_optim_traj.isChecked()
             data['traj_show'] = self.chk_show_traj.isChecked()
         
         return data
@@ -1766,6 +1801,7 @@ class AcousticStudioMain(QMainWindow):
         if 'traj_steps' in data: self.traj_steps.setValue(data['traj_steps'])
         if 'traj_delay' in data: self.traj_delay.setValue(data['traj_delay'])
         if 'traj_send_hw' in data: self.chk_send_hw_traj.setChecked(data['traj_send_hw'])
+        if 'traj_optim' in data: self.chk_optim_traj.setChecked(data['traj_optim'])
         if 'traj_show' in data and hasattr(self, 'chk_show_traj'):
             self.chk_show_traj.setChecked(data['traj_show'])
             if hasattr(self, 'toggle_trajectory_visibility'):
@@ -1882,8 +1918,8 @@ class AcousticStudioMain(QMainWindow):
         self.selected_actors.clear()
         
         # Clear trajectory if active
-        if hasattr(self, 'clear_trajectory'):
-            self.clear_trajectory()
+        if hasattr(self, 'clear_all_trajectories'):
+            self.clear_all_trajectories()
             
         # Reset UI blocks to default state
         if hasattr(self, 'xz_check'):
@@ -1893,14 +1929,26 @@ class AcousticStudioMain(QMainWindow):
             if hasattr(self, 'show_field_btn'): self.show_field_btn.setChecked(False)
         if hasattr(self, 'toggle_field_slice'):
             self.toggle_field_slice()
+        
+        # Reset to default UI params
+        if hasattr(self, 'transducer_type_cb'): self.transducer_type_cb.setCurrentIndex(0)
+        if hasattr(self, 'array_type_cb'): self.array_type_cb.setCurrentIndex(0)
+        if hasattr(self, 'spacing_spin'): self.spacing_spin.setValue(10.5)
+        if hasattr(self, 'trap_type_cb'): self.trap_type_cb.setCurrentIndex(0)
+        
+        self.generate_array()
+        self.add_control_point()
+        
         self.current_project_file = None
         self.setWindowTitle("Acoustic Control Studio - 새 프로젝트")
+        self.plotter.render()
+        
+        # Must be called after UI is fully rebuilt
         self._last_saved_state = self.get_state(for_file=True)
         if hasattr(self, 'undo_stack'):
             self.undo_stack.clear()
             self.redo_stack.clear()
             
-        self.plotter.render()
         self.push_state()
     def load_project(self):
         if not self.check_unsaved_changes():
@@ -1922,7 +1970,7 @@ class AcousticStudioMain(QMainWindow):
         self.set_state(data)
         self.push_state()
         self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
-        self._last_saved_state = data
+        self._last_saved_state = self.get_state(for_file=True)
     def push_state(self):
         if not hasattr(self, 'undo_stack'):
             self.undo_stack = []
@@ -2294,11 +2342,10 @@ class AcousticStudioMain(QMainWindow):
         else:
             self.plotter.render()
             
-        
-        
         # Real-time hardware transmission
-        if hasattr(self, 'serial_port') and self.serial_port is not None:
-            self.send_phase_data()
+        if hasattr(self, 'chk_realtime_send') and self.chk_realtime_send.isChecked():
+            if hasattr(self, 'serial_port') and self.serial_port is not None:
+                self.send_phase_data()
     def toggle_field_slice(self):
         if self.show_field_btn.isChecked():
             self.show_field_btn.setText("음압 단면 숨기기")
@@ -2306,8 +2353,16 @@ class AcousticStudioMain(QMainWindow):
         else:
             self.show_field_btn.setText("음압 단면 시각화")
             for a in self.field_actors:
-                self.plotter.remove_actor(a, render=False)
+                try: self.plotter.remove_actor(a, render=False)
+                except: pass
             self.field_actors.clear()
+            
+            if hasattr(self, '_cached_field_grids'):
+                for key, (grid, actor) in self._cached_field_grids.items():
+                    try: self.plotter.remove_actor(actor, render=False)
+                    except: pass
+                self._cached_field_grids.clear()
+                
             self.plotter.render()
     def draw_ghost_plane(self, axis_name, offset):
         if not self.show_field_btn.isChecked() or not self.transducer_actors: return
@@ -2367,6 +2422,9 @@ class AcousticStudioMain(QMainWindow):
         if not self.show_field_btn.isChecked() or not self.transducer_actors:
             for a in self.field_actors:
                 a.SetVisibility(False)
+            if hasattr(self, '_cached_field_grids'):
+                for key, (grid, actor) in self._cached_field_grids.items():
+                    actor.SetVisibility(False)
             self.plotter.render()
             return
         c = 343000.0
@@ -2576,20 +2634,65 @@ class AcousticStudioMain(QMainWindow):
         
         import numpy as np
         points = np.zeros((steps, 3))
+        delays = np.ones(steps) * self.traj_delay.value()
+        
         for i in range(steps):
             t = i / (steps - 1)
             points[i] = [sx + (ex - sx) * t, sy + (ey - sy) * t, sz + (ez - sz) * t]
+            
+        if hasattr(self, 'chk_optim_traj') and self.chk_optim_traj.isChecked():
+            try:
+                np.complex = np.complex128
+                np.float = np.float64
+                np.int = np.int64
+                np.bool = np.bool_
+                import levitate
+                from src.acousticstudio.sonic_wrapper import calculate_phases_sonic
+                
+                # Setup levitate array based on transducers
+                tx_centers = np.array([a.center for a in self.transducer_actors])
+                pos_x = tx_centers[:, 0]
+                pos_y = tx_centers[:, 1]
+                pos_z = tx_centers[:, 2]
+                
+                lev_array = levitate.arrays.TransducerArray(
+                    positions=np.stack([pos_x, pos_y, pos_z]),
+                    normals=np.stack([np.zeros(len(pos_x)), np.zeros(len(pos_y)), np.ones(len(pos_z))]),
+                    transducer=levitate.transducers.CircularPiston(effective_radius=0.005)
+                )
+                stiffness = levitate.fields.RadiationForceStiffness(lev_array)
+                k = 2 * np.pi * 40000 / 343.0
+                algo = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else "Twin Trap"
+                if "Twin Trap" in algo: algo = "Twin Trap"
+                elif "Vortex" in algo: algo = "Vortex Trap"
+                else: algo = "Twin Trap"
+                
+                for i in range(steps):
+                    cx, cy, cz = points[i]
+                    phases, _ = calculate_phases_sonic(np.array([cx]), np.array([cy]), np.array([cz]), 
+                                                      pos_x, pos_y, pos_z, 
+                                                      np.ones(len(pos_x)), algo, k)
+                    val = (stiffness @ np.array([cx, cy, cz]))(np.exp(1j * phases))
+                    total_stiffness = np.sum(val)
+                    
+                    if total_stiffness > -0.005:
+                        multiplier = min(3.0, -0.005 / (total_stiffness - 1e-9))
+                        if total_stiffness > 0: multiplier = 5.0
+                        delays[i] = self.traj_delay.value() * multiplier
+            except Exception as e:
+                print(f"궤적 최적화 실패: {e}")
             
         if not hasattr(self, 'trajectories_list'):
             self.trajectories_list = []
             
         traj_name = f"궤적 {len(self.trajectories_list)+1}: ({sx:.1f}, {sy:.1f}, {sz:.1f}) ➜ ({ex:.1f}, {ey:.1f}, {ez:.1f})"
-        traj_dict = {'name': traj_name, 'points': points, 'steps': steps}
+        if hasattr(self, 'chk_optim_traj') and self.chk_optim_traj.isChecked(): traj_name += " [물리 최적화]"
+        
+        traj_dict = {'name': traj_name, 'points': points, 'steps': steps, 'delays': delays}
         self.trajectories_list.append(traj_dict)
         
         if hasattr(self, 'traj_list'):
             self.traj_list.addItem(traj_name)
-            # Select the newly added one
             self.traj_list.setCurrentRow(len(self.trajectories_list) - 1)
             self.load_selected_trajectory(len(self.trajectories_list) - 1)
 
@@ -2606,10 +2709,11 @@ class AcousticStudioMain(QMainWindow):
         
         traj = self.trajectories_list[idx]
         points = traj['points']
+        import numpy as np
         self.traj_points_data = points
+        self.traj_delays_data = traj.get('delays', np.ones(len(points)) * self.traj_delay.value())
         self.traj_steps.setValue(traj['steps'])
         
-        import numpy as np
         import pyvista as pv
         # Draw Line
         steps = len(points)
@@ -2628,7 +2732,30 @@ class AcousticStudioMain(QMainWindow):
             
         self.plotter.render()
         
-    def clear_trajectory(self):
+    def clear_selected_trajectory(self):
+        if hasattr(self, 'traj_list') and hasattr(self, 'trajectories_list'):
+            row = self.traj_list.currentRow()
+            if row < 0 or row >= len(self.trajectories_list):
+                return
+            del self.trajectories_list[row]
+            self.traj_list.takeItem(row)
+            
+            # Remove old actors if any
+            if hasattr(self, 'traj_actors'):
+                for act in self.traj_actors:
+                    try: self.plotter.remove_actor(act, render=False)
+                    except: pass
+                self.traj_actors = []
+            
+            # Select another one if available
+            if self.trajectories_list:
+                new_row = min(row, len(self.trajectories_list) - 1)
+                self.traj_list.setCurrentRow(new_row)
+                self.load_selected_trajectory(new_row)
+            else:
+                self.plotter.render()
+
+    def clear_all_trajectories(self):
         if hasattr(self, 'traj_actors'):
             for act in self.traj_actors:
                 try: self.plotter.remove_actor(act, render=False)
@@ -2722,6 +2849,11 @@ class AcousticStudioMain(QMainWindow):
         self.sel_y.setValue(pt[1])
         self.sel_z.setValue(pt[2])
         
+        if hasattr(self, 'traj_delays_data') and self.traj_current_step < len(self.traj_delays_data):
+            dynamic_delay = int(self.traj_delays_data[self.traj_current_step])
+            if dynamic_delay > 0 and self.traj_timer.interval() != dynamic_delay:
+                self.traj_timer.setInterval(dynamic_delay)
+                
         if hasattr(self, 'traj_list'):
             self.traj_list.setCurrentRow(self.traj_current_step)
         
