@@ -3,25 +3,380 @@ import sys
 import os
 os.environ["QT_API"] = "pyside6"
 import numpy as np
+import numba
+@numba.njit(parallel=True)
+def calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k):
+    num_pts = len(pts_x)
+    num_tx = len(tx_x)
+    real_out = np.zeros(num_pts, dtype=np.float64)
+    imag_out = np.zeros(num_pts, dtype=np.float64)
+    for p in numba.prange(num_pts):
+        px, py, pz = pts_x[p], pts_y[p], pts_z[p]
+        r_sum, i_sum = 0.0, 0.0
+        for t in range(num_tx):
+            dx = px - tx_x[t]
+            dy = py - tx_y[t]
+            dz = pz - tx_z[t]
+            dist = np.sqrt(dx*dx + dy*dy + dz*dz)
+            if dist < 1e-3: dist = 1e-3
+            amp = tx_amplitudes[t] / dist
+            phase = k * dist + tx_phases[t]
+            r_sum += amp * np.cos(phase)
+            i_sum += amp * np.sin(phase)
+        real_out[p] = r_sum
+        imag_out[p] = i_sum
+    return real_out, imag_out
 import pyvista as pv
 import vtk
-vtk.vtkObject.GlobalWarningDisplayOff()
+vtk.vtkObject.GlobalWarningDisplayOff() # VTK쓽 遺덊븘슂븳 궡遺 뿉윭(vtkVectorText 벑) 異쒕젰 諛⑹
 from pyvistaqt import QtInteractor
 from PySide6.QtWidgets import (QApplication, QSplitter, QMainWindow, QWidget, QVBoxLayout, 
                                      QHBoxLayout, QPushButton, QLabel, 
                                      QDoubleSpinBox, QSpinBox, QComboBox, QGroupBox, 
-                                     QListWidget, QAbstractItemView, QSlider, QCheckBox,
+                                     QListWidget, QAbstractItemView, QRubberBand, QSlider, QCheckBox,
                                      QScrollArea, QFormLayout, QListWidgetItem, QMessageBox)
 from PySide6.QtCore import Qt, QObject, QEvent, QRect, QThread, Signal
 import time
 
-# --- 분리된 모듈 import ---
-from acousticstudio.widgets import ResourceMonitorThread, MouseEventFilter, WheelBlocker, KeepOpenMenu
-from acousticstudio.phase_engine import PhaseEngine, calculate_field_slice_numba
-from acousticstudio.hardware import HardwareController
-from acousticstudio.state_manager import StateManager
-from acousticstudio import file_io
+class ResourceMonitorThread(QThread):
+    updated = Signal(dict)
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.running = True
+        self.show_cpu = False
+        self.show_gpu = False
+        
+    def run(self):
+        while self.running:
+            data = {}
+            if self.show_cpu:
+                try:
+                    import psutil
+                    data['cpu'] = psutil.cpu_percent()
+                except ImportError:
+                    data['cpu_err'] = "psutil 미설치"
+                    
+            if self.show_gpu:
+                try:
+                    import GPUtil
+                    gpus = GPUtil.getGPUs()
+                    if gpus:
+                        data['gpu'] = gpus[0].load * 100
+                    else:
+                        data['gpu_err'] = "GPU 없음"
+                except ImportError:
+                    data['gpu_err'] = "GPUtil 미설치"
+                except Exception as e:
+                    data['gpu_err'] = f"GPU 오류: {str(e)}"
+                    
+            self.updated.emit(data)
+            time.sleep(1.5)
+            
+    def stop(self):
+        self.running = False
+        self.wait()
 
+class MouseEventFilter(QObject):
+    def __init__(self, main_window):
+        super().__init__()
+        
+        
+        self.main = main_window
+        self.rubber_band = QRubberBand(QRubberBand.Rectangle, self.main.plotter.interactor)
+        self.origin = None
+        self.right_dragging = False
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.MouseButtonPress:
+            scale = self.main.plotter.interactor.devicePixelRatioF()
+            pos = event.position().toPoint()
+            scaled_x = int(round(pos.x() * scale))
+            scaled_y = int(round(pos.y() * scale))
+            vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
+            if event.button() == Qt.LeftButton:
+                if hasattr(self.main, 'gizmo_actors') and self.main.gizmo_actors:
+                    import vtk
+                    prop_picker = vtk.vtkPropPicker()
+                    renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
+                    
+                    # 1. First Pass: Gizmo Only
+                    other_actors = getattr(self.main, 'transducer_actors', []) + [p["actor"] for p in getattr(self.main, 'control_points', [])]
+                    for a in other_actors:
+                        if hasattr(a, 'SetPickable'): a.SetPickable(False)
+                        
+                    prop_picker.Pick(scaled_x, vtk_y, 0, renderer)
+                    act = prop_picker.GetActor()
+                    
+                    gizmo_clicked = None
+                    if act is not None:
+                        act_addr = act.GetAddressAsString("vtkProp")
+                        for axis, g_act in self.main.gizmo_actors.items():
+                            if g_act.GetAddressAsString("vtkProp") == act_addr and g_act.GetVisibility():
+                                gizmo_clicked = axis
+                                break
+                                
+                    # Restore pickability
+                    for a in other_actors:
+                        if hasattr(a, 'SetPickable'): a.SetPickable(True)
+                            
+                    if gizmo_clicked:
+                        self.main.active_gizmo_axis = gizmo_clicked
+                        self.main.gizmo_start_pos = pos
+                        self.main.gizmo_start_values = (self.main.sel_x.value(), self.main.sel_y.value(), self.main.sel_z.value())
+                        for a, g in self.main.gizmo_actors.items():
+                            g.prop.color = "yellow" if a == gizmo_clicked else {'x':'red','y':'green','z':'blue','center':'white'}.get(a, 'white')
+                        self.main.plotter.render()
+                        return True
+                self.origin = pos
+                self.rubber_band.setGeometry(self.origin.x(), self.origin.y(), 0, 0)
+                self.rubber_band.show()
+                return True
+                
+            elif event.button() == Qt.RightButton:
+                self.right_dragging = True
+                iren = self.main.plotter.interactor
+                iren.SetEventPosition(scaled_x, vtk_y)
+                style = iren.GetInteractorStyle()
+                if hasattr(style, 'OnLeftButtonDown'):
+                    style.OnLeftButtonDown()
+                return True
+                
+        elif event.type() == QEvent.MouseMove:
+            scale = self.main.plotter.interactor.devicePixelRatioF()
+            pos = event.position().toPoint()
+            scaled_x = int(round(pos.x() * scale))
+            scaled_y = int(round(pos.y() * scale))
+            vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
+            
+            # --- Hover Logic ---
+            if event.buttons() == Qt.NoButton and hasattr(self.main, 'gizmo_actors') and self.main.gizmo_actors:
+                import vtk
+                prop_picker = vtk.vtkPropPicker()
+                renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
+                
+                other_actors = getattr(self.main, 'transducer_actors', []) + [p["actor"] for p in getattr(self.main, 'control_points', [])]
+                for a in other_actors:
+                    if hasattr(a, 'SetPickable'): a.SetPickable(False)
+                    
+                prop_picker.Pick(scaled_x, vtk_y, 0, renderer)
+                act = prop_picker.GetActor()
+                
+                hovered_axis = None
+                if act is not None:
+                    act_addr = act.GetAddressAsString("vtkProp")
+                    for axis, g_act in self.main.gizmo_actors.items():
+                        if g_act.GetAddressAsString("vtkProp") == act_addr and g_act.GetVisibility():
+                            hovered_axis = axis
+                            break
+                            
+                for a in other_actors:
+                    if hasattr(a, 'SetPickable'): a.SetPickable(True)
+                    
+                # Second pass: pick others if no gizmo
+                hovered_obj = None
+                if hovered_axis is None:
+                    prop_picker.Pick(scaled_x, vtk_y, 0, renderer)
+                    act2 = prop_picker.GetActor()
+                    if act2 is not None:
+                        act2_addr = act2.GetAddressAsString("vtkProp")
+                        for t in getattr(self.main, 'transducer_actors', []):
+                            if t.GetAddressAsString("vtkProp") == act2_addr:
+                                hovered_obj = t
+                                break
+                        if hovered_obj is None:
+                            for p in getattr(self.main, 'control_points', []):
+                                if p["actor"].GetAddressAsString("vtkProp") == act2_addr:
+                                    hovered_obj = p["actor"]
+                                    break
+                                    
+                base_colors = {'x':'red', 'y':'green', 'z':'blue', 'center':'white'}
+                hover_colors = {'x':'#FF6666', 'y':'#66FF66', 'z':'#6666FF', 'center':'yellow'}
+                
+                needs_render = False
+                for a, g in self.main.gizmo_actors.items():
+                    target_color = hover_colors.get(a, base_colors.get(a, 'white')) if a == hovered_axis else base_colors.get(a, 'white')
+                    if getattr(g, '_current_color', None) != target_color:
+                        g.prop.color = target_color
+                        g._current_color = target_color
+                        needs_render = True
+                        
+                for t in other_actors:
+                    if hasattr(t, 'prop'):
+                        is_selected = (t in getattr(self.main, 'selected_actors', []))
+                        is_hovered = (t == hovered_obj)
+                        
+                        if is_selected: target_op = 0.5
+                        elif is_hovered: target_op = 0.7
+                        else: target_op = 1.0
+                        
+                        if getattr(t, '_current_opacity', 1.0) != target_op:
+                            t.prop.opacity = target_op
+                            t._current_opacity = target_op
+                            needs_render = True
+                            
+                if needs_render:
+                    self.main.plotter.render()
+            # -------------------
+            
+            if getattr(self.main, 'active_gizmo_axis', None) is not None:
+                axis = self.main.active_gizmo_axis
+                cx, cy, cz = self.main._sel_base_centroid
+                renderer = self.main.plotter.interactor.GetRenderWindow().GetRenderers().GetFirstRenderer()
+                
+                import numpy as np
+                
+                def get_ray(px, py):
+                    renderer.SetDisplayPoint(px, py, 0.0)
+                    renderer.DisplayToWorld()
+                    wp1 = renderer.GetWorldPoint()
+                    p1 = np.array([wp1[0]/wp1[3], wp1[1]/wp1[3], wp1[2]/wp1[3]])
+                    renderer.SetDisplayPoint(px, py, 1.0)
+                    renderer.DisplayToWorld()
+                    wp2 = renderer.GetWorldPoint()
+                    p2 = np.array([wp2[0]/wp2[3], wp2[1]/wp2[3], wp2[2]/wp2[3]])
+                    d = p2 - p1
+                    norm = np.linalg.norm(d)
+                    if norm > 0: d = d / norm
+                    return p1, d
+                    
+                ray_p1, ray_dir = get_ray(scaled_x, vtk_y)
+                
+                scaled_x_start = int(round(self.main.gizmo_start_pos.x() * scale))
+                vtk_y_start = self.main.plotter.window_size[1] - int(round(self.main.gizmo_start_pos.y() * scale)) - 1
+                s_ray_p1, s_ray_dir = get_ray(scaled_x_start, vtk_y_start)
+                
+                if axis == 'center':
+                    cam = renderer.GetActiveCamera()
+                    cam_dir = np.array(cam.GetDirectionOfProjection())
+                    
+                    denom = np.dot(cam_dir, ray_dir)
+                    if abs(denom) > 1e-6:
+                        t = np.dot(cam_dir, np.array([cx, cy, cz]) - ray_p1) / denom
+                        curr_world = ray_p1 + t * ray_dir
+                    else: curr_world = np.array([cx, cy, cz])
+                    
+                    denom_s = np.dot(cam_dir, s_ray_dir)
+                    if abs(denom_s) > 1e-6:
+                        t_s = np.dot(cam_dir, np.array([cx, cy, cz]) - s_ray_p1) / denom_s
+                        start_world = s_ray_p1 + t_s * s_ray_dir
+                    else: start_world = np.array([cx, cy, cz])
+                    
+                    dx, dy, dz = curr_world - start_world
+                    
+                    self.main._is_gizmo_dragging = True
+                    self.main.sel_x.setValue(self.main.gizmo_start_values[0] + dx)
+                    self.main.sel_y.setValue(self.main.gizmo_start_values[1] + dy)
+                    self.main.sel_z.setValue(self.main.gizmo_start_values[2] + dz)
+                    self.main._is_gizmo_dragging = False
+                    
+                else:
+                    dir_vec = np.array({'x':[1,0,0], 'y':[0,1,0], 'z':[0,0,1]}[axis])
+                    center = np.array([cx, cy, cz])
+                    
+                    def closest_t_on_axis(rp, rd):
+                        w0 = rp - center
+                        a = np.dot(rd, rd)
+                        b = np.dot(rd, dir_vec)
+                        c = np.dot(dir_vec, dir_vec)
+                        d = np.dot(rd, w0)
+                        e = np.dot(dir_vec, w0)
+                        denom = a*c - b*b
+                        if abs(denom) > 1e-6:
+                            return (a*e - b*d) / denom
+                        return 0.0
+                        
+                    t_axis = closest_t_on_axis(ray_p1, ray_dir)
+                    t_axis_start = closest_t_on_axis(s_ray_p1, s_ray_dir)
+                    
+                    delta_world = t_axis - t_axis_start
+                    
+                    self.main._is_gizmo_dragging = True
+                    if axis == 'x': self.main.sel_x.setValue(self.main.gizmo_start_values[0] + delta_world)
+                    if axis == 'y': self.main.sel_y.setValue(self.main.gizmo_start_values[1] + delta_world)
+                    if axis == 'z': self.main.sel_z.setValue(self.main.gizmo_start_values[2] + delta_world)
+                    self.main._is_gizmo_dragging = False
+                
+                return True
+            if self.origin is not None:
+                self.rubber_band.setGeometry(QRect(self.origin, pos).normalized())
+                return True
+                
+            elif self.right_dragging:
+                iren = self.main.plotter.interactor
+                iren.SetEventPosition(int(round(pos.x() * scale)), vtk_y)
+                style = iren.GetInteractorStyle()
+                if hasattr(style, 'OnMouseMove'):
+                    style.OnMouseMove()
+                return True
+                
+        elif event.type() == QEvent.MouseButtonRelease:
+            scale = self.main.plotter.interactor.devicePixelRatioF()
+            pos = event.position().toPoint()
+            scaled_y = int(round(pos.y() * scale))
+            vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
+            if event.button() == Qt.LeftButton and getattr(self.main, 'active_gizmo_axis', None) is not None:
+                self.main.active_gizmo_axis = None
+                for a, g in self.main.gizmo_actors.items():
+                    g.prop.color = {'x':'red','y':'green','z':'blue','center':'white'}.get(a, 'white')
+                if self.main.show_field_btn.isChecked():
+                    self.main.update_field_slice()
+                self.main.plotter.render()
+                return True
+            if event.button() == Qt.LeftButton and self.origin is not None:
+                self.rubber_band.hide()
+                end_pos = pos
+                start_pos = self.origin
+                self.origin = None 
+                try:
+                    self.main.process_selection(start_pos, end_pos, event.modifiers())
+                except Exception as e:
+                    import traceback; traceback.print_exc()
+                return True
+                
+            elif event.button() == Qt.RightButton and self.right_dragging:
+                self.right_dragging = False
+                iren = self.main.plotter.interactor
+                iren.SetEventPosition(int(round(pos.x() * scale)), vtk_y)
+                style = iren.GetInteractorStyle()
+                if hasattr(style, 'OnLeftButtonUp'):
+                    style.OnLeftButtonUp()
+                return True
+        
+        if event.type() == QEvent.MouseButtonRelease:
+            if event.button() == Qt.LeftButton:
+                if hasattr(self.main, 'push_state'):
+                    # To avoid spamming, only push if state changed. push_state already checks this.
+                    self.main.push_state()
+        return False
+class WheelBlocker(QObject):
+    def __init__(self, scroll_area, main_window=None):
+        super().__init__()
+        self.scroll_area = scroll_area
+        self.main = main_window
+    def eventFilter(self, obj, event):
+        from PySide6.QtCore import QEvent
+        if event.type() == QEvent.Wheel:
+            from PySide6.QtWidgets import QApplication
+            # 뒪겕濡ㅻ컮뿉 씠踰ㅽ듃瑜 吏곸젒 쟾떖븯뿬 뒪겕濡ㅼ씠 릺寃 븿
+            QApplication.sendEvent(self.scroll_area.verticalScrollBar(), event)
+            return True # SpinBox/ComboBox媛 씠踰ㅽ듃瑜 泥섎━븯吏 紐삵븯寃 셿쟾 李⑤떒
+        
+        if event.type() == QEvent.MouseButtonRelease:
+            if event.button() == Qt.LeftButton:
+                if getattr(self, 'main', None) and hasattr(self.main, 'push_state'):
+                    # To avoid spamming, only push if state changed. push_state already checks this.
+                    self.main.push_state()
+        return False
+from PySide6.QtWidgets import QMenu
+class KeepOpenMenu(QMenu):
+    def mouseReleaseEvent(self, e):
+        action = self.actionAt(e.pos())
+        if action and action.isCheckable():
+            action.trigger()
+            self.update()
+            e.accept()
+            return
+        super().mouseReleaseEvent(e)
 
 class AcousticStudioMain(QMainWindow):
     def show_silent_msg(self, title, message, is_question=False, cancel_btn=False):
@@ -96,11 +451,6 @@ class AcousticStudioMain(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        
-        # --- 분리된 모듈 인스턴스 초기화 ---
-        self.phase_engine = PhaseEngine()
-        self.hw_controller = HardwareController(self)
-        self.state_mgr = StateManager(max_undo=20)
         
         from PySide6.QtGui import QIcon
         import os
@@ -300,9 +650,9 @@ class AcousticStudioMain(QMainWindow):
         self.btn_send_phase.clicked.connect(self.send_phase_data)
         
         from PySide6.QtCore import QTimer
-        # HardwareController 시그널 연결 (UI 업데이트용)
-        self.hw_controller.disconnected.connect(self.handle_hw_disconnect)
-        self.hw_controller.send_failed.connect(lambda msg: self.show_silent_msg("하드웨어 연결 실패", msg))
+        self.hw_health_timer = QTimer(self)
+        self.hw_health_timer.timeout.connect(self.check_hw_health)
+        self.hw_health_timer.start(1000)
         
         self.refresh_ports()
         
@@ -846,14 +1196,17 @@ class AcousticStudioMain(QMainWindow):
     def get_control_point_actors(self):
         return [p["actor"] for p in self.control_points]
     def refresh_ports(self):
+        import serial.tools.list_ports
         self.serial_port_cb.clear()
-        ports = self.hw_controller.refresh_ports()
+        ports = serial.tools.list_ports.comports()
         for p in ports:
-            self.serial_port_cb.addItem(p, userData=p)
+            # Add port device name (e.g., COM3) and display description if needed
+            self.serial_port_cb.addItem(p.device, userData=p.device)
+        
         if not ports:
             self.serial_port_cb.addItem("No Ports Found")
     def connect_hw(self):
-        if not self.hw_controller.is_connected():
+        if not hasattr(self, 'serial_port') or self.serial_port is None:
             port = self.serial_port_cb.currentText()
             if port == "No Ports Found" or not port:
                 self.show_silent_msg("Error", "No valid COM port selected.")
@@ -863,53 +1216,78 @@ class AcousticStudioMain(QMainWindow):
             except ValueError:
                 self.show_silent_msg("Error", "Invalid Baud Rate.")
                 return
-            if self.hw_controller.connect(port, baud):
+                
+            try:
+                import serial
+                self.serial_port = serial.Serial(port, baud, timeout=1)
                 self.btn_connect_hw.setText("Disconnect (연결 해제)")
                 self.btn_send_phase.setEnabled(True)
                 if hasattr(self, 'chk_realtime_send'):
                     self.chk_realtime_send.setEnabled(True)
-            else:
-                pass  # hw_controller emits send_failed signal
+            except Exception as e:
+                error_msg = str(e)
+                if "could not open port" in error_msg:
+                    clean_msg = f"포트({port})를 열 수 없습니다.\n\n장치가 올바르게 연결되어 있는지, 또는 다른 프로그램에서 사용 중이지 않은지 확인해 주세요."
+                else:
+                    clean_msg = f"하드웨어 연결 중 예기치 않은 오류가 발생했습니다.\n\n상세 내용: {error_msg}"
+                self.show_silent_msg("하드웨어 연결 실패", clean_msg)
         else:
-            self.hw_controller.disconnect()
+            try:
+                self.serial_port.close()
+            except:
+                pass
+            self.serial_port = None
             self.btn_connect_hw.setText("Connect (연결)")
             self.btn_send_phase.setEnabled(False)
             if hasattr(self, 'chk_realtime_send'):
                 self.chk_realtime_send.setEnabled(False)
     def send_phase_data(self):
-        if not self.hw_controller.is_connected():
+        if not hasattr(self, 'serial_port') or self.serial_port is None:
             return
+            
         try:
             if hasattr(self, '_last_packet') and self._last_packet is not None:
-                self.hw_controller.send_packet(self._last_packet)
+                self.serial_port.write(self._last_packet)
             else:
                 import numpy as np
                 phases = []
                 for act in self.transducer_actors:
                     phase = getattr(act, '_phase', 0.0)
+                    # Map 0 ~ 2*pi to 0 ~ 31 (SonicSurface format)
                     val = int(round((phase / (2.0 * np.pi)) * 32.0))
                     if val >= 32: val = 0
                     if val < 0: val = 0
                     phases.append(val)
+                    
                 if not phases:
                     return
+                
                 packet = bytearray([254])
                 packet.extend(phases)
                 packet.append(253)
-                self.hw_controller.send_packet(bytes(packet))
+                self.serial_port.write(bytes(packet))
         except Exception as e:
             print(f"HW Send Error: {e}")
-    def handle_hw_disconnect(self, reason=""):
-        """UI 업데이트 — HardwareController.disconnected 시그널에 연결"""
-        self.btn_connect_hw.setText("Connect (연결)")
-        self.btn_send_phase.setEnabled(False)
-        if hasattr(self, 'chk_realtime_send'):
-            self.chk_realtime_send.setEnabled(False)
-        if reason:
-            self.show_silent_msg("하드웨어 연결 끊김", reason)
+            self.handle_hw_disconnect()
+            
+    def handle_hw_disconnect(self):
+        if hasattr(self, 'serial_port') and self.serial_port is not None:
+            try: self.serial_port.close()
+            except: pass
+            self.serial_port = None
+            self.btn_connect_hw.setText("Connect (연결)")
+            self.btn_send_phase.setEnabled(False)
+            if hasattr(self, 'chk_realtime_send'):
+                self.chk_realtime_send.setEnabled(False)
+            self.show_silent_msg("하드웨어 연결 끊김", "보드와의 연결이 끊어졌습니다.\n장치가 분리되었거나 통신 오류가 발생했습니다.")
+            
     def check_hw_health(self):
-        # Health check is now handled by HardwareController's internal timer
-        pass
+        if hasattr(self, 'serial_port') and self.serial_port is not None:
+            try:
+                _ = self.serial_port.in_waiting
+            except Exception:
+                self.handle_hw_disconnect()
+            
     def apply_ui_transform(self):
         """doc"""""
         if self._is_updating_ui or not self.selected_actors:
@@ -1655,11 +2033,14 @@ class AcousticStudioMain(QMainWindow):
                         return False # Cancelled save as dialog
         return True
     def save_project(self):
+        import json
         if not getattr(self, 'current_project_file', None):
             self.save_project_as()
             return
+            
         data = self.get_state(for_file=True)
-        file_io.save_project(self.current_project_file, data)
+        with open(self.current_project_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
         self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
         self._last_saved_state = data
     def save_project_as(self):
@@ -1736,36 +2117,62 @@ class AcousticStudioMain(QMainWindow):
         
         # Must be called after UI is fully rebuilt
         self._last_saved_state = self.get_state(for_file=True)
-        self.state_mgr.clear()
+        if hasattr(self, 'undo_stack'):
+            self.undo_stack.clear()
+            self.redo_stack.clear()
             
         self.push_state()
     def load_project(self):
         if not self.check_unsaved_changes():
             return
-        from PySide6.QtWidgets import QFileDialog
+            
+        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        import json
         filename, _ = QFileDialog.getOpenFileName(self, "프로젝트 불러오기", "", "Acoustic Project (*.json)")
         if not filename: return
+        
         try:
-            data = file_io.load_project(filename)
+            with open(filename, 'r', encoding='utf-8') as f:
+                data = json.load(f)
         except Exception as e:
             self.show_silent_msg("오류", f"작업 중 오류가 발생했습니다: {str(e)}")
             return
+            
         self.current_project_file = filename
         self.set_state(data)
         self.push_state()
         self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
         self._last_saved_state = self.get_state(for_file=True)
     def push_state(self):
+        if not hasattr(self, 'undo_stack'):
+            self.undo_stack = []
+            self.redo_stack = []
+            
         state = self.get_state()
-        self.state_mgr.push(state)
+        # Only push if different from last state
+        if not self.undo_stack or self.undo_stack[-1] != state:
+            self.undo_stack.append(state)
+            self.redo_stack.clear()
+            
+            # limit stack size to 20
+            if len(self.undo_stack) > 20:
+                self.undo_stack.pop(0)
     def undo(self):
-        current_state = self.get_state()
-        prev = self.state_mgr.undo(current_state)
-        if prev is not None:
-            self.set_state(prev)
+        if not hasattr(self, 'undo_stack') or len(self.undo_stack) < 1:
+            return
+        current_actual_state = self.get_state()
+        if self.undo_stack[-1] != current_actual_state:
+            self.undo_stack.append(current_actual_state)
+            self.redo_stack.clear()
+        if len(self.undo_stack) > 1:
+            current_state = self.undo_stack.pop()
+            self.redo_stack.append(current_state)
+            previous_state = self.undo_stack[-1]
+            self.set_state(previous_state)
     def redo(self):
-        next_state = self.state_mgr.redo()
-        if next_state is not None:
+        if hasattr(self, 'redo_stack') and self.redo_stack:
+            next_state = self.redo_stack.pop()
+            self.undo_stack.append(next_state)
             self.set_state(next_state)
     def clear_view(self):
         for actor in self.transducer_actors:
@@ -2018,8 +2425,13 @@ class AcousticStudioMain(QMainWindow):
             
         algorithm = self.trap_type_cb.currentText()
         
+        # 珥덉쓬??臾쇰━ ?占쎌닔
+        c = 343000.0 # ?占쎌냽 (mm/s)
+        f = 40000.0 # 二쇳뙆??(Hz)
+        k = 2.0 * np.pi / (c / f) # ?닔 (Wavenumber)
+        
         import matplotlib.cm as cm
-        cmap = cm.get_cmap('hsv')
+        cmap = cm.get_cmap('hsv') # 0~360룄瑜 臾댁媛쒖깋쑝濡 留ㅽ븨
         
         active_pts = []
         for idx, pt in enumerate(self.control_points):
@@ -2030,16 +2442,56 @@ class AcousticStudioMain(QMainWindow):
         centers = np.array([actor.center for actor in self.transducer_actors])
         self._last_packet = None
         
-        tx_amplitudes = np.array([getattr(a, '_amplitude', 1.0) for a in self.transducer_actors])
-        mode_idx = self.compute_mode_cb.currentIndex()
-        
         if active_pts:
-            total_phases, packet = self.phase_engine.calculate_phases(
-                centers, active_pts, tx_amplitudes, algorithm, mode_idx,
-                has_taichi=getattr(self, 'has_taichi', False),
-                has_pytorch=getattr(self, 'has_pytorch', False)
-            )
-            self._last_packet = packet
+            from acousticstudio.sonic_wrapper import calculate_phases_sonic
+            cx = centers[:, 0]
+            cy = centers[:, 1]
+            cz = centers[:, 2]
+            tx_arr = np.array([pt["x"] for pt in active_pts])
+            ty_arr = np.array([pt["y"] for pt in active_pts])
+            tz_arr = np.array([pt["z"] for pt in active_pts])
+            tx_amplitudes = np.array([getattr(a, '_amplitude', 1.0) for a in self.transducer_actors])
+            
+            mode_idx = self.compute_mode_cb.currentIndex()
+            cpp_phases, cpp_packet = None, None
+            
+            if mode_idx == 3 and getattr(self, 'has_pytorch', False):
+                from acousticstudio.sonic_wrapper import calculate_phases_gpu
+                cpp_phases, cpp_packet = calculate_phases_gpu(cx, cy, cz, tx_arr, ty_arr, tz_arr, tx_amplitudes, algorithm, k)
+            elif mode_idx == 2 and getattr(self, 'has_taichi', False):
+                from acousticstudio.sonic_wrapper import calculate_phases_taichi
+                cpp_phases, cpp_packet = calculate_phases_taichi(cx, cy, cz, tx_arr, ty_arr, tz_arr, tx_amplitudes, algorithm, k)
+            elif mode_idx == 1:
+                from acousticstudio.sonic_wrapper import calculate_phases_sonic
+                cpp_phases, cpp_packet = calculate_phases_sonic(cx, cy, cz, tx_arr, ty_arr, tz_arr, tx_amplitudes, algorithm, k)
+            
+            if cpp_phases is not None:
+                total_phases = cpp_phases
+                self._last_packet = cpp_packet
+            else:
+                # Fallback to NumPy
+                complex_p = np.zeros(len(centers), dtype=np.complex128)
+                for pt in active_pts:
+                    tx, ty, tz = pt["x"], pt["y"], pt["z"]
+                    dx = cx - tx
+                    dy = cy - ty
+                    dz = cz - tz
+                    
+                    d = np.sqrt(dx**2 + dy**2 + dz**2)
+                    phase_focal = -d * k
+                    
+                    if "Twin Trap" in algorithm:
+                        signature = np.where(dx > 0, np.pi, 0.0)
+                    elif "Vortex Trap" in algorithm:
+                        signature = np.arctan2(dy, dx)
+                    else:
+                        signature = np.zeros_like(dx)
+                        
+                    pt_phase = phase_focal + signature
+                    complex_p += tx_amplitudes * np.exp(1j * pt_phase)
+                    
+                total_phases = np.angle(complex_p) % (2.0 * np.pi)
+                total_phases[total_phases < 0] += 2.0 * np.pi
         else:
             total_phases = np.zeros(len(centers), dtype=np.float64)
         
@@ -2064,7 +2516,7 @@ class AcousticStudioMain(QMainWindow):
             
         # Real-time hardware transmission
         if hasattr(self, 'chk_realtime_send') and self.chk_realtime_send.isChecked():
-            if self.hw_controller.is_connected():
+            if hasattr(self, 'serial_port') and self.serial_port is not None:
                 self.send_phase_data()
     def toggle_field_slice(self):
         if self.show_field_btn.isChecked():
@@ -2147,6 +2599,9 @@ class AcousticStudioMain(QMainWindow):
                     actor.SetVisibility(False)
             self.plotter.render()
             return
+        c = 343000.0
+        f = 40000.0
+        k = 2.0 * np.pi / (c / f)
         
         tx_centers = np.array([a.center for a in self.transducer_actors])
         tx_phases = np.array([getattr(a, '_phase', 0.0) for a in self.transducer_actors])
@@ -2191,14 +2646,29 @@ class AcousticStudioMain(QMainWindow):
                 X, Y = np.meshgrid(x_vals, y_vals)
                 pts = np.c_[X.ravel(), Y.ravel(), np.full(res*res, offset)]
                 
+            from acousticstudio.sonic_wrapper import calculate_field_slice_sonic
+            pts_x = np.ascontiguousarray(pts[:, 0], dtype=np.float64)
+            pts_y = np.ascontiguousarray(pts[:, 1], dtype=np.float64)
+            pts_z = np.ascontiguousarray(pts[:, 2], dtype=np.float64)
+            tx_x = np.ascontiguousarray(tx_centers[:, 0], dtype=np.float64)
+            tx_y = np.ascontiguousarray(tx_centers[:, 1], dtype=np.float64)
+            tx_z = np.ascontiguousarray(tx_centers[:, 2], dtype=np.float64)
+            
             is_phase_mode = hasattr(self, 'field_mode_combo') and self.field_mode_combo.currentIndex() == 1
             mode_idx = self.compute_mode_cb.currentIndex()
             
-            real_p, imag_p = self.phase_engine.calculate_field_slice(
-                pts, tx_centers, tx_phases, tx_amplitudes, mode_idx,
-                has_taichi=getattr(self, 'has_taichi', False),
-                has_pytorch=getattr(self, 'has_pytorch', False)
-            )
+            calc_res = None
+            if mode_idx == 3 and getattr(self, 'has_pytorch', False):
+                from acousticstudio.sonic_wrapper import calculate_field_slice_gpu
+                calc_res = calculate_field_slice_gpu(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
+            elif mode_idx == 2 and getattr(self, 'has_taichi', False):
+                from acousticstudio.sonic_wrapper import calculate_field_slice_taichi
+                calc_res = calculate_field_slice_taichi(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
+                
+            if calc_res is not None:
+                real_p, imag_p = calc_res
+            else:
+                real_p, imag_p = calculate_field_slice_numba(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
             if is_phase_mode:
                 scalar_data = np.arctan2(imag_p, real_p)
                 p_min, p_max = -np.pi, np.pi

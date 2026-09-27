@@ -44,3 +44,13 @@
   - '배열 이동/회전' 부분의 글자가 겹치던 현상 수정 (라벨 간소화).
   - 궤적의 '예상 소요 시간' 라벨을 미디어 플레이어 쪽으로 직관적으로 재배치하고, 시간이 길어져도 글자가 잘리지 않도록 레이아웃 재구성 및 실제 딜레이 계산 로직 적용.
   - 상단 메뉴 클릭 시 우측 하단의 CPU/GPU 사용량 텍스트가 깜빡이거나 사라지는 현상을 Permanent Widget으로 고정하여 완벽하게 해결.
+
+### 모듈 분리 리팩터링 완료 (Module Separation Refactoring)
+- **app.py 모듈 분리 완료 (3,126줄 → ~2,655줄)**: 모놀리식 app.py에서 독립적인 6개 모듈로 코드를 분리하여 유지보수성과 확장성을 대폭 향상.
+  - `widgets.py` (~360줄): ResourceMonitorThread, MouseEventFilter, WheelBlocker, KeepOpenMenu
+  - `phase_engine.py` (~153줄): PhaseEngine 클래스 (위상 연산 + 음압 분포 계산), calculate_field_slice_numba
+  - `hardware.py` (~152줄): HardwareController 클래스 (시리얼 연결/해제/패킷 전송, 시그널 기반)
+  - `state_manager.py` (~60줄): StateManager 클래스 (Undo/Redo 스택 관리)
+  - `file_io.py` (~11줄): 프로젝트 JSON 저장/불러오기 순수 함수
+- **설계 원칙**: 하위 모듈은 상호 import 없음. 모든 모듈 간 통신은 app.py의 시그널/슬롯 연결을 통해 이루어짐.
+- **기존 코드 백업**: AcousticStudio/backup/ 폴더에 원본 파일 보관.
