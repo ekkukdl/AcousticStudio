@@ -194,6 +194,12 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
     
+    import os
+    from PySide6.QtGui import QIcon
+    icon_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'assets', 'app_icon.jpg'))
+    if os.path.exists(icon_path):
+        app.setWindowIcon(QIcon(icon_path))
+    
     # 로딩 창(Splash Screen) 띄우기
     splash_pixmap = create_splash_pixmap()
     splash = QSplashScreen(splash_pixmap, Qt.WindowStaysOnTopHint)
