@@ -18,7 +18,7 @@ import time
 # --- 분리된 모듈 import ---
 from acousticstudio.widgets import ResourceMonitorThread, MouseEventFilter, WheelBlocker, KeepOpenMenu
 from acousticstudio.phase_engine import PhaseEngine, calculate_field_slice_numba
-from acousticstudio.hardware import HardwareController
+from acousticstudio.hardware import BOARD_PROFILES, HardwareController
 from acousticstudio.state_manager import StateManager
 from acousticstudio import file_io
 
@@ -294,6 +294,15 @@ class AcousticStudioMain(QMainWindow):
         baud_rates = ["9600", "19200", "38400", "57600", "115200", "230400", "250000", "500000", "1000000"]
         self.serial_baud_cb.addItems(baud_rates)
         self.serial_baud_cb.setCurrentText("115200")
+
+        self.board_profile_cb = QComboBox()
+        for profile in BOARD_PROFILES.values():
+            self.board_profile_cb.addItem(profile.label, userData=profile.key)
+        self.board_profile_cb.setToolTip(
+            "선택한 펌웨어의 채널 수·프레임·권장 보레이트를 적용합니다. "
+            "실물 보드 연결 전에는 Legacy 프로파일을 사용하세요."
+        )
+        self.board_profile_cb.currentIndexChanged.connect(self.change_board_profile)
         
         self.btn_connect_hw = QPushButton("Connect (연결)")
         self.btn_send_phase = QPushButton("Send Phase Data")
@@ -315,6 +324,8 @@ class AcousticStudioMain(QMainWindow):
         hw_layout.addWidget(QLabel("하드웨어 제어 (USB Port):"))
         hw_layout.addWidget(self.serial_port_cb)
         hw_layout.addWidget(self.btn_refresh_ports)
+        hw_layout.addWidget(QLabel("보드:"))
+        hw_layout.addWidget(self.board_profile_cb)
         hw_layout.addWidget(QLabel("Baud Rate:"))
         hw_layout.addWidget(self.serial_baud_cb)
         hw_layout.addWidget(self.btn_connect_hw)
@@ -900,6 +911,19 @@ class AcousticStudioMain(QMainWindow):
             self.serial_port_cb.addItem(p, userData=p)
         if not ports:
             self.serial_port_cb.addItem("No Ports Found")
+    def change_board_profile(self):
+        profile_key = self.board_profile_cb.currentData()
+        if not profile_key:
+            return
+        try:
+            profile = self.hw_controller.set_board_profile(profile_key)
+            self.serial_baud_cb.setCurrentText(str(profile.baud_rate))
+        except RuntimeError as e:
+            self.show_silent_msg("보드 프로파일", str(e))
+            self.board_profile_cb.blockSignals(True)
+            current_index = self.board_profile_cb.findData(self.hw_controller.board_profile.key)
+            self.board_profile_cb.setCurrentIndex(current_index)
+            self.board_profile_cb.blockSignals(False)
     def connect_hw(self):
         if not self.hw_controller.is_connected():
             port = self.serial_port_cb.currentText()
@@ -928,23 +952,12 @@ class AcousticStudioMain(QMainWindow):
         if not self.hw_controller.is_connected():
             return
         try:
-            if hasattr(self, '_last_packet') and self._last_packet is not None:
-                self.hw_controller.send_packet(self._last_packet)
-            else:
-                import numpy as np
-                phases = []
-                for act in self.transducer_actors:
-                    phase = getattr(act, '_phase', 0.0)
-                    val = int(round((phase / (2.0 * np.pi)) * 32.0))
-                    if val >= 32: val = 0
-                    if val < 0: val = 0
-                    phases.append(val)
-                if not phases:
-                    return
-                packet = bytearray([254])
-                packet.extend(phases)
-                packet.append(253)
-                self.hw_controller.send_packet(bytes(packet))
+            phases = [getattr(act, '_phase', 0.0) for act in self.transducer_actors]
+            if not phases:
+                return
+            self.hw_controller.send_phases(phases)
+        except ValueError as e:
+            self.show_silent_msg("위상 전송", str(e))
         except Exception as e:
             print(f"HW Send Error: {e}")
     def handle_hw_disconnect(self, reason=""):
@@ -1425,6 +1438,8 @@ class AcousticStudioMain(QMainWindow):
         data['grid_y'] = self.grid_y_spin.value() if hasattr(self, 'grid_y_spin') else 16
         data['point_size'] = self.point_size_spin.value() if hasattr(self, 'point_size_spin') else 5.0
         data['prop_radius'] = self.prop_radius_spin.value() if hasattr(self, 'prop_radius_spin') else 5.0
+        if for_file and hasattr(self, 'board_profile_cb'):
+            data['board_profile'] = self.board_profile_cb.currentData()
         
         if for_file:
             # Save field slices ONLY for file save (so they don't break Undo/Redo)
@@ -1476,6 +1491,14 @@ class AcousticStudioMain(QMainWindow):
     def set_state(self, data):
         import pyvista as pv
         import vtk
+
+        # A board profile describes a physical protocol and is persisted with a
+        # project, but never changed while a live board is connected.
+        profile_key = data.get('board_profile')
+        if profile_key in BOARD_PROFILES and not self.hw_controller.is_connected():
+            profile_index = self.board_profile_cb.findData(profile_key)
+            if profile_index >= 0:
+                self.board_profile_cb.setCurrentIndex(profile_index)
         
         # Block signals to prevent UI triggers (e.g. generate_array) while loading state
         ui_elements = [

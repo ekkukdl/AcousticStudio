@@ -5,9 +5,94 @@ Manages serial port communication with ultrasonic transducer boards.
 Communicates state changes through Qt signals rather than direct UI access.
 """
 
+from dataclasses import dataclass
+from math import isfinite, pi
+from typing import Iterable
+
 import serial
 import serial.tools.list_ports
 from PySide6.QtCore import QObject, QTimer, Signal
+
+
+@dataclass(frozen=True)
+class BoardProfile:
+    """A documented on-wire protocol for a supported phased-array board.
+
+    ``channel_count`` is intentionally strict for real board profiles: silently
+    sending a partial 256-channel frame can leave a previously driven channel
+    active.  The legacy profile is retained for small experimental arrays.
+    """
+
+    key: str
+    label: str
+    channel_count: int | None
+    baud_rate: int
+    transport: str
+    source: str
+
+
+BOARD_PROFILES = {
+    "legacy_phase32": BoardProfile(
+        "legacy_phase32", "Legacy Phase32 (0xFE … 0xFD)", None, 115200,
+        "phase32_frame", "AcousticStudio existing packet format",
+    ),
+    "ultraino_simplefpga_256": BoardProfile(
+        "ultraino_simplefpga_256", "Ultraino SimpleFPGA 256", 256, 230400,
+        "phase32_frame", "Ultraino SimpleFPGA.java",
+    ),
+    "sonicsurface_fpga_256": BoardProfile(
+        "sonicsurface_fpga_256", "SonicSurface FPGA 256 (direct)", 256, 230400,
+        "phase32_frame", "SonicSurface TestHoloConnection4.ino",
+    ),
+    "sonicsurface_fpga_two_board": BoardProfile(
+        "sonicsurface_fpga_two_board", "SonicSurface FPGA 256 (board tags)", 256, 230400,
+        "sonicsurface_two_board", "SonicSurface CommandSenderESP32.ino",
+    ),
+    "sonicsurface_esp32_command": BoardProfile(
+        "sonicsurface_esp32_command", "SonicSurface ESP32 CommandSender", 256, 230400,
+        "sonicsurface_ascii", "SonicSurface CommandSenderESP32.ino",
+    ),
+}
+
+
+def phases_to_steps(phases_radians: Iterable[float], steps: int = 32) -> list[int]:
+    """Quantise radians into firmware phase steps, wrapping at 2π.
+
+    Firmware uses 0–31 while 32 is its *off* value.  Modulo before rounding
+    avoids incorrectly turning a phase near 2π into the off code.
+    """
+    values: list[int] = []
+    for phase in phases_radians:
+        value = float(phase)
+        if not isfinite(value):
+            raise ValueError("위상 값에는 NaN 또는 무한대를 사용할 수 없습니다.")
+        values.append(int(round(((value % (2.0 * pi)) / (2.0 * pi)) * steps)) % steps)
+    return values
+
+
+def encode_phase_frame(profile: BoardProfile, phases_radians: Iterable[float]) -> bytes:
+    """Encode one complete, committed phase frame for *profile*."""
+    phase_steps = phases_to_steps(phases_radians)
+    if not phase_steps:
+        raise ValueError("전송할 트랜스듀서 위상이 없습니다.")
+    if profile.channel_count is not None and len(phase_steps) != profile.channel_count:
+        raise ValueError(
+            f"{profile.label} 프로파일은 정확히 {profile.channel_count}채널을 요구하지만 "
+            f"현재 배열은 {len(phase_steps)}채널입니다."
+        )
+
+    payload = bytes(phase_steps)
+    if profile.transport == "phase32_frame":
+        return bytes((0xFE,)) + payload + bytes((0xFD,))
+    if profile.transport == "sonicsurface_two_board":
+        # The ESP32 reference firmware forwards each 128-channel half with
+        # board-enable tags 0xC0 and 0xC1, then commits with 0xFD.
+        return bytes((0xFE, 0xC0)) + payload[:128] + bytes((0xC1,)) + payload[128:] + bytes((0xFD,))
+    if profile.transport == "sonicsurface_ascii":
+        # CommandSenderESP32 parses values only when it encounters a separator;
+        # retain the final comma so the 256th value is committed as well.
+        return b"phases=" + b",".join(str(step).encode("ascii") for step in phase_steps) + b",\n"
+    raise ValueError(f"지원하지 않는 전송 형식: {profile.transport}")
 
 
 class HardwareController(QObject):
@@ -29,6 +114,8 @@ class HardwareController(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.serial_port = None
+        self.board_profile = BOARD_PROFILES["legacy_phase32"]
+        self.channel_map: list[int] | None = None
 
         # Timer-based health check (1 s interval)
         self.hw_health_timer = QTimer(self)
@@ -47,6 +134,32 @@ class HardwareController(QObject):
         """
         ports = serial.tools.list_ports.comports()
         return [p.device for p in ports]
+
+    def set_board_profile(self, profile_key: str) -> BoardProfile:
+        """Select a protocol before connecting to a board."""
+        if self.serial_port is not None:
+            raise RuntimeError("보드 연결을 해제한 뒤 프로파일을 변경하세요.")
+        try:
+            self.board_profile = BOARD_PROFILES[profile_key]
+        except KeyError as exc:
+            raise ValueError(f"알 수 없는 보드 프로파일: {profile_key}") from exc
+        self.channel_map = None
+        return self.board_profile
+
+    def set_channel_map(self, channel_map: Iterable[int]) -> None:
+        """Set a validated physical-frame-index → software-channel map.
+
+        For example, ``map[physical_channel] = software_channel``. This is the
+        hook used by a future field-mapping calibration workflow.
+        It is only meaningful for a fixed-size board profile.
+        """
+        count = self.board_profile.channel_count
+        if count is None:
+            raise ValueError("Legacy 프로파일에는 고정 채널 맵을 설정할 수 없습니다.")
+        mapping = [int(channel) for channel in channel_map]
+        if len(mapping) != count or set(mapping) != set(range(count)):
+            raise ValueError(f"채널 맵은 0부터 {count - 1}까지를 한 번씩 포함해야 합니다.")
+        self.channel_map = mapping
 
     # ------------------------------------------------------------------
     # Connection management
@@ -113,10 +226,29 @@ class HardwareController(QObject):
             return
 
         try:
-            self.serial_port.write(packet_bytes)
+            written = self.serial_port.write(packet_bytes)
+            if written != len(packet_bytes):
+                raise serial.SerialTimeoutException(
+                    f"부분 전송: {written}/{len(packet_bytes)} bytes"
+                )
+            self.serial_port.flush()
         except Exception as e:
             print(f"HW Send Error: {e}")
+            self.send_failed.emit(f"보드 프레임 전송 실패: {e}")
             self._handle_disconnect()
+
+    def send_phases(self, phases_radians: Iterable[float]) -> bytes:
+        """Map, frame and transmit radians using the selected board protocol.
+
+        Returns the transmitted frame to allow deterministic fake-transport
+        tests.  It does not claim that a physical board accepted the frame.
+        """
+        phases = list(phases_radians)
+        if self.channel_map is not None:
+            phases = [phases[source] for source in self.channel_map]
+        frame = encode_phase_frame(self.board_profile, phases)
+        self.send_packet(frame)
+        return frame
 
     # ------------------------------------------------------------------
     # Health monitoring

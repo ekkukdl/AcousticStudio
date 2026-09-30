@@ -57,4 +57,4 @@ python main.py
 
 ## 주의 사항 (Notes)
 - **그래픽 드라이버**: 3D 렌더링 엔진인 VTK/PyVista를 사용하므로, 그래픽 드라이버(OpenGL 호환)가 정상적으로 설치된 환경에서 실행해야 튕김 현상이 발생하지 않습니다.
-- **AI 백업 규정**: 소스 코드를 인공지능(에이전트)을 통해 수정할 때는 반드시 `docs/AI_AGENT_GUIDELINES.md` 에 명시된 덮어쓰기 금지/롤백 규정을 준수하도록 지시해야 안전한 개발이 가능합니다.
+- **AI 작업 지침**: GPT/Codex를 포함한 코딩 에이전트는 [AGENTS.md](AGENTS.md)의 작업·백업·검증 규칙을 따릅니다. 기존 `GEMINI.md`도 이 공통 지침을 안내합니다. 스킬 점검 내역은 [docs/skill_audit.md](docs/skill_audit.md)에 있습니다.
