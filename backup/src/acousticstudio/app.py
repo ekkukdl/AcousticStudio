@@ -18,7 +18,7 @@ import time
 # --- 분리된 모듈 import ---
 from acousticstudio.widgets import ResourceMonitorThread, MouseEventFilter, WheelBlocker, KeepOpenMenu
 from acousticstudio.phase_engine import PhaseEngine, calculate_field_slice_numba
-from acousticstudio.hardware import HardwareController
+from acousticstudio.hardware import BOARD_PROFILES, HardwareController
 from acousticstudio.state_manager import StateManager
 from acousticstudio import file_io
 
@@ -158,6 +158,8 @@ class AcousticStudioMain(QMainWindow):
         tools_menu = self.menuBar().addMenu("도구(Tools)")
         lib_mgr_action = tools_menu.addAction("라이브러리 관리자 (Library Manager)")
         lib_mgr_action.triggered.connect(self.open_library_manager)
+        kwave_sim_action = tools_menu.addAction("k-Wave 기구물 음향 시뮬레이션 (Reflector/Tunnel)...")
+        kwave_sim_action.triggered.connect(self.open_kwave_simulation)
 
         view_menu = self.menuBar().addMenu("보기(View)")
         
@@ -292,6 +294,15 @@ class AcousticStudioMain(QMainWindow):
         baud_rates = ["9600", "19200", "38400", "57600", "115200", "230400", "250000", "500000", "1000000"]
         self.serial_baud_cb.addItems(baud_rates)
         self.serial_baud_cb.setCurrentText("115200")
+
+        self.board_profile_cb = QComboBox()
+        for profile in BOARD_PROFILES.values():
+            self.board_profile_cb.addItem(profile.label, userData=profile.key)
+        self.board_profile_cb.setToolTip(
+            "선택한 펌웨어의 채널 수·프레임·권장 보레이트를 적용합니다. "
+            "실물 보드 연결 전에는 Legacy 프로파일을 사용하세요."
+        )
+        self.board_profile_cb.currentIndexChanged.connect(self.change_board_profile)
         
         self.btn_connect_hw = QPushButton("Connect (연결)")
         self.btn_send_phase = QPushButton("Send Phase Data")
@@ -313,6 +324,8 @@ class AcousticStudioMain(QMainWindow):
         hw_layout.addWidget(QLabel("하드웨어 제어 (USB Port):"))
         hw_layout.addWidget(self.serial_port_cb)
         hw_layout.addWidget(self.btn_refresh_ports)
+        hw_layout.addWidget(QLabel("보드:"))
+        hw_layout.addWidget(self.board_profile_cb)
         hw_layout.addWidget(QLabel("Baud Rate:"))
         hw_layout.addWidget(self.serial_baud_cb)
         hw_layout.addWidget(self.btn_connect_hw)
@@ -609,10 +622,16 @@ class AcousticStudioMain(QMainWindow):
         show_field_lyt = QHBoxLayout()
         show_field_lyt.addWidget(self.show_field_btn)
         self.field_mode_combo = QComboBox()
-        self.field_mode_combo.addItems(["음압 분포 (Pressure Magnitude)", "위상 분포 (Phase Angle)"])
+        self.field_mode_combo.addItems(["음압 분포 (Pressure Magnitude)", "위상 분포 (Phase Angle)", "순간 파면 (Instantaneous Wavefront)"])
         self.field_mode_combo.currentIndexChanged.connect(self.update_field_slice)
         show_field_lyt.addWidget(self.field_mode_combo)
         visual_layout.addLayout(show_field_lyt)
+        
+        self.btn_kwave_sim = QPushButton("k-Wave 기구물 음향 시뮬레이션 (Reflector/Tunnel)")
+        self.btn_kwave_sim.setStyleSheet("background-color: #00796B; color: white; height: 30px; font-weight: bold; border-radius: 3px;")
+        self.btn_kwave_sim.setToolTip("상단 반사판, 좌우 터널, 챔버 및 다양한 재질(아크릴, 알루미늄, SUS 등)에 따른 k-Wave FDTD 음향 전파 해석")
+        self.btn_kwave_sim.clicked.connect(self.open_kwave_simulation)
+        visual_layout.addWidget(self.btn_kwave_sim)
         
         visual_group.setLayout(visual_layout)
         control_layout.addWidget(visual_group)
@@ -656,6 +675,7 @@ class AcousticStudioMain(QMainWindow):
                 self.traj_end_label_1.hide(); self.traj_end_label_x.hide(); self.traj_end_label_y.hide(); self.traj_end_label_z.hide()
                 self.traj_end_x.hide(); self.traj_end_y.hide(); self.traj_end_z.hide()
                 self.btn_set_end.hide()
+            self.update_traj_preview()
                 
         self.traj_type_cb.currentIndexChanged.connect(on_traj_type_changed)
         
@@ -667,6 +687,14 @@ class AcousticStudioMain(QMainWindow):
         self.traj_end_x = QDoubleSpinBox(); self.traj_end_x.setRange(-2000, 2000)
         self.traj_end_y = QDoubleSpinBox(); self.traj_end_y.setRange(-2000, 2000)
         self.traj_end_z = QDoubleSpinBox(); self.traj_end_z.setRange(-2000, 2000)
+
+        self.traj_param_spin.valueChanged.connect(self.update_traj_preview)
+        self.traj_start_x.valueChanged.connect(self.update_traj_preview)
+        self.traj_start_y.valueChanged.connect(self.update_traj_preview)
+        self.traj_start_z.valueChanged.connect(self.update_traj_preview)
+        self.traj_end_x.valueChanged.connect(self.update_traj_preview)
+        self.traj_end_y.valueChanged.connect(self.update_traj_preview)
+        self.traj_end_z.valueChanged.connect(self.update_traj_preview)
 
         self.btn_set_start = QPushButton("선택 객체를 시작(중심)점으로")
         self.btn_set_start.clicked.connect(self.set_traj_start_from_selected)
@@ -705,8 +733,8 @@ class AcousticStudioMain(QMainWindow):
         self.traj_delay.setValue(50)
         res_lyt.addWidget(self.traj_delay)
 
-        self.traj_steps.valueChanged.connect(self.update_traj_time)
-        self.traj_delay.valueChanged.connect(self.update_traj_time)
+        self.traj_steps.valueChanged.connect(self.update_traj_preview)
+        self.traj_delay.valueChanged.connect(self.update_traj_preview)
 
         res_lyt.addStretch()
         trajectory_layout.addLayout(res_lyt)
@@ -717,12 +745,18 @@ class AcousticStudioMain(QMainWindow):
         self.chk_show_traj.stateChanged.connect(self.toggle_trajectory_visibility)
         chk_lyt.addWidget(self.chk_show_traj)
 
-
         trajectory_layout.addLayout(chk_lyt)
         
         self.chk_optim_traj = QCheckBox("물리 연산 기반 궤적 최적화 (levitate)")
         self.chk_optim_traj.setToolTip("포획력(Stiffness)을 계산하여 트랩이 약한 구간은 속도를 늦추어 물체의 추락을 방지합니다.")
+        self.chk_optim_traj.stateChanged.connect(self.update_traj_preview)
         trajectory_layout.addWidget(self.chk_optim_traj)
+
+        # Trajectory Real-time Preview Clean Single Label
+        self.lbl_traj_preview_inline = QLabel("예상 소요 시간: 1.00초")
+        self.lbl_traj_preview_inline.setStyleSheet("color: #E65100; font-weight: bold; font-size: 11px; margin-top: 4px; margin-bottom: 2px;")
+        self.lbl_traj_preview_inline.setAlignment(Qt.AlignCenter)
+        trajectory_layout.addWidget(self.lbl_traj_preview_inline)
 
         self.btn_gen_traj = QPushButton("새로운 궤적 생성")
         self.btn_gen_traj.setStyleSheet("background-color: #9C27B0; color: white; font-weight: bold; height: 32px; border-radius: 4px; margin-bottom: 5px;")
@@ -755,6 +789,12 @@ class AcousticStudioMain(QMainWindow):
         btn_lyt.addWidget(self.btn_clear_sel_traj)
         btn_lyt.addWidget(self.btn_clear_all_traj)
         trajectory_layout.addLayout(btn_lyt)
+
+        self.btn_export_traj = QPushButton("선택 궤적 데이터 내보내기 (Export)")
+        self.btn_export_traj.setStyleSheet("height: 28px; border-radius: 4px; background-color: #1976D2; color: white; font-weight: bold; margin-top: 2px;")
+        self.btn_export_traj.setToolTip("선택한 궤적의 위상 데이터를 C헤더(.h), CSV(.csv), 또는 하드웨어 바이너리(.bin) 파일로 내보냅니다.")
+        self.btn_export_traj.clicked.connect(self.export_selected_trajectory)
+        trajectory_layout.addWidget(self.btn_export_traj)
 
         # Trajectory Physical Diagnosis Summary Card
         self.traj_diag_frame = QFrame()
@@ -841,6 +881,7 @@ class AcousticStudioMain(QMainWindow):
             widget.installEventFilter(self.wheel_blocker)
             
         self._last_saved_state = self.get_state(for_file=True)
+        self.update_traj_preview()
         
         self.statusBar().showMessage("준비 완료 (Ready)")
         self.resource_label = QLabel("")
@@ -870,6 +911,19 @@ class AcousticStudioMain(QMainWindow):
             self.serial_port_cb.addItem(p, userData=p)
         if not ports:
             self.serial_port_cb.addItem("No Ports Found")
+    def change_board_profile(self):
+        profile_key = self.board_profile_cb.currentData()
+        if not profile_key:
+            return
+        try:
+            profile = self.hw_controller.set_board_profile(profile_key)
+            self.serial_baud_cb.setCurrentText(str(profile.baud_rate))
+        except RuntimeError as e:
+            self.show_silent_msg("보드 프로파일", str(e))
+            self.board_profile_cb.blockSignals(True)
+            current_index = self.board_profile_cb.findData(self.hw_controller.board_profile.key)
+            self.board_profile_cb.setCurrentIndex(current_index)
+            self.board_profile_cb.blockSignals(False)
     def connect_hw(self):
         if not self.hw_controller.is_connected():
             port = self.serial_port_cb.currentText()
@@ -898,23 +952,12 @@ class AcousticStudioMain(QMainWindow):
         if not self.hw_controller.is_connected():
             return
         try:
-            if hasattr(self, '_last_packet') and self._last_packet is not None:
-                self.hw_controller.send_packet(self._last_packet)
-            else:
-                import numpy as np
-                phases = []
-                for act in self.transducer_actors:
-                    phase = getattr(act, '_phase', 0.0)
-                    val = int(round((phase / (2.0 * np.pi)) * 32.0))
-                    if val >= 32: val = 0
-                    if val < 0: val = 0
-                    phases.append(val)
-                if not phases:
-                    return
-                packet = bytearray([254])
-                packet.extend(phases)
-                packet.append(253)
-                self.hw_controller.send_packet(bytes(packet))
+            phases = [getattr(act, '_phase', 0.0) for act in self.transducer_actors]
+            if not phases:
+                return
+            self.hw_controller.send_phases(phases)
+        except ValueError as e:
+            self.show_silent_msg("위상 전송", str(e))
         except Exception as e:
             print(f"HW Send Error: {e}")
     def handle_hw_disconnect(self, reason=""):
@@ -1395,6 +1438,8 @@ class AcousticStudioMain(QMainWindow):
         data['grid_y'] = self.grid_y_spin.value() if hasattr(self, 'grid_y_spin') else 16
         data['point_size'] = self.point_size_spin.value() if hasattr(self, 'point_size_spin') else 5.0
         data['prop_radius'] = self.prop_radius_spin.value() if hasattr(self, 'prop_radius_spin') else 5.0
+        if for_file and hasattr(self, 'board_profile_cb'):
+            data['board_profile'] = self.board_profile_cb.currentData()
         
         if for_file:
             # Save field slices ONLY for file save (so they don't break Undo/Redo)
@@ -1446,6 +1491,14 @@ class AcousticStudioMain(QMainWindow):
     def set_state(self, data):
         import pyvista as pv
         import vtk
+
+        # A board profile describes a physical protocol and is persisted with a
+        # project, but never changed while a live board is connected.
+        profile_key = data.get('board_profile')
+        if profile_key in BOARD_PROFILES and not self.hw_controller.is_connected():
+            profile_index = self.board_profile_cb.findData(profile_key)
+            if profile_index >= 0:
+                self.board_profile_cb.setCurrentIndex(profile_index)
         
         # Block signals to prevent UI triggers (e.g. generate_array) while loading state
         ui_elements = [
@@ -2102,23 +2155,43 @@ class AcousticStudioMain(QMainWindow):
                 self._cached_field_grids.clear()
                 
             self.plotter.render()
+    def _get_field_bounds(self, pad=35.0):
+        coords = []
+        if self.transducer_actors:
+            coords.extend([a.center for a in self.transducer_actors])
+        if hasattr(self, 'control_points') and self.control_points:
+            coords.extend([[pt.get("x", 0.0), pt.get("y", 0.0), pt.get("z", 0.0)] for pt in self.control_points])
+            
+        if not coords:
+            return (-50.0, 50.0), (-50.0, 50.0), (-50.0, 50.0)
+            
+        arr = np.array(coords)
+        min_x, max_x = np.min(arr[:, 0]), np.max(arr[:, 0])
+        min_y, max_y = np.min(arr[:, 1]), np.max(arr[:, 1])
+        min_z, max_z = np.min(arr[:, 2]), np.max(arr[:, 2])
+        
+        bx_min, bx_max = float(min_x - pad), float(max_x + pad)
+        by_min, by_max = float(min_y - pad), float(max_y + pad)
+        bz_min, bz_max = float(min_z - pad), float(max_z + pad)
+        
+        if bx_max - bx_min < 60.0:
+            mid_x = (bx_min + bx_max) / 2.0
+            bx_min, bx_max = mid_x - 30.0, mid_x + 30.0
+        if by_max - by_min < 60.0:
+            mid_y = (by_min + by_max) / 2.0
+            by_min, by_max = mid_y - 30.0, mid_y + 30.0
+        if bz_max - bz_min < 60.0:
+            mid_z = (bz_min + bz_max) / 2.0
+            bz_min, bz_max = mid_z - 30.0, mid_z + 30.0
+            
+        return (bx_min, bx_max), (by_min, by_max), (bz_min, bz_max)
+
     def draw_ghost_plane(self, axis_name, offset):
         if not self.show_field_btn.isChecked() or not self.transducer_actors: return
         import numpy as np
         import pyvista as pv
         
-        tx_centers = np.array([a.center for a in self.transducer_actors])
-        min_x, max_x = np.min(tx_centers[:, 0]), np.max(tx_centers[:, 0])
-        min_y, max_y = np.min(tx_centers[:, 1]), np.max(tx_centers[:, 1])
-        min_z, max_z = np.min(tx_centers[:, 2]), np.max(tx_centers[:, 2])
-        
-        pad = 30.0
-        bx_min, bx_max = min_x - pad, max_x + pad
-        by_min, by_max = min_y - pad, max_y + pad
-        bz_min, bz_max = min_z - pad, max_z + pad
-        if bx_max - bx_min < 50: bx_min -= 25; bx_max += 25
-        if by_max - by_min < 50: by_min -= 25; by_max += 25
-        if bz_max - bz_min < 50: bz_min -= 25; bz_max += 25
+        (bx_min, bx_max), (by_min, by_max), (bz_min, bz_max) = self._get_field_bounds()
         
         cx, cy, cz = (bx_min+bx_max)/2, (by_min+by_max)/2, (bz_min+bz_max)/2
         wx, wy, wz = bx_max-bx_min, by_max-by_min, bz_max-bz_min
@@ -2170,18 +2243,7 @@ class AcousticStudioMain(QMainWindow):
         tx_phases = np.array([getattr(a, '_phase', 0.0) for a in self.transducer_actors])
         tx_amplitudes = np.array([getattr(a, '_amplitude', 1.0) for a in self.transducer_actors])
         
-        min_x, max_x = np.min(tx_centers[:, 0]), np.max(tx_centers[:, 0])
-        min_y, max_y = np.min(tx_centers[:, 1]), np.max(tx_centers[:, 1])
-        min_z, max_z = np.min(tx_centers[:, 2]), np.max(tx_centers[:, 2])
-        
-        pad = 30.0
-        bx_min, bx_max = min_x - pad, max_x + pad
-        by_min, by_max = min_y - pad, max_y + pad
-        bz_min, bz_max = min_z - pad, max_z + pad
-        
-        if bx_max - bx_min < 50: bx_min -= 25; bx_max += 25
-        if by_max - by_min < 50: by_min -= 25; by_max += 25
-        if bz_max - bz_min < 50: bz_min -= 25; bz_max += 25
+        (bx_min, bx_max), (by_min, by_max), (bz_min, bz_max) = self._get_field_bounds()
         
         res = 120
         x_vals = np.linspace(bx_min, bx_max, res)
@@ -2209,7 +2271,7 @@ class AcousticStudioMain(QMainWindow):
                 X, Y = np.meshgrid(x_vals, y_vals)
                 pts = np.c_[X.ravel(), Y.ravel(), np.full(res*res, offset)]
                 
-            is_phase_mode = hasattr(self, 'field_mode_combo') and self.field_mode_combo.currentIndex() == 1
+            field_mode_idx = self.field_mode_combo.currentIndex() if hasattr(self, 'field_mode_combo') else 0
             mode_idx = self.compute_mode_cb.currentIndex()
             
             real_p, imag_p = self.phase_engine.calculate_field_slice(
@@ -2217,21 +2279,38 @@ class AcousticStudioMain(QMainWindow):
                 has_taichi=getattr(self, 'has_taichi', False),
                 has_pytorch=getattr(self, 'has_pytorch', False)
             )
-            if is_phase_mode:
+            if field_mode_idx == 1:
+                # 위상 분포 (Phase Angle)
                 scalar_data = np.arctan2(imag_p, real_p)
                 p_min, p_max = -np.pi, np.pi
                 cmap = 'hsv'
+                opacity_arr = np.ones_like(real_p)
+                opacity_spec = 1.0
+            elif field_mode_idx == 2:
+                # 순간 파면 (Instantaneous Wavefront, Re(P)) - k-Wave 없는 초고속 해석적 점음원 모델
+                scalar_data = real_p
+                max_abs = float(np.percentile(np.abs(scalar_data), 99.5))
+                if max_abs < 1e-4: max_abs = 1.0
+                p_min, p_max = -max_abs, max_abs
+                cmap = 'RdBu_r'
+                opacity_arr = np.ones_like(real_p)
+                opacity_spec = 1.0
             else:
+                # 음압 분포 (Pressure Magnitude)
                 scalar_data = np.sqrt(real_p**2 + imag_p**2)
                 p_min, p_max = 0, np.percentile(scalar_data, 99.5)
                 cmap = 'hot'
+                opacity_arr = np.ones_like(real_p)
+                opacity_spec = 1.0
+
             import pyvista as pv
             if cache_key in self._cached_field_grids:
                 grid, actor = self._cached_field_grids[cache_key]
                 grid.points = pts
                 grid.point_data['Pressure'][:] = scalar_data
+                grid.point_data['Opacity'][:] = opacity_arr
                 actor = self.plotter.add_mesh(
-                    grid, scalars='Pressure', cmap=cmap, opacity=1.0,
+                    grid, scalars='Pressure', cmap=cmap, opacity=opacity_spec,
                     show_scalar_bar=False, clim=[p_min, p_max],
                     reset_camera=False, name=f'field_{cache_key}'
                 )
@@ -2242,8 +2321,9 @@ class AcousticStudioMain(QMainWindow):
                 grid.points = pts
                 grid.dimensions = [res, res, 1]
                 grid.point_data['Pressure'] = scalar_data
+                grid.point_data['Opacity'] = opacity_arr
                 actor = self.plotter.add_mesh(
-                    grid, scalars='Pressure', cmap=cmap, opacity=1.0,
+                    grid, scalars='Pressure', cmap=cmap, opacity=opacity_spec,
                     show_scalar_bar=False, clim=[p_min, p_max],
                     reset_camera=False, name=f'field_{cache_key}'
                 )
@@ -2590,13 +2670,73 @@ class AcousticStudioMain(QMainWindow):
             
         self.plotter.render()
 
-    def update_traj_time(self):
-        if not hasattr(self, 'traj_steps') or not hasattr(self, 'traj_delay') or not hasattr(self, 'lbl_traj_time'):
+    def update_traj_preview(self, *args):
+        if not hasattr(self, 'traj_steps') or not hasattr(self, 'traj_delay'):
             return
+        
         steps = self.traj_steps.value()
         delay_ms = self.traj_delay.value()
-        total_seconds = (steps * delay_ms) / 1000.0
-        self.lbl_traj_time.setText(f"예상 시간: {total_seconds:.2f}초 (+렌더링)")
+        base_seconds = (steps * delay_ms) / 1000.0
+
+        # 1. 3D 이동 거리 계산 (Distance, mm)
+        traj_type_idx = self.traj_type_cb.currentIndex() if hasattr(self, 'traj_type_cb') else 0
+        dist_mm = 0.0
+        
+        if traj_type_idx == 0:  # 선형 (Linear)
+            if hasattr(self, 'traj_start_x') and hasattr(self, 'traj_end_x'):
+                sx, sy, sz = self.traj_start_x.value(), self.traj_start_y.value(), self.traj_start_z.value()
+                ex, ey, ez = self.traj_end_x.value(), self.traj_end_y.value(), self.traj_end_z.value()
+                dist_mm = float(np.sqrt((ex - sx)**2 + (ey - sy)**2 + (ez - sz)**2))
+        elif traj_type_idx == 1:  # 원형 (Circular)
+            radius = self.traj_param_spin.value() if hasattr(self, 'traj_param_spin') else 20.0
+            dist_mm = float(2.0 * np.pi * radius)
+        else:  # 8자형 (Figure-8)
+            radius = self.traj_param_spin.value() if hasattr(self, 'traj_param_spin') else 20.0
+            dist_mm = float(8.5 * radius)
+
+        # 2. 평균 이송 속도 계산 (mm/s)
+        avg_speed = (dist_mm / base_seconds) if base_seconds > 0 else 0.0
+
+        # 3. 물리 최적화 여부
+        is_optim = self.chk_optim_traj.isChecked() if hasattr(self, 'chk_optim_traj') else False
+
+        # 4. 실시간 인라인 단일 라벨 갱신 (테두리 없는 깔끔한 1줄)
+        if hasattr(self, 'lbl_traj_preview_inline'):
+            if is_optim:
+                t_min = base_seconds * 1.15
+                if dist_mm > 0.1:
+                    self.lbl_traj_preview_inline.setText(
+                        f"예상 소요 시간: 약 {t_min:.2f}초 (물리 가감속 반영 · 거리 {dist_mm:.1f}mm)"
+                    )
+                else:
+                    self.lbl_traj_preview_inline.setText(
+                        f"예상 소요 시간: 약 {t_min:.2f}초 (물리 가감속 반영)"
+                    )
+                self.lbl_traj_preview_inline.setStyleSheet(
+                    "color: #8E24AA; font-weight: bold; font-size: 11px; margin-top: 4px; margin-bottom: 2px;"
+                )
+            else:
+                if dist_mm > 0.1:
+                    self.lbl_traj_preview_inline.setText(
+                        f"예상 소요 시간: {base_seconds:.2f}초 (거리 {dist_mm:.1f}mm · 평균 {avg_speed:.1f}mm/s)"
+                    )
+                else:
+                    self.lbl_traj_preview_inline.setText(
+                        f"예상 소요 시간: {base_seconds:.2f}초"
+                    )
+                self.lbl_traj_preview_inline.setStyleSheet(
+                    "color: #E65100; font-weight: bold; font-size: 11px; margin-top: 4px; margin-bottom: 2px;"
+                )
+
+        # 하단 미디어 컨트롤러 시간 라벨도 동기화
+        if hasattr(self, 'lbl_traj_time'):
+            if is_optim:
+                self.lbl_traj_time.setText(f"예상 시간: ~{base_seconds * 1.15:.2f}초 (+가감속)")
+            else:
+                self.lbl_traj_time.setText(f"예상 시간: {base_seconds:.2f}초 (+렌더링)")
+
+    def update_traj_time(self):
+        self.update_traj_preview()
 
     def toggle_trajectory_visibility(self):
         if not hasattr(self, 'traj_actors') or not hasattr(self, 'chk_show_traj'):
@@ -2678,4 +2818,135 @@ class AcousticStudioMain(QMainWindow):
         else:
             self.lbl_diag_title.setText("물리 안정성 진단: <span style='color: #555555; font-weight: bold;'>일반 등속</span>")
             self.lbl_diag_desc.setText("안내: 물리 최적화가 적용되지 않은 일반 기하학 등속 궤적입니다.")
+
+    def export_selected_trajectory(self):
+        """선택된 궤적의 위상 데이터를 C헤더(.h), CSV(.csv), 또는 하드웨어 바이너리(.bin) 파일로 내보내기"""
+        if not hasattr(self, 'trajectories_list') or not hasattr(self, 'traj_list'):
+            self.show_silent_msg("알림", "내보낼 궤적이 없습니다.")
+            return
+
+        row = self.traj_list.currentRow()
+        if row < 0 or row >= len(self.trajectories_list):
+            self.show_silent_msg("알림", "목록에서 내보낼 궤적을 먼저 선택해주세요.")
+            return
+
+        traj = self.trajectories_list[row]
+        points = traj.get('points', [])
+        delays = traj.get('delays', [])
+        steps = len(points)
+        if steps == 0:
+            self.show_silent_msg("오류", "선택된 궤적에 유효한 좌표 데이터가 없습니다.")
+            return
+
+        from PySide6.QtWidgets import QFileDialog
+        filters = "C/C++ Header (*.h);;CSV Data (*.csv);;Hardware Binary Packet (*.bin);;All Files (*.*)"
+        file_path, selected_filter = QFileDialog.getSaveFileName(self, "궤적 데이터 내보내기", "", filters)
+        if not file_path:
+            return
+
+        tx_centers = np.array([a.center for a in self.transducer_actors]) if hasattr(self, 'transducer_actors') else np.empty((0, 3))
+        num_tx = len(tx_centers)
+        k = getattr(self.phase_engine, 'k', 2.0 * np.pi * 40000.0 / 343000.0)
+        algo = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else "Twin Trap"
+
+        from acousticstudio.sonic_wrapper import calculate_phases_sonic
+        all_discretized = []
+        all_phases_rad = []
+
+        for i in range(steps):
+            pt = points[i]
+            if num_tx > 0:
+                phases, _ = calculate_phases_sonic(
+                    np.array([pt[0]]), np.array([pt[1]]), np.array([pt[2]]),
+                    tx_centers[:, 0], tx_centers[:, 1], tx_centers[:, 2],
+                    np.ones(num_tx), algo, k
+                )
+                disc = np.round((phases % (2.0 * np.pi)) / (2.0 * np.pi) * 32.0).astype(int) % 32
+            else:
+                phases = np.zeros(num_tx)
+                disc = np.zeros(num_tx, dtype=int)
+            all_phases_rad.append(phases)
+            all_discretized.append(disc)
+
+        try:
+            if file_path.endswith('.h') or "Header" in selected_filter:
+                if not file_path.endswith('.h'): file_path += '.h'
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.write("// =========================================================\n")
+                    f.write("// AcousticStudio Trajectory Phase Data Header\n")
+                    f.write(f"// Trajectory: {traj.get('name', 'Trajectory')}\n")
+                    f.write(f"// Total Steps: {steps}, Transducers: {num_tx}\n")
+                    f.write("// =========================================================\n\n")
+                    f.write("#ifndef ACOUSTIC_TRAJECTORY_DATA_H\n")
+                    f.write("#define ACOUSTIC_TRAJECTORY_DATA_H\n\n")
+                    f.write("#include <stdint.h>\n\n")
+                    f.write(f"#define TRAJ_TOTAL_STEPS {steps}\n")
+                    f.write(f"#define TRAJ_NUM_TRANSDUCERS {num_tx}\n\n")
+
+                    f.write("// Step Delays (milliseconds)\n")
+                    f.write(f"const uint16_t traj_step_delays_ms[TRAJ_TOTAL_STEPS] = {{\n")
+                    for d_idx, d_val in enumerate(delays):
+                        end_char = "," if d_idx < steps - 1 else ""
+                        f.write(f"    {int(round(d_val))}{end_char}\n")
+                    f.write("};\n\n")
+
+                    f.write("// 32-Step Discretized Phases (0 ~ 31, 5-bit HW Packet format)\n")
+                    f.write(f"const uint8_t traj_phases[TRAJ_TOTAL_STEPS][TRAJ_NUM_TRANSDUCERS] = {{\n")
+                    for s_idx in range(steps):
+                        p_str = ", ".join(map(str, all_discretized[s_idx]))
+                        end_char = "," if s_idx < steps - 1 else ""
+                        f.write(f"    /* Step {s_idx:3d} */ {{ {p_str} }}{end_char}\n")
+                    f.write("};\n\n")
+                    f.write("#endif // ACOUSTIC_TRAJECTORY_DATA_H\n")
+
+            elif file_path.endswith('.csv') or "CSV" in selected_filter:
+                if not file_path.endswith('.csv'): file_path += '.csv'
+                import csv
+                with open(file_path, 'w', newline='', encoding='utf-8') as f:
+                    writer = csv.writer(f)
+                    header = ['Step', 'Target_X_mm', 'Target_Y_mm', 'Target_Z_mm', 'Delay_ms']
+                    for t_idx in range(num_tx):
+                        header.append(f"Tx{t_idx}_Phase32")
+                    writer.writerow(header)
+                    for s_idx in range(steps):
+                        row_data = [
+                            s_idx,
+                            f"{points[s_idx][0]:.3f}",
+                            f"{points[s_idx][1]:.3f}",
+                            f"{points[s_idx][2]:.3f}",
+                            f"{delays[s_idx]:.1f}"
+                        ]
+                        row_data.extend(list(all_discretized[s_idx]))
+                        writer.writerow(row_data)
+
+            elif file_path.endswith('.bin') or "Binary" in selected_filter:
+                if not file_path.endswith('.bin'): file_path += '.bin'
+                byte_buffer = bytearray()
+                for s_idx in range(steps):
+                    byte_buffer.append(0xFA)
+                    byte_buffer.extend(all_discretized[s_idx].astype(np.uint8).tobytes())
+                    byte_buffer.append(0xFD)
+                with open(file_path, 'wb') as f:
+                    f.write(byte_buffer)
+
+            if hasattr(self, 'statusBar') and self.statusBar():
+                self.statusBar().showMessage(f"궤적 데이터 내보내기 완료: {file_path}", 5000)
+            self.show_silent_msg("내보내기 완료", f"궤적 데이터가 성공적으로 저장되었습니다.\n\n경로: {file_path}")
+
+        except Exception as e:
+            self.show_silent_msg("내보내기 오류", f"파일 저장 중 오류가 발생했습니다:\n{e}")
+
+    def open_kwave_simulation(self):
+        if not self.transducer_actors:
+            self.show_silent_msg("알림", "배치된 트랜스듀서가 없습니다. 먼저 트랜스듀서를 배치하세요.")
+            return
+        try:
+            from .kwave_engine import KWaveDialog
+            dlg = KWaveDialog(self, self.transducer_actors)
+            dlg.exec()
+        except Exception as e:
+            import traceback
+            err_msg = traceback.format_exc()
+            self.show_silent_msg("오류", f"k-Wave 시뮬레이션 창을 여는 중 오류가 발생했습니다:\n{str(e)}")
+
 
