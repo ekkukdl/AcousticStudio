@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (QApplication, QSplitter, QMainWindow, QWidget, QV
                                      QHBoxLayout, QPushButton, QLabel, 
                                      QDoubleSpinBox, QSpinBox, QComboBox, QGroupBox, 
                                      QListWidget, QAbstractItemView, QSlider, QCheckBox,
-                                     QScrollArea, QFormLayout, QListWidgetItem, QMessageBox)
+                                     QScrollArea, QFormLayout, QListWidgetItem, QMessageBox, QFrame)
 from PySide6.QtCore import Qt, QObject, QEvent, QRect, QThread, Signal
 import time
 
@@ -33,7 +33,7 @@ class AcousticStudioMain(QMainWindow):
         dlg = QDialog(self)
         dlg.setWindowTitle(title)
         dlg.setWindowFlags(dlg.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        dlg.setMinimumWidth(350)
+        dlg.setMinimumWidth(420)
         
         icon_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'app_icon.jpg'))
         if os.path.exists(icon_path):
@@ -59,7 +59,7 @@ class AcousticStudioMain(QMainWindow):
         
         lbl = QLabel(message)
         lbl.setWordWrap(True)
-        lbl.setStyleSheet("font-size: 13px;")
+        lbl.setStyleSheet("font-size: 13px; line-height: 140%;")
         msg_layout.addWidget(lbl, 1, Qt.AlignVCenter)
         
         layout.addLayout(msg_layout)
@@ -70,15 +70,15 @@ class AcousticStudioMain(QMainWindow):
         if is_question:
             btn_yes = QPushButton("예 (Yes)")
             btn_no = QPushButton("아니오 (No)")
-            btn_yes.setMinimumWidth(70)
-            btn_no.setMinimumWidth(70)
+            btn_yes.setMinimumWidth(75)
+            btn_no.setMinimumWidth(75)
             btn_yes.clicked.connect(lambda: dlg.done(1))
             btn_no.clicked.connect(lambda: dlg.done(0))
             btn_layout.addWidget(btn_yes)
             btn_layout.addWidget(btn_no)
             if cancel_btn:
                 btn_c = QPushButton("취소 (Cancel)")
-                btn_c.setMinimumWidth(70)
+                btn_c.setMinimumWidth(85)
                 btn_c.clicked.connect(lambda: dlg.done(-1))
                 btn_layout.addWidget(btn_c)
         else:
@@ -755,6 +755,24 @@ class AcousticStudioMain(QMainWindow):
         btn_lyt.addWidget(self.btn_clear_sel_traj)
         btn_lyt.addWidget(self.btn_clear_all_traj)
         trajectory_layout.addLayout(btn_lyt)
+
+        # Trajectory Physical Diagnosis Summary Card
+        self.traj_diag_frame = QFrame()
+        self.traj_diag_frame.setStyleSheet("QFrame { background-color: #f7f9fa; border: 1px solid #d0d7de; border-radius: 5px; padding: 4px; margin-top: 6px; }")
+        diag_lyt = QVBoxLayout(self.traj_diag_frame)
+        diag_lyt.setContentsMargins(6, 4, 6, 4)
+        diag_lyt.setSpacing(2)
+
+        self.lbl_diag_title = QLabel("물리 안정성 진단: 선택된 궤적 없음")
+        self.lbl_diag_title.setStyleSheet("font-weight: bold; font-size: 11px; color: #24292f;")
+        diag_lyt.addWidget(self.lbl_diag_title)
+
+        self.lbl_diag_desc = QLabel("안내: 궤적을 선택하거나 새로 생성하면 상세 진단이 표시됩니다.")
+        self.lbl_diag_desc.setStyleSheet("color: #57606a; font-size: 10px;")
+        self.lbl_diag_desc.setWordWrap(True)
+        diag_lyt.addWidget(self.lbl_diag_desc)
+
+        trajectory_layout.addWidget(self.traj_diag_frame)
 
         # Media Player Buttons UI Improved
         media_header_lyt = QHBoxLayout()
@@ -1643,7 +1661,7 @@ class AcousticStudioMain(QMainWindow):
             
         if is_dirty:
             from PySide6.QtWidgets import QMessageBox
-            reply = self.show_silent_msg("저장되지 않은 변경사항", "현재 프로젝트에 저장되지 않은 변경사항이 있습니다.\n진행하기 전에 저장하시겠습니까?", is_question=True, cancel_btn=True)
+            reply = self.show_silent_msg("저장되지 않은 변경사항", "현재 프로젝트에 저장되지 않은 변경사항이 있습니다.\n종료하기 전에 변경사항을 저장하시겠습니까?", is_question=True, cancel_btn=True)
             if reply == -1:
                 return False
             elif reply == 1:
@@ -2352,60 +2370,40 @@ class AcousticStudioMain(QMainWindow):
                 # Figure-8 (Lissajous)
                 points[i] = [sx + param * np.sin(theta), sy + param * np.sin(theta) * np.cos(theta), sz]
             
+        optim_metrics = None
         if hasattr(self, 'chk_optim_traj') and self.chk_optim_traj.isChecked():
-            try:
-                np.complex = np.complex128
-                np.float = np.float64
-                np.int = np.int64
-                np.bool = np.bool_
-                import levitate
-                from src.acousticstudio.sonic_wrapper import calculate_phases_sonic
-                
-                # Setup levitate array based on transducers
-                tx_centers = np.array([a.center for a in self.transducer_actors])
-                pos_x = tx_centers[:, 0]
-                pos_y = tx_centers[:, 1]
-                pos_z = tx_centers[:, 2]
-                
-                lev_array = levitate.arrays.TransducerArray(
-                    positions=np.stack([pos_x, pos_y, pos_z]),
-                    normals=np.stack([np.zeros(len(pos_x)), np.zeros(len(pos_y)), np.ones(len(pos_z))]),
-                    transducer=levitate.transducers.CircularPiston(effective_radius=0.005)
+            tx_centers = np.array([a.center for a in self.transducer_actors]) if hasattr(self, 'transducer_actors') else np.empty((0, 3))
+            algo = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else "Twin Trap"
+            delays, optim_metrics = self.phase_engine.optimize_trajectory_physical(
+                tx_centers=tx_centers,
+                points=points,
+                base_delay=self.traj_delay.value(),
+                algorithm=algo,
+                smooth_accel=True
+            )
+            if hasattr(self, 'statusBar') and self.statusBar():
+                self.statusBar().showMessage(
+                    f"물리 연산 기반 궤적 최적화 완료 (평균 안정도: {optim_metrics['avg_stability']:.1f}%, 최소: {optim_metrics['min_stability']:.1f}%)",
+                    5000
                 )
-                stiffness = levitate.fields.RadiationForceStiffness(lev_array)
-                k = 2 * np.pi * 40000 / 343.0
-                algo = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else "Twin Trap"
-                if "Twin Trap" in algo: algo = "Twin Trap"
-                elif "Vortex" in algo: algo = "Vortex Trap"
-                else: algo = "Twin Trap"
-                
-                for i in range(steps):
-                    cx, cy, cz = points[i]
-                    phases, _ = calculate_phases_sonic(np.array([cx]), np.array([cy]), np.array([cz]), 
-                                                      pos_x, pos_y, pos_z, 
-                                                      np.ones(len(pos_x)), algo, k)
-                    val = (stiffness @ np.array([cx, cy, cz]))(np.exp(1j * phases))
-                    total_stiffness = np.sum(val)
-                    
-                    if total_stiffness > -0.005:
-                        multiplier = min(3.0, -0.005 / (total_stiffness - 1e-9))
-                        if total_stiffness > 0: multiplier = 5.0
-                        delays[i] = self.traj_delay.value() * multiplier
-            except Exception as e:
-                print(f"궤적 최적화 실패: {e}")
-            
+
         if not hasattr(self, 'trajectories_list'):
             self.trajectories_list = []
-            
+
         type_str = self.traj_type_cb.currentText()
         if traj_type == 0:
             traj_name = f"궤적 {len(self.trajectories_list)+1} [{type_str}]: ({sx:.1f}, {sy:.1f}, {sz:.1f}) ➜ ({ex:.1f}, {ey:.1f}, {ez:.1f})"
         else:
             traj_name = f"궤적 {len(self.trajectories_list)+1} [{type_str}]: 중심({sx:.1f}, {sy:.1f}, {sz:.1f}), 반경/크기({param:.1f}mm)"
-            
-        if hasattr(self, 'chk_optim_traj') and self.chk_optim_traj.isChecked(): traj_name += " [물리 최적화]"
-        
-        traj_dict = {'name': traj_name, 'points': points, 'steps': steps, 'delays': delays}
+
+        if optim_metrics is not None:
+            grade = optim_metrics.get('grade', '안정')
+            avg_val = optim_metrics.get('avg_stability', 0.0)
+            traj_name += f" [{grade} {avg_val:.0f}%]"
+        else:
+            traj_name += " [일반 등속]"
+
+        traj_dict = {'name': traj_name, 'points': points, 'steps': steps, 'delays': delays, 'metrics': optim_metrics}
         self.trajectories_list.append(traj_dict)
         
         if hasattr(self, 'traj_list'):
@@ -2425,6 +2423,9 @@ class AcousticStudioMain(QMainWindow):
         self.traj_actors = []
         
         traj = self.trajectories_list[idx]
+        metrics = traj.get('metrics', None)
+        self.update_trajectory_diagnosis_ui(metrics)
+
         points = traj['points']
         import numpy as np
         self.traj_points_data = points
@@ -2475,6 +2476,7 @@ class AcousticStudioMain(QMainWindow):
                 self.traj_list.setCurrentRow(new_row)
                 self.load_selected_trajectory(new_row)
             else:
+                self.update_trajectory_diagnosis_ui('empty')
                 self.plotter.render()
 
     def clear_all_trajectories(self):
@@ -2488,6 +2490,7 @@ class AcousticStudioMain(QMainWindow):
             self.trajectories_list.clear()
         if hasattr(self, 'traj_list'):
             self.traj_list.clear()
+        self.update_trajectory_diagnosis_ui('empty')
 
     def on_traj_item_clicked(self, item):
         idx = self.traj_list.row(item)
@@ -2653,3 +2656,26 @@ class AcousticStudioMain(QMainWindow):
         else:
             if hasattr(self, 'resource_label'):
                 self.resource_label.setText("")
+
+    def update_trajectory_diagnosis_ui(self, metrics=None):
+        """우측 패널의 물리 안정성 진단 미니 요약 카드 텍스트/스타일 갱신"""
+        if not hasattr(self, 'lbl_diag_title') or not hasattr(self, 'lbl_diag_desc'):
+            return
+
+        if metrics == 'empty' or (hasattr(self, 'trajectories_list') and not self.trajectories_list):
+            self.lbl_diag_title.setText("물리 안정성 진단: 선택된 궤적 없음")
+            self.lbl_diag_desc.setText("안내: 궤적을 선택하거나 새로 생성하면 상세 진단이 표시됩니다.")
+            return
+
+        if isinstance(metrics, dict):
+            grade = metrics.get('grade', '안정')
+            avg = metrics.get('avg_stability', 0.0)
+            min_val = metrics.get('min_stability', 0.0)
+            guide = metrics.get('guide_msg', '안정적인 이송 구간입니다.')
+            color = metrics.get('color', '#1565C0')
+            self.lbl_diag_title.setText(f"물리 안정성 진단: <span style='color: {color}; font-weight: bold;'>{grade}</span> (평균 {avg:.1f}% / 최저 {min_val:.1f}%)")
+            self.lbl_diag_desc.setText(f"안내: {guide}")
+        else:
+            self.lbl_diag_title.setText("물리 안정성 진단: <span style='color: #555555; font-weight: bold;'>일반 등속</span>")
+            self.lbl_diag_desc.setText("안내: 물리 최적화가 적용되지 않은 일반 기하학 등속 궤적입니다.")
+
