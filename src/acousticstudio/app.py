@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (QApplication, QSplitter, QMainWindow, QWidget, QV
                                      QHBoxLayout, QPushButton, QLabel, 
                                      QDoubleSpinBox, QSpinBox, QComboBox, QGroupBox, 
                                      QListWidget, QAbstractItemView, QSlider, QCheckBox,
-                                     QScrollArea, QFormLayout, QListWidgetItem, QMessageBox, QFrame)
+                                     QScrollArea, QFormLayout, QListWidgetItem, QMessageBox, QFrame, QTabWidget)
 from PySide6.QtCore import Qt, QObject, QEvent, QRect, QThread, Signal
 import time
 
@@ -114,7 +114,7 @@ class AcousticStudioMain(QMainWindow):
         from PySide6.QtGui import QAction
         from PySide6.QtCore import Qt
         menubar = self.menuBar()
-        file_menu = menubar.addMenu("파일 (File)")
+        file_menu = menubar.addMenu("파일")
         
         new_action = QAction("새로 만들기 (New)", self)
         new_action.setShortcut("Ctrl+N")
@@ -141,7 +141,7 @@ class AcousticStudioMain(QMainWindow):
         load_action.triggered.connect(self.load_project)
         file_menu.addAction(load_action)
         
-        edit_menu = menubar.addMenu("편집 (Edit)")
+        edit_menu = menubar.addMenu("편집")
         
         undo_action = QAction("실행 취소 (Undo)", self)
         undo_action.setShortcut("Ctrl+Z")
@@ -155,13 +155,13 @@ class AcousticStudioMain(QMainWindow):
         redo_action.setShortcutContext(Qt.ApplicationShortcut)
         redo_action.triggered.connect(self.redo)
         edit_menu.addAction(redo_action)
-        tools_menu = self.menuBar().addMenu("도구(Tools)")
+        tools_menu = self.menuBar().addMenu("도구")
         lib_mgr_action = tools_menu.addAction("라이브러리 관리자 (Library Manager)")
         lib_mgr_action.triggered.connect(self.open_library_manager)
         kwave_sim_action = tools_menu.addAction("k-Wave 기구물 음향 시뮬레이션 (Reflector/Tunnel)...")
         kwave_sim_action.triggered.connect(self.open_kwave_simulation)
 
-        view_menu = self.menuBar().addMenu("보기(View)")
+        view_menu = self.menuBar().addMenu("보기")
         
         from PySide6.QtCore import QSettings
         self.settings = QSettings("AcousticStudioTeam", "AcousticStudio")
@@ -241,33 +241,43 @@ class AcousticStudioMain(QMainWindow):
         self.area_picker = vtk.vtkAreaPicker()
         self.mouse_filter = MouseEventFilter(self)
         self.plotter.interactor.installEventFilter(self.mouse_filter)
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setFrameShape(QScrollArea.Shape.NoFrame)
-        scroll_area.setStyleSheet("""
-            QScrollBar:vertical {
-                border: none;
-                background: transparent;
-                width: 8px;
-                margin: 0px;
-            }
-            QScrollBar::handle:vertical {
-                background: rgba(128, 128, 128, 150);
-                border-radius: 4px;
-            }
-            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
-            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; }
-        """)
-        
-        control_panel = QWidget()
-        control_panel.setMinimumWidth(380)
-        control_layout = QVBoxLayout(control_panel)
-        from PySide6.QtCore import Qt
-        control_layout.setAlignment(Qt.AlignTop)
-        control_layout.setContentsMargins(5, 10, 15, 10)
-        
-        
-        scroll_area.setWidget(control_panel)
+        def create_settings_scroll():
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+            scroll.setStyleSheet("""
+                QScrollBar:vertical {
+                    border: none;
+                    background: transparent;
+                    width: 8px;
+                    margin: 0px;
+                }
+                QScrollBar::handle:vertical {
+                    background: rgba(128, 128, 128, 150);
+                    border-radius: 4px;
+                }
+                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
+                QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; }
+            """)
+            page = QWidget()
+            scroll.setWidget(page)
+            return scroll, page
+
+        workspace_tabs = QTabWidget()
+        workspace_tabs.setDocumentMode(True)
+        workspace_tabs.setMinimumWidth(400)
+        design_scroll, design_page = create_settings_scroll()
+        field_scroll, field_page = create_settings_scroll()
+        motion_scroll, motion_page = create_settings_scroll()
+        design_layout, field_tab_layout, motion_layout = QVBoxLayout(design_page), QVBoxLayout(field_page), QVBoxLayout(motion_page)
+        for page_layout in (design_layout, field_tab_layout, motion_layout):
+            page_layout.setAlignment(Qt.AlignTop)
+            page_layout.setContentsMargins(10, 8, 10, 10)
+            page_layout.setSpacing(9)
+        workspace_tabs.addTab(design_scroll, "구성")
+        workspace_tabs.addTab(field_scroll, "음장")
+        workspace_tabs.addTab(motion_scroll, "궤적")
+        workspace_tabs.tabBar().setExpanding(True)
         
         from PySide6.QtWidgets import QSplitter
         from PySide6.QtCore import Qt
@@ -304,8 +314,8 @@ class AcousticStudioMain(QMainWindow):
         )
         self.board_profile_cb.currentIndexChanged.connect(self.change_board_profile)
         
-        self.btn_connect_hw = QPushButton("Connect (연결)")
-        self.btn_send_phase = QPushButton("Send Phase Data")
+        self.btn_connect_hw = QPushButton("연결")
+        self.btn_send_phase = QPushButton("위상 전송")
         self.btn_send_phase.setEnabled(False)
         self.btn_connect_hw.clicked.connect(self.connect_hw)
         self.btn_send_phase.clicked.connect(self.send_phase_data)
@@ -378,16 +388,15 @@ class AcousticStudioMain(QMainWindow):
         # --- Splitter Setup ---
         self.splitter = QSplitter(Qt.Horizontal)
         self.splitter.addWidget(self.view_panel)
-        self.splitter.addWidget(scroll_area)
+        self.splitter.addWidget(workspace_tabs)
         self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 0)
-        self.splitter.setSizes([1020, 380])
+        self.splitter.setSizes([1020, 480])
         
         main_layout.addWidget(self.splitter)
         
         # [1. Transform Properties (?占쏀깮??媛앹껜 ?占쎈룞/?占쎌쟾)] - ?占쎈줈 異뷂옙???
-        transform_group = QGroupBox("1. Selected Object Transform (선택된 객체 이동/회전)")
-        transform_group.setStyleSheet("QGroupBox { font-weight: bold; color: #2196F3; }")
+        transform_group = QGroupBox("선택 객체")
         
         
         self.sel_x = QDoubleSpinBox(); self.sel_x.setRange(-2000, 2000)
@@ -415,9 +424,9 @@ class AcousticStudioMain(QMainWindow):
         t_layout.addWidget(self.sel_rz, 1, 6)
         t_layout.setColumnStretch(7, 1)
         transform_group.setLayout(t_layout)
-        control_layout.addWidget(transform_group)
+        design_layout.addWidget(transform_group)
         # Properties Group
-        self.prop_group = QGroupBox("Selected Properties (선택 속성)")
+        self.prop_group = QGroupBox("선택 항목")
         prop_layout = QFormLayout()
         
         self.prop_type_lbl = QLabel("-")
@@ -433,7 +442,7 @@ class AcousticStudioMain(QMainWindow):
         prop_layout.addRow("초점 반경:", self.prop_radius_spin)
         
         self.prop_group.setLayout(prop_layout)
-        control_layout.addWidget(self.prop_group)
+        design_layout.addWidget(self.prop_group)
         self.prop_sensor_cb.currentIndexChanged.connect(self.on_prop_sensor_changed)
         self.prop_radius_spin.valueChanged.connect(self.on_prop_radius_changed)
         
@@ -451,8 +460,8 @@ class AcousticStudioMain(QMainWindow):
         self.sel_rz.valueChanged.connect(self.apply_ui_transform)
         self.sel_rz.editingFinished.connect(self.push_state)
         
-        # [2. 諛곗뿴 ?占쎌젙 洹몃９]
-        array_group = QGroupBox("2. Transducer Array Setup (트랜스듀서 배열 설정)")
+        # [2. 배열 구성]
+        array_group = QGroupBox("배열 구성")
         array_layout = QVBoxLayout()
         array_form = QFormLayout()
         
@@ -510,16 +519,16 @@ class AcousticStudioMain(QMainWindow):
         
         self.add_array_btn = QPushButton("배열 3D 렌더링 생성")
         self.add_array_btn.clicked.connect(self._hooked_generate_array)
-        self.clear_btn = QPushButton("Clear All")
+        self.clear_btn = QPushButton("전체 초기화")
         self.clear_btn.clicked.connect(self._hooked_clear_view)
         
         array_layout.addWidget(self.add_array_btn)
         array_layout.addWidget(self.clear_btn)
         array_group.setLayout(array_layout)
-        control_layout.addWidget(array_group)
+        design_layout.addWidget(array_group)
         
-        # [3. 而⑦듃占??占쎌씤??(?占쏙옙? 洹몃９]
-        points_group = QGroupBox("3. Control Points (제어점 설정)")
+        # [3. 제어점 설정]
+        points_group = QGroupBox("제어점")
         points_layout = QVBoxLayout()
         
         
@@ -540,23 +549,23 @@ class AcousticStudioMain(QMainWindow):
         points_layout.addWidget(self.points_list)
         
         btn_layout = QHBoxLayout()
-        self.add_pt_btn = QPushButton("Add Point")
+        self.add_pt_btn = QPushButton("제어점 추가")
         self.add_pt_btn.clicked.connect(self._hooked_add_control_point)
-        self.del_pt_btn = QPushButton("Delete Point")
+        self.del_pt_btn = QPushButton("제어점 삭제")
         self.del_pt_btn.clicked.connect(self._hooked_del_control_point)
         btn_layout.addWidget(self.add_pt_btn)
         btn_layout.addWidget(self.del_pt_btn)
         points_layout.addLayout(btn_layout)
         
-        self.auto_calc_cb = QCheckBox("Point 이동 시 실시간 위상 업데이트")
+        self.auto_calc_cb = QCheckBox("제어점 이동 시 실시간 위상 업데이트")
         self.auto_calc_cb.setChecked(True) # 湲곕낯쟻쑝濡 耳쒕몺
         points_layout.addWidget(self.auto_calc_cb)
         
         points_group.setLayout(points_layout)
-        control_layout.addWidget(points_group)
+        design_layout.addWidget(points_group)
         
-        # [4. ?占쎈옪 占??占쏙옙??占쎌씠??洹몃９]
-        field_group = QGroupBox("4. Phase Simulation (위상 계산)")
+        # [4. 위상 계산]
+        field_group = QGroupBox("위상 계산")
         field_layout = QFormLayout()
         self.trap_type_cb = QComboBox()
         self.trap_type_cb.addItems(["Twin Trap", "Vortex Trap"])
@@ -567,10 +576,10 @@ class AcousticStudioMain(QMainWindow):
         self.run_btn.clicked.connect(self.simulate_colors)
         field_layout.addRow(self.run_btn)
         field_group.setLayout(field_layout)
-        control_layout.addWidget(field_group)
+        field_tab_layout.addWidget(field_group)
         
-        # [5. ?占쎌븬 ?占쎄컖??洹몃９]
-        visual_group = QGroupBox("5. Acoustic Field Visualization (음압 단면 시각화)")
+        # [5. 음장 분석]
+        visual_group = QGroupBox("음장 분석")
         visual_layout = QVBoxLayout()
         
         # XZ Plane
@@ -634,10 +643,10 @@ class AcousticStudioMain(QMainWindow):
         visual_layout.addWidget(self.btn_kwave_sim)
         
         visual_group.setLayout(visual_layout)
-        control_layout.addWidget(visual_group)
+        field_tab_layout.addWidget(visual_group)
         
-        # [6. Trajectory Generation (고급 궤적 생성)]
-        trajectory_group = QGroupBox("6. Trajectory Generation (고급 궤적 생성)")
+        # [6. 궤적]
+        trajectory_group = QGroupBox("궤적")
         trajectory_layout = QVBoxLayout()
         
         from PySide6.QtWidgets import QGridLayout
@@ -790,7 +799,7 @@ class AcousticStudioMain(QMainWindow):
         btn_lyt.addWidget(self.btn_clear_all_traj)
         trajectory_layout.addLayout(btn_lyt)
 
-        self.btn_export_traj = QPushButton("선택 궤적 데이터 내보내기 (Export)")
+        self.btn_export_traj = QPushButton("선택 궤적 데이터 내보내기")
         self.btn_export_traj.setStyleSheet("height: 28px; border-radius: 4px; background-color: #1976D2; color: white; font-weight: bold; margin-top: 2px;")
         self.btn_export_traj.setToolTip("선택한 궤적의 위상 데이터를 C헤더(.h), CSV(.csv), 또는 하드웨어 바이너리(.bin) 파일로 내보냅니다.")
         self.btn_export_traj.clicked.connect(self.export_selected_trajectory)
@@ -864,9 +873,11 @@ class AcousticStudioMain(QMainWindow):
         trajectory_layout.addLayout(media_lyt)
 
         trajectory_group.setLayout(trajectory_layout)
-        control_layout.addWidget(trajectory_group)
+        motion_layout.addWidget(trajectory_group)
 
-        control_layout.addStretch(1)
+        design_layout.addStretch(1)
+        field_tab_layout.addStretch(1)
+        motion_layout.addStretch(1)
         # Hardware UI moved to top bar
         
         self.field_actors = [] # ?占쎌쨷 ?占쎈씪?占쎌뒪 ?占쏀꽣占?愿由ы븯占??占쏀븳 由ъ뒪??        
@@ -875,7 +886,10 @@ class AcousticStudioMain(QMainWindow):
         self._sel_base_centroid = [0.0, 0.0, 0.0]
         self._sel_base_rot = [0.0, 0.0, 0.0]
         # Apply wheel blocker AFTER all widgets are created
-        self.wheel_blocker = WheelBlocker(scroll_area, self)
+        self.wheel_blocker = WheelBlocker(design_scroll, self)
+        def sync_active_scroll(index):
+            self.wheel_blocker.scroll_area = (design_scroll, field_scroll, motion_scroll)[index]
+        workspace_tabs.currentChanged.connect(sync_active_scroll)
         widgets = self.findChildren(QDoubleSpinBox) + self.findChildren(QSpinBox) + self.findChildren(QComboBox) + self.findChildren(QSlider)
         for widget in widgets:
             widget.installEventFilter(self.wheel_blocker)
@@ -883,7 +897,7 @@ class AcousticStudioMain(QMainWindow):
         self._last_saved_state = self.get_state(for_file=True)
         self.update_traj_preview()
         
-        self.statusBar().showMessage("준비 완료 (Ready)")
+        self.statusBar().showMessage("준비 완료")
         self.resource_label = QLabel("")
         self.resource_label.setStyleSheet("color: #555; font-weight: bold; padding-right: 10px;")
         self.statusBar().addPermanentWidget(self.resource_label)
@@ -936,7 +950,7 @@ class AcousticStudioMain(QMainWindow):
                 self.show_silent_msg("Error", "Invalid Baud Rate.")
                 return
             if self.hw_controller.connect(port, baud):
-                self.btn_connect_hw.setText("Disconnect (연결 해제)")
+                self.btn_connect_hw.setText("연결 해제")
                 self.btn_send_phase.setEnabled(True)
                 if hasattr(self, 'chk_realtime_send'):
                     self.chk_realtime_send.setEnabled(True)
@@ -944,7 +958,7 @@ class AcousticStudioMain(QMainWindow):
                 pass  # hw_controller emits send_failed signal
         else:
             self.hw_controller.disconnect()
-            self.btn_connect_hw.setText("Connect (연결)")
+            self.btn_connect_hw.setText("연결")
             self.btn_send_phase.setEnabled(False)
             if hasattr(self, 'chk_realtime_send'):
                 self.chk_realtime_send.setEnabled(False)
@@ -962,7 +976,7 @@ class AcousticStudioMain(QMainWindow):
             print(f"HW Send Error: {e}")
     def handle_hw_disconnect(self, reason=""):
         """UI 업데이트 — HardwareController.disconnected 시그널에 연결"""
-        self.btn_connect_hw.setText("Connect (연결)")
+        self.btn_connect_hw.setText("연결")
         self.btn_send_phase.setEnabled(False)
         if hasattr(self, 'chk_realtime_send'):
             self.chk_realtime_send.setEnabled(False)
@@ -1139,7 +1153,7 @@ class AcousticStudioMain(QMainWindow):
             self.prop_type_lbl.setText("珥덉쓬뙆 꽱꽌")
             self.prop_sensor_cb.setEnabled(True)
         elif has_cp and not has_sensor:
-            self.prop_type_lbl.setText("점(Control Point)")
+            self.prop_type_lbl.setText("제어점")
             self.prop_radius_spin.setEnabled(True)
             for pt in self.control_points:
                 if pt["actor"] == cp_actor:
@@ -1373,7 +1387,7 @@ class AcousticStudioMain(QMainWindow):
         self.push_state()
     def add_control_point(self):
         idx = len(self.control_points)
-        name = f"Point {idx+1}"
+        name = f"제어점 {idx+1}"
         x, y, z = 0.0, 0.0, 50.0 + (idx * 20)
         
         radius = getattr(self, 'point_size_spin', None)
@@ -1604,7 +1618,7 @@ class AcousticStudioMain(QMainWindow):
             
             for pt in pt_data:
                 idx = len(self.control_points)
-                name = pt.get('name', f"Point {idx+1}")
+                name = pt.get('name', f"제어점 {idx+1}")
                 x, y, z = pt.get('x',0), pt.get('y',0), pt.get('z',50)
                 r = pt.get('radius', 5.0)
                 sphere = pv.Sphere(radius=r, center=(0, 0, 0)) # Base at origin
@@ -2777,7 +2791,7 @@ class AcousticStudioMain(QMainWindow):
             self.resource_monitor.show_gpu = self.show_gpu
             
     def on_resource_updated(self, data):
-        msg = "준비 완료 (Ready)"
+        msg = "준비 완료"
         parts = []
         if self.show_cpu:
             if 'cpu' in data:
