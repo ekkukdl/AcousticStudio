@@ -1,0 +1,178 @@
+{
+  "6faces\\geometry_checks.json": {
+    "bytes": 1139,
+    "sha256": "ac3556efda23a37a4711a38cc3bc25e7938494b903a8a397bc9e1788a07c8c65"
+  },
+  "6faces\\native\\panel_6f_01.asm": {
+    "bytes": 87045,
+    "sha256": "b1cae41248c265d2cb2ddda8ba4a8c568ddf05a1bc860d0edc3fc113a00f93c6"
+  },
+  "6faces\\native\\panel_6f_02.asm": {
+    "bytes": 87045,
+    "sha256": "7966599877c35498cccdea06831ed56f431e45c3fe8808d7887c84058ead50c4"
+  },
+  "6faces\\native\\panel_6f_03.asm": {
+    "bytes": 87048,
+    "sha256": "2bcb2cf6a9753fbc08f8d588a746daa3c1c46116957d3c8b47546913978e76c3"
+  },
+  "6faces\\native\\panel_6f_04.asm": {
+    "bytes": 87048,
+    "sha256": "30916cee59ce7374d8ac0395f4fcf51cf2991acc6a2d28374083377f69f78308"
+  },
+  "6faces\\native\\panel_6f_05.asm": {
+    "bytes": 87047,
+    "sha256": "34fdccd85db10ac1eec9d4769316551e15be2acd998f00ab7e93a328c72cffe5"
+  },
+  "6faces\\native\\panel_6f_06.asm": {
+    "bytes": 87053,
+    "sha256": "d2f222513077e9b5a5fea0cda9ad1788c64fd2d3be15db9c58b981633b044fa5"
+  },
+  "6faces\\native\\pcb_6f.prt": {
+    "bytes": 212550,
+    "sha256": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37"
+  },
+  "6faces\\native\\ring_6f_lower.prt": {
+    "bytes": 109846,
+    "sha256": "75511dbfb7a63af50e1d2010a893f7dd27f9fd7464566f06fd9f4b72d19cf84d"
+  },
+  "6faces\\native\\tunnel_6faces.asm": {
+    "bytes": 84313,
+    "sha256": "22228d532f8c3b5667b77f8997bc6fee64580e8fd9a4485b513a099a98166853"
+  },
+  "6faces\\native\\tunnel_6faces_1.asm": {
+    "bytes": 93996,
+    "sha256": "c343642739f5b4f4fb8c1cacf40fe65964d250b638be0f84738de96482d7b779"
+  },
+  "6faces\\native\\tx_6f_t1.prt": {
+    "bytes": 75146,
+    "sha256": "ba3829b8561b77b9e7433e39e80fad5398519453b51e71dfd757f691abb71537"
+  },
+  "6faces\\panel_6f.step": {
+    "bytes": 285040,
+    "sha256": "05e4d61717398256381f1db918a938cad10c53f28abbacda4dad9cceb8c6e76b"
+  },
+  "6faces\\pcb_6f.step": {
+    "bytes": 267714,
+    "sha256": "71b84f7c8fe1609a9e2ed16fa007e1282eb05853dd43f50efee4295229a599d5"
+  },
+  "6faces\\ring_6f.step": {
+    "bytes": 144458,
+    "sha256": "34c636c9a478fc363b0ff289345dccb36e48fd64db00122f5d4083e7a705c457"
+  },
+  "6faces\\transducer_6f.step": {
+    "bytes": 5762,
+    "sha256": "72c956c837100e4969a24282da697e87726b5f95a1495bde2db34e50c316cf30"
+  },
+  "6faces\\tunnel_6faces.step": {
+    "bytes": 492362,
+    "sha256": "beb6ce386fb510dfa24695b767785101f6f08f6f20430c36eae84690fe105660"
+  },
+  "6faces\\tunnel_6faces_preview.png": {
+    "bytes": 90741,
+    "sha256": "15191ae1ee8c28527a69a2aba07d4f17f934aee3661f203896cccd3d2449746f"
+  },
+  "8faces\\geometry_checks.json": {
+    "bytes": 1250,
+    "sha256": "6e1fcef496268ef67b0b0fc17f1190171091704cc4a721c72e900702c3823c81"
+  },
+  "8faces\\native\\panel_8f_01.asm": {
+    "bytes": 86965,
+    "sha256": "02457cf98951da9323b624f07f36c8e308b39d0916ac1f753cdcf0669f685e5f"
+  },
+  "8faces\\native\\panel_8f_02.asm": {
+    "bytes": 86961,
+    "sha256": "e5d374cc046ad36049e0176a39c7cb2538453f750ed14fdfb044e0252d2b6d3d"
+  },
+  "8faces\\native\\panel_8f_03.asm": {
+    "bytes": 86961,
+    "sha256": "5526f85e72f70dc7ed4aaaf6109c7acc50e2a5a0f9fc45a19b68ebd82691e77d"
+  },
+  "8faces\\native\\panel_8f_04.asm": {
+    "bytes": 86967,
+    "sha256": "e2e462c39174981f2583093af0485914d8d8b441b551b58cc420ef4b0401d462"
+  },
+  "8faces\\native\\panel_8f_05.asm": {
+    "bytes": 86964,
+    "sha256": "f6d23303ca6fa7377e58e67792de59d92ed5f3d5a18ff48577a19b11c16a44d2"
+  },
+  "8faces\\native\\panel_8f_06.asm": {
+    "bytes": 86966,
+    "sha256": "5d48310b26f3315ea74f613c3e6635feb2bd3c05ead00fe52c6bc32c5b8aa9d6"
+  },
+  "8faces\\native\\panel_8f_07.asm": {
+    "bytes": 86966,
+    "sha256": "1dcc94714320b92a9fa803f265fcfb377c5f44a401b3c6b8d750ad1643ffefc7"
+  },
+  "8faces\\native\\panel_8f_08.asm": {
+    "bytes": 86969,
+    "sha256": "e01492d8ea98b9eed1ac67a0d1dd0e38f0dfe4a37b69b8b7a176b52caad1db45"
+  },
+  "8faces\\native\\pcb_8f.prt": {
+    "bytes": 212540,
+    "sha256": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58"
+  },
+  "8faces\\native\\ring_8f_lower.prt": {
+    "bytes": 120271,
+    "sha256": "8696b6c82df83b3058ad5cf35c4e2f283ec2bb7ef2fdccba58d7f07ea90bae02"
+  },
+  "8faces\\native\\tunnel_8faces.asm": {
+    "bytes": 87481,
+    "sha256": "dfc2df46da5ff7cba9d3e5165ba14e4542cdab430f432bd4a05e18e20e68e94b"
+  },
+  "8faces\\native\\tunnel_8faces_1.asm": {
+    "bytes": 99635,
+    "sha256": "3f35aab96a28dbdb30e492fa5d67e0c195fdc5bfa33b081d189749195293c9f2"
+  },
+  "8faces\\native\\tx_8f_t1.prt": {
+    "bytes": 75149,
+    "sha256": "6779b72770785d1ef47b72b660259c9b44548d016929ed1e68a00d35103c74aa"
+  },
+  "8faces\\panel_8f.step": {
+    "bytes": 285066,
+    "sha256": "e928cac24307c1813485ad74623c7669556f187737ab70047bb42becc823703a"
+  },
+  "8faces\\pcb_8f.step": {
+    "bytes": 267714,
+    "sha256": "80981013f99a97dc111e1087fdf1165589221f44023854b6349d2c32649de744"
+  },
+  "8faces\\ring_8f.step": {
+    "bytes": 191745,
+    "sha256": "345ccdc37d43b10106926846ff79effe986e4c040cb964f2ad8234180d8196d0"
+  },
+  "8faces\\transducer_8f.step": {
+    "bytes": 5762,
+    "sha256": "8beef7c75b45f3305dfc9948b8ce20fe2fd32054b4f84b75508d07527e073946"
+  },
+  "8faces\\tunnel_8faces.step": {
+    "bytes": 563503,
+    "sha256": "57249df19a815ad56fcbadc1190871c7b9c7b533ee08c57c99330431d2b68398"
+  },
+  "8faces\\tunnel_8faces_preview.png": {
+    "bytes": 107709,
+    "sha256": "4e5afa2d6c310e86e7ee024df6ff2b03fd3c763fd054be79c1e8f7ee7edfeed2"
+  },
+  "build_models.py": {
+    "bytes": 5980,
+    "sha256": "0d3436b2ef770cba2317a07c38a68b0e335133e9eae20b90c5beb8c9dde81ac9"
+  },
+  "native_generation_report.json": {
+    "bytes": 3182,
+    "sha256": "e8e784339117c5773d8efc13e9935f9ce376ce73bd8b317d137245d728a9ef27"
+  },
+  "native_reopen_report.json": {
+    "bytes": 3474,
+    "sha256": "c637f8f3ed3db304fabda2b712d5f5c4bc7ff13bce56e7173dc30058a6dd7718"
+  },
+  "pcb_geometry.json": {
+    "bytes": 18307,
+    "sha256": "e87b3cb642fa7ca7cdc595d71c68e97bd79df9e3156ac0e3783789ad63afe843"
+  },
+  "render_models.py": {
+    "bytes": 2094,
+    "sha256": "4e171c949e5c9dfe3ad0e67e44bc70cd0b7688e5a1ced665473f98402babccf7"
+  },
+  "사용안내.md": {
+    "bytes": 4723,
+    "sha256": "3ed6f75ea443bb844cf3fcc2fa6770fe3c7756abfb58a582d891fef01c3e107e"
+  }
+}

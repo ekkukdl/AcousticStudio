@@ -1,0 +1,2313 @@
+{
+  "units": "mm",
+  "status": "prototype_geometry_not_acoustically_validated",
+  "face_plane_apothem": 75,
+  "panel_width": 48,
+  "board_length": 180,
+  "elements": [
+    {
+      "channel": 0,
+      "panel": 0,
+      "local_channel": 0,
+      "reference": "T1",
+      "position_mm": [
+        75.0,
+        -9.0,
+        20
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 1,
+      "panel": 0,
+      "local_channel": 1,
+      "reference": "T2",
+      "position_mm": [
+        75.0,
+        9.0,
+        20
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 2,
+      "panel": 0,
+      "local_channel": 2,
+      "reference": "T3",
+      "position_mm": [
+        75.0,
+        -9.0,
+        40
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 3,
+      "panel": 0,
+      "local_channel": 3,
+      "reference": "T4",
+      "position_mm": [
+        75.0,
+        9.0,
+        40
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 4,
+      "panel": 0,
+      "local_channel": 4,
+      "reference": "T5",
+      "position_mm": [
+        75.0,
+        -9.0,
+        60
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 5,
+      "panel": 0,
+      "local_channel": 5,
+      "reference": "T6",
+      "position_mm": [
+        75.0,
+        9.0,
+        60
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 6,
+      "panel": 0,
+      "local_channel": 6,
+      "reference": "T7",
+      "position_mm": [
+        75.0,
+        -9.0,
+        80
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 7,
+      "panel": 0,
+      "local_channel": 7,
+      "reference": "T8",
+      "position_mm": [
+        75.0,
+        9.0,
+        80
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 8,
+      "panel": 0,
+      "local_channel": 8,
+      "reference": "T9",
+      "position_mm": [
+        75.0,
+        -9.0,
+        100
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 9,
+      "panel": 0,
+      "local_channel": 9,
+      "reference": "T10",
+      "position_mm": [
+        75.0,
+        9.0,
+        100
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 10,
+      "panel": 0,
+      "local_channel": 10,
+      "reference": "T11",
+      "position_mm": [
+        75.0,
+        -9.0,
+        120
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 11,
+      "panel": 0,
+      "local_channel": 11,
+      "reference": "T12",
+      "position_mm": [
+        75.0,
+        9.0,
+        120
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 12,
+      "panel": 0,
+      "local_channel": 12,
+      "reference": "T13",
+      "position_mm": [
+        75.0,
+        -9.0,
+        140
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 13,
+      "panel": 0,
+      "local_channel": 13,
+      "reference": "T14",
+      "position_mm": [
+        75.0,
+        9.0,
+        140
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 14,
+      "panel": 0,
+      "local_channel": 14,
+      "reference": "T15",
+      "position_mm": [
+        75.0,
+        -9.0,
+        160
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 15,
+      "panel": 0,
+      "local_channel": 15,
+      "reference": "T16",
+      "position_mm": [
+        75.0,
+        9.0,
+        160
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 16,
+      "panel": 1,
+      "local_channel": 0,
+      "reference": "T1",
+      "position_mm": [
+        59.396969619669996,
+        46.66904755831214,
+        20
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 17,
+      "panel": 1,
+      "local_channel": 1,
+      "reference": "T2",
+      "position_mm": [
+        46.66904755831214,
+        59.396969619669996,
+        20
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 18,
+      "panel": 1,
+      "local_channel": 2,
+      "reference": "T3",
+      "position_mm": [
+        59.396969619669996,
+        46.66904755831214,
+        40
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 19,
+      "panel": 1,
+      "local_channel": 3,
+      "reference": "T4",
+      "position_mm": [
+        46.66904755831214,
+        59.396969619669996,
+        40
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 20,
+      "panel": 1,
+      "local_channel": 4,
+      "reference": "T5",
+      "position_mm": [
+        59.396969619669996,
+        46.66904755831214,
+        60
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 21,
+      "panel": 1,
+      "local_channel": 5,
+      "reference": "T6",
+      "position_mm": [
+        46.66904755831214,
+        59.396969619669996,
+        60
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 22,
+      "panel": 1,
+      "local_channel": 6,
+      "reference": "T7",
+      "position_mm": [
+        59.396969619669996,
+        46.66904755831214,
+        80
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 23,
+      "panel": 1,
+      "local_channel": 7,
+      "reference": "T8",
+      "position_mm": [
+        46.66904755831214,
+        59.396969619669996,
+        80
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 24,
+      "panel": 1,
+      "local_channel": 8,
+      "reference": "T9",
+      "position_mm": [
+        59.396969619669996,
+        46.66904755831214,
+        100
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 25,
+      "panel": 1,
+      "local_channel": 9,
+      "reference": "T10",
+      "position_mm": [
+        46.66904755831214,
+        59.396969619669996,
+        100
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 26,
+      "panel": 1,
+      "local_channel": 10,
+      "reference": "T11",
+      "position_mm": [
+        59.396969619669996,
+        46.66904755831214,
+        120
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 27,
+      "panel": 1,
+      "local_channel": 11,
+      "reference": "T12",
+      "position_mm": [
+        46.66904755831214,
+        59.396969619669996,
+        120
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 28,
+      "panel": 1,
+      "local_channel": 12,
+      "reference": "T13",
+      "position_mm": [
+        59.396969619669996,
+        46.66904755831214,
+        140
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 29,
+      "panel": 1,
+      "local_channel": 13,
+      "reference": "T14",
+      "position_mm": [
+        46.66904755831214,
+        59.396969619669996,
+        140
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 30,
+      "panel": 1,
+      "local_channel": 14,
+      "reference": "T15",
+      "position_mm": [
+        59.396969619669996,
+        46.66904755831214,
+        160
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 31,
+      "panel": 1,
+      "local_channel": 15,
+      "reference": "T16",
+      "position_mm": [
+        46.66904755831214,
+        59.396969619669996,
+        160
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 32,
+      "panel": 2,
+      "local_channel": 0,
+      "reference": "T1",
+      "position_mm": [
+        9.000000000000005,
+        75.0,
+        20
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 33,
+      "panel": 2,
+      "local_channel": 1,
+      "reference": "T2",
+      "position_mm": [
+        -8.999999999999995,
+        75.0,
+        20
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 34,
+      "panel": 2,
+      "local_channel": 2,
+      "reference": "T3",
+      "position_mm": [
+        9.000000000000005,
+        75.0,
+        40
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 35,
+      "panel": 2,
+      "local_channel": 3,
+      "reference": "T4",
+      "position_mm": [
+        -8.999999999999995,
+        75.0,
+        40
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 36,
+      "panel": 2,
+      "local_channel": 4,
+      "reference": "T5",
+      "position_mm": [
+        9.000000000000005,
+        75.0,
+        60
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 37,
+      "panel": 2,
+      "local_channel": 5,
+      "reference": "T6",
+      "position_mm": [
+        -8.999999999999995,
+        75.0,
+        60
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 38,
+      "panel": 2,
+      "local_channel": 6,
+      "reference": "T7",
+      "position_mm": [
+        9.000000000000005,
+        75.0,
+        80
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 39,
+      "panel": 2,
+      "local_channel": 7,
+      "reference": "T8",
+      "position_mm": [
+        -8.999999999999995,
+        75.0,
+        80
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 40,
+      "panel": 2,
+      "local_channel": 8,
+      "reference": "T9",
+      "position_mm": [
+        9.000000000000005,
+        75.0,
+        100
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 41,
+      "panel": 2,
+      "local_channel": 9,
+      "reference": "T10",
+      "position_mm": [
+        -8.999999999999995,
+        75.0,
+        100
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 42,
+      "panel": 2,
+      "local_channel": 10,
+      "reference": "T11",
+      "position_mm": [
+        9.000000000000005,
+        75.0,
+        120
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 43,
+      "panel": 2,
+      "local_channel": 11,
+      "reference": "T12",
+      "position_mm": [
+        -8.999999999999995,
+        75.0,
+        120
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 44,
+      "panel": 2,
+      "local_channel": 12,
+      "reference": "T13",
+      "position_mm": [
+        9.000000000000005,
+        75.0,
+        140
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 45,
+      "panel": 2,
+      "local_channel": 13,
+      "reference": "T14",
+      "position_mm": [
+        -8.999999999999995,
+        75.0,
+        140
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 46,
+      "panel": 2,
+      "local_channel": 14,
+      "reference": "T15",
+      "position_mm": [
+        9.000000000000005,
+        75.0,
+        160
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 47,
+      "panel": 2,
+      "local_channel": 15,
+      "reference": "T16",
+      "position_mm": [
+        -8.999999999999995,
+        75.0,
+        160
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 48,
+      "panel": 3,
+      "local_channel": 0,
+      "reference": "T1",
+      "position_mm": [
+        -46.66904755831213,
+        59.396969619669996,
+        20
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 49,
+      "panel": 3,
+      "local_channel": 1,
+      "reference": "T2",
+      "position_mm": [
+        -59.39696961966999,
+        46.66904755831214,
+        20
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 50,
+      "panel": 3,
+      "local_channel": 2,
+      "reference": "T3",
+      "position_mm": [
+        -46.66904755831213,
+        59.396969619669996,
+        40
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 51,
+      "panel": 3,
+      "local_channel": 3,
+      "reference": "T4",
+      "position_mm": [
+        -59.39696961966999,
+        46.66904755831214,
+        40
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 52,
+      "panel": 3,
+      "local_channel": 4,
+      "reference": "T5",
+      "position_mm": [
+        -46.66904755831213,
+        59.396969619669996,
+        60
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 53,
+      "panel": 3,
+      "local_channel": 5,
+      "reference": "T6",
+      "position_mm": [
+        -59.39696961966999,
+        46.66904755831214,
+        60
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 54,
+      "panel": 3,
+      "local_channel": 6,
+      "reference": "T7",
+      "position_mm": [
+        -46.66904755831213,
+        59.396969619669996,
+        80
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 55,
+      "panel": 3,
+      "local_channel": 7,
+      "reference": "T8",
+      "position_mm": [
+        -59.39696961966999,
+        46.66904755831214,
+        80
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 56,
+      "panel": 3,
+      "local_channel": 8,
+      "reference": "T9",
+      "position_mm": [
+        -46.66904755831213,
+        59.396969619669996,
+        100
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 57,
+      "panel": 3,
+      "local_channel": 9,
+      "reference": "T10",
+      "position_mm": [
+        -59.39696961966999,
+        46.66904755831214,
+        100
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 58,
+      "panel": 3,
+      "local_channel": 10,
+      "reference": "T11",
+      "position_mm": [
+        -46.66904755831213,
+        59.396969619669996,
+        120
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 59,
+      "panel": 3,
+      "local_channel": 11,
+      "reference": "T12",
+      "position_mm": [
+        -59.39696961966999,
+        46.66904755831214,
+        120
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 60,
+      "panel": 3,
+      "local_channel": 12,
+      "reference": "T13",
+      "position_mm": [
+        -46.66904755831213,
+        59.396969619669996,
+        140
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 61,
+      "panel": 3,
+      "local_channel": 13,
+      "reference": "T14",
+      "position_mm": [
+        -59.39696961966999,
+        46.66904755831214,
+        140
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 62,
+      "panel": 3,
+      "local_channel": 14,
+      "reference": "T15",
+      "position_mm": [
+        -46.66904755831213,
+        59.396969619669996,
+        160
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 63,
+      "panel": 3,
+      "local_channel": 15,
+      "reference": "T16",
+      "position_mm": [
+        -59.39696961966999,
+        46.66904755831214,
+        160
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 64,
+      "panel": 4,
+      "local_channel": 0,
+      "reference": "T1",
+      "position_mm": [
+        -75.0,
+        9.000000000000009,
+        20
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 65,
+      "panel": 4,
+      "local_channel": 1,
+      "reference": "T2",
+      "position_mm": [
+        -75.0,
+        -8.999999999999991,
+        20
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 66,
+      "panel": 4,
+      "local_channel": 2,
+      "reference": "T3",
+      "position_mm": [
+        -75.0,
+        9.000000000000009,
+        40
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 67,
+      "panel": 4,
+      "local_channel": 3,
+      "reference": "T4",
+      "position_mm": [
+        -75.0,
+        -8.999999999999991,
+        40
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 68,
+      "panel": 4,
+      "local_channel": 4,
+      "reference": "T5",
+      "position_mm": [
+        -75.0,
+        9.000000000000009,
+        60
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 69,
+      "panel": 4,
+      "local_channel": 5,
+      "reference": "T6",
+      "position_mm": [
+        -75.0,
+        -8.999999999999991,
+        60
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 70,
+      "panel": 4,
+      "local_channel": 6,
+      "reference": "T7",
+      "position_mm": [
+        -75.0,
+        9.000000000000009,
+        80
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 71,
+      "panel": 4,
+      "local_channel": 7,
+      "reference": "T8",
+      "position_mm": [
+        -75.0,
+        -8.999999999999991,
+        80
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 72,
+      "panel": 4,
+      "local_channel": 8,
+      "reference": "T9",
+      "position_mm": [
+        -75.0,
+        9.000000000000009,
+        100
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 73,
+      "panel": 4,
+      "local_channel": 9,
+      "reference": "T10",
+      "position_mm": [
+        -75.0,
+        -8.999999999999991,
+        100
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 74,
+      "panel": 4,
+      "local_channel": 10,
+      "reference": "T11",
+      "position_mm": [
+        -75.0,
+        9.000000000000009,
+        120
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 75,
+      "panel": 4,
+      "local_channel": 11,
+      "reference": "T12",
+      "position_mm": [
+        -75.0,
+        -8.999999999999991,
+        120
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 76,
+      "panel": 4,
+      "local_channel": 12,
+      "reference": "T13",
+      "position_mm": [
+        -75.0,
+        9.000000000000009,
+        140
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 77,
+      "panel": 4,
+      "local_channel": 13,
+      "reference": "T14",
+      "position_mm": [
+        -75.0,
+        -8.999999999999991,
+        140
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 78,
+      "panel": 4,
+      "local_channel": 14,
+      "reference": "T15",
+      "position_mm": [
+        -75.0,
+        9.000000000000009,
+        160
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 79,
+      "panel": 4,
+      "local_channel": 15,
+      "reference": "T16",
+      "position_mm": [
+        -75.0,
+        -8.999999999999991,
+        160
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 80,
+      "panel": 5,
+      "local_channel": 0,
+      "reference": "T1",
+      "position_mm": [
+        -59.39696961967,
+        -46.66904755831213,
+        20
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 81,
+      "panel": 5,
+      "local_channel": 1,
+      "reference": "T2",
+      "position_mm": [
+        -46.669047558312144,
+        -59.39696961966999,
+        20
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 82,
+      "panel": 5,
+      "local_channel": 2,
+      "reference": "T3",
+      "position_mm": [
+        -59.39696961967,
+        -46.66904755831213,
+        40
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 83,
+      "panel": 5,
+      "local_channel": 3,
+      "reference": "T4",
+      "position_mm": [
+        -46.669047558312144,
+        -59.39696961966999,
+        40
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 84,
+      "panel": 5,
+      "local_channel": 4,
+      "reference": "T5",
+      "position_mm": [
+        -59.39696961967,
+        -46.66904755831213,
+        60
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 85,
+      "panel": 5,
+      "local_channel": 5,
+      "reference": "T6",
+      "position_mm": [
+        -46.669047558312144,
+        -59.39696961966999,
+        60
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 86,
+      "panel": 5,
+      "local_channel": 6,
+      "reference": "T7",
+      "position_mm": [
+        -59.39696961967,
+        -46.66904755831213,
+        80
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 87,
+      "panel": 5,
+      "local_channel": 7,
+      "reference": "T8",
+      "position_mm": [
+        -46.669047558312144,
+        -59.39696961966999,
+        80
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 88,
+      "panel": 5,
+      "local_channel": 8,
+      "reference": "T9",
+      "position_mm": [
+        -59.39696961967,
+        -46.66904755831213,
+        100
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 89,
+      "panel": 5,
+      "local_channel": 9,
+      "reference": "T10",
+      "position_mm": [
+        -46.669047558312144,
+        -59.39696961966999,
+        100
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 90,
+      "panel": 5,
+      "local_channel": 10,
+      "reference": "T11",
+      "position_mm": [
+        -59.39696961967,
+        -46.66904755831213,
+        120
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 91,
+      "panel": 5,
+      "local_channel": 11,
+      "reference": "T12",
+      "position_mm": [
+        -46.669047558312144,
+        -59.39696961966999,
+        120
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 92,
+      "panel": 5,
+      "local_channel": 12,
+      "reference": "T13",
+      "position_mm": [
+        -59.39696961967,
+        -46.66904755831213,
+        140
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 93,
+      "panel": 5,
+      "local_channel": 13,
+      "reference": "T14",
+      "position_mm": [
+        -46.669047558312144,
+        -59.39696961966999,
+        140
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 94,
+      "panel": 5,
+      "local_channel": 14,
+      "reference": "T15",
+      "position_mm": [
+        -59.39696961967,
+        -46.66904755831213,
+        160
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 95,
+      "panel": 5,
+      "local_channel": 15,
+      "reference": "T16",
+      "position_mm": [
+        -46.669047558312144,
+        -59.39696961966999,
+        160
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 96,
+      "panel": 6,
+      "local_channel": 0,
+      "reference": "T1",
+      "position_mm": [
+        -9.000000000000014,
+        -75.0,
+        20
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 97,
+      "panel": 6,
+      "local_channel": 1,
+      "reference": "T2",
+      "position_mm": [
+        8.999999999999986,
+        -75.0,
+        20
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 98,
+      "panel": 6,
+      "local_channel": 2,
+      "reference": "T3",
+      "position_mm": [
+        -9.000000000000014,
+        -75.0,
+        40
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 99,
+      "panel": 6,
+      "local_channel": 3,
+      "reference": "T4",
+      "position_mm": [
+        8.999999999999986,
+        -75.0,
+        40
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 100,
+      "panel": 6,
+      "local_channel": 4,
+      "reference": "T5",
+      "position_mm": [
+        -9.000000000000014,
+        -75.0,
+        60
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 101,
+      "panel": 6,
+      "local_channel": 5,
+      "reference": "T6",
+      "position_mm": [
+        8.999999999999986,
+        -75.0,
+        60
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 102,
+      "panel": 6,
+      "local_channel": 6,
+      "reference": "T7",
+      "position_mm": [
+        -9.000000000000014,
+        -75.0,
+        80
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 103,
+      "panel": 6,
+      "local_channel": 7,
+      "reference": "T8",
+      "position_mm": [
+        8.999999999999986,
+        -75.0,
+        80
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 104,
+      "panel": 6,
+      "local_channel": 8,
+      "reference": "T9",
+      "position_mm": [
+        -9.000000000000014,
+        -75.0,
+        100
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 105,
+      "panel": 6,
+      "local_channel": 9,
+      "reference": "T10",
+      "position_mm": [
+        8.999999999999986,
+        -75.0,
+        100
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 106,
+      "panel": 6,
+      "local_channel": 10,
+      "reference": "T11",
+      "position_mm": [
+        -9.000000000000014,
+        -75.0,
+        120
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 107,
+      "panel": 6,
+      "local_channel": 11,
+      "reference": "T12",
+      "position_mm": [
+        8.999999999999986,
+        -75.0,
+        120
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 108,
+      "panel": 6,
+      "local_channel": 12,
+      "reference": "T13",
+      "position_mm": [
+        -9.000000000000014,
+        -75.0,
+        140
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 109,
+      "panel": 6,
+      "local_channel": 13,
+      "reference": "T14",
+      "position_mm": [
+        8.999999999999986,
+        -75.0,
+        140
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 110,
+      "panel": 6,
+      "local_channel": 14,
+      "reference": "T15",
+      "position_mm": [
+        -9.000000000000014,
+        -75.0,
+        160
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 111,
+      "panel": 6,
+      "local_channel": 15,
+      "reference": "T16",
+      "position_mm": [
+        8.999999999999986,
+        -75.0,
+        160
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 112,
+      "panel": 7,
+      "local_channel": 0,
+      "reference": "T1",
+      "position_mm": [
+        46.66904755831212,
+        -59.39696961967,
+        20
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 113,
+      "panel": 7,
+      "local_channel": 1,
+      "reference": "T2",
+      "position_mm": [
+        59.39696961966998,
+        -46.669047558312144,
+        20
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 114,
+      "panel": 7,
+      "local_channel": 2,
+      "reference": "T3",
+      "position_mm": [
+        46.66904755831212,
+        -59.39696961967,
+        40
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 115,
+      "panel": 7,
+      "local_channel": 3,
+      "reference": "T4",
+      "position_mm": [
+        59.39696961966998,
+        -46.669047558312144,
+        40
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 116,
+      "panel": 7,
+      "local_channel": 4,
+      "reference": "T5",
+      "position_mm": [
+        46.66904755831212,
+        -59.39696961967,
+        60
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 117,
+      "panel": 7,
+      "local_channel": 5,
+      "reference": "T6",
+      "position_mm": [
+        59.39696961966998,
+        -46.669047558312144,
+        60
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 118,
+      "panel": 7,
+      "local_channel": 6,
+      "reference": "T7",
+      "position_mm": [
+        46.66904755831212,
+        -59.39696961967,
+        80
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 119,
+      "panel": 7,
+      "local_channel": 7,
+      "reference": "T8",
+      "position_mm": [
+        59.39696961966998,
+        -46.669047558312144,
+        80
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "A",
+      "shift_register_output": 7
+    },
+    {
+      "channel": 120,
+      "panel": 7,
+      "local_channel": 8,
+      "reference": "T9",
+      "position_mm": [
+        46.66904755831212,
+        -59.39696961967,
+        100
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 0
+    },
+    {
+      "channel": 121,
+      "panel": 7,
+      "local_channel": 9,
+      "reference": "T10",
+      "position_mm": [
+        59.39696961966998,
+        -46.669047558312144,
+        100
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 1
+    },
+    {
+      "channel": 122,
+      "panel": 7,
+      "local_channel": 10,
+      "reference": "T11",
+      "position_mm": [
+        46.66904755831212,
+        -59.39696961967,
+        120
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 2
+    },
+    {
+      "channel": 123,
+      "panel": 7,
+      "local_channel": 11,
+      "reference": "T12",
+      "position_mm": [
+        59.39696961966998,
+        -46.669047558312144,
+        120
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 3
+    },
+    {
+      "channel": 124,
+      "panel": 7,
+      "local_channel": 12,
+      "reference": "T13",
+      "position_mm": [
+        46.66904755831212,
+        -59.39696961967,
+        140
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 4
+    },
+    {
+      "channel": 125,
+      "panel": 7,
+      "local_channel": 13,
+      "reference": "T14",
+      "position_mm": [
+        59.39696961966998,
+        -46.669047558312144,
+        140
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 5
+    },
+    {
+      "channel": 126,
+      "panel": 7,
+      "local_channel": 14,
+      "reference": "T15",
+      "position_mm": [
+        46.66904755831212,
+        -59.39696961967,
+        160
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 6
+    },
+    {
+      "channel": 127,
+      "panel": 7,
+      "local_channel": 15,
+      "reference": "T16",
+      "position_mm": [
+        59.39696961966998,
+        -46.669047558312144,
+        160
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ],
+      "local_data_line": "B",
+      "shift_register_output": 7
+    }
+  ]
+}

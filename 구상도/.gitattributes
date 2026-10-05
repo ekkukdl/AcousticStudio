@@ -1,0 +1,8 @@
+# Preserve engineering source and exported artifact bytes.
+* -text
+*.xlsx binary
+*.zip binary
+*.png binary
+*.pdf binary
+*.prt binary
+*.asm binary

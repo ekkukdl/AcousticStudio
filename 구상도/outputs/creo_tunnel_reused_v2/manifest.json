@@ -1,0 +1,102 @@
+{
+  "automation/prepare_creo_reused_v2.py": {
+    "bytes": 6593,
+    "sha256": "a5cca60050093313475377f9f31939d1144ec4260c050caef4a4fcadb7366f29"
+  },
+  "automation/verify_creo_reused_v2.py": {
+    "bytes": 3961,
+    "sha256": "052175705eb905e0c0de76928a696954de5eda8b1d2e6b45a2b21ba0ca194446"
+  },
+  "build_geometry.py": {
+    "bytes": 4537,
+    "sha256": "187880cb7411f02fe6db3298dce4f5fe14645abcdceaff4a9aeb09069b662891"
+  },
+  "geometry/checks_6f.json": {
+    "bytes": 8743,
+    "sha256": "b293d2ee33768c47ee042bf75e5460ab5d6cd66fd9bf24a954ba467b037cff94"
+  },
+  "geometry/checks_8f.json": {
+    "bytes": 9672,
+    "sha256": "a8118d737209e888c8d33921bcebc1fcecaeee0e7bbf0bc810f42babb1f7a9a6"
+  },
+  "geometry/ring_6f.step": {
+    "bytes": 144458,
+    "sha256": "684baab31adb7aa20e6f70c0e2e3424d09de05cfd9fc6ff3e9c1e48ae53b5e62"
+  },
+  "geometry/ring_8f.step": {
+    "bytes": 320923,
+    "sha256": "cce296a49fbbfc1577fb127ff84eea903c7a0283521c3e83af48eae6d0c514b3"
+  },
+  "geometry/tunnel_6f_v2.step": {
+    "bytes": 492185,
+    "sha256": "ab02a95c1e1483323aa222bce69db840badd50034afb40a28b8db7d4aeceefb7"
+  },
+  "geometry/tunnel_8f_v2.step": {
+    "bytes": 806003,
+    "sha256": "99e24c68b29cea1016a263989abaac128965f2698e3c0b8375cb118ddc50c108"
+  },
+  "native/facepair_8f.asm": {
+    "bytes": 91023,
+    "sha256": "a498ad2df2a0bcec03e53135f99c89e0fd220c34ef6eb3ff626bdbab27a256c8"
+  },
+  "native/panel_6f.asm": {
+    "bytes": 131256,
+    "sha256": "41c9a5bc0a918d7b2e2ec1adb2d1a6d0f500b19d53087b40027b95f9379e31c2"
+  },
+  "native/panel_8f.asm": {
+    "bytes": 131723,
+    "sha256": "bf29da0a090eb907c3afcad561f4f92f51b377072cf7c3f15c309a3b1866f936"
+  },
+  "native/pcb_6f.prt": {
+    "bytes": 212550,
+    "sha256": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37"
+  },
+  "native/pcb_8f.prt": {
+    "bytes": 212540,
+    "sha256": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58"
+  },
+  "native/ring_6f.prt": {
+    "bytes": 110736,
+    "sha256": "11c9e6e96790ca0366dc70585ccefcfb6ab837771f204a3b4a1409b48de46f0f"
+  },
+  "native/ring_8f.prt": {
+    "bytes": 151080,
+    "sha256": "5662030bb23901dad46b74eabc55326e0bc6de1bca998cad6788eb397066e8e3"
+  },
+  "native/tunnel_6f_v2.asm": {
+    "bytes": 121183,
+    "sha256": "43b4889b1cc8eff293db02c7964af6947192cfc539921c3ca8404d815c18f40e"
+  },
+  "native/tunnel_8f_dual.asm": {
+    "bytes": 135614,
+    "sha256": "b64e632c9f3a1b31403b3d7b9088425a8aab6600e86484cbe0a2b55c4115c6a2"
+  },
+  "native/tx16.prt": {
+    "bytes": 75624,
+    "sha256": "9f9e72537080af11d75be7769be37f5d61a511b6f1b6d130c29b29bff5d10d41"
+  },
+  "native_build_report.json": {
+    "bytes": 35072,
+    "sha256": "70bd50cdc97dd6398bc9b44f461c54a112fd53a7dcc2813c412e5a03ba7b5039"
+  },
+  "native_reopen_report.json": {
+    "bytes": 35177,
+    "sha256": "7b18a3a26548f0b5b829f9b077f92252226f0282eda52d5dc7058cafba0755be"
+  },
+  "preview_6f.png": {
+    "bytes": 94330,
+    "sha256": "3f11ba75de2bb7bc512f2c8ae0c78aacb22a3a39f79746df14a88e3aef79cd4b"
+  },
+  "preview_8f.png": {
+    "bytes": 150341,
+    "sha256": "dcb8bc49dad5e904577173dbe0f848b6b15fa850ba225fffe9acad43a1d8eb3a"
+  },
+  "render_preview.py": {
+    "bytes": 1817,
+    "sha256": "a4f93732ced5606826300d295fb56eb78d2f587c890b47ef4cedcdc060078686"
+  },
+  "사용안내.md": {
+    "bytes": 4972,
+    "sha256": "23701c0f058057809c6730add0ace55191455d3c869def7a0d81c14e5a4a846a"
+  }
+}

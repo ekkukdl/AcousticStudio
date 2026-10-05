@@ -1,0 +1,5 @@
+Comment,Designator,Footprint,Manufacturer,MPN,LCSC Part #,Quantity
+220uF 25V radial D6.3mm P2.5mm,C19,CP_Radial_D6.3_P2.5,Rubycon,25YXJ220M6.3X11,C88729,1
+Male straight header 2x5 P2.54mm,J1,Header2x05,Vendor selection,,,1
+Male straight header 1x3 P2.54mm,J2,Header1x03,Vendor selection,,,1
+40kHz transmitter D16mm pin pitch 10mm,"T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16",V40AN16T_P10,Supplier confirmation,,,16

@@ -1,0 +1,1168 @@
+[
+  {
+    "ref": "U1",
+    "kind": "595",
+    "value": "SN74HCT595D",
+    "nets": {
+      "15": "IN00",
+      "1": "IN01",
+      "2": "IN02",
+      "3": "IN03",
+      "4": "IN04",
+      "5": "IN05",
+      "6": "IN06",
+      "7": "IN07",
+      "8": "GND",
+      "9": null,
+      "10": "+5V",
+      "11": "SHIFT",
+      "12": "LATCH",
+      "13": "OE_N",
+      "14": "DATA_A",
+      "16": "+5V"
+    },
+    "x": 30.0,
+    "y": 50,
+    "rot": 0,
+    "side": "B",
+    "uuid": "ac96f462-ec34-4e16-bc4c-8a99f002047d"
+  },
+  {
+    "ref": "U2",
+    "kind": "595",
+    "value": "SN74HCT595D",
+    "nets": {
+      "15": "IN08",
+      "1": "IN09",
+      "2": "IN10",
+      "3": "IN11",
+      "4": "IN12",
+      "5": "IN13",
+      "6": "IN14",
+      "7": "IN15",
+      "8": "GND",
+      "9": null,
+      "10": "+5V",
+      "11": "SHIFT",
+      "12": "LATCH",
+      "13": "OE_N",
+      "14": "DATA_B",
+      "16": "+5V"
+    },
+    "x": 30.0,
+    "y": 130,
+    "rot": 0,
+    "side": "B",
+    "uuid": "94ab2600-d72f-407a-9268-5ed2cd9059fd"
+  },
+  {
+    "ref": "U3",
+    "kind": "DRV",
+    "value": "TC4427ACOA",
+    "nets": {
+      "1": null,
+      "2": "IN00",
+      "3": "GND",
+      "4": "IN01",
+      "5": "OUT01",
+      "6": "DRV_VDD",
+      "7": "OUT00",
+      "8": null
+    },
+    "x": 30.0,
+    "y": 20,
+    "rot": 0,
+    "side": "B",
+    "uuid": "7c84f7c3-a603-4c3a-8667-4792f01c5ecd"
+  },
+  {
+    "ref": "T1",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT00",
+      "2": "GND"
+    },
+    "x": 21.0,
+    "y": 20,
+    "rot": 0,
+    "side": "F",
+    "uuid": "e15f8cf8-9365-4d48-8c82-619891ac4875"
+  },
+  {
+    "ref": "R1",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN00",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 18,
+    "rot": 0,
+    "side": "B",
+    "uuid": "7a4363e5-38e2-4990-93d3-6dbb2c0aed54"
+  },
+  {
+    "ref": "T2",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT01",
+      "2": "GND"
+    },
+    "x": 39.0,
+    "y": 20,
+    "rot": 0,
+    "side": "F",
+    "uuid": "3ccd0139-aa52-4d18-b064-2e085a0baca2"
+  },
+  {
+    "ref": "R2",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN01",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 28,
+    "rot": 0,
+    "side": "B",
+    "uuid": "ebd7a8b8-7526-4b53-b7b7-81d44195298d"
+  },
+  {
+    "ref": "C1",
+    "kind": "C",
+    "value": "100nF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 37.0,
+    "y": 19,
+    "rot": 0,
+    "side": "B",
+    "uuid": "77461b65-1cb1-4a24-918d-be590d360d50"
+  },
+  {
+    "ref": "C11",
+    "kind": "C",
+    "value": "1uF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 26,
+    "rot": 0,
+    "side": "B",
+    "uuid": "236a6169-574e-4c7a-9fc9-d160571f0e62"
+  },
+  {
+    "ref": "U4",
+    "kind": "DRV",
+    "value": "TC4427ACOA",
+    "nets": {
+      "1": null,
+      "2": "IN02",
+      "3": "GND",
+      "4": "IN03",
+      "5": "OUT03",
+      "6": "DRV_VDD",
+      "7": "OUT02",
+      "8": null
+    },
+    "x": 30.0,
+    "y": 40,
+    "rot": 0,
+    "side": "B",
+    "uuid": "6da5ba59-a7b6-4676-b007-60ddeb4f4f01"
+  },
+  {
+    "ref": "T3",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT02",
+      "2": "GND"
+    },
+    "x": 21.0,
+    "y": 40,
+    "rot": 0,
+    "side": "F",
+    "uuid": "d69537a4-063a-468c-98b1-62e49d0519dc"
+  },
+  {
+    "ref": "R3",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN02",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 38,
+    "rot": 0,
+    "side": "B",
+    "uuid": "941d98fd-f8fe-4a0f-948c-49fe024e024c"
+  },
+  {
+    "ref": "T4",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT03",
+      "2": "GND"
+    },
+    "x": 39.0,
+    "y": 40,
+    "rot": 0,
+    "side": "F",
+    "uuid": "4e0d9ac0-c746-4336-a8b2-fa532e0c3ba3"
+  },
+  {
+    "ref": "R4",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN03",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 48,
+    "rot": 0,
+    "side": "B",
+    "uuid": "bae9e2d5-0f2c-4620-abeb-280213add63d"
+  },
+  {
+    "ref": "C2",
+    "kind": "C",
+    "value": "100nF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 37.0,
+    "y": 39,
+    "rot": 0,
+    "side": "B",
+    "uuid": "9ae6a1cc-dc61-41c8-a95c-3d6c67df6b38"
+  },
+  {
+    "ref": "C12",
+    "kind": "C",
+    "value": "1uF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 46,
+    "rot": 0,
+    "side": "B",
+    "uuid": "0a4fde26-e221-4ebe-b787-52f48cb55862"
+  },
+  {
+    "ref": "U5",
+    "kind": "DRV",
+    "value": "TC4427ACOA",
+    "nets": {
+      "1": null,
+      "2": "IN04",
+      "3": "GND",
+      "4": "IN05",
+      "5": "OUT05",
+      "6": "DRV_VDD",
+      "7": "OUT04",
+      "8": null
+    },
+    "x": 30.0,
+    "y": 60,
+    "rot": 0,
+    "side": "B",
+    "uuid": "25609093-0ee5-4377-8384-496ab0920cd8"
+  },
+  {
+    "ref": "T5",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT04",
+      "2": "GND"
+    },
+    "x": 21.0,
+    "y": 60,
+    "rot": 0,
+    "side": "F",
+    "uuid": "96c2627d-0f59-46d9-8e07-4ee5e64f1ff9"
+  },
+  {
+    "ref": "R5",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN04",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 58,
+    "rot": 0,
+    "side": "B",
+    "uuid": "3982ba41-473b-49a7-a48b-bd4466260f0b"
+  },
+  {
+    "ref": "T6",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT05",
+      "2": "GND"
+    },
+    "x": 39.0,
+    "y": 60,
+    "rot": 0,
+    "side": "F",
+    "uuid": "32beb1be-cecd-40c6-9114-16f891675b1d"
+  },
+  {
+    "ref": "R6",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN05",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 68,
+    "rot": 0,
+    "side": "B",
+    "uuid": "0968bce3-9458-43f0-9b28-0d5ef90ba7be"
+  },
+  {
+    "ref": "C3",
+    "kind": "C",
+    "value": "100nF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 37.0,
+    "y": 59,
+    "rot": 0,
+    "side": "B",
+    "uuid": "aa2cee0b-ab5d-4c31-b28c-506290f07a67"
+  },
+  {
+    "ref": "C13",
+    "kind": "C",
+    "value": "1uF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 66,
+    "rot": 0,
+    "side": "B",
+    "uuid": "def5bb39-2e1a-4ada-8c02-e0e2495f35ca"
+  },
+  {
+    "ref": "U6",
+    "kind": "DRV",
+    "value": "TC4427ACOA",
+    "nets": {
+      "1": null,
+      "2": "IN06",
+      "3": "GND",
+      "4": "IN07",
+      "5": "OUT07",
+      "6": "DRV_VDD",
+      "7": "OUT06",
+      "8": null
+    },
+    "x": 30.0,
+    "y": 80,
+    "rot": 0,
+    "side": "B",
+    "uuid": "a1fd6bdb-c2d8-4530-acdc-7ac9d6537951"
+  },
+  {
+    "ref": "T7",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT06",
+      "2": "GND"
+    },
+    "x": 21.0,
+    "y": 80,
+    "rot": 0,
+    "side": "F",
+    "uuid": "21554b79-4e96-4f5a-98d8-dde4473db837"
+  },
+  {
+    "ref": "R7",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN06",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 78,
+    "rot": 0,
+    "side": "B",
+    "uuid": "4f18b76d-d895-45ee-8f15-a070e287fad1"
+  },
+  {
+    "ref": "T8",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT07",
+      "2": "GND"
+    },
+    "x": 39.0,
+    "y": 80,
+    "rot": 0,
+    "side": "F",
+    "uuid": "247e7f1a-1dab-4b82-8caa-54a3705ce7d9"
+  },
+  {
+    "ref": "R8",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN07",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 88,
+    "rot": 0,
+    "side": "B",
+    "uuid": "14a12410-b948-479e-ba8b-2b0c4d0ac3b3"
+  },
+  {
+    "ref": "C4",
+    "kind": "C",
+    "value": "100nF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 37.0,
+    "y": 79,
+    "rot": 0,
+    "side": "B",
+    "uuid": "b2746643-89dd-4048-8440-de8138554d13"
+  },
+  {
+    "ref": "C14",
+    "kind": "C",
+    "value": "1uF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 86,
+    "rot": 0,
+    "side": "B",
+    "uuid": "eba5f493-7485-4b68-8f5a-4163aea1bcdb"
+  },
+  {
+    "ref": "U7",
+    "kind": "DRV",
+    "value": "TC4427ACOA",
+    "nets": {
+      "1": null,
+      "2": "IN08",
+      "3": "GND",
+      "4": "IN09",
+      "5": "OUT09",
+      "6": "DRV_VDD",
+      "7": "OUT08",
+      "8": null
+    },
+    "x": 30.0,
+    "y": 100,
+    "rot": 0,
+    "side": "B",
+    "uuid": "f7219c03-4cc1-4e45-9fd2-2d5802a64708"
+  },
+  {
+    "ref": "T9",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT08",
+      "2": "GND"
+    },
+    "x": 21.0,
+    "y": 100,
+    "rot": 0,
+    "side": "F",
+    "uuid": "b549c97d-ced9-4054-8cc1-046d670aed91"
+  },
+  {
+    "ref": "R9",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN08",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 98,
+    "rot": 0,
+    "side": "B",
+    "uuid": "1767b96e-1dbd-4268-a75b-5266f8ae7a4e"
+  },
+  {
+    "ref": "T10",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT09",
+      "2": "GND"
+    },
+    "x": 39.0,
+    "y": 100,
+    "rot": 0,
+    "side": "F",
+    "uuid": "f0e47e49-9421-4ac8-892d-f32f2a003c62"
+  },
+  {
+    "ref": "R10",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN09",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 108,
+    "rot": 0,
+    "side": "B",
+    "uuid": "6861874a-e312-4dbc-a707-f0e5d1a69a23"
+  },
+  {
+    "ref": "C5",
+    "kind": "C",
+    "value": "100nF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 37.0,
+    "y": 99,
+    "rot": 0,
+    "side": "B",
+    "uuid": "9437b83a-61d9-4c87-8a2a-c9cd72080049"
+  },
+  {
+    "ref": "C15",
+    "kind": "C",
+    "value": "1uF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 106,
+    "rot": 0,
+    "side": "B",
+    "uuid": "cb4ab9e1-9010-43a0-977c-b618f4a04f47"
+  },
+  {
+    "ref": "U8",
+    "kind": "DRV",
+    "value": "TC4427ACOA",
+    "nets": {
+      "1": null,
+      "2": "IN10",
+      "3": "GND",
+      "4": "IN11",
+      "5": "OUT11",
+      "6": "DRV_VDD",
+      "7": "OUT10",
+      "8": null
+    },
+    "x": 30.0,
+    "y": 120,
+    "rot": 0,
+    "side": "B",
+    "uuid": "c0dc3ff1-8607-4747-a4d2-f7d5dfcbc375"
+  },
+  {
+    "ref": "T11",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT10",
+      "2": "GND"
+    },
+    "x": 21.0,
+    "y": 120,
+    "rot": 0,
+    "side": "F",
+    "uuid": "4f6c57dd-5c6f-4540-a687-60e781207bb3"
+  },
+  {
+    "ref": "R11",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN10",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 118,
+    "rot": 0,
+    "side": "B",
+    "uuid": "01700ecf-7472-4e75-8e94-a600527b8167"
+  },
+  {
+    "ref": "T12",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT11",
+      "2": "GND"
+    },
+    "x": 39.0,
+    "y": 120,
+    "rot": 0,
+    "side": "F",
+    "uuid": "b8c629f5-b7b9-4d84-ae50-64fb0acaa7a5"
+  },
+  {
+    "ref": "R12",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN11",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 128,
+    "rot": 0,
+    "side": "B",
+    "uuid": "5e143a37-88cd-455f-9b2e-ba04185e4654"
+  },
+  {
+    "ref": "C6",
+    "kind": "C",
+    "value": "100nF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 37.0,
+    "y": 119,
+    "rot": 0,
+    "side": "B",
+    "uuid": "1003991b-2011-47b4-af3f-490b6929a5ce"
+  },
+  {
+    "ref": "C16",
+    "kind": "C",
+    "value": "1uF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 126,
+    "rot": 0,
+    "side": "B",
+    "uuid": "d9cee3e4-bee6-4467-b63e-25abd5f18ab3"
+  },
+  {
+    "ref": "U9",
+    "kind": "DRV",
+    "value": "TC4427ACOA",
+    "nets": {
+      "1": null,
+      "2": "IN12",
+      "3": "GND",
+      "4": "IN13",
+      "5": "OUT13",
+      "6": "DRV_VDD",
+      "7": "OUT12",
+      "8": null
+    },
+    "x": 30.0,
+    "y": 140,
+    "rot": 0,
+    "side": "B",
+    "uuid": "b43ef9c7-9036-4684-b823-e4ece8c7bbf5"
+  },
+  {
+    "ref": "T13",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT12",
+      "2": "GND"
+    },
+    "x": 21.0,
+    "y": 140,
+    "rot": 0,
+    "side": "F",
+    "uuid": "71102dbf-88c9-49e5-8cef-9a99e4231a80"
+  },
+  {
+    "ref": "R13",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN12",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 138,
+    "rot": 0,
+    "side": "B",
+    "uuid": "839a0647-980f-41a0-9a8a-0e89070233e5"
+  },
+  {
+    "ref": "T14",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT13",
+      "2": "GND"
+    },
+    "x": 39.0,
+    "y": 140,
+    "rot": 0,
+    "side": "F",
+    "uuid": "0ee8c60d-9673-4b2f-ac4d-54ede14d90fe"
+  },
+  {
+    "ref": "R14",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN13",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 148,
+    "rot": 0,
+    "side": "B",
+    "uuid": "9f584347-4093-4fe2-8fbd-1a58fa08f110"
+  },
+  {
+    "ref": "C7",
+    "kind": "C",
+    "value": "100nF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 37.0,
+    "y": 139,
+    "rot": 0,
+    "side": "B",
+    "uuid": "bff58790-9805-4553-9ba5-2f0280262251"
+  },
+  {
+    "ref": "C17",
+    "kind": "C",
+    "value": "1uF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 146,
+    "rot": 0,
+    "side": "B",
+    "uuid": "7e7f44a2-c320-4170-abd7-76086738d8d6"
+  },
+  {
+    "ref": "U10",
+    "kind": "DRV",
+    "value": "TC4427ACOA",
+    "nets": {
+      "1": null,
+      "2": "IN14",
+      "3": "GND",
+      "4": "IN15",
+      "5": "OUT15",
+      "6": "DRV_VDD",
+      "7": "OUT14",
+      "8": null
+    },
+    "x": 30.0,
+    "y": 160,
+    "rot": 0,
+    "side": "B",
+    "uuid": "01530935-cfcc-4b29-be94-ed775db9ab8a"
+  },
+  {
+    "ref": "T15",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT14",
+      "2": "GND"
+    },
+    "x": 21.0,
+    "y": 160,
+    "rot": 0,
+    "side": "F",
+    "uuid": "5b103c93-9191-45a6-92c6-79dc66c0dda8"
+  },
+  {
+    "ref": "R15",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN14",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 158,
+    "rot": 0,
+    "side": "B",
+    "uuid": "cd311d9e-ebae-40eb-95dc-b0d1d2e97961"
+  },
+  {
+    "ref": "T16",
+    "kind": "T",
+    "value": "V40AN16T",
+    "nets": {
+      "1": "OUT15",
+      "2": "GND"
+    },
+    "x": 39.0,
+    "y": 160,
+    "rot": 0,
+    "side": "F",
+    "uuid": "a308b3cd-e098-41aa-af45-c16e00ff7622"
+  },
+  {
+    "ref": "R16",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "IN15",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 168,
+    "rot": 0,
+    "side": "B",
+    "uuid": "af079ca4-fd9a-431c-a33d-6a3f8bd5f580"
+  },
+  {
+    "ref": "C8",
+    "kind": "C",
+    "value": "100nF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 37.0,
+    "y": 159,
+    "rot": 0,
+    "side": "B",
+    "uuid": "79b81ee4-28f8-4c7f-bc8c-0988577f638b"
+  },
+  {
+    "ref": "C18",
+    "kind": "C",
+    "value": "1uF 50V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 166,
+    "rot": 0,
+    "side": "B",
+    "uuid": "aa927864-16ee-4152-a7d2-138509c0642d"
+  },
+  {
+    "ref": "C9",
+    "kind": "C",
+    "value": "100nF 16V",
+    "nets": {
+      "1": "+5V",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 50,
+    "rot": 0,
+    "side": "B",
+    "uuid": "400fbc25-9bdf-4b95-8ad2-1ff9770cfa32"
+  },
+  {
+    "ref": "C10",
+    "kind": "C",
+    "value": "100nF 16V",
+    "nets": {
+      "1": "+5V",
+      "2": "GND"
+    },
+    "x": 36.0,
+    "y": 130,
+    "rot": 0,
+    "side": "B",
+    "uuid": "0f414867-58c6-4de0-a975-08880e75f4fe"
+  },
+  {
+    "ref": "C19",
+    "kind": "CP",
+    "value": "220uF 25V",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND"
+    },
+    "x": 49,
+    "y": 7,
+    "rot": 0,
+    "side": "B",
+    "uuid": "215f1a11-dcb2-4203-b157-b9d39fc8551f"
+  },
+  {
+    "ref": "C20",
+    "kind": "C",
+    "value": "10uF 16V",
+    "nets": {
+      "1": "+5V",
+      "2": "GND"
+    },
+    "x": 23.0,
+    "y": 10,
+    "rot": 0,
+    "side": "B",
+    "uuid": "39f0b9ce-1ce7-4669-a1ab-ae68ac41f353"
+  },
+  {
+    "ref": "Q1",
+    "kind": "Q",
+    "value": "MMBT3904",
+    "nets": {
+      "1": "ARM_BASE",
+      "2": "GND",
+      "3": "OE_N"
+    },
+    "x": 53,
+    "y": 170,
+    "rot": 0,
+    "side": "B",
+    "uuid": "812313d5-7097-4de1-a31f-99271788f20c"
+  },
+  {
+    "ref": "R17",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "ARM",
+      "2": "ARM_BASE"
+    },
+    "x": 53,
+    "y": 164,
+    "rot": 0,
+    "side": "B",
+    "uuid": "3c4eefcd-c682-4233-8869-b3c733da0c24"
+  },
+  {
+    "ref": "R18",
+    "kind": "R",
+    "value": "100k",
+    "nets": {
+      "1": "ARM_BASE",
+      "2": "GND"
+    },
+    "x": 53,
+    "y": 176,
+    "rot": 0,
+    "side": "B",
+    "uuid": "18d0b5c4-33a1-4be6-9979-163ddfbe905f"
+  },
+  {
+    "ref": "R19",
+    "kind": "R",
+    "value": "10k",
+    "nets": {
+      "1": "+5V",
+      "2": "OE_N"
+    },
+    "x": 53,
+    "y": 157,
+    "rot": 0,
+    "side": "B",
+    "uuid": "0251a57f-fd4d-4efd-9122-250a29387b21"
+  },
+  {
+    "ref": "R20",
+    "kind": "R",
+    "value": "33R",
+    "nets": {
+      "1": "SHIFT_PIN",
+      "2": "SHIFT"
+    },
+    "x": 7,
+    "y": 171,
+    "rot": 0,
+    "side": "B",
+    "uuid": "310ab621-6832-4035-a68f-ba3d27d06364"
+  },
+  {
+    "ref": "R21",
+    "kind": "R",
+    "value": "33R",
+    "nets": {
+      "1": "LATCH_PIN",
+      "2": "LATCH"
+    },
+    "x": 7,
+    "y": 177,
+    "rot": 0,
+    "side": "B",
+    "uuid": "5e13eab7-4a04-4a25-97d4-75f2ed37cb76"
+  },
+  {
+    "ref": "R22",
+    "kind": "R",
+    "value": "100k",
+    "nets": {
+      "1": "DATA_A",
+      "2": "GND"
+    },
+    "x": 7,
+    "y": 151,
+    "rot": 0,
+    "side": "B",
+    "uuid": "4ec7d25c-fd25-48be-8b9f-9c4812e7dbcf"
+  },
+  {
+    "ref": "R23",
+    "kind": "R",
+    "value": "100k",
+    "nets": {
+      "1": "DATA_B",
+      "2": "GND"
+    },
+    "x": 7,
+    "y": 158,
+    "rot": 0,
+    "side": "B",
+    "uuid": "64ac22d8-6a00-4900-8e38-dc49269e8ee0"
+  },
+  {
+    "ref": "R24",
+    "kind": "R",
+    "value": "100k",
+    "nets": {
+      "1": "SHIFT_PIN",
+      "2": "GND"
+    },
+    "x": 7,
+    "y": 164,
+    "rot": 0,
+    "side": "B",
+    "uuid": "6d8a9c9e-2e89-4180-80b0-9cc05098ce5d"
+  },
+  {
+    "ref": "R25",
+    "kind": "R",
+    "value": "100k",
+    "nets": {
+      "1": "LATCH_PIN",
+      "2": "GND"
+    },
+    "x": 7,
+    "y": 144,
+    "rot": 0,
+    "side": "B",
+    "uuid": "c277b177-250f-4fc5-ba05-920bed14794e"
+  },
+  {
+    "ref": "J1",
+    "kind": "JLOG",
+    "value": "FPGA_SIGNAL_3V3",
+    "nets": {
+      "1": "GND",
+      "2": "+5V",
+      "3": "DATA_A",
+      "4": "GND",
+      "5": "DATA_B",
+      "6": "GND",
+      "7": "SHIFT_PIN",
+      "8": "LATCH_PIN",
+      "9": "ARM",
+      "10": "GND"
+    },
+    "x": 24.92,
+    "y": 173,
+    "rot": -90,
+    "side": "B",
+    "uuid": "b3bfe430-bc76-440f-82e7-d7547a1bf8be"
+  },
+  {
+    "ref": "J2",
+    "kind": "JPWR",
+    "value": "POWER_INPUT",
+    "nets": {
+      "1": "DRV_VDD",
+      "2": "GND",
+      "3": "+5V"
+    },
+    "x": 32.54,
+    "y": 6,
+    "rot": 90,
+    "side": "B",
+    "uuid": "43fa9b89-b35e-4d41-bbe8-dacb0a758110"
+  },
+  {
+    "ref": "H1",
+    "kind": "MH",
+    "value": "M3_NPTH",
+    "nets": {},
+    "x": 3.5,
+    "y": 5,
+    "rot": 0,
+    "side": "F",
+    "uuid": "4758c8b2-3c3a-40ea-b801-adbc13b64ec4"
+  },
+  {
+    "ref": "H2",
+    "kind": "MH",
+    "value": "M3_NPTH",
+    "nets": {},
+    "x": 56.5,
+    "y": 5,
+    "rot": 0,
+    "side": "F",
+    "uuid": "b2641a0b-26e1-4b4e-ba78-51eb40fa0ed2"
+  },
+  {
+    "ref": "H3",
+    "kind": "MH",
+    "value": "M3_NPTH",
+    "nets": {},
+    "x": 3.5,
+    "y": 175,
+    "rot": 0,
+    "side": "F",
+    "uuid": "96bc5647-45d6-47b4-acd3-82b2000d48cd"
+  },
+  {
+    "ref": "H4",
+    "kind": "MH",
+    "value": "M3_NPTH",
+    "nets": {},
+    "x": 56.5,
+    "y": 175,
+    "rot": 0,
+    "side": "F",
+    "uuid": "06ea4fcd-04fa-4ada-8a14-c95c70bfbe7b"
+  }
+]
