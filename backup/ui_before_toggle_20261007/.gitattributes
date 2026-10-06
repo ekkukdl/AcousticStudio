@@ -1,0 +1,2 @@
+# Preserve the verified pre-change backup exactly, including line endings.
+* -text

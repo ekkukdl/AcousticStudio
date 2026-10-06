@@ -1,0 +1,2345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>C:\Users\line0\OneDrive\바탕 화면\제개설\초음파부상 및 역장제어 자료조사\AcousticStudio_ver2\구상도\outputs\polygon_panels\panel_8faces_16ch\panel_8faces_16ch.kicad_sch</source>
+    <date>2026-10-06T12:55:32</date>
+    <tool>Eeschema 10.0.6</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>16mm ultrasonic 16CH prototype panel</title>
+        <company/>
+        <rev>P0</rev>
+        <date>2026-10-04</date>
+        <source>panel_8faces_16ch.kicad_sch</source>
+        <comment number="1" value="SonicSurface-derived topology; acoustic performance unverified"/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C1">
+      <value>100nF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>75a3368d-b259-4adf-bd37-d22770f42079</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C2">
+      <value>100nF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>39a9e8f9-01ed-4e42-876d-96fc3fb54ce2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C3">
+      <value>100nF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>12c6dce8-3bb7-4b2d-aeb4-fdec080d59a6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C4">
+      <value>100nF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>95316a56-8c83-4f90-a2d4-a9870a39ce34</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C5">
+      <value>100nF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2e5a5ebc-70c6-45ca-9180-2e75d9fdb9a3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C6">
+      <value>100nF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>82a893b1-8537-405f-85fb-610d5c38dcba</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C7">
+      <value>100nF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b88af8e5-f5f1-4a37-a053-34f8ec489823</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C8">
+      <value>100nF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>baf9eaba-4f00-461b-a7d4-bec902bd7ac4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C9">
+      <value>100nF 16V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>000e28ff-6311-493a-86a3-ea7cbb8a3311</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C10">
+      <value>100nF 16V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c1e315f4-c713-4993-888d-9e92a6a80bf9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C11">
+      <value>1uF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f6e741cd-6715-4f65-8ab0-19440839abf9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C12">
+      <value>1uF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5f5ee218-8720-4c3d-bbc0-60194c6178a7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C13">
+      <value>1uF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>854a63e8-9a4a-4118-a418-3bfbfe161c08</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C14">
+      <value>1uF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8949fbf7-04eb-40cf-bcd7-7ae0875511d4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C15">
+      <value>1uF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1f3848a9-1d5e-4f66-8c87-ee234ecce88b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C16">
+      <value>1uF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2edaf3d7-be30-4cb4-9c09-37ed5a771355</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C17">
+      <value>1uF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>585485b9-b15b-46d7-ba39-c5b98e964dc8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C18">
+      <value>1uF 50V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7c5b6633-635d-42c8-898b-094d67c7d7bd</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C19">
+      <value>220uF 25V</value>
+      <footprint>Levitation:CP_Radial_D6.3_P2.5</footprint>
+      <fields>
+        <field name="Footprint">Levitation:CP_Radial_D6.3_P2.5</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="CP" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2d80d59a-10d7-4e8f-aa03-f9a09ce198bf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C20">
+      <value>10uF 16V</value>
+      <footprint>Levitation:C0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="C" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>693e10bd-44d6-450a-bfb2-cd65bf15bc6e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="H1">
+      <value>M3_NPTH</value>
+      <footprint>Levitation:Mount_M3</footprint>
+      <fields>
+        <field name="Footprint">Levitation:Mount_M3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="MH" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4fc5ffee-28ca-4820-a820-b600c8ef3da1</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="H2">
+      <value>M3_NPTH</value>
+      <footprint>Levitation:Mount_M3</footprint>
+      <fields>
+        <field name="Footprint">Levitation:Mount_M3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="MH" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4ab39732-20d1-4b8e-ac62-f1cdd59ade4b</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="H3">
+      <value>M3_NPTH</value>
+      <footprint>Levitation:Mount_M3</footprint>
+      <fields>
+        <field name="Footprint">Levitation:Mount_M3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="MH" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b4440278-1038-4cf5-934a-af29f2138aef</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="H4">
+      <value>M3_NPTH</value>
+      <footprint>Levitation:Mount_M3</footprint>
+      <fields>
+        <field name="Footprint">Levitation:Mount_M3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="MH" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6fd647cd-6057-4ff2-8da6-108177ec2921</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J1">
+      <value>FPGA_SIGNAL_3V3</value>
+      <footprint>Levitation:Header2x05</footprint>
+      <fields>
+        <field name="Footprint">Levitation:Header2x05</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="JLOG" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>841ab625-181e-469e-b12e-c7ee8426b7bc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J2">
+      <value>POWER_INPUT</value>
+      <footprint>Levitation:Header1x03</footprint>
+      <fields>
+        <field name="Footprint">Levitation:Header1x03</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="JPWR" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>074968ff-c575-4d3f-a58d-82e7b064d90b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="Q1">
+      <value>MMBT3904</value>
+      <footprint>Levitation:SOT23</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOT23</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="Q" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b68696b2-77e4-48c3-ae6d-2e732fc1db96</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9432e4e2-705d-4879-8130-b77fb88d4efa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R2">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dfee3f74-38e7-468c-9d1d-98d49d27e054</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R3">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b67200c1-a4b4-4727-a5bd-224a905c17d9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R4">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>71927af8-727c-44ad-a961-f7396d208c9f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R5">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5e43bbe8-7c05-4531-a424-dcfa1d02f1aa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R6">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f0c2d1b9-dceb-44e9-8f84-bedc771cfb61</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R7">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9ee5a056-a925-4d65-83bf-d1359ac56e51</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R8">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>084c148c-b80b-4d5f-b043-6a2fc47be578</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R9">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d7403b6a-9362-4eaa-b7d5-72bdaa514162</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R10">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>adae56d1-de4a-490c-8074-6d046adb7b53</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R11">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1d77bbd1-6a99-46f1-ad23-bf41d4f328cf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R12">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>55aeee2b-0fc1-4b10-8e85-552cd9a9916b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R13">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>899a9ae8-2813-4aae-8e4f-b1a2e6ce056e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R14">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a712fd36-2276-42dc-93b7-90878870717e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R15">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>27bc1e45-aff7-4097-a985-601bb373ac39</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R16">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>819dc90a-7a6e-4962-a784-cf98ab20e833</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R17">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>86497769-839f-4ca3-b26e-772f6595353c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R18">
+      <value>100k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>459d5b58-1259-4557-91e9-069dcb2ce5ae</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R19">
+      <value>10k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>76d2f583-ce7b-4f49-9aec-2837e52dfbb8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R20">
+      <value>33R</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>36923e67-7d91-4e1d-98c2-732dccd907c6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R21">
+      <value>33R</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e23ae135-206d-45d9-bb79-a921db6be605</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R22">
+      <value>100k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>95cd6530-1a90-4933-8a83-e7e0071674af</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R23">
+      <value>100k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ea6d6143-96f8-4481-a76c-0a5d828e57df</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R24">
+      <value>100k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c6f26d39-8464-43c8-afa3-305ccbce25db</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R25">
+      <value>100k</value>
+      <footprint>Levitation:R0805</footprint>
+      <fields>
+        <field name="Footprint">Levitation:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="R" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>56f6160b-04e1-4da0-90ac-e25c79c9b0bf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T1">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f83f3f93-b1ef-4469-887c-d8684e273f69</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T2">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e1e01665-337c-4bf9-8dd2-b60149f9be0f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T3">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4828fb87-fc00-40a7-8bcb-2ff337c6b527</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T4">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>db85ec53-0649-4415-966e-afdd0e630f7c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T5">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>93fe2e71-59b2-4d47-9f7d-46590d09a05e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T6">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5c90d627-1eaf-4817-91ec-cb2c3e59639a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T7">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>55aedb4a-3109-42a7-8430-1e9b008ac329</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T8">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cd0a70ad-322e-488b-b9da-fe590c2eeee4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T9">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>39f2e686-765f-464a-b7d4-2acc5a107a62</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T10">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6d37fdae-83ff-4692-baa1-fc1d431ca8dc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T11">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3437992f-9350-4ae3-8532-ad7d8050c15e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T12">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>38cc4f97-fcee-4b05-8df1-8dd0bda123d0</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T13">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7208d146-3fd0-4b65-a6bb-e446e5862a31</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T14">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>770938b0-ee54-40d8-b95b-d0f8d35719f7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T15">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8d4de2e8-510f-4783-b6a3-1ee8b05ecceb</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="T16">
+      <value>V40AN16T</value>
+      <footprint>Levitation:V40AN16T_P10</footprint>
+      <fields>
+        <field name="Footprint">Levitation:V40AN16T_P10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="T" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7fff6e10-b5e5-42e6-9494-e54812b21cfc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U1">
+      <value>SN74HCT595D</value>
+      <footprint>Levitation:SOIC16</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC16</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="595" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>27b095b7-96b3-49db-bae8-4f1d8a23f2f0</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="14"/>
+            <pin num="11"/>
+            <pin num="12"/>
+            <pin num="13"/>
+            <pin num="10"/>
+            <pin num="16"/>
+            <pin num="8"/>
+            <pin num="15"/>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="9"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U2">
+      <value>SN74HCT595D</value>
+      <footprint>Levitation:SOIC16</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC16</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="595" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dae8c312-f6b0-4de9-8ec8-8ab7bb62a463</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="14"/>
+            <pin num="11"/>
+            <pin num="12"/>
+            <pin num="13"/>
+            <pin num="10"/>
+            <pin num="16"/>
+            <pin num="8"/>
+            <pin num="15"/>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="9"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U3">
+      <value>TC4427ACOA</value>
+      <footprint>Levitation:SOIC8</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="DRV" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>01b786ed-b98e-4a63-9c06-d8afa9e40d67</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="3"/>
+            <pin num="7"/>
+            <pin num="5"/>
+            <pin num="1"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U4">
+      <value>TC4427ACOA</value>
+      <footprint>Levitation:SOIC8</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="DRV" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f2a23f96-ac65-4425-882a-364531aa0278</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="3"/>
+            <pin num="7"/>
+            <pin num="5"/>
+            <pin num="1"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U5">
+      <value>TC4427ACOA</value>
+      <footprint>Levitation:SOIC8</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="DRV" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f0eb6afb-5bbd-4607-82cb-961b0d906ff7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="3"/>
+            <pin num="7"/>
+            <pin num="5"/>
+            <pin num="1"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U6">
+      <value>TC4427ACOA</value>
+      <footprint>Levitation:SOIC8</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="DRV" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c976cd5b-3b8d-446c-bafc-377c0f08a013</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="3"/>
+            <pin num="7"/>
+            <pin num="5"/>
+            <pin num="1"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U7">
+      <value>TC4427ACOA</value>
+      <footprint>Levitation:SOIC8</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="DRV" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3dc39b8e-c45c-48a5-b563-1ec1f0ef00e1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="3"/>
+            <pin num="7"/>
+            <pin num="5"/>
+            <pin num="1"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U8">
+      <value>TC4427ACOA</value>
+      <footprint>Levitation:SOIC8</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="DRV" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0299866d-e9ea-416f-8ab6-5b866a662e56</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="3"/>
+            <pin num="7"/>
+            <pin num="5"/>
+            <pin num="1"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U9">
+      <value>TC4427ACOA</value>
+      <footprint>Levitation:SOIC8</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="DRV" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c67e9cdc-80ca-4ab4-87c0-4e12262050db</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="3"/>
+            <pin num="7"/>
+            <pin num="5"/>
+            <pin num="1"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U10">
+      <value>TC4427ACOA</value>
+      <footprint>Levitation:SOIC8</footprint>
+      <fields>
+        <field name="Footprint">Levitation:SOIC8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Levitation" part="DRV" description=""/>
+      <property name="Sheetname" value="panel_8faces_16ch"/>
+      <property name="Sheetfile" value="panel_8faces_16ch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>59c4c4da-5593-46ab-95ea-9ebe78967816</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="3"/>
+            <pin num="7"/>
+            <pin num="5"/>
+            <pin num="1"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="Levitation" part="595">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">595</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="QB" type="output"/>
+        <pin num="2" name="QC" type="output"/>
+        <pin num="3" name="QD" type="output"/>
+        <pin num="4" name="QE" type="output"/>
+        <pin num="5" name="QF" type="output"/>
+        <pin num="6" name="QG" type="output"/>
+        <pin num="7" name="QH" type="output"/>
+        <pin num="8" name="GND" type="power_in"/>
+        <pin num="9" name="QH'" type="output"/>
+        <pin num="10" name="~SRCLR" type="input"/>
+        <pin num="11" name="SRCLK" type="input"/>
+        <pin num="12" name="RCLK" type="input"/>
+        <pin num="13" name="~OE" type="input"/>
+        <pin num="14" name="SER" type="input"/>
+        <pin num="15" name="QA" type="output"/>
+        <pin num="16" name="VCC" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="Levitation" part="C">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">C</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Levitation" part="CP">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">CP</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Levitation" part="DRV">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">DRV</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="NC" type="no_connect"/>
+        <pin num="2" name="INA" type="input"/>
+        <pin num="3" name="GND" type="power_in"/>
+        <pin num="4" name="INB" type="input"/>
+        <pin num="5" name="OUTB" type="output"/>
+        <pin num="6" name="VDD" type="power_in"/>
+        <pin num="7" name="OUTA" type="output"/>
+        <pin num="8" name="NC" type="no_connect"/>
+      </pins>
+    </libpart>
+    <libpart lib="Levitation" part="JLOG">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">JLOG</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+        <pin num="4" name="4" type="passive"/>
+        <pin num="5" name="5" type="passive"/>
+        <pin num="6" name="6" type="passive"/>
+        <pin num="7" name="7" type="passive"/>
+        <pin num="8" name="8" type="passive"/>
+        <pin num="9" name="9" type="passive"/>
+        <pin num="10" name="10" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Levitation" part="JPWR">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">JPWR</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Levitation" part="MH">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">MH</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+    </libpart>
+    <libpart lib="Levitation" part="Q">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Q</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="B" type="passive"/>
+        <pin num="2" name="E" type="passive"/>
+        <pin num="3" name="C" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Levitation" part="R">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">R</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Levitation" part="T">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">T</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="Levitation">
+      <uri>${KIPRJMOD}/Levitation.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="/+5V" class="LogicPower,Default">
+      <node ref="C10" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C20" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C9" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J1" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J2" pin="3" pinfunction="3_3" pintype="passive"/>
+      <node ref="R19" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="10" pinfunction="~SRCLR_10" pintype="input"/>
+      <node ref="U1" pin="16" pinfunction="VCC_16" pintype="power_in"/>
+      <node ref="U2" pin="10" pinfunction="~SRCLR_10" pintype="input"/>
+      <node ref="U2" pin="16" pinfunction="VCC_16" pintype="power_in"/>
+    </net>
+    <net code="2" name="/ARM" class="Default">
+      <node ref="J1" pin="9" pinfunction="9_9" pintype="passive"/>
+      <node ref="R17" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="3" name="/ARM_BASE" class="Default">
+      <node ref="Q1" pin="1" pinfunction="B_1" pintype="passive"/>
+      <node ref="R17" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R18" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="4" name="/DATA_A" class="Default">
+      <node ref="J1" pin="3" pinfunction="3_3" pintype="passive"/>
+      <node ref="R22" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="14" pinfunction="SER_14" pintype="input"/>
+    </net>
+    <net code="5" name="/DATA_B" class="Default">
+      <node ref="J1" pin="5" pinfunction="5_5" pintype="passive"/>
+      <node ref="R23" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="14" pinfunction="SER_14" pintype="input"/>
+    </net>
+    <net code="6" name="/DRV_VDD" class="Power,Default">
+      <node ref="C1" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C11" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C12" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C13" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C14" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C15" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C16" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C17" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C18" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C19" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C2" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C3" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C4" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C5" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C6" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C7" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="C8" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J2" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U10" pin="6" pinfunction="VDD_6" pintype="power_in"/>
+      <node ref="U3" pin="6" pinfunction="VDD_6" pintype="power_in"/>
+      <node ref="U4" pin="6" pinfunction="VDD_6" pintype="power_in"/>
+      <node ref="U5" pin="6" pinfunction="VDD_6" pintype="power_in"/>
+      <node ref="U6" pin="6" pinfunction="VDD_6" pintype="power_in"/>
+      <node ref="U7" pin="6" pinfunction="VDD_6" pintype="power_in"/>
+      <node ref="U8" pin="6" pinfunction="VDD_6" pintype="power_in"/>
+      <node ref="U9" pin="6" pinfunction="VDD_6" pintype="power_in"/>
+    </net>
+    <net code="7" name="/GND" class="LogicPower,Default">
+      <node ref="C1" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C10" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C11" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C12" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C13" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C14" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C15" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C16" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C17" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C18" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C19" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C2" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C20" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C3" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C4" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C5" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C6" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C7" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C8" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C9" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J1" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J1" pin="10" pinfunction="10_10" pintype="passive"/>
+      <node ref="J1" pin="4" pinfunction="4_4" pintype="passive"/>
+      <node ref="J1" pin="6" pinfunction="6_6" pintype="passive"/>
+      <node ref="J2" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="Q1" pin="2" pinfunction="E_2" pintype="passive"/>
+      <node ref="R1" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R10" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R11" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R12" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R13" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R14" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R15" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R16" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R18" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R2" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R22" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R23" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R24" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R25" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R3" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R4" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R5" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R6" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R7" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R8" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R9" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T1" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T10" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T11" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T12" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T13" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T14" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T15" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T16" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T2" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T3" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T4" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T5" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T6" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T7" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T8" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="T9" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="U1" pin="8" pinfunction="GND_8" pintype="power_in"/>
+      <node ref="U10" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U2" pin="8" pinfunction="GND_8" pintype="power_in"/>
+      <node ref="U3" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U4" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U5" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U6" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U7" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U8" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U9" pin="3" pinfunction="GND_3" pintype="power_in"/>
+    </net>
+    <net code="8" name="/IN00" class="Default">
+      <node ref="R1" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="15" pinfunction="QA_15" pintype="output"/>
+      <node ref="U3" pin="2" pinfunction="INA_2" pintype="input"/>
+    </net>
+    <net code="9" name="/IN01" class="Default">
+      <node ref="R2" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="1" pinfunction="QB_1" pintype="output"/>
+      <node ref="U3" pin="4" pinfunction="INB_4" pintype="input"/>
+    </net>
+    <net code="10" name="/IN02" class="Default">
+      <node ref="R3" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="2" pinfunction="QC_2" pintype="output"/>
+      <node ref="U4" pin="2" pinfunction="INA_2" pintype="input"/>
+    </net>
+    <net code="11" name="/IN03" class="Default">
+      <node ref="R4" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="3" pinfunction="QD_3" pintype="output"/>
+      <node ref="U4" pin="4" pinfunction="INB_4" pintype="input"/>
+    </net>
+    <net code="12" name="/IN04" class="Default">
+      <node ref="R5" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="4" pinfunction="QE_4" pintype="output"/>
+      <node ref="U5" pin="2" pinfunction="INA_2" pintype="input"/>
+    </net>
+    <net code="13" name="/IN05" class="Default">
+      <node ref="R6" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="5" pinfunction="QF_5" pintype="output"/>
+      <node ref="U5" pin="4" pinfunction="INB_4" pintype="input"/>
+    </net>
+    <net code="14" name="/IN06" class="Default">
+      <node ref="R7" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="6" pinfunction="QG_6" pintype="output"/>
+      <node ref="U6" pin="2" pinfunction="INA_2" pintype="input"/>
+    </net>
+    <net code="15" name="/IN07" class="Default">
+      <node ref="R8" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="7" pinfunction="QH_7" pintype="output"/>
+      <node ref="U6" pin="4" pinfunction="INB_4" pintype="input"/>
+    </net>
+    <net code="16" name="/IN08" class="Default">
+      <node ref="R9" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="15" pinfunction="QA_15" pintype="output"/>
+      <node ref="U7" pin="2" pinfunction="INA_2" pintype="input"/>
+    </net>
+    <net code="17" name="/IN09" class="Default">
+      <node ref="R10" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="1" pinfunction="QB_1" pintype="output"/>
+      <node ref="U7" pin="4" pinfunction="INB_4" pintype="input"/>
+    </net>
+    <net code="18" name="/IN10" class="Default">
+      <node ref="R11" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="2" pinfunction="QC_2" pintype="output"/>
+      <node ref="U8" pin="2" pinfunction="INA_2" pintype="input"/>
+    </net>
+    <net code="19" name="/IN11" class="Default">
+      <node ref="R12" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="3" pinfunction="QD_3" pintype="output"/>
+      <node ref="U8" pin="4" pinfunction="INB_4" pintype="input"/>
+    </net>
+    <net code="20" name="/IN12" class="Default">
+      <node ref="R13" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="4" pinfunction="QE_4" pintype="output"/>
+      <node ref="U9" pin="2" pinfunction="INA_2" pintype="input"/>
+    </net>
+    <net code="21" name="/IN13" class="Default">
+      <node ref="R14" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="5" pinfunction="QF_5" pintype="output"/>
+      <node ref="U9" pin="4" pinfunction="INB_4" pintype="input"/>
+    </net>
+    <net code="22" name="/IN14" class="Default">
+      <node ref="R15" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U10" pin="2" pinfunction="INA_2" pintype="input"/>
+      <node ref="U2" pin="6" pinfunction="QG_6" pintype="output"/>
+    </net>
+    <net code="23" name="/IN15" class="Default">
+      <node ref="R16" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U10" pin="4" pinfunction="INB_4" pintype="input"/>
+      <node ref="U2" pin="7" pinfunction="QH_7" pintype="output"/>
+    </net>
+    <net code="24" name="/LATCH" class="Default">
+      <node ref="R21" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="U1" pin="12" pinfunction="RCLK_12" pintype="input"/>
+      <node ref="U2" pin="12" pinfunction="RCLK_12" pintype="input"/>
+    </net>
+    <net code="25" name="/LATCH_PIN" class="Default">
+      <node ref="J1" pin="8" pinfunction="8_8" pintype="passive"/>
+      <node ref="R21" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R25" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="26" name="/OE_N" class="Default">
+      <node ref="Q1" pin="3" pinfunction="C_3" pintype="passive"/>
+      <node ref="R19" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="U1" pin="13" pinfunction="~OE_13" pintype="input"/>
+      <node ref="U2" pin="13" pinfunction="~OE_13" pintype="input"/>
+    </net>
+    <net code="27" name="/OUT00" class="Default">
+      <node ref="T1" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U3" pin="7" pinfunction="OUTA_7" pintype="output"/>
+    </net>
+    <net code="28" name="/OUT01" class="Default">
+      <node ref="T2" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U3" pin="5" pinfunction="OUTB_5" pintype="output"/>
+    </net>
+    <net code="29" name="/OUT02" class="Default">
+      <node ref="T3" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U4" pin="7" pinfunction="OUTA_7" pintype="output"/>
+    </net>
+    <net code="30" name="/OUT03" class="Default">
+      <node ref="T4" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U4" pin="5" pinfunction="OUTB_5" pintype="output"/>
+    </net>
+    <net code="31" name="/OUT04" class="Default">
+      <node ref="T5" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U5" pin="7" pinfunction="OUTA_7" pintype="output"/>
+    </net>
+    <net code="32" name="/OUT05" class="Default">
+      <node ref="T6" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U5" pin="5" pinfunction="OUTB_5" pintype="output"/>
+    </net>
+    <net code="33" name="/OUT06" class="Default">
+      <node ref="T7" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U6" pin="7" pinfunction="OUTA_7" pintype="output"/>
+    </net>
+    <net code="34" name="/OUT07" class="Default">
+      <node ref="T8" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U6" pin="5" pinfunction="OUTB_5" pintype="output"/>
+    </net>
+    <net code="35" name="/OUT08" class="Default">
+      <node ref="T9" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U7" pin="7" pinfunction="OUTA_7" pintype="output"/>
+    </net>
+    <net code="36" name="/OUT09" class="Default">
+      <node ref="T10" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U7" pin="5" pinfunction="OUTB_5" pintype="output"/>
+    </net>
+    <net code="37" name="/OUT10" class="Default">
+      <node ref="T11" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U8" pin="7" pinfunction="OUTA_7" pintype="output"/>
+    </net>
+    <net code="38" name="/OUT11" class="Default">
+      <node ref="T12" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U8" pin="5" pinfunction="OUTB_5" pintype="output"/>
+    </net>
+    <net code="39" name="/OUT12" class="Default">
+      <node ref="T13" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="7" pinfunction="OUTA_7" pintype="output"/>
+    </net>
+    <net code="40" name="/OUT13" class="Default">
+      <node ref="T14" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="5" pinfunction="OUTB_5" pintype="output"/>
+    </net>
+    <net code="41" name="/OUT14" class="Default">
+      <node ref="T15" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U10" pin="7" pinfunction="OUTA_7" pintype="output"/>
+    </net>
+    <net code="42" name="/OUT15" class="Default">
+      <node ref="T16" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U10" pin="5" pinfunction="OUTB_5" pintype="output"/>
+    </net>
+    <net code="43" name="/SHIFT" class="Default">
+      <node ref="R20" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="U1" pin="11" pinfunction="SRCLK_11" pintype="input"/>
+      <node ref="U2" pin="11" pinfunction="SRCLK_11" pintype="input"/>
+    </net>
+    <net code="44" name="/SHIFT_PIN" class="Default">
+      <node ref="J1" pin="7" pinfunction="7_7" pintype="passive"/>
+      <node ref="R20" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R24" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="45" name="unconnected-(U1-QH'-Pad9)" class="Default">
+      <node ref="U1" pin="9" pinfunction="QH'_9" pintype="output+no_connect"/>
+    </net>
+    <net code="46" name="unconnected-(U2-QH'-Pad9)" class="Default">
+      <node ref="U2" pin="9" pinfunction="QH'_9" pintype="output+no_connect"/>
+    </net>
+    <net code="47" name="unconnected-(U3-NC-Pad1)" class="Default">
+      <node ref="U3" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="48" name="unconnected-(U3-NC-Pad8)" class="Default">
+      <node ref="U3" pin="8" pinfunction="NC_8" pintype="no_connect"/>
+    </net>
+    <net code="49" name="unconnected-(U4-NC-Pad1)" class="Default">
+      <node ref="U4" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="50" name="unconnected-(U4-NC-Pad8)" class="Default">
+      <node ref="U4" pin="8" pinfunction="NC_8" pintype="no_connect"/>
+    </net>
+    <net code="51" name="unconnected-(U5-NC-Pad1)" class="Default">
+      <node ref="U5" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="52" name="unconnected-(U5-NC-Pad8)" class="Default">
+      <node ref="U5" pin="8" pinfunction="NC_8" pintype="no_connect"/>
+    </net>
+    <net code="53" name="unconnected-(U6-NC-Pad1)" class="Default">
+      <node ref="U6" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="54" name="unconnected-(U6-NC-Pad8)" class="Default">
+      <node ref="U6" pin="8" pinfunction="NC_8" pintype="no_connect"/>
+    </net>
+    <net code="55" name="unconnected-(U7-NC-Pad1)" class="Default">
+      <node ref="U7" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="56" name="unconnected-(U7-NC-Pad8)" class="Default">
+      <node ref="U7" pin="8" pinfunction="NC_8" pintype="no_connect"/>
+    </net>
+    <net code="57" name="unconnected-(U8-NC-Pad1)" class="Default">
+      <node ref="U8" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="58" name="unconnected-(U8-NC-Pad8)" class="Default">
+      <node ref="U8" pin="8" pinfunction="NC_8" pintype="no_connect"/>
+    </net>
+    <net code="59" name="unconnected-(U9-NC-Pad1)" class="Default">
+      <node ref="U9" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="60" name="unconnected-(U9-NC-Pad8)" class="Default">
+      <node ref="U9" pin="8" pinfunction="NC_8" pintype="no_connect"/>
+    </net>
+    <net code="61" name="unconnected-(U10-NC-Pad1)" class="Default">
+      <node ref="U10" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="62" name="unconnected-(U10-NC-Pad8)" class="Default">
+      <node ref="U10" pin="8" pinfunction="NC_8" pintype="no_connect"/>
+    </net>
+  </nets>
+</export>

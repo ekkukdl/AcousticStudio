@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Preserve release hashes and CAD/manufacturing artifact bytes on checkout.
+**/outputs/panel_8faces_32ch_R1/** -text

@@ -1,5 +1,9 @@
 # Acoustic Control Studio
 
+현재 개발 저장소는 **[ekkukdl/AcousticStudio](https://github.com/ekkukdl/AcousticStudio)** 하나로 통합했습니다. 2026-10-07 기준 `AcousticStudio_ver2`의 코드, 구상도·PCB·Creo 자료 및 로컬 수정 내용을 반영했으며 두 저장소의 커밋 이력을 보존했습니다.
+
+화면은 **보기 → UI → 클래식 / 모던**에서 선택합니다. 두 화면 모두 상단 **보드** 메뉴를 사용합니다. 설계 자료는 [구상도 시작 안내](구상도/START_HERE.md), 최신 32채널 PCB는 [제작 자료 안내](구상도/outputs/panel_8faces_32ch_R1/README.md)를 참고하세요. 통합 범위와 검증 기록은 [저장소 통합 기록](docs/repository_consolidation.md)에 있습니다.
+
 Acoustic Control Studio는 초음파 부상(Ultrasonic Levitation) 및 역장 제어(Acoustic Field Control) 연구를 위한 **통합 3D 시뮬레이션 및 하드웨어 제어 소프트웨어**입니다.
 이 프로그램은 사용자가 직관적인 3D UI를 통해 센서 배열을 설계하고, 타겟의 위치를 조작하며, 실시간으로 위상(Phase)을 계산하여 하드웨어 보드(아두이노, FPGA 등)로 직접 전송할 수 있는 All-in-One 플랫폼을 제공합니다.
 

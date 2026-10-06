@@ -1,0 +1,28 @@
+{
+  "connected_manifest_pads_checked": 216,
+  "track_segments": 698,
+  "vias": 63,
+  "minimum_track_width_mm": 0.1874,
+  "neckdown_segment_count": 49,
+  "maximum_neckdown_segment_length_mm": 2.6544,
+  "neckdown_net_names": [
+    "/DATA_A",
+    "/IN00",
+    "/IN01",
+    "/IN02",
+    "/IN04",
+    "/IN06",
+    "/IN07",
+    "/IN08",
+    "/IN09",
+    "/IN10",
+    "/IN11",
+    "/IN14",
+    "/IN15",
+    "/OUT00",
+    "/OUT02",
+    "/OUT08",
+    "/OUT10",
+    "/SHIFT"
+  ]
+}

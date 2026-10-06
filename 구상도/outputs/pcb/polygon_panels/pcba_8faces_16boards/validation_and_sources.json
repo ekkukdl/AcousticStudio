@@ -1,0 +1,27 @@
+{
+  "status": "quotation draft, not production release",
+  "boards": 16,
+  "board_size_mm": [
+    48,
+    180,
+    1.6
+  ],
+  "channels_per_board": 16,
+  "total_channels": 256,
+  "parts_per_board": 74,
+  "smt_per_board": 55,
+  "tht_per_board": 19,
+  "all_parts_16_boards": 1184,
+  "coordinates": "mm; same absolute XY system as original Gerbers; Y negative; Bottom not X-mirrored",
+  "source_hashes": {
+    "outputs/polygon_panels/panel_8faces_16ch/panel_8faces_16ch.kicad_pcb": "f3f6dd83527634e501152ea15e70d8534f6eeb01c2caa54a2b335c86cc029cfd",
+    "outputs/polygon_panels/panel_8faces_16ch/schematic.net.xml": "bebb13fbe468f7fd6cab03f4bc1dd0e1686f4fc68bc3fea18b7bd4f94695097d",
+    "outputs/polygon_panels/gerber_quotes/panel_8faces_16ch_Gerber_P0_quote.zip": "932a65f20b425d12bca6fe27c9b3f04ad110716b8faa56af17eb04c83321985c"
+  },
+  "unresolved": [
+    "Vendor reported 0.002mm clearance issue not resolved",
+    "Supplier confirmation for blank catalog IDs, connectors and V40AN16T",
+    "Candidate MPN substitutions and component rotations require factory preview",
+    "THT service including transducers must be separately confirmed"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "source_pcb_sha256": "1fde5c788fa31fe1b87558127701668f448876624b2fd7172d0eaae3dff62f70",
+  "native_files": {
+    "c0805_r1.prt": "71aaa373b494681d59e4b5ec290c3937db4bf9b9062b2f11b2cf26c499b64faf",
+    "cp63_r1.prt": "0c31ac0fd5773ca513c964ef2e7b148c76d5e3c6ad5f65fb81c333a3338b9666",
+    "hdr10_r1.prt": "6dde56b3dd119ed2f64df2d25817755d1f5ba2c64323386efbd9beda5402f479",
+    "hdr3_r1.prt": "afca49442f4b22fe5aaaba6e8434c81de67fb663f501e09af2408675ef844ad3",
+    "panel32_r1.asm": "af02d4857e1c657d3bff502e5ba29bcc42b94bca3b5e92bd7e3350b1b266deb1",
+    "pcb32_r1.prt": "f8ea2dc7bd83c2049edd76e35ba739fa1a7dbf190a2b7b52d2b13bbdb4332f32",
+    "r0805_r1.prt": "71c4b944a24defd6cbdf7ec7c2386244a3c3b88aac2db537e0fbec1130055300",
+    "so16_r1.prt": "3f49ee003b4230f6c12cf0b9da795fa96e46ac0bd4e57caf8d3f56795d58cb19",
+    "so8_r1.prt": "dc1f8dc160bab0a85e09bcaf559f2c6d25cbcc4d8955d44775ad7eb74aef01c7",
+    "sot23_r1.prt": "b3f7c1c46c38b75513d25702e4f3a4cf7d1f0c146e189daeea4cd84f8038aeac",
+    "tunnel8_32_r1.asm": "63a867374e0c72e24c847e300c1ff408e2227d3866c07f60e2fb13b4e588a913",
+    "tx16_r1.prt": "efd72c6e9363549aaf64363d71a1dda690d66e3106078764be0a07ee8ca260bc"
+  },
+  "reopen_verified": true,
+  "native_STEP_roundtrip_verified": true,
+  "components_per_panel": 149,
+  "panels": 8,
+  "STEP_solids": 1192,
+  "component_bodies": "approximate",
+  "board_holes": 98,
+  "overall_bounds_mm": [
+    [
+      -130.1,
+      -130.1,
+      -112.0
+    ],
+    [
+      130.1,
+      130.1,
+      112.00000000000006
+    ]
+  ]
+}

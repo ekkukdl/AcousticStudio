@@ -1,0 +1,1169 @@
+{
+  "analyzer_type": "gerber",
+  "schema_version": "1.4.0",
+  "directory": "\uad6c\uc0c1\ub3c4/outputs/panel_8faces_32ch_R1/gerbers_R1",
+  "generator": "Pcbnew 10.0.6",
+  "layer_count": 2,
+  "board_dimensions": {
+    "width_mm": 84.05,
+    "height_mm": 224.05,
+    "area_mm2": 18831.4,
+    "source": "gbrjob"
+  },
+  "statistics": {
+    "gerber_files": 9,
+    "drill_files": 2,
+    "total_holes": 304,
+    "total_flashes": 1918,
+    "total_draws": 20549
+  },
+  "completeness": {
+    "found_layers": [
+      "B.Cu",
+      "B.Mask",
+      "B.Paste",
+      "B.SilkS",
+      "Edge.Cuts",
+      "F.Cu",
+      "F.Mask",
+      "F.Paste",
+      "F.SilkS"
+    ],
+    "expected_layers": [
+      "B.Cu",
+      "B.Mask",
+      "B.Paste",
+      "B.SilkS",
+      "Edge.Cuts",
+      "F.Cu",
+      "F.Mask",
+      "F.Paste",
+      "F.SilkS"
+    ],
+    "missing": [],
+    "extra": [],
+    "has_pth_drill": true,
+    "has_npth_drill": true,
+    "complete": true,
+    "source": "gbrjob"
+  },
+  "alignment": {
+    "aligned": false,
+    "issues": [
+      "Height varies by 44.0mm across copper/edge layers"
+    ],
+    "layer_extents": {
+      "B.Cu": {
+        "width": 83.0,
+        "height": 180.0
+      },
+      "B.Mask": {
+        "width": 75.85,
+        "height": 202.0
+      },
+      "B.Paste": {
+        "width": 75.85,
+        "height": 167.0
+      },
+      "B.SilkS": {
+        "width": 11.619,
+        "height": 1.286
+      },
+      "Edge.Cuts": {
+        "width": 84.0,
+        "height": 224.0
+      },
+      "F.Cu": {
+        "width": 83.0,
+        "height": 180.0
+      },
+      "F.Mask": {
+        "width": 72.0,
+        "height": 202.0
+      },
+      "F.Paste": {
+        "width": 0,
+        "height": 0
+      },
+      "F.SilkS": {
+        "width": 11.619,
+        "height": 1.286
+      },
+      "drill_NPTH": {
+        "width": 72.0,
+        "height": 202.0
+      },
+      "drill_PTH": {
+        "width": 81.6,
+        "height": 171.085
+      }
+    }
+  },
+  "drill_classification": {
+    "vias": {
+      "count": 206,
+      "tools": [
+        {
+          "diameter_mm": 0.3,
+          "count": 206
+        }
+      ]
+    },
+    "component_holes": {
+      "count": 94,
+      "tools": [
+        {
+          "diameter_mm": 0.8,
+          "count": 4
+        },
+        {
+          "diameter_mm": 1.0,
+          "count": 26
+        },
+        {
+          "diameter_mm": 1.5,
+          "count": 64
+        }
+      ]
+    },
+    "mounting_holes": {
+      "count": 4,
+      "tools": [
+        {
+          "diameter_mm": 3.2,
+          "count": 4,
+          "type": "NPTH"
+        }
+      ]
+    },
+    "classification_method": "x2_attributes"
+  },
+  "pad_summary": {
+    "smd_apertures": 374,
+    "via_apertures": 412,
+    "heatsink_apertures": 0,
+    "tht_holes": 94,
+    "smd_source": "x2_aperture_function",
+    "smd_ratio": 0.8
+  },
+  "trace_widths": {
+    "unique_widths_mm": [
+      0.1874,
+      0.25,
+      0.3,
+      0.4,
+      0.601,
+      0.8
+    ],
+    "min_trace_mm": 0.1874,
+    "max_trace_mm": 0.8,
+    "width_count": 6,
+    "min_feature_mm": 0.1874
+  },
+  "component_analysis": {
+    "total_unique": 152,
+    "front_side": 42,
+    "back_side": 110,
+    "component_refs": [
+      "C1",
+      "C10",
+      "C11",
+      "C12",
+      "C13",
+      "C14",
+      "C15",
+      "C16",
+      "C17",
+      "C18",
+      "C19",
+      "C2",
+      "C20",
+      "C21",
+      "C22",
+      "C23",
+      "C24",
+      "C25",
+      "C26",
+      "C27",
+      "C28",
+      "C29",
+      "C3",
+      "C30",
+      "C31",
+      "C32",
+      "C33",
+      "C34",
+      "C35",
+      "C36",
+      "C37",
+      "C38",
+      "C39",
+      "C4",
+      "C40",
+      "C5",
+      "C6",
+      "C7",
+      "C8",
+      "C9",
+      "H1",
+      "H2",
+      "H3",
+      "H4",
+      "J1",
+      "J2",
+      "J3",
+      "J4",
+      "Q1",
+      "Q2",
+      "R1",
+      "R10",
+      "R11",
+      "R12",
+      "R13",
+      "R14",
+      "R15",
+      "R16",
+      "R17",
+      "R18",
+      "R19",
+      "R2",
+      "R20",
+      "R21",
+      "R22",
+      "R23",
+      "R24",
+      "R25",
+      "R26",
+      "R27",
+      "R28",
+      "R29",
+      "R3",
+      "R30",
+      "R31",
+      "R32",
+      "R33",
+      "R34",
+      "R35",
+      "R36",
+      "R37",
+      "R38",
+      "R39",
+      "R4",
+      "R40",
+      "R41",
+      "R42",
+      "R43",
+      "R44",
+      "R45",
+      "R46",
+      "R47",
+      "R48",
+      "R49",
+      "R5",
+      "R50",
+      "R6",
+      "R7",
+      "R8",
+      "R9",
+      "T1",
+      "T10",
+      "T11",
+      "T12",
+      "T13",
+      "T14",
+      "T15",
+      "T16",
+      "T17",
+      "T18",
+      "T19",
+      "T2",
+      "T20",
+      "T21",
+      "T22",
+      "T23",
+      "T24",
+      "T25",
+      "T26",
+      "T27",
+      "T28",
+      "T29",
+      "T3",
+      "T30",
+      "T31",
+      "T32",
+      "T4",
+      "T5",
+      "T6",
+      "T7",
+      "T8",
+      "T9",
+      "U1",
+      "U10",
+      "U11",
+      "U12",
+      "U13",
+      "U14",
+      "U15",
+      "U16",
+      "U17",
+      "U18",
+      "U19",
+      "U2",
+      "U20",
+      "U3",
+      "U4",
+      "U5",
+      "U6",
+      "U7",
+      "U8",
+      "U9"
+    ],
+    "has_x2_data": true,
+    "pads_per_component": {
+      "C1": 2,
+      "C10": 2,
+      "C11": 2,
+      "C12": 2,
+      "C13": 2,
+      "C14": 2,
+      "C15": 2,
+      "C16": 2,
+      "C17": 2,
+      "C18": 2,
+      "C19": 2,
+      "C2": 2,
+      "C20": 2,
+      "C21": 2,
+      "C22": 2,
+      "C23": 2,
+      "C24": 2,
+      "C25": 2,
+      "C26": 2,
+      "C27": 2,
+      "C28": 2,
+      "C29": 2,
+      "C3": 2,
+      "C30": 2,
+      "C31": 2,
+      "C32": 2,
+      "C33": 2,
+      "C34": 2,
+      "C35": 2,
+      "C36": 2,
+      "C37": 2,
+      "C38": 2,
+      "C39": 2,
+      "C4": 2,
+      "C40": 2,
+      "C5": 2,
+      "C6": 2,
+      "C7": 2,
+      "C8": 2,
+      "C9": 2,
+      "H1": 1,
+      "H2": 1,
+      "H3": 1,
+      "H4": 1,
+      "J1": 10,
+      "J2": 10,
+      "J3": 3,
+      "J4": 3,
+      "Q1": 3,
+      "Q2": 3,
+      "R1": 2,
+      "R10": 2,
+      "R11": 2,
+      "R12": 2,
+      "R13": 2,
+      "R14": 2,
+      "R15": 2,
+      "R16": 2,
+      "R17": 2,
+      "R18": 2,
+      "R19": 2,
+      "R2": 2,
+      "R20": 2,
+      "R21": 2,
+      "R22": 2,
+      "R23": 2,
+      "R24": 2,
+      "R25": 2,
+      "R26": 2,
+      "R27": 2,
+      "R28": 2,
+      "R29": 2,
+      "R3": 2,
+      "R30": 2,
+      "R31": 2,
+      "R32": 2,
+      "R33": 2,
+      "R34": 2,
+      "R35": 2,
+      "R36": 2,
+      "R37": 2,
+      "R38": 2,
+      "R39": 2,
+      "R4": 2,
+      "R40": 2,
+      "R41": 2,
+      "R42": 2,
+      "R43": 2,
+      "R44": 2,
+      "R45": 2,
+      "R46": 2,
+      "R47": 2,
+      "R48": 2,
+      "R49": 2,
+      "R5": 2,
+      "R50": 2,
+      "R6": 2,
+      "R7": 2,
+      "R8": 2,
+      "R9": 2,
+      "T1": 2,
+      "T10": 2,
+      "T11": 2,
+      "T12": 2,
+      "T13": 2,
+      "T14": 2,
+      "T15": 2,
+      "T16": 2,
+      "T17": 2,
+      "T18": 2,
+      "T19": 2,
+      "T2": 2,
+      "T20": 2,
+      "T21": 2,
+      "T22": 2,
+      "T23": 2,
+      "T24": 2,
+      "T25": 2,
+      "T26": 2,
+      "T27": 2,
+      "T28": 2,
+      "T29": 2,
+      "T3": 2,
+      "T30": 2,
+      "T31": 2,
+      "T32": 2,
+      "T4": 2,
+      "T5": 2,
+      "T6": 2,
+      "T7": 2,
+      "T8": 2,
+      "T9": 2,
+      "U1": 16,
+      "U10": 8,
+      "U11": 8,
+      "U12": 8,
+      "U13": 8,
+      "U14": 8,
+      "U15": 8,
+      "U16": 8,
+      "U17": 8,
+      "U18": 8,
+      "U19": 8,
+      "U2": 16,
+      "U20": 8,
+      "U3": 16,
+      "U4": 16,
+      "U5": 8,
+      "U6": 8,
+      "U7": 8,
+      "U8": 8,
+      "U9": 8
+    },
+    "total_pads": 472
+  },
+  "net_analysis": {
+    "total_unique": 123,
+    "named_nets": 87,
+    "unnamed_nets": 36,
+    "power_nets": [],
+    "signal_nets": [
+      "/+5V_A",
+      "/+5V_B",
+      "/ARM_A",
+      "/ARM_B",
+      "/ARM_BASE_A",
+      "/ARM_BASE_B",
+      "/DATA_A0",
+      "/DATA_A1",
+      "/DATA_B0",
+      "/DATA_B1",
+      "/DRV_VDD_A",
+      "/DRV_VDD_B",
+      "/GND",
+      "/IN00",
+      "/IN01",
+      "/IN02",
+      "/IN03",
+      "/IN04",
+      "/IN05",
+      "/IN06",
+      "/IN07",
+      "/IN08",
+      "/IN09",
+      "/IN10",
+      "/IN11",
+      "/IN12",
+      "/IN13",
+      "/IN14",
+      "/IN15",
+      "/IN16",
+      "/IN17",
+      "/IN18",
+      "/IN19",
+      "/IN20",
+      "/IN21",
+      "/IN22",
+      "/IN23",
+      "/IN24",
+      "/IN25",
+      "/IN26",
+      "/IN27",
+      "/IN28",
+      "/IN29",
+      "/IN30",
+      "/IN31",
+      "/LATCH_A",
+      "/LATCH_B",
+      "/LATCH_PIN_A",
+      "/LATCH_PIN_B",
+      "/OE_N_A",
+      "/OE_N_B",
+      "/OUT00",
+      "/OUT01",
+      "/OUT02",
+      "/OUT03",
+      "/OUT04",
+      "/OUT05",
+      "/OUT06",
+      "/OUT07",
+      "/OUT08",
+      "/OUT09",
+      "/OUT10",
+      "/OUT11",
+      "/OUT12",
+      "/OUT13",
+      "/OUT14",
+      "/OUT15",
+      "/OUT16",
+      "/OUT17",
+      "/OUT18",
+      "/OUT19",
+      "/OUT20",
+      "/OUT21",
+      "/OUT22",
+      "/OUT23",
+      "/OUT24",
+      "/OUT25",
+      "/OUT26",
+      "/OUT27",
+      "/OUT28",
+      "/OUT29",
+      "/OUT30",
+      "/OUT31",
+      "/SHIFT_A",
+      "/SHIFT_B",
+      "/SHIFT_PIN_A",
+      "/SHIFT_PIN_B"
+    ],
+    "total_pins": 468
+  },
+  "gerbers": [
+    {
+      "filename": "panel_8faces_32ch_R1-B_Cu.gbl",
+      "layer_type": "B.Cu",
+      "units": "mm",
+      "aperture_count": 17,
+      "flash_count": 674,
+      "draw_count": 14967,
+      "region_count": 5,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "ProjectId": "panel_8faces_32ch_R1,70616e65-6c5f-4386-9661-6365735f3332,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L2,Bot",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "ComponentPad": 6,
+          "SMDPad": 4,
+          "ViaPad": 1,
+          "Conductor": 6
+        },
+        "by_function_flashes": {
+          "ComponentPad": 94,
+          "SMDPad": 374,
+          "ViaPad": 206,
+          "Conductor": 0
+        },
+        "conductor_widths_mm": [
+          0.1874,
+          0.25,
+          0.3,
+          0.4,
+          0.601,
+          0.8
+        ],
+        "min_feature_mm": 0.1874
+      },
+      "x2_component_count": 0,
+      "x2_net_count": 123,
+      "x2_pin_count": 468
+    },
+    {
+      "filename": "panel_8faces_32ch_R1-B_Mask.gbs",
+      "layer_type": "B.Mask",
+      "units": "mm",
+      "aperture_count": 11,
+      "flash_count": 472,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "ProjectId": "panel_8faces_32ch_R1,70616e65-6c5f-4386-9661-6365735f3332,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Soldermask,Bot",
+        "FilePolarity": "Negative"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.3
+      },
+      "x2_component_count": 152,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "panel_8faces_32ch_R1-B_Paste.gbp",
+      "layer_type": "B.Paste",
+      "units": "mm",
+      "aperture_count": 4,
+      "flash_count": 374,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "ProjectId": "panel_8faces_32ch_R1,70616e65-6c5f-4386-9661-6365735f3332,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Paste,Bot",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.3
+      },
+      "x2_component_count": 110,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "panel_8faces_32ch_R1-B_Silkscreen.gbo",
+      "layer_type": "B.SilkS",
+      "units": "mm",
+      "aperture_count": 1,
+      "flash_count": 0,
+      "draw_count": 94,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "ProjectId": "panel_8faces_32ch_R1,70616e65-6c5f-4386-9661-6365735f3332,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Legend,Bot",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.15
+      }
+    },
+    {
+      "filename": "panel_8faces_32ch_R1-Edge_Cuts.gm1",
+      "layer_type": "Edge.Cuts",
+      "units": "mm",
+      "aperture_count": 1,
+      "flash_count": 0,
+      "draw_count": 4,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "ProjectId": "panel_8faces_32ch_R1,70616e65-6c5f-4386-9661-6365735f3332,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Profile,NP"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "Profile": 1
+        },
+        "by_function_flashes": {
+          "Profile": 0
+        },
+        "min_feature_mm": 0.05
+      }
+    },
+    {
+      "filename": "panel_8faces_32ch_R1-F_Cu.gtl",
+      "layer_type": "F.Cu",
+      "units": "mm",
+      "aperture_count": 10,
+      "flash_count": 300,
+      "draw_count": 5390,
+      "region_count": 1,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "ProjectId": "panel_8faces_32ch_R1,70616e65-6c5f-4386-9661-6365735f3332,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Copper,L1,Top",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "by_function": {
+          "ComponentPad": 6,
+          "ViaPad": 1,
+          "Conductor": 3
+        },
+        "by_function_flashes": {
+          "ComponentPad": 94,
+          "ViaPad": 206,
+          "Conductor": 0
+        },
+        "conductor_widths_mm": [
+          0.25,
+          0.4,
+          0.8
+        ],
+        "min_feature_mm": 0.25
+      },
+      "x2_component_count": 0,
+      "x2_net_count": 79,
+      "x2_pin_count": 94
+    },
+    {
+      "filename": "panel_8faces_32ch_R1-F_Mask.gts",
+      "layer_type": "F.Mask",
+      "units": "mm",
+      "aperture_count": 7,
+      "flash_count": 98,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "ProjectId": "panel_8faces_32ch_R1,70616e65-6c5f-4386-9661-6365735f3332,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Soldermask,Top",
+        "FilePolarity": "Negative"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.5
+      },
+      "x2_component_count": 42,
+      "x2_net_count": 0,
+      "x2_pin_count": 0
+    },
+    {
+      "filename": "panel_8faces_32ch_R1-F_Paste.gtp",
+      "layer_type": "F.Paste",
+      "units": "mm",
+      "aperture_count": 0,
+      "flash_count": 0,
+      "draw_count": 0,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "ProjectId": "panel_8faces_32ch_R1,70616e65-6c5f-4386-9661-6365735f3332,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Paste,Top",
+        "FilePolarity": "Positive"
+      }
+    },
+    {
+      "filename": "panel_8faces_32ch_R1-F_Silkscreen.gto",
+      "layer_type": "F.SilkS",
+      "units": "mm",
+      "aperture_count": 1,
+      "flash_count": 0,
+      "draw_count": 94,
+      "region_count": 0,
+      "x2_attributes": {
+        "GenerationSoftware": "KiCad,Pcbnew,10.0.6",
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "ProjectId": "panel_8faces_32ch_R1,70616e65-6c5f-4386-9661-6365735f3332,rev?",
+        "SameCoordinates": "Original",
+        "FileFunction": "Legend,Top",
+        "FilePolarity": "Positive"
+      },
+      "aperture_analysis": {
+        "min_feature_mm": 0.15
+      }
+    }
+  ],
+  "drills": [
+    {
+      "filename": "panel_8faces_32ch_R1-NPTH.drl",
+      "type": "NPTH",
+      "units": "mm",
+      "hole_count": 4,
+      "tools": {
+        "T1": {
+          "diameter_mm": 3.2,
+          "hole_count": 4,
+          "aper_function": "NonPlated,NPTH,ComponentDrill"
+        }
+      },
+      "layer_span": [
+        1,
+        2
+      ],
+      "x2_attributes": {
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "GenerationSoftware": "Kicad,Pcbnew,10.0.6",
+        "FileFunction": "NonPlated,1,2,NPTH"
+      }
+    },
+    {
+      "filename": "panel_8faces_32ch_R1-PTH.drl",
+      "type": "PTH",
+      "units": "mm",
+      "hole_count": 300,
+      "tools": {
+        "T1": {
+          "diameter_mm": 0.3,
+          "hole_count": 206,
+          "aper_function": "Plated,PTH,ViaDrill"
+        },
+        "T2": {
+          "diameter_mm": 0.8,
+          "hole_count": 4,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        },
+        "T3": {
+          "diameter_mm": 1.0,
+          "hole_count": 26,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        },
+        "T4": {
+          "diameter_mm": 1.5,
+          "hole_count": 64,
+          "aper_function": "Plated,PTH,ComponentDrill"
+        }
+      },
+      "layer_span": [
+        1,
+        2
+      ],
+      "x2_attributes": {
+        "CreationDate": "2026-10-06T13:57:34+09:00",
+        "GenerationSoftware": "Kicad,Pcbnew,10.0.6",
+        "FileFunction": "Plated,1,2,PTH"
+      }
+    }
+  ],
+  "drill_tools": {
+    "3.2mm": {
+      "diameter_mm": 3.2,
+      "count": 4,
+      "type": "NPTH"
+    },
+    "0.3mm": {
+      "diameter_mm": 0.3,
+      "count": 206,
+      "type": "PTH"
+    },
+    "0.8mm": {
+      "diameter_mm": 0.8,
+      "count": 4,
+      "type": "PTH"
+    },
+    "1.0mm": {
+      "diameter_mm": 1.0,
+      "count": 26,
+      "type": "PTH"
+    },
+    "1.5mm": {
+      "diameter_mm": 1.5,
+      "count": 64,
+      "type": "PTH"
+    }
+  },
+  "job_file": {
+    "generator": "Pcbnew 10.0.6",
+    "vendor": "KiCad",
+    "creation_date": "2026-10-06T13:57:34+09:00",
+    "board_width_mm": 84.05,
+    "board_height_mm": 224.05,
+    "layer_count": 2,
+    "board_thickness_mm": 1.6,
+    "finish": "None",
+    "project_name": "panel_8faces_32ch_R1",
+    "design_rules": [
+      {
+        "layers": "Outer",
+        "PadToPad": 0.2,
+        "PadToTrack": 0.2,
+        "TrackToTrack": 0.2,
+        "MinLineWidth": 0.1874,
+        "TrackToRegion": 0.25,
+        "RegionToRegion": 0.25
+      }
+    ],
+    "expected_files": [
+      {
+        "path": "panel_8faces_32ch_R1-F_Cu.gtl",
+        "function": "Copper,L1,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "panel_8faces_32ch_R1-B_Cu.gbl",
+        "function": "Copper,L2,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "panel_8faces_32ch_R1-F_Paste.gtp",
+        "function": "SolderPaste,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "panel_8faces_32ch_R1-B_Paste.gbp",
+        "function": "SolderPaste,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "panel_8faces_32ch_R1-F_Silkscreen.gto",
+        "function": "Legend,Top",
+        "polarity": "Positive"
+      },
+      {
+        "path": "panel_8faces_32ch_R1-B_Silkscreen.gbo",
+        "function": "Legend,Bot",
+        "polarity": "Positive"
+      },
+      {
+        "path": "panel_8faces_32ch_R1-F_Mask.gts",
+        "function": "SolderMask,Top",
+        "polarity": "Negative"
+      },
+      {
+        "path": "panel_8faces_32ch_R1-B_Mask.gbs",
+        "function": "SolderMask,Bot",
+        "polarity": "Negative"
+      },
+      {
+        "path": "panel_8faces_32ch_R1-Edge_Cuts.gm1",
+        "function": "Profile",
+        "polarity": "Positive"
+      }
+    ],
+    "stackup": [
+      {
+        "type": "Legend",
+        "name": "Top Silk Screen"
+      },
+      {
+        "type": "SolderPaste",
+        "name": "Top Solder Paste"
+      },
+      {
+        "type": "SolderMask",
+        "name": "Top Solder Mask",
+        "thickness_mm": 0.01
+      },
+      {
+        "type": "Copper",
+        "name": "F.Cu",
+        "thickness_mm": 0.035
+      },
+      {
+        "type": "Dielectric",
+        "name": "F.Cu/B.Cu",
+        "thickness_mm": 1.51,
+        "material": "FR4"
+      },
+      {
+        "type": "Copper",
+        "name": "B.Cu",
+        "thickness_mm": 0.035
+      },
+      {
+        "type": "SolderMask",
+        "name": "Bottom Solder Mask",
+        "thickness_mm": 0.01
+      },
+      {
+        "type": "SolderPaste",
+        "name": "Bottom Solder Paste"
+      },
+      {
+        "type": "Legend",
+        "name": "Bottom Silk Screen"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "detector": "analyze_gerbers",
+      "rule_id": "GR-002",
+      "category": "gerber_alignment",
+      "severity": "warning",
+      "confidence": "deterministic",
+      "evidence_source": "topology",
+      "summary": "Alignment: Height varies by 44.0mm across copper/edge layers",
+      "description": "Layer alignment issue: Height varies by 44.0mm across copper/edge layers",
+      "components": [],
+      "nets": [],
+      "pins": [],
+      "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+      "report_context": {
+        "section": "Gerber Alignment",
+        "impact": "Layer misregistration",
+        "standard_ref": ""
+      },
+      "stages": [
+        "pre_fab"
+      ],
+      "finding_id": "gerber:GR-002:93ab0b5c4cb3"
+    }
+  ],
+  "assessments": [],
+  "summary": {
+    "total_findings": 1,
+    "by_severity": {
+      "error": 0,
+      "warning": 1,
+      "info": 0
+    }
+  },
+  "trust_summary": {
+    "total_findings": 1,
+    "trust_level": "high",
+    "by_confidence": {
+      "deterministic": 1,
+      "heuristic": 0,
+      "datasheet_backed": 0
+    },
+    "by_evidence_source": {
+      "datasheet": 0,
+      "topology": 1,
+      "heuristic_rule": 0,
+      "symbol_footprint": 0,
+      "bom": 0,
+      "geometry": 0,
+      "api_lookup": 0
+    },
+    "provenance_coverage_pct": 0.0
+  },
+  "inputs": {
+    "source_files": [
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-B_Cu.gbl",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-B_Mask.gbs",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-B_Paste.gbp",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-B_Silkscreen.gbo",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-Edge_Cuts.gm1",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-F_Cu.gtl",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-F_Mask.gts",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-F_Paste.gtp",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-F_Silkscreen.gto",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-job.gbrjob",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-NPTH.drl",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-PTH.drl"
+    ],
+    "source_hashes": {
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-B_Cu.gbl": "0cf2ca250369c1251aedbe6ac7fd720427a27780dae5ad0249e242ea21fed225",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-B_Mask.gbs": "7e13ebe2c713de36e79f9758ea2dcf5fa2b7ac38f88579bae9960a59b718b86c",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-B_Paste.gbp": "341f95084306888cca3d518b43bf231662aab8c9a391c616b4d9628340400506",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-B_Silkscreen.gbo": "7c8462e0f016edc2d2fb9766272d47b30b9bb3e0e53c9a781ad896b8d43f45b0",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-Edge_Cuts.gm1": "5c163a5cb164fd12d64160b04982a32e238eb68f1aa517562e94309d2ca51b13",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-F_Cu.gtl": "33b6295013f95f4ea1d23282da91b31c2c4b8c59fcda5df96790ba4e813022d9",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-F_Mask.gts": "6cd15609144908754e315ce1dcf027794917ea40cb225218efb9b1eb8074c036",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-F_Paste.gtp": "edfecbdc9a23dd598d4f694fd09b88226ef43899cc777746b336543228e27c96",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-F_Silkscreen.gto": "d2687ea9e4beb3392b7aedb031d5175072f54a732bd0072927cf52ed883118fa",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-job.gbrjob": "42d82d34d61994a7efe61fa8d1f33a8093729f9a54597785b3f5bbb179ddf3bf",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-NPTH.drl": "67c1986683f9db587040cc75bd891785e76f4c337828ba034a5c74a0f4c6c26f",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\gerbers_R1\\panel_8faces_32ch_R1-PTH.drl": "0f5df1279375512b378f05fe0512bb6516e11f19588c332b400293d56ba00257"
+    },
+    "run_id": "20261006T044234Z-8b839f",
+    "config_hash": null,
+    "upstream_artifacts": {}
+  },
+  "compat": {
+    "minimum_consumer_version": "1.4.0",
+    "deprecated_fields": [],
+    "experimental_fields": []
+  },
+  "audience_summary": {
+    "designer": {
+      "total_findings": 1,
+      "by_severity": {
+        "error": 0,
+        "warning": 1,
+        "info": 0
+      },
+      "by_category": {
+        "gerber_alignment": 1
+      },
+      "top_issues": [
+        {
+          "detector": "analyze_gerbers",
+          "rule_id": "GR-002",
+          "category": "gerber_alignment",
+          "severity": "warning",
+          "confidence": "deterministic",
+          "evidence_source": "topology",
+          "summary": "Alignment: Height varies by 44.0mm across copper/edge layers",
+          "description": "Layer alignment issue: Height varies by 44.0mm across copper/edge layers",
+          "components": [],
+          "nets": [],
+          "pins": [],
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "report_context": {
+            "section": "Gerber Alignment",
+            "impact": "Layer misregistration",
+            "standard_ref": ""
+          },
+          "stages": [
+            "pre_fab"
+          ],
+          "finding_id": "gerber:GR-002:93ab0b5c4cb3"
+        }
+      ]
+    },
+    "reviewer": {
+      "total_findings": 1,
+      "by_category": {
+        "gerber_alignment": 1
+      },
+      "top_issues": [
+        {
+          "rule_id": "GR-002",
+          "severity": "warning",
+          "summary": "Alignment: Height varies by 44.0mm across copper/edge layers",
+          "recommendation": "Re-export gerbers to ensure consistent layer alignment.",
+          "category": "gerber_alignment"
+        }
+      ]
+    },
+    "manager": {
+      "risk_level": "low",
+      "blocker_count": 0,
+      "warning_count": 1,
+      "stage_readiness": {
+        "schematic": "pass",
+        "layout": "pass",
+        "pre_fab": "needs_review",
+        "bring_up": "pass"
+      },
+      "one_liner": "1 warning across 1 category."
+    }
+  },
+  "capability_mode_ref": {
+    "source": "analysis/capability_mode.json",
+    "run_id": "20261006T044234Z-8b839f"
+  }
+}

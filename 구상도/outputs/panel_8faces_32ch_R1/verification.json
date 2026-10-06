@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "electrical_pads_compared": 468,
+  "connected_pads": 432,
+  "explicit_nc_pads": 36,
+  "mechanical_NPTH": 4,
+  "SMT_components": 110,
+  "THT_components": 38,
+  "tracks": 1408,
+  "vias": 206,
+  "channel_map_bijective": true,
+  "mount_strips_no_electrical_pads_or_tracks": true,
+  "original_pcb_sha256_unchanged": "f3f6dd83527634e501152ea15e70d8534f6eeb01c2caa54a2b335c86cc029cfd",
+  "ERC_violations": 0,
+  "DRC_violations": 0,
+  "schematic_parity": 0
+}

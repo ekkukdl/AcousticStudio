@@ -1,0 +1,7 @@
+{
+  "element_count": 96,
+  "channel_ids_unique": true,
+  "unit_normals": true,
+  "minimum_face_center_distance_mm": 18.0,
+  "status": "coordinate checks only, not a complete 3D collision or acoustic verification"
+}

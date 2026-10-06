@@ -1,0 +1,21 @@
+{
+  "source_commit": "719ebd00a79faf92653e92bea007ed420f6375ff",
+  "original_main": "197962ca5fa094eb3a86be79b76d43763e02c5ec",
+  "source_tracked_files": 686,
+  "unchanged_files_checked": 683,
+  "intentional_document_updates": [
+    "README.md",
+    "backup/ui_before_toggle_20261007/SHA256.json",
+    "docs/project_status.txt"
+  ],
+  "missing_files": [],
+  "unexpected_different_git_blobs": [],
+  "historical_CRLF_files_preserved_as_source_working_copy": [
+    "구상도/trail.txt.1",
+    "구상도/ver2/trail.txt.1"
+  ],
+  "byte_identical_artifacts": 300,
+  "UI_backup_SHA256": "18 source and asset files passed; 9 derived Python cache files excluded from published backup, original complete backup retained in ver2",
+  "software_tests": "7 passed; actual app offscreen repeated UI switch and state/camera/controller preservation passed",
+  "excluded": "existing Git-ignored environments, PTC runtimes, node_modules, session logs and caches retained in original ver2 folder"
+}

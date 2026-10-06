@@ -1,0 +1,33 @@
+{
+  "pcb_edge_gap_mm": 12.324725874848014,
+  "gap_basis": "nearest adjacent PCB front-plane edge points; not optical field of view",
+  "emitting_plane_separation_mm": 210.0,
+  "pcb_front_apothem_mm": 117.5,
+  "transducer_envelope_mm": [
+    74,
+    156
+  ],
+  "mount_strips_each_mm": 22.0,
+  "mount_holes_mm": [
+    [
+      6,
+      11
+    ],
+    [
+      78,
+      11
+    ],
+    [
+      6,
+      213.0
+    ],
+    [
+      78,
+      213.0
+    ]
+  ],
+  "notes": [
+    "object size and camera position unknown; full-object visibility has not been demonstrated",
+    "mechanical frame and rotating camera structure are outside this PCB revision"
+  ]
+}

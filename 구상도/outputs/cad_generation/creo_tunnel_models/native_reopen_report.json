@@ -1,0 +1,126 @@
+{
+  "status": "success",
+  "results": {
+    "ok": true,
+    "results": [
+      {
+        "assembly": "tunnel_6faces.asm",
+        "faces": 6,
+        "loaded": [
+          {
+            "name": "tunnel_6faces.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "tunnel_6faces_1.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_6f_01.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_6f_02.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_6f_03.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_6f_04.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_6f_05.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_6f_06.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "pcb_6f.prt",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "tx_6f_t1.prt",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "ring_6f_lower.prt",
+            "units": "millimeter Newton Second (mmNs)"
+          }
+        ],
+        "pcbDimensionsMm": [
+          60,
+          180,
+          1.5999999999999999
+        ]
+      },
+      {
+        "assembly": "tunnel_8faces.asm",
+        "faces": 8,
+        "loaded": [
+          {
+            "name": "tunnel_8faces.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "tunnel_8faces_1.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_8f_01.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_8f_02.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_8f_03.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_8f_04.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_8f_05.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_8f_06.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_8f_07.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "panel_8f_08.asm",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "pcb_8f.prt",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "tx_8f_t1.prt",
+            "units": "millimeter Newton Second (mmNs)"
+          },
+          {
+            "name": "ring_8f_lower.prt",
+            "units": "millimeter Newton Second (mmNs)"
+          }
+        ],
+        "pcbDimensionsMm": [
+          48,
+          180,
+          1.5999999999999999
+        ]
+      }
+    ]
+  }
+}

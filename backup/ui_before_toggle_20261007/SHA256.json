@@ -1,0 +1,20 @@
+{
+  "main.py": "76425ca558340da46d27ae37eafd5c44939c9b939c3d0d12bbf5a178880345d0",
+  "requirements.txt": "f8fc48b21d08d84a751a2ea59286566990c7026f028b20fe0d7d752078c45bdc",
+  "assets/app_icon.jpg": "b3fe4a6babec5b7821b7e4bb08a7046a2e8f9d039dfdf40194595393c5b7beab",
+  "assets/chevron_down.svg": "9b098dc1c8848556d65197ab54c88411fb6087d7ca623faa0b51c3ac66a4572d",
+  "docs/project_status.txt": "0ccf888ab4097a0524d45474a1aa6f954b0c402b84fdc7872b594a430a4b5dc6",
+  "src/acousticstudio/app.py": "7a494b2f8c180dc15b8280b576a68c33aeb478b678a104faec6931433415934e",
+  "src/acousticstudio/build.bat": "e86b05dcc1b17b142c0598b8e104be8d02e379b619e039b77542c767f7edda19",
+  "src/acousticstudio/file_io.py": "a95d6592f7201977869f55dabb0748f68260c8e02180f1ea773680b4e116dfd9",
+  "src/acousticstudio/hardware.py": "fb7b5cfa2c7a018c3ee12f64d28a385784a7945abe237bd25d2bc5f378d382dd",
+  "src/acousticstudio/installer_ui.py": "4dd95d77a0ac132f86452377b9be108c4599c11be108c31886350a8d75c2b5c9",
+  "src/acousticstudio/kwave_engine.py": "cbd2353f420c5aa8fec28d1921621633eaa4951c1d33e43f52a0852f865bd5d2",
+  "src/acousticstudio/phase_engine.py": "4d906b10b2c4dd753030632178cebbbe501a35faa417e4c794661caa88db2973",
+  "src/acousticstudio/sonic_core.cpp": "a4e37584120dd6539e688d2f2a112d3a6ada9b353df9cf346ff17a0e7aa6ebac",
+  "src/acousticstudio/sonic_core.dll": "c9b92f05b4433e0215e978e069031ec85fdf6033a3a08cd2795f0fe8b1cfa220",
+  "src/acousticstudio/sonic_wrapper.py": "bd153a362a9ac1ff0e8cc3bb236a3bdeb70aa9bd4b094c63e44d47179ffa0e67",
+  "src/acousticstudio/state_manager.py": "5fcc73b494f9fcdb802b6ae058ecb3821fd859232d235575f2ffcc749ea9d24e",
+  "src/acousticstudio/widgets.py": "3afd66be2021459aa68a57a7d6e91f140459776327610faf73dbff3636f4408e",
+  "src/acousticstudio/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

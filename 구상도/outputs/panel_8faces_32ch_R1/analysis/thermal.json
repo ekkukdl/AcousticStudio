@@ -1,0 +1,80 @@
+{
+  "analyzer_type": "thermal",
+  "schema_version": "1.4.0",
+  "inputs": {
+    "source_files": [
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\analysis\\schematic.json",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\analysis\\pcb.json"
+    ],
+    "source_hashes": {
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\analysis\\schematic.json": "e151be710aa5301f0f1871cf596bdcca9be8cf3933ea55d0e5b32831469fec20",
+      "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\analysis\\pcb.json": "04ec34b328b80452e420616eaec2b6541456a5e21f0c6ab819712a41c2d4e4ff"
+    },
+    "run_id": "20261006T044234Z-8b839f",
+    "config_hash": null,
+    "upstream_artifacts": {
+      "schematic": {
+        "path": "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\analysis\\schematic.json",
+        "sha256": "e151be710aa5301f0f1871cf596bdcca9be8cf3933ea55d0e5b32831469fec20",
+        "schema_version": "1.4.0",
+        "run_id": "20261006T044234Z-8b839f"
+      },
+      "pcb": {
+        "path": "\uad6c\uc0c1\ub3c4\\outputs\\panel_8faces_32ch_R1\\analysis\\pcb.json",
+        "sha256": "04ec34b328b80452e420616eaec2b6541456a5e21f0c6ab819712a41c2d4e4ff",
+        "schema_version": "1.4.0",
+        "run_id": "20261006T044234Z-8b839f"
+      }
+    }
+  },
+  "compat": {
+    "minimum_consumer_version": "1.4.0",
+    "deprecated_fields": [],
+    "experimental_fields": []
+  },
+  "summary": {
+    "total_findings": 0,
+    "components_assessed": 0,
+    "components_skipped": 0,
+    "active": 0,
+    "suppressed": 0,
+    "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+    },
+    "thermal_score": null,
+    "skipped_reason": "No components had quantifiable power dissipation data (missing MPNs or no datasheet extraction cache)",
+    "total_board_dissipation_w": 0,
+    "components_analyzed": 0,
+    "components_above_85c": 0,
+    "components_above_tjmax": 0,
+    "ambient_c": 25.0
+  },
+  "findings": [],
+  "assessments": [],
+  "elapsed_s": 0.0,
+  "trust_summary": {
+    "total_findings": 0,
+    "trust_level": "high",
+    "by_confidence": {
+      "deterministic": 0,
+      "heuristic": 0,
+      "datasheet_backed": 0
+    },
+    "by_evidence_source": {
+      "datasheet": 0,
+      "topology": 0,
+      "heuristic_rule": 0,
+      "symbol_footprint": 0,
+      "bom": 0,
+      "geometry": 0,
+      "api_lookup": 0
+    },
+    "provenance_coverage_pct": null
+  },
+  "capability_mode_ref": {
+    "source": "analysis/capability_mode.json",
+    "run_id": "20261006T044234Z-8b839f"
+  }
+}

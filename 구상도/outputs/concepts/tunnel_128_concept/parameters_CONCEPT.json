@@ -1,0 +1,24 @@
+{
+  "status": "CONCEPT_ONLY_NOT_FOR_MANUFACTURING",
+  "units": "mm",
+  "acoustic_face_diameter": 100.0,
+  "active_length": 160.0,
+  "slot_arc_width_at_face_radius": 8.0,
+  "transducer_diameter": 16.0,
+  "assumed_body_height": 12.5,
+  "panel_count": 4,
+  "circumferential_count_per_panel": 4,
+  "axial_count_per_panel": 8,
+  "channel_count": 128,
+  "channel_order": "panel*32+circumferential_index*8+axial_index",
+  "board_reference_radius": 62.5,
+  "axial_pitch": 20.0,
+  "circumferential_face_center_chord": 17.543690733179844,
+  "ideal_flat_panel_width": 88.17477042468104,
+  "limitations": [
+    "Dimensions are illustrative and unconfirmed.",
+    "No copper, holes, stiffeners, connectors or fastening details designed.",
+    "Smooth FPCB reference surface differs from the required flat solder islands.",
+    "Center spacing is not a complete mechanical collision or acoustic performance check."
+  ]
+}

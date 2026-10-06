@@ -1,0 +1,20 @@
+Designator,Value,Layer,Footprint_origin_X_mm,Footprint_origin_Y_mm,Pad_centroid_X_mm,Pad_centroid_Y_mm,KiCad_rotation_deg,Pin1_X_mm,Pin1_Y_mm,Pin1_net,Instruction
+C19,220uF 25V,Bottom,37,-7,38.25,-7,0,37,-7,/DRV_VDD,Electrolytic pin1 positive DRV_VDD; pin2 GND
+J1,FPGA_SIGNAL_3V3,Bottom,18.92,-173,24,-174.27,-90,18.92,-173,/GND,Header pin numbers must follow source PCB/netlist
+J2,POWER_INPUT,Bottom,26.54,-6,24,-6,90,26.54,-6,/DRV_VDD,Header pin numbers must follow source PCB/netlist
+T1,V40AN16T,Top,15,-20,15,-20,0,15,-15,/OUT00,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T2,V40AN16T,Top,33,-20,33,-20,0,33,-15,/OUT01,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T3,V40AN16T,Top,15,-40,15,-40,0,15,-35,/OUT02,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T4,V40AN16T,Top,33,-40,33,-40,0,33,-35,/OUT03,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T5,V40AN16T,Top,15,-60,15,-60,0,15,-55,/OUT04,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T6,V40AN16T,Top,33,-60,33,-60,0,33,-55,/OUT05,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T7,V40AN16T,Top,15,-80,15,-80,0,15,-75,/OUT06,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T8,V40AN16T,Top,33,-80,33,-80,0,33,-75,/OUT07,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T9,V40AN16T,Top,15,-100,15,-100,0,15,-95,/OUT08,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T10,V40AN16T,Top,33,-100,33,-100,0,33,-95,/OUT09,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T11,V40AN16T,Top,15,-120,15,-120,0,15,-115,/OUT10,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T12,V40AN16T,Top,33,-120,33,-120,0,33,-115,/OUT11,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T13,V40AN16T,Top,15,-140,15,-140,0,15,-135,/OUT12,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T14,V40AN16T,Top,33,-140,33,-140,0,33,-135,/OUT13,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T15,V40AN16T,Top,15,-160,15,-160,0,15,-155,/OUT14,Transmitter pin1 driven; pin2 GND; verify acoustic phase
+T16,V40AN16T,Top,33,-160,33,-160,0,33,-155,/OUT15,Transmitter pin1 driven; pin2 GND; verify acoustic phase

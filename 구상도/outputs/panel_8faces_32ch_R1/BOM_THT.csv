@@ -1,0 +1,5 @@
+﻿Designator,Value,Package,Qty_per_PCB,Qty_8_PCB,Assembly,Manufacturer,MPN_candidate,LCSC_candidate,Status
+"T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32",V40AN16T,D16mm / pin pitch 10mm,32,256,THT,,,,confirm exact part and availability before purchase
+"C19,C39",220uF 25V,Radial D6.3mm P2.5mm,2,16,THT,Rubycon,25YXJ220M6.3X11,C88729,confirm exact part and availability before purchase
+"J1,J2",FPGA_SIGNAL_3V3,2x5 2.54mm,2,16,THT,,,,confirm exact part and availability before purchase
+"J3,J4",POWER_INPUT,1x3 2.54mm,2,16,THT,,,,confirm exact part and availability before purchase

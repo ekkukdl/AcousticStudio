@@ -1,0 +1,14 @@
+{
+  "sourceURL": "https://doillabs.com/assets/pipeline-6phNCDVq.js",
+  "testedAt": "2026-10-06",
+  "mode": "local execution of public CSV parsing and reconciliation functions; no external upload",
+  "bomRows": 74,
+  "pnpRows": 74,
+  "reconciliation": {
+    "status": "matched",
+    "matchedCount": 74,
+    "issues": []
+  },
+  "bomWarnings": [],
+  "pnpWarnings": []
+}

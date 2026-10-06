@@ -1,0 +1,5 @@
+# Local execution dependencies stay on this machine after the folder move.
+scratch/creo_cad_env/
+scratch/**/node_modules/
+**/__pycache__/
+**/*.pyc

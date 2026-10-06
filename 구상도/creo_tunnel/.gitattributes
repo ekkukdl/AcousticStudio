@@ -1,0 +1,8 @@
+# Preserve archived CAD and verification bytes so manifest hashes stay valid.
+* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+*.prt binary
+*.asm binary
+*.png binary
+*.step binary -whitespace
+*.json -text
+*.md -text

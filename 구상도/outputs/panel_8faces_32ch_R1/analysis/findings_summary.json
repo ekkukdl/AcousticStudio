@@ -1,0 +1,65 @@
+{
+  "schematic": {
+    "count": 13,
+    "severity": {
+      "info": 12,
+      "warning": 1
+    },
+    "rules": {
+      "DC-DET": 2,
+      "DO-DET": 2,
+      "DS-003": 1,
+      "EP-AUD": 4,
+      "SS-002": 1,
+      "TR-DET": 2,
+      "LC-007": 1
+    }
+  },
+  "pcb": {
+    "count": 17,
+    "severity": {
+      "info": 12,
+      "error": 4,
+      "warning": 1
+    },
+    "rules": {
+      "CC-DET": 3,
+      "CP-002": 6,
+      "DFM-001": 1,
+      "FD-001": 1,
+      "KO-001": 4,
+      "TE-001": 1,
+      "TS-DET": 1
+    }
+  },
+  "emc": {
+    "count": 92,
+    "severity": {
+      "error": 26,
+      "warning": 53,
+      "info": 13
+    },
+    "rules": {
+      "GP-001": 48,
+      "DC-001": 16,
+      "IO-001": 4,
+      "EE-001": 1,
+      "BE-002": 1,
+      "RP-001": 22
+    }
+  },
+  "gerbers": {
+    "count": 1,
+    "severity": {
+      "warning": 1
+    },
+    "rules": {
+      "GR-002": 1
+    }
+  },
+  "cross_analysis": {
+    "count": 0,
+    "severity": {},
+    "rules": {}
+  }
+}
