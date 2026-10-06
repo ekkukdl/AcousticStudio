@@ -1,0 +1,862 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "python_version": "3.13.9",
+  "packages": {
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "levitate": "3.0.0",
+    "numba": "0.62.1",
+    "taichi": "1.7.4",
+    "torch": "2.14.0"
+  },
+  "hashes": {
+    "src/acousticstudio/force_analysis.py": "9e0129f7dd3c8796ddd3795cf173483b71f9ced879ef29e93c13117e9fd055a8",
+    "src/acousticstudio/field_model.py": "72204059eab888611087416ba92e6670038c28e646d4187c0add8eb7c32b5d47",
+    "src/acousticstudio/sonic_core.dll": "f361f6b91fb1ab9adfb4139d13de6d9d5b3b24e87a9e7bc5a6c34a8aa450ccc1",
+    "구상도/outputs/panel_8faces_32ch_R1/array_positions_256.json": "4fa1145fce5a3f39a84f85b83382aedb8aef7000a028728c60f8a2e68ebbfa79"
+  },
+  "actual_aperture_radius_mm": null,
+  "synthetic_directivity_test_radius_mm": 4.5,
+  "pressure_calibrated": false,
+  "particle_provenance": "example",
+  "hardware_used": false,
+  "timing_note": "single verification run, includes warm-up; not a benchmark",
+  "references": [
+    {
+      "model": "point_source",
+      "snapshot": {
+        "sources_mm": [
+          [
+            -20.0,
+            -20.0,
+            -40.0
+          ],
+          [
+            20.0,
+            -20.0,
+            -40.0
+          ],
+          [
+            -20.0,
+            20.0,
+            40.0
+          ],
+          [
+            20.0,
+            20.0,
+            40.0
+          ]
+        ],
+        "normals": [
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        ],
+        "phases_rad": [
+          0.2,
+          0.9,
+          2.4,
+          3.2
+        ],
+        "amplitudes": [
+          1.0,
+          0.7,
+          0.3,
+          0.9
+        ],
+        "field_config": {
+          "model": "point_source",
+          "frequency_hz": 39500.0,
+          "sound_speed_m_s": 340.0,
+          "density_kg_m3": 1.2040847588826422,
+          "source_strength": 1.0,
+          "aperture_radius_mm": null,
+          "min_distance_m": 1e-06
+        },
+        "aperture_radii_mm": [
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "settings": {
+        "particle": {
+          "radius_mm": 0.2,
+          "density_kg_m3": 30.0,
+          "sound_speed_m_s": 2200.0,
+          "compressibility_pa_inv": null,
+          "provenance": "example",
+          "source": "synthetic numerical reference"
+        },
+        "span_mm": 2.0,
+        "samples": 5,
+        "derivative_step_mm": 0.1,
+        "relative_tolerance": 0.01,
+        "gravity_m_s2": [
+          0.0,
+          0.0,
+          -9.80665
+        ]
+      },
+      "reference": "installed levitate Gor'kov potential/gradient/laplacian; full K from gradient differences",
+      "derivative_step_mm": 0.025,
+      "reference_jacobian_step_m": 1e-05,
+      "potential_relative_error": 2.9972150130563546e-09,
+      "force_relative_error": 2.440522354637841e-08,
+      "diagonal_relative_error": 8.264078288421275e-09,
+      "full_matrix_relative_error": 2.1039168736281793e-05
+    },
+    {
+      "model": "ultraino_sinc",
+      "snapshot": {
+        "sources_mm": [
+          [
+            -20.0,
+            -20.0,
+            -40.0
+          ],
+          [
+            20.0,
+            -20.0,
+            -40.0
+          ],
+          [
+            -20.0,
+            20.0,
+            40.0
+          ],
+          [
+            20.0,
+            20.0,
+            40.0
+          ]
+        ],
+        "normals": [
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        ],
+        "phases_rad": [
+          0.2,
+          0.9,
+          2.4,
+          3.2
+        ],
+        "amplitudes": [
+          1.0,
+          0.7,
+          0.3,
+          0.9
+        ],
+        "field_config": {
+          "model": "ultraino_sinc",
+          "frequency_hz": 39500.0,
+          "sound_speed_m_s": 340.0,
+          "density_kg_m3": 1.2040847588826422,
+          "source_strength": 1.0,
+          "aperture_radius_mm": 4.5,
+          "min_distance_m": 1e-06
+        },
+        "aperture_radii_mm": [
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "settings": {
+        "particle": {
+          "radius_mm": 0.2,
+          "density_kg_m3": 30.0,
+          "sound_speed_m_s": 2200.0,
+          "compressibility_pa_inv": null,
+          "provenance": "example",
+          "source": "synthetic numerical reference"
+        },
+        "span_mm": 2.0,
+        "samples": 5,
+        "derivative_step_mm": 0.1,
+        "relative_tolerance": 0.01,
+        "gravity_m_s2": [
+          0.0,
+          0.0,
+          -9.80665
+        ]
+      },
+      "reference": "installed levitate Gor'kov potential/gradient/laplacian; full K from gradient differences",
+      "derivative_step_mm": 0.025,
+      "reference_jacobian_step_m": 1e-05,
+      "potential_relative_error": 1.5756147954741532e-06,
+      "force_relative_error": 2.7711034449479625e-05,
+      "diagonal_relative_error": 1.9912414143357844e-05,
+      "full_matrix_relative_error": 2.6618642346304966e-05
+    },
+    {
+      "model": "circular_piston",
+      "snapshot": {
+        "sources_mm": [
+          [
+            -20.0,
+            -20.0,
+            -40.0
+          ],
+          [
+            20.0,
+            -20.0,
+            -40.0
+          ],
+          [
+            -20.0,
+            20.0,
+            40.0
+          ],
+          [
+            20.0,
+            20.0,
+            40.0
+          ]
+        ],
+        "normals": [
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        ],
+        "phases_rad": [
+          0.2,
+          0.9,
+          2.4,
+          3.2
+        ],
+        "amplitudes": [
+          1.0,
+          0.7,
+          0.3,
+          0.9
+        ],
+        "field_config": {
+          "model": "circular_piston",
+          "frequency_hz": 39500.0,
+          "sound_speed_m_s": 340.0,
+          "density_kg_m3": 1.2040847588826422,
+          "source_strength": 1.0,
+          "aperture_radius_mm": 4.5,
+          "min_distance_m": 1e-06
+        },
+        "aperture_radii_mm": [
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "settings": {
+        "particle": {
+          "radius_mm": 0.2,
+          "density_kg_m3": 30.0,
+          "sound_speed_m_s": 2200.0,
+          "compressibility_pa_inv": null,
+          "provenance": "example",
+          "source": "synthetic numerical reference"
+        },
+        "span_mm": 2.0,
+        "samples": 5,
+        "derivative_step_mm": 0.1,
+        "relative_tolerance": 0.01,
+        "gravity_m_s2": [
+          0.0,
+          0.0,
+          -9.80665
+        ]
+      },
+      "reference": "installed levitate Gor'kov potential/gradient/laplacian; full K from gradient differences",
+      "derivative_step_mm": 0.025,
+      "reference_jacobian_step_m": 1e-05,
+      "potential_relative_error": 4.164327741166314e-07,
+      "force_relative_error": 1.7363340233321994e-05,
+      "diagonal_relative_error": 1.3565786385927543e-05,
+      "full_matrix_relative_error": 2.0524498944352944e-05
+    }
+  ],
+  "backend_comparisons": [
+    {
+      "model": "point_source",
+      "channels": 256,
+      "mode_idx": 0,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      },
+      "elapsed_seconds": 0.2041830000016489,
+      "force_relative_error": 0.0,
+      "matrix_relative_error": 0.0,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          3.225287012068694e-05,
+          7.357430587185703e-05,
+          0.0003471800071994241
+        ],
+        "uncertainty": 5.166826315867137e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2080092131194947e-05,
+          "stiffness_relative_change": 7.295649450410964e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.568005861111873e-07,
+          "stiffness_relative_change": 4.5713646712647147e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "point_source",
+      "channels": 256,
+      "mode_idx": 1,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      },
+      "elapsed_seconds": 0.3021042000000307,
+      "force_relative_error": 0.0,
+      "matrix_relative_error": 0.0,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          3.225287012068694e-05,
+          7.357430587185703e-05,
+          0.0003471800071994241
+        ],
+        "uncertainty": 5.166826315867137e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2080092131194947e-05,
+          "stiffness_relative_change": 7.295649450410964e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.568005861111873e-07,
+          "stiffness_relative_change": 4.5713646712647147e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "point_source",
+      "channels": 256,
+      "mode_idx": 2,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      },
+      "elapsed_seconds": 2.142487799999799,
+      "force_relative_error": 1.6656952732124186e-12,
+      "matrix_relative_error": 5.3395641421776785e-11,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          3.225287012378173e-05,
+          7.357430587834458e-05,
+          0.0003471800071972143
+        ],
+        "uncertainty": 5.1668246426490944e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2080092199005052e-05,
+          "stiffness_relative_change": 7.2956467575792276e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.568001518491652e-07,
+          "stiffness_relative_change": 4.571301002850155e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "point_source",
+      "channels": 256,
+      "mode_idx": 3,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      },
+      "elapsed_seconds": 0.2010465999992448,
+      "force_relative_error": 0.0,
+      "matrix_relative_error": 0.0,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          3.225287012068694e-05,
+          7.357430587185703e-05,
+          0.0003471800071994241
+        ],
+        "uncertainty": 5.166826315867137e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2080092131194947e-05,
+          "stiffness_relative_change": 7.295649450410964e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.568005861111873e-07,
+          "stiffness_relative_change": 4.5713646712647147e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "channels": 256,
+      "mode_idx": 0,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      },
+      "elapsed_seconds": 0.28748949999862816,
+      "force_relative_error": 0.0,
+      "matrix_relative_error": 0.0,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          1.4765984888257585e-05,
+          4.1357352275862795e-05,
+          0.00019345584397406596
+        ],
+        "uncertainty": 3.0345713526828774e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2604998770948365e-05,
+          "stiffness_relative_change": 7.694711817417332e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.897283814509261e-07,
+          "stiffness_relative_change": 4.82108786406243e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "channels": 256,
+      "mode_idx": 1,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      },
+      "elapsed_seconds": 0.4248733999993419,
+      "force_relative_error": 0.0,
+      "matrix_relative_error": 0.0,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          1.4765984888257585e-05,
+          4.1357352275862795e-05,
+          0.00019345584397406596
+        ],
+        "uncertainty": 3.0345713526828774e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2604998770948365e-05,
+          "stiffness_relative_change": 7.694711817417332e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.897283814509261e-07,
+          "stiffness_relative_change": 4.82108786406243e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "channels": 256,
+      "mode_idx": 2,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      },
+      "elapsed_seconds": 0.3563986000008299,
+      "force_relative_error": 1.2247867862399863e-12,
+      "matrix_relative_error": 3.100572066372282e-11,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          1.4765984884704365e-05,
+          4.135735227124253e-05,
+          0.0001934558439751127
+        ],
+        "uncertainty": 3.034570169948329e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2604998824431736e-05,
+          "stiffness_relative_change": 7.694708130971895e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.8972841887625e-07,
+          "stiffness_relative_change": 4.821150359976834e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "channels": 256,
+      "mode_idx": 3,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      },
+      "elapsed_seconds": 0.2890674999980547,
+      "force_relative_error": 0.0,
+      "matrix_relative_error": 0.0,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          1.4765984888257585e-05,
+          4.1357352275862795e-05,
+          0.00019345584397406596
+        ],
+        "uncertainty": 3.0345713526828774e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2604998770948365e-05,
+          "stiffness_relative_change": 7.694711817417332e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.897283814509261e-07,
+          "stiffness_relative_change": 4.82108786406243e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "channels": 256,
+      "mode_idx": 0,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      },
+      "elapsed_seconds": 0.2913670000016282,
+      "force_relative_error": 0.0,
+      "matrix_relative_error": 0.0,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          1.8260581999095735e-05,
+          4.808654898943027e-05,
+          0.00022548311778423734
+        ],
+        "uncertainty": 3.4856529389246633e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2457518922738977e-05,
+          "stiffness_relative_change": 7.58186494180847e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.804763675384415e-07,
+          "stiffness_relative_change": 4.750402587398273e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "channels": 256,
+      "mode_idx": 1,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      },
+      "elapsed_seconds": 0.4161979999989853,
+      "force_relative_error": 0.0,
+      "matrix_relative_error": 0.0,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          1.8260581999095735e-05,
+          4.808654898943027e-05,
+          0.00022548311778423734
+        ],
+        "uncertainty": 3.4856529389246633e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2457518922738977e-05,
+          "stiffness_relative_change": 7.58186494180847e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.804763675384415e-07,
+          "stiffness_relative_change": 4.750402587398273e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "channels": 256,
+      "mode_idx": 2,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      },
+      "elapsed_seconds": 0.364267100001598,
+      "force_relative_error": 1.6202005848221811e-12,
+      "matrix_relative_error": 2.8704841965083222e-11,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          1.8260581995941042e-05,
+          4.808654898584908e-05,
+          0.0002254831177808974
+        ],
+        "uncertainty": 3.48565435308764e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2457518715385133e-05,
+          "stiffness_relative_change": 7.5818688111940475e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.80475807222596e-07,
+          "stiffness_relative_change": 4.750192362974026e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "channels": 256,
+      "mode_idx": 3,
+      "centre_mm": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      },
+      "elapsed_seconds": 0.29266780000034487,
+      "force_relative_error": 0.0,
+      "matrix_relative_error": 0.0,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          1.8260581999095735e-05,
+          4.808654898943027e-05,
+          0.00022548311778423734
+        ],
+        "uncertainty": 3.4856529389246633e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "convergence": [
+        {
+          "from_step_mm": 0.133984,
+          "to_step_mm": 0.066992,
+          "force_relative_change": 1.2457518922738977e-05,
+          "stiffness_relative_change": 7.58186494180847e-06
+        },
+        {
+          "from_step_mm": 0.066992,
+          "to_step_mm": 0.033496,
+          "force_relative_change": 7.804763675384415e-07,
+          "stiffness_relative_change": 4.750402587398273e-07
+        }
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    }
+  ]
+}

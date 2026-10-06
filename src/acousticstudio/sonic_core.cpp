@@ -8,6 +8,26 @@
 #endif
 
 extern "C" {
+    // Shared SI Green matrix is built in Python; this ABI only reduces complex rows.
+#ifdef _WIN32
+    __declspec(dllexport)
+#endif
+    void complex_matvec(const double* matrix_real, const double* matrix_imag,
+                        const double* weights_real, const double* weights_imag,
+                        int rows, int columns, double* out_real, double* out_imag) {
+        #pragma omp parallel for
+        for (int row = 0; row < rows; ++row) {
+            double real = 0.0, imag = 0.0;
+            for (int col = 0; col < columns; ++col) {
+                const size_t offset = static_cast<size_t>(row) * columns + col;
+                real += matrix_real[offset] * weights_real[col] - matrix_imag[offset] * weights_imag[col];
+                imag += matrix_real[offset] * weights_imag[col] + matrix_imag[offset] * weights_real[col];
+            }
+            out_real[row] = real;
+            out_imag[row] = imag;
+        }
+    }
+
     // algorithm: 0 = None, 1 = Twin Trap, 2 = Vortex Trap
 #ifdef _WIN32
     __declspec(dllexport)

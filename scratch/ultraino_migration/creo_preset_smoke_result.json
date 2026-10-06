@@ -1,0 +1,18 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "preset": "Creo 8면 터널 · 8기판 × 32채널",
+  "channels": 256,
+  "pcbs": 8,
+  "rings": 2,
+  "emission_face0": [
+    105.0,
+    -29.0,
+    -70.0
+  ],
+  "qt_startup": true,
+  "preset_controls": true,
+  "standalone_vtk_render": true,
+  "qt_viewport_capture": false,
+  "save_restore": true,
+  "serial_connected": false
+}

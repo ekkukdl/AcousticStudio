@@ -5,6 +5,7 @@ import subprocess
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QTextEdit, QHBoxLayout, QMessageBox, QApplication
 from PySide6.QtCore import QThread, Signal, Qt
 from PySide6.QtGui import QFont, QColor
+from acousticstudio.dependencies import PACKAGE_INFO, installed_package_names
 
 class InstallWorker(QThread):
     log_signal = Signal(str)
@@ -89,20 +90,8 @@ class LibraryManagerDialog(QDialog):
         self.setWindowTitle("라이브러리 관리자")
         self.resize(600, 480)
 
-        import importlib.metadata
-        installed = {dist.metadata['Name'].lower() for dist in importlib.metadata.distributions()}
-
-        packages_info = {
-            'PySide6': {'type': '필수', 'size': '~200MB', 'desc': 'GUI 프레임워크'},
-            'pyvista': {'type': '필수', 'size': '~40MB', 'desc': '3D 렌더링 엔진'},
-            'numpy': {'type': '필수', 'size': '~15MB', 'desc': '수치 연산 배열 처리'},
-            'pyserial': {'type': '필수', 'size': '~2MB', 'desc': '하드웨어 USB 통신'},
-            'numba': {'type': '필수', 'size': '~10MB', 'desc': 'CPU 병렬 최적화'},
-            'taichi': {'type': '선택', 'size': '~30MB', 'desc': '다중/GPU 병렬 가속 연산'},
-            'torch': {'type': '선택', 'size': '~2.5GB', 'desc': 'NVIDIA 그래픽카드 초고속 연산'},
-            'psutil': {'type': '선택', 'size': '~1MB', 'desc': 'CPU 리소스 실시간 모니터링'},
-            'GPUtil': {'type': '선택', 'size': '~1MB', 'desc': 'GPU 리소스 실시간 모니터링'}
-        }
+        installed = installed_package_names()
+        packages_info = PACKAGE_INFO
 
         layout = QVBoxLayout(self)
 
@@ -123,6 +112,12 @@ class LibraryManagerDialog(QDialog):
                 lbl = QLabel(f"{status} | {pkg} ({info['size']}) - {info['desc']}")
                 lbl.setStyleSheet("color: green;" if is_inst else "color: red;")
                 layout.addWidget(lbl)
+                if not is_inst:
+                    cb = QCheckBox(f"{pkg} 설치", self)
+                    cb.setChecked(True)
+                    layout.addWidget(cb)
+                    self.checkbox_vars[pkg] = cb
+                    self.missing_selected.append(pkg)
 
         layout.addWidget(QLabel("\n[ 선택 설치 항목 ]"))
         for pkg, info in packages_info.items():

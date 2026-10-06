@@ -1,0 +1,42 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "qt_main_integration": true,
+  "phase_guard": true,
+  "snapshot_unchanged": true,
+  "force_settings_save_restore": true,
+  "qt_dialog_capture": true,
+  "qt_viewport_capture": false,
+  "serial_connected": false,
+  "analyses": [
+    {
+      "channels": 256,
+      "frozen_phases": true,
+      "source_model": "point_source",
+      "particle_provenance": "example",
+      "pressure_calibrated": false,
+      "axis_samples": 41,
+      "converged": true,
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          3.722531697073794e-05,
+          8.642145097537689e-05,
+          0.000384811703172071
+        ],
+        "uncertainty": 5.616876300011702e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "conditional_centre_residual": [
+        -1.3582198976121482e-19,
+        -7.449630347509055e-19,
+        -1.6046093539748158e-08
+      ],
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure",
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    }
+  ]
+}

@@ -49,11 +49,23 @@ def calculate_phases_sonic(cx, cy, cz, tx, ty, tz, amplitudes, algorithm_str, k)
     algorithm: 1 for Twin Trap, 2 for Vortex Trap, 0 for others
     Returns (phases_array, packet_bytes)
     """
-    if _cpp_lib is None:
-        return None, None # C++ DLL not found, fallback to numpy
-        
+    coordinates = [np.ascontiguousarray(values, dtype=np.float64) for values in (cx, cy, cz, tx, ty, tz)]
+    amplitudes = np.ascontiguousarray(amplitudes, dtype=np.float64)
+    if any(values.ndim != 1 or not np.all(np.isfinite(values)) for values in coordinates):
+        raise ValueError("C++ 위상 계산 좌표는 유한한 1차원 배열이어야 합니다.")
+    cx, cy, cz, tx, ty, tz = coordinates
     num_transducers = len(cx)
     num_points = len(tx)
+    if len(cy) != num_transducers or len(cz) != num_transducers or len(ty) != num_points or len(tz) != num_points:
+        raise ValueError("송신기 또는 목표점 좌표 배열의 길이가 일치하지 않습니다.")
+    if amplitudes.shape != (num_transducers,) or not np.all(np.isfinite(amplitudes)) or np.any(amplitudes < 0):
+        raise ValueError("C++ 위상 계산 진폭의 채널 수 또는 값이 잘못되었습니다.")
+    if not np.isfinite(k) or k <= 0:
+        raise ValueError("파수는 유한한 양수여야 합니다.")
+    if _cpp_lib is None:
+        return None, None # PhaseEngine supplies the NumPy fallback.
+    if num_transducers == 0 or num_points == 0:
+        return np.zeros(num_transducers), None
     
     algo_int = 0
     if "Twin Trap" in algorithm_str:
@@ -224,6 +236,15 @@ def get_gpu_name():
             return 'Unknown GPU'
 
 
+def calculate_complex_matvec_taichi(matrix, weights):
+    if not _has_taichi:
+        return None
+    real, imag = np.zeros(matrix.shape[0]), np.zeros(matrix.shape[0])
+    _complex_matvec_taichi(*(np.ascontiguousarray(v) for v in
+                           (matrix.real, matrix.imag, weights.real, weights.imag)), real, imag)
+    return real + 1j * imag
+
+
 # --- GPU Acceleration via Taichi ---
 try:
     import taichi as ti
@@ -233,6 +254,24 @@ except ImportError:
     _has_taichi = False
 
 if _has_taichi:
+    @ti.kernel
+    def _complex_matvec_taichi(
+        mr: ti.types.ndarray(dtype=ti.f64, ndim=2),
+        mi: ti.types.ndarray(dtype=ti.f64, ndim=2),
+        wr: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        wi: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        real: ti.types.ndarray(dtype=ti.f64, ndim=1),
+        imag: ti.types.ndarray(dtype=ti.f64, ndim=1),
+    ):
+        for row in range(mr.shape[0]):
+            r = ti.cast(0, ti.f64)
+            i = ti.cast(0, ti.f64)
+            for col in range(mr.shape[1]):
+                r += mr[row, col] * wr[col] - mi[row, col] * wi[col]
+                i += mr[row, col] * wi[col] + mi[row, col] * wr[col]
+            real[row] = r
+            imag[row] = i
+
     @ti.kernel
     def _calculate_phases_taichi_kernel(
         cx: ti.types.ndarray(dtype=ti.f64, ndim=1),

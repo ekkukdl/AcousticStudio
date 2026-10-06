@@ -4,6 +4,8 @@
 
 화면은 **보기 → UI → 클래식 / 모던**에서 선택합니다. 두 화면 모두 상단 **보드** 메뉴를 사용합니다. 설계 자료는 [구상도 시작 안내](구상도/START_HERE.md), 최신 32채널 PCB는 [제작 자료 안내](구상도/outputs/panel_8faces_32ch_R1/README.md)를 참고하세요. 통합 범위와 검증 기록은 [저장소 통합 기록](docs/repository_consolidation.md)에 있습니다.
 
+Ultraino 기능 이식은 [작업 계획](docs/ultraino_migration_plan.md)을 기준으로 진행합니다. 현재 대상은 **Creo R2의 8면·8기판·기판당 32송신기, 총 256채널**이며 터널 축은 Z입니다. 기존 배열 좌표와 개발 환경을 재사용하는 범위 및 단계별 완료 조건을 정리했습니다. [입력·환경 점검 결과](docs/ultraino_migration_audit.json)는 현재 로컬 설치 상태의 기록입니다.
+
 Acoustic Control Studio는 초음파 부상(Ultrasonic Levitation) 및 역장 제어(Acoustic Field Control) 연구를 위한 **통합 3D 시뮬레이션 및 하드웨어 제어 소프트웨어**입니다.
 이 프로그램은 사용자가 직관적인 3D UI를 통해 센서 배열을 설계하고, 타겟의 위치를 조작하며, 실시간으로 위상(Phase)을 계산하여 하드웨어 보드(아두이노, FPGA 등)로 직접 전송할 수 있는 All-in-One 플랫폼을 제공합니다.
 
@@ -20,7 +22,13 @@ Acoustic Control Studio는 초음파 부상(Ultrasonic Levitation) 및 역장 �
 
 ## 사전 설정 및 설치 가이드 (Prerequisites & Installation)
 
-본 프로그램을 실행하기 위해서는 Python 3.9 이상의 환경이 권장되며, 3D 렌더링 및 UI 구성을 위한 필수 라이브러리들이 필요합니다.
+Creo 배열은 `구성 → 배열 형태 → Creo 8면 터널 · 8기판 × 32채널`을 선택하고 `배열 3D 렌더링 생성`으로 추가합니다. 기존 CAD 좌표를 읽으므로 일반 Grid/Spacing 값은 적용되지 않습니다. 위치·회전은 배열 전체에 적용되며, PCB 8개와 프레임 링 2개는 간략 형상으로 표시합니다. [구현 및 검증 기록](docs/ultraino_t1_result.md)을 참고하세요.
+
+`음장 → 공통 음향 모델`에서 무지향, Ultraino sinc, 원형 피스톤을 선택합니다. 기본 개구는 미확정이며 CAD 외경에서 추정하지 않습니다. 방향성 모델에는 유효 음향 개구 반경이 필요하고, 음압은 미보정 상대값입니다. 설정을 바꾼 뒤 위상을 다시 계산하세요. [T2 결과 및 다음 작업](docs/ultraino_t2_result.md)에 데이터 계약과 검증 범위를 정리했습니다.
+
+위상을 계산한 뒤 `음장 → 고정 위상 방사력·복원성 분석`에서 입자 물성, 중력, 평가 범위와 미분 간격을 입력합니다. 현재 송신을 고정한 XYZ 힘·퍼텐셜·복원 곡선과 전체 3×3 복원행렬을 확인하고 분석 JSON을 저장할 수 있습니다. 기본 물성은 예시이며 음압 미보정 상태의 힘은 N* 가정값입니다. 실제 중력 평형·부양 판정은 보류합니다. [T3 결과와 T4 인계](docs/ultraino_t3_result.md)를 참고하세요.
+
+현재 로컬 개발 환경은 Python 3.13.9이며, 확인한 인터프리터와 의존성은 [이식 계획의 환경 안내](docs/ultraino_migration_plan.md)에 있습니다. 기존 환경을 먼저 확인하고 재사용하세요. 기본 `py`가 선택하는 Python과 앱용 환경은 다를 수 있습니다. 필수 의존성 10개는 `requirements.txt`와 공통 설치 카탈로그에 일치하며, 확인한 버전은 [requirements-tested.txt](requirements-tested.txt)에 기록했습니다. T2는 이미 설치된 SciPy를 재사용했습니다. 아래 신규 설치 예시는 새 머신에 필요한 경우에 사용합니다.
 
 ### 1. Python 가상 환경 설정 (선택 사항이나 권장)
 ```bash

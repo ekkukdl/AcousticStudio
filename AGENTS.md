@@ -5,6 +5,16 @@
 초음파 부상·음장 제어용 Python/PySide6/PyVista 데스크톱 프로그램이다.
 한국어로 소통하고, 요청에 필요한 변경을 구현·검증한 뒤 결과와 남은 한계를 보고한다.
 
+- Ultraino 이식·터널 배열 작업은 먼저 `docs/ultraino_migration_plan.md`를 읽는다.
+  T0·T1·T2·T3는 구현·소프트웨어 검증 완료이며 상세 기록은 `docs/ultraino_t0_result.md`,
+  `docs/ultraino_t1_result.md`, `docs/ultraino_t2_result.md`, `docs/ultraino_t3_result.md`다.
+  다음은 T4 Kinoforms·다중 트랩이다. T3 기록 끝의 구현·검증 인계 기준을 따른다.
+  현재 기준은 Creo R2의 **8면·8기판·기판당 32송신기, 총 256채널**이다.
+  `구상도/outputs/panel_8faces_32ch_R1/array_positions_256.json`의 방사면 좌표와
+  법선을 재사용한다. 터널 축은 Z이며 과거 16기판 구성이나 일반 Tube 생성식으로 대체하지 않는다.
+- 개발 환경 재사용 근거는 `docs/ultraino_migration_audit.json`에 있다.
+  현재 앱은 Anaconda Python 3.13.9 환경을 기준으로 확인했으며, 기본 `py`와
+  CAD 가상환경은 다른 환경이다. 실제 인터프리터를 확인한 뒤 실행한다.
 - 먼저 `docs/project_status.txt`, 관련 소스, `git status --short`를 확인한다.
   문서의 완료 표시는 구현 기록이며 실제 작동·물리 정확성의 검증 증거와 구분한다.
 - `main.py`는 시작 시 의존성 설치 UI를 띄울 수 있다. 읽기·문서 작업을 위해
@@ -14,6 +24,16 @@
 - `app.py`는 UI 통합, `phase_engine.py`는 물리/위상 계산,
   `sonic_wrapper.py`·`sonic_core.cpp`는 가속 연산, `hardware.py`는 시리얼,
   `kwave_engine.py`는 2D 기구물 해석을 담당한다.
+  `geometry.py`는 Creo JSON 모델, `geometry_scene.py`는 VTK 어댑터다.
+  CAD 배열의 계산 좌표는 모델의 방사면 위치이며 actor.center(몸체 중심)로 대체하지 않는다.
+  `field_model.py`의 FieldConfig/Green 모델을 재사용하고 `acoustic_model_ui.field_kwargs()`로
+  실제 법선·개구를 전달한다. 개구 미확정은 CAD 외경으로 대체하지 않는다.
+  전파는 CPU, 복소 합산은 선택 엔진이며 실제 사용/전환은 last_backend로 확인한다.
+- `force_analysis.py`는 T2 음장을 재사용한 고정 위상·진폭의 작은 구 고르코프 분석이다.
+  `FieldSnapshot`을 고정한 뒤 수신점만 이동한다. F=−∇U, K=−∂F/∂x이며 전체 3×3 행렬의
+  고유값과 h·h/2·h/4 수렴을 확인한다. 기존 궤적 relative_stiffness_norm과 혼동하지 않는다.
+  N*·J*는 상대 음압 1=1Pa 가정값이다. 예시 물성·미보정 음압으로 실물 평형/부양을 선언하지 않는다.
+  `force_analysis_ui.py` worker에는 Qt/VTK 객체를 전달하지 않고 계산 중 닫기는 취소·thread 종료를 기다린다.
 
 ## 변경과 사용자 의도
 
@@ -45,8 +65,9 @@
 
 - 문서 수정은 링크·인코딩·diff를 확인한다. 물리/통신 변경은 단위, 경계조건,
   실패 경로를 검증하고 GUI 변경은 해당 사용자 흐름을 확인한다.
-- 현재 자동화 테스트 모음은 없다. 새 테스트는 실제 회귀 위험이 있는 계산·프로토콜
-  동작을 검증할 때만 추가하고, GUI 실험 스크립트를 테스트로 가장하지 않는다.
+- 현재 `tests/test_hardware_profiles.py`와 `tests/test_ui_appearance.py`가 있다.
+  새 테스트는 실제 회귀 위험이 있는 계산·프로토콜 동작을 검증할 때만 추가하고,
+  GUI 실험 스크립트를 테스트로 가장하지 않는다. 테스트 통과와 실물 검증을 구분한다.
 - 음향 계산에서는 mm/m, rad/위상 바이트, 좌표축, 배열 형상과 채널 순서를 명확히 한다.
 - 상대 안정도 점수를 실험 성공률로 표현하지 않는다. fallback이나 계산 실패를
   정상 결과처럼 표시하지 않으며, 2D 모델 결과를 3D 실험 검증으로 간주하지 않는다.

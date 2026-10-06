@@ -1,5 +1,48 @@
 # AcousticStudio 프로젝트 상태 및 계획
 
+### 2026-10-07 Ultraino 이식 T3 고정 위상 방사력 분석 완료
+- force_analysis.py에 입자 반경·밀도·음속/직접 압축률·출처, 읽기 전용 FieldSnapshot, 고르코프 U/F와 전체 3×3 복원행렬 K=−∂F/∂x를 추가했다. T2 전파를 재사용하며 현재 위상/진폭을 고정하고 수신 위치만 이동한다. Creo R2의 8면·8기판·32개/기판·256채널 및 실제 방사면/법선을 유지한다.
+- 4차 정확도 미분과 h·h/2·h/4 수렴, 전체 K 고유값의 복원/비복원/보류를 계산한다. 대각 성분이 양수여도 결합 방향 saddle을 구별한다. 근접 스텐실·수렴 실패·작은 구 진단 범위 초과·NaN/Inf·잘못된 입력은 부양 판정으로 처리하지 않는다.
+- 음장 탭에 고정 위상 분석 창을 연결했다. XYZ 힘·상대 음압·퍼텐셜·축 K 곡선, 전체 행렬·고유값·명목 중력 잔류력 및 실제 엔진을 표시한다. 수치 worker는 Qt/VTK를 접근하지 않는다. 취소·닫기·Escape는 thread 종료 후 닫고 입력 변경/실패/취소는 이전 결과의 저장을 해제한다. 설정은 프로젝트·Undo/Redo, 분석은 입력 스냅샷을 포함한 JSON으로 저장한다.
+- 기본 반경0.25mm/밀도25kg/m³/음속2350m/s는 예시 물성이다. 음압은 미보정 상대값, N*·J*는 상대 음압1=1Pa 가정값이다. 중력 mg 합성은 명목 스케일 조건부 결과이며 실제 평형/부양 판정은 보류한다. 기존 궤적 relative_stiffness_norm과 구분한다. 대상 입자·실측 개구·음압/위상 보정은 미확정이다.
+- 검증: 전체 pytest 143 passed, 3 skipped, 1 warning (8.98s). 독립 정상파 해석식·Ultraino 계수·3모델 Levitate U/F/K·Creo 강체 변환·결합 saddle·명목 XYZ 평형 조건·미분 수렴/실패·고정 위상/취소·Qt worker 종료/JSON/설정 복원을 확인했다. 256채널 3모델×4엔진 요청12건에서 CPU/C++/실제 Taichi CUDA 일치, 최대 상대 오차 F1.67e−12/K5.34e−11. PyTorch는 현재 CUDA 불가로 CPU 전환하고 해당 GPU 테스트3개는 skip했다.
+- 실제 Qt 메인 창의 Creo256채널 Twin Trap/C++ 분석과 캡처를 확인했다. 고정 위상은 분석 전후 같았다. 중심 K는 명목 국소 복원 부호지만 가정 중력 잔류력 Z−1.60e−8N*로 평형이 아니다. 기존 Anaconda/필수 의존성10개/T2 DLL을 재사용했으며 설치·환경 생성·DLL 재빌드를 하지 않았다.
+- 상세 및 T4 인계: docs/ultraino_t3_result.md. 수치/Qt/정적 JSON·JUnit·PNG·재현 도구는 scratch/ultraino_migration에 있다. 실제 보드 송신·부양, CAD 재생성, k-Wave 및 Qt offscreen 3D 뷰포트 캡처는 검증하지 않았다. backup/commit/push는 갱신하지 않았다. 다음은 T4 Kinoforms·다중 트랩이다.
+
+### 2026-10-07 Ultraino 이식 T2 공통 음장·방향성 완료
+- field_model.py의 SI Green 행렬에 Creo 방사면 위치·실제 법선·개구·진폭을 연결했다. 무지향/Ultraino sinc/원형 피스톤을 구분하고 sin(x)/x의 NumPy π 규약과 원본 지름→반경 변환을 검증했다. 기존 ±Z 법선 추정·5mm 유효 반경 고정·Levitate 기본 음속/p0 의존을 제거했다.
+- 음장 탭에 공통 모델/주파수/매질 음속·밀도/미확정 개구/상대 스케일을 추가했다. 실시간 위상·단면·궤적 진단·내보내기가 같은 설정과 소프트웨어 순서를 사용한다. 설정은 프로젝트 및 Undo/Redo에 저장하고, 미확정 방향성 개구에는 계산/파일 출력을 보류한다. CAD 외경 반경 8mm를 유효 개구로 대신 쓰지 않는다.
+- NumPy/SciPy에서 전파 행렬을 만들고 복소 합산을 Numba/C++/Taichi/PyTorch 경로로 분리했다. 실제 엔진·CPU 전환 사유를 표시한다. 기존 Visual Studio MSVC 14.50.35717 x64로 DLL을 재빌드·검증·반영했고, 이전 위상 ABI도 유지했다. Taichi는 실제 CUDA에서 f64 연산을 확인했다. PyTorch 2.14.0은 CUDA build가 없는 설치본이어서 GPU 직접 실행은 미검증이다.
+- 기존 Anaconda Python 3.13.9 및 SciPy 1.15.3을 재사용했다. SciPy 직접 의존성을 requirements/공통 카탈로그/확인 버전에 명시하여 필수 항목 10개를 맞췄다. 새 환경/설치는 수행하지 않았다.
+- 검증: 전체 pytest 116 passed, 3 skipped, 1 warning. 세 전파 모델의 SI·방향성·Levitate 음압 비교, Creo 256채널 대칭·법선·강체 변환, CPU/native/Taichi 위상·복소장, 근접 특이점/오류/실패 진단, 모델 저장·Undo/Redo 및 내보내기 프레임 일치. 실제 Qt 창에서 미확정 오류·세 모델·14,400점 단면·저장/복원과 독립 VTK 렌더링도 확인했다.
+- 상세: docs/ultraino_t2_result.md. 재현 도구·JSON·JUnit·PNG는 scratch/ultraino_migration에 있다. 테스트 개구는 합성 값이며 실제 반경은 미확정이다. 음압은 상대값, stiffness는 미보정 명목 스케일이다. 실제 보드 송신·부양, CAD 재생성, k-Wave 실행 및 Qt offscreen 뷰포트 캡처는 검증하지 않았다. backup/commit/push는 갱신하지 않았다. 다음은 T3 고정 위상 방사력·방향별 복원성·입자 조건·미분 수렴 검증이다.
+
+### 2026-10-07 Ultraino 이식 T1 Creo 8면 터널 프리셋 완료
+- 구성에 Creo 8면 터널 · 8기판 × 32채널 프리셋을 추가했다. 기존 array_positions_256.json과 R2 geometry_checks.json을 읽으며 일반 Tube 공식이나 Grid/Spacing으로 좌표를 생성하지 않는다. 현재 고정 CAD 치수는 안내에 표시하고 일반 모델/Grid/Spacing 입력은 프리셋에서 숨긴다.
+- geometry.py 모델에 원본 해시, schema/geometry/instance ID, 256개 송신기 ID·소프트웨어 순서·면·행·열·방사면 위치·법선·진폭 가중치와 구조물 행렬을 보존했다. geometry_scene.py가 16mm×12.5mm 송신기, PCB 8개와 링 2개의 간략 표시를 담당한다. 슬롯·나사홀·전자부품을 포함한 제조용 CAD 표시가 아니다.
+- CAD의 방사면 중심과 actor 몸체 중심의 6.25mm 차이를 분리했다. 위상·음장 단면·궤적 진단·내보내기가 CAD 모델의 방사면 좌표를 사용하며 레거시 프로젝트에는 기존 어댑터를 유지한다. 현재 물리 엔진의 법선/방향성 계산은 T2에 남아 있다.
+- 프리셋은 고정 조립체로 선택·이동·회전·삭제하며 PCB/링도 함께 변환한다. 저장·복원과 Undo/Redo에 geometry_arrays를 포함하고 원본 CAD 파일이 없어도 저장 스냅샷을 복원한다. 기존 Tube 생성과 test1.json의 행렬도 확인했다.
+- UI 검사에서 T0의 양수 지연 계약과 기존 0ms 입력의 불일치를 보완했다. 새 입력은 1ms 이상이고 이전 파일의 0 이하 지연은 기존 재생 fallback과 같은 10ms로 복원한다.
+- 검증: 최종 전체 pytest 76 passed, 1 warning, 6.27s. CAD/R2 256개 방사면·법선 비교, 좌표계/비균일 열 간격, 한 면·대향 면 VTK 표면, 변환·ID·채널 순서·저장/복원·Undo/Redo·삭제·레거시 로딩을 확인했다. 실제 Qt 전체 초기화/프리셋 선택/저장·복원과 독립 VTK 렌더링도 통과했다. Qt offscreen에서는 OpenGL context 캡처가 불가능하여 Qt 뷰포트 캡처 성공으로 기록하지 않았다.
+- 상세: docs/ultraino_t1_result.md. 검사 도구·JSON·PNG는 scratch/ultraino_migration에 있다. 기존 Anaconda 환경을 재사용했으며 새 환경·의존성을 추가하지 않았다. 실제 보드 송신·부양, CAD 재생성, GPU 계산 커널/k-Wave solver 및 정상 데스크톱 Qt 3D 조작은 미검증이다. backup/과 commit/push는 변경하지 않았다. 다음 구현 단계는 T2 공통 복소 음장과 CAD 법선 방향성이다.
+
+### 2026-10-07 Ultraino 이식 T0 계산·송신·내보내기 정합화 완료
+- 궤적 최적화와 내보내기의 뒤집힌 C++ 좌표 호출을 PhaseEngine 공통 진입점으로 교체했다. 현재 연산 모드와 송신기 진폭을 사용하며 DLL 부재 시 NumPy 경로를 사용한다. 입력·계산 결과의 채널 수와 유한값을 검사한다.
+- 실패·빈 입력·영 트랩 강도에는 valid=False와 점수 None을 반환한다. 궤적 목록, 상태바, 진단 카드에 진단 불가를 표시하며 저장된 이전 Fallback의 75/60% 점수도 숨긴다. 성공 표시는 모델 상대 강도로 제한한다.
+- HardwareController에 소프트웨어 순서 위상 보정 후 물리 채널 맵 적용 경로를 모았다. 송신과 헤더/CSV/바이너리 내보내기가 이를 공유한다. 일반 .bin은 선택 프로파일의 실제 프레임, 이전 0xFA 파일은 .legacy.bin이다. 바이너리에 스텝 지연은 포함되지 않는다.
+- 필수 의존성 9개를 requirements.txt와 두 설치 UI의 공통 카탈로그에 맞췄다. 기존 Anaconda Python 3.13.9를 재사용했고 설치·환경 생성은 수행하지 않았다. 확인한 핵심 버전은 requirements-tested.txt에 기록했다.
+- 검증: pytest 전체 58 passed, 기존 7개 포함. 실제 C++ DLL/NumPy 일치, DLL 없음, 오류·빈 입력, 비순차 맵·보정의 5개 프로파일 송신/파일 일치, 실제 Levitate 계산 및 offscreen Qt 핸들러 확인. 필수 설치 점검/공통 카탈로그/18개 Python AST 통과. Taichi import의 locale 사용 중단 경고 1개가 있으며 기존 import가 GPU 런타임을 초기화하지만 GPU 계산 커널은 실행하지 않았다.
+- 상세 및 후속 작업: docs/ultraino_t0_result.md. T1 CAD 배열 프리셋은 후속 단계다. 법선 추정/유효 개구/상대 강도 모델은 T2·T3에서 교체·검증한다. 실제 보드 송신·부양, CAD 재생성, k-Wave 실행 및 전체 3D 앱 창 검증은 하지 않았다. backup/과 commit/push는 갱신하지 않았다.
+
+### 2026-10-07 Creo 8면 8기판 기준 Ultraino 이식 계획 정리
+- 사용자 지시에 따라 현재 기준을 8면·8기판·기판당 32트랜스듀서, 총 256채널로 명시했다. 현재 Creo는 outputs/panel_8faces_32ch_R1/mechanical/creo32_frame_R2/native/tunnel8_32_r2.asm이다. 이전 16기판 모델의 완료 기록은 역사 자료이며 현재 형상 기준이 아니다.
+- docs/ultraino_migration_plan.md에 기존 기능 재사용, CAD 좌표·법선·행렬 규약, 개발 환경, T0~T7의 파일 범위·선행 작업·완료 조건 및 에이전트 전달 형식을 정리했다. AGENTS.md, README 및 설계 시작 안내에서 연결했다.
+- 기존 array_positions_256.json과 R2 행렬·Creo 재조회 배치 기록을 비교했다. 8면×32개, 256개 방사면 좌표 및 법선, 후보 물리 채널 맵이 일치하며 위치 최대 오차 약 5.61e-14 mm. 현재 ASM/PRT 13개와 원본 PCB 해시가 기존 manifest/입력 기록과 일치했다.
+- Python 환경 4개를 점검했다. 앱 기준 Anaconda Python 3.13.9에서 핵심 의존성 10개 import 성공. 기본 py는 패키지가 없는 Python 3.14.6을 선택하며 CAD 환경은 별도 버전의 NumPy/VTK를 사용한다. 패키지 설치·환경 생성은 하지 않았다.
+- 확인한 기존 기능은 Tube 생성, BoardProfile/채널 매핑, 자동 계산·실시간 전송, JSON 입출력, 두 UI 및 기존 테스트다. 새 이식에서는 이를 확장하며, 중복 엔진·CAD 생성기·시리얼 계층을 만들지 않는다. requirements/startup 필수 의존성 선언 불일치는 T0에서 해결할 예정이다.
+- 입력·환경 근거는 docs/ultraino_migration_audit.json, 재점검 도구는 scratch/ultraino_migration/audit_inputs.py다. 문서 8개의 UTF-8과 상대 링크 75개를 확인했으며 깨진 링크 0개, 점검 도구 AST 문법 및 git diff --check 통과. 앱 소스와 CAD 파일은 수정하지 않았다.
+- 이번 작업은 계획과 기준 정리다. 앱 코드 수정, 기존 기능 테스트 실행, CAD 재생성/현재 Creo 창 검사, GPU·k-Wave solver 실행, 실제 보드 송신 및 부양 실험은 하지 않았다. 다음 구현 작업은 T0 계산 호출·실패 진단·송신/내보내기 경로 정합화다.
+
 ### 2026-10-06 구상도 작업 자료 정리
 - 사용자 요청으로 `구상도/outputs`를 pcb, cad_generation, budgets, vendor_templates, reference_analysis, concepts, docs로 분류하고 `scratch`의 스크립트·중간 입력·업체 조사·이동 기록을 용도별 하위 폴더로 이동했다.
 - `구상도/START_HERE.md`와 각 결과물/작업 폴더 안내를 추가했다. 최신 8면 16기판·256송신기 구성과 초기 8면 8기판·128송신기 구성의 차이를 명시했다.

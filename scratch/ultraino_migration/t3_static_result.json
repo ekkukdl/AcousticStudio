@@ -1,0 +1,13 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "ast_files": 37,
+  "utf8_documents": 13,
+  "local_links": 136,
+  "native_hash_matches": true,
+  "numerical_input_hashes_match": true,
+  "pytest_cases": 146,
+  "pytest_skipped": 3,
+  "pytest_failures": 0,
+  "pytest_errors": 0,
+  "git_diff_check": true
+}

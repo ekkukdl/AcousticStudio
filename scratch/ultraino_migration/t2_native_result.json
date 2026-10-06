@@ -1,0 +1,18 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "compiler": "MSVC 14.50.35717 x64 /O2 /openmp",
+  "models": [
+    "point_source",
+    "ultraino_sinc",
+    "circular_piston"
+  ],
+  "max_abs_pressure_errors": {
+    "point_source": 8.101433657963767e-14,
+    "ultraino_sinc": 4.618527782440651e-14,
+    "circular_piston": 5.684341886080802e-14
+  },
+  "legacy_phase_abi": true,
+  "complex_matvec_abi": true,
+  "source_sha256": "ead3637bca4d09a067a3412d8a588b948352ca6687c033cff9caca6155437717",
+  "dll_sha256": "f361f6b91fb1ab9adfb4139d13de6d9d5b3b24e87a9e7bc5a6c34a8aa450ccc1"
+}

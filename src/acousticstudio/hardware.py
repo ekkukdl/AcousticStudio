@@ -116,6 +116,7 @@ class HardwareController(QObject):
         self.serial_port = None
         self.board_profile = BOARD_PROFILES["legacy_phase32"]
         self.channel_map: list[int] | None = None
+        self.phase_offsets: list[float] | None = None
 
         # Timer-based health check (1 s interval)
         self.hw_health_timer = QTimer(self)
@@ -144,6 +145,7 @@ class HardwareController(QObject):
         except KeyError as exc:
             raise ValueError(f"알 수 없는 보드 프로파일: {profile_key}") from exc
         self.channel_map = None
+        self.phase_offsets = None
         return self.board_profile
 
     def set_channel_map(self, channel_map: Iterable[int]) -> None:
@@ -160,6 +162,44 @@ class HardwareController(QObject):
         if len(mapping) != count or set(mapping) != set(range(count)):
             raise ValueError(f"채널 맵은 0부터 {count - 1}까지를 한 번씩 포함해야 합니다.")
         self.channel_map = mapping
+
+    def set_phase_offsets(self, offsets_radians: Iterable[float]) -> None:
+        """Set additive calibration offsets in software channel order.
+
+        This in-memory hook does not constitute a measured calibration. Profile
+        changes clear it, just like the channel map.
+        """
+        offsets = [float(value) for value in offsets_radians]
+        count = self.board_profile.channel_count
+        if not offsets or not all(isfinite(value) for value in offsets):
+            raise ValueError("위상 보정값은 비어 있지 않은 유한한 배열이어야 합니다.")
+        if count is not None and len(offsets) != count:
+            raise ValueError(f"위상 보정값은 {count}채널과 일치해야 합니다.")
+        self.phase_offsets = offsets
+
+    def prepare_phases(self, phases_radians: Iterable[float]) -> list[float]:
+        """Validate software phases, correct once, then map to physical order."""
+        phases = [float(value) for value in phases_radians]
+        count = self.board_profile.channel_count
+        if not phases or not all(isfinite(value) for value in phases):
+            raise ValueError("위상 배열은 비어 있지 않은 유한한 배열이어야 합니다.")
+        if count is not None and len(phases) != count:
+            raise ValueError(f"{self.board_profile.label} 프로파일은 정확히 {count}채널을 요구합니다.")
+        if self.phase_offsets is not None:
+            if len(self.phase_offsets) != len(phases):
+                raise ValueError("위상 보정값과 송신기 채널 수가 일치하지 않습니다.")
+            phases = [phase + offset for phase, offset in zip(phases, self.phase_offsets)]
+        if self.channel_map is not None:
+            phases = [phases[source] for source in self.channel_map]
+        return phases
+
+    def prepare_phase_steps(self, phases_radians: Iterable[float]) -> list[int]:
+        """Return the same corrected, mapped phase steps used on the wire."""
+        return phases_to_steps(self.prepare_phases(phases_radians))
+
+    def build_phase_frame(self, phases_radians: Iterable[float]) -> bytes:
+        """Build a profile frame without touching a serial port."""
+        return encode_phase_frame(self.board_profile, self.prepare_phases(phases_radians))
 
     # ------------------------------------------------------------------
     # Connection management
@@ -243,10 +283,7 @@ class HardwareController(QObject):
         Returns the transmitted frame to allow deterministic fake-transport
         tests.  It does not claim that a physical board accepted the frame.
         """
-        phases = list(phases_radians)
-        if self.channel_map is not None:
-            phases = [phases[source] for source in self.channel_map]
-        frame = encode_phase_frame(self.board_profile, phases)
+        frame = self.build_phase_frame(phases_radians)
         self.send_packet(frame)
         return frame
 

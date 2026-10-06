@@ -1,0 +1,235 @@
+{
+  "generated_at_utc": "2026-10-06T18:39:28.806287+00:00",
+  "workspace_root": "C:\\Users\\line0\\OneDrive\\바탕 화면\\초음파부상 및 역장제어 자료조사\\AcousticStudio",
+  "geometry": {
+    "ok": true,
+    "pcb_count": 8,
+    "channels_per_pcb": 32,
+    "channels": 256,
+    "banks_per_pcb": 2,
+    "channels_per_bank": 16,
+    "tunnel_axis": "Z",
+    "parameters": {
+      "revision": "R1",
+      "faces": 8,
+      "columns": 4,
+      "rows": 8,
+      "board_width_mm": 84,
+      "board_length_mm": 224.0,
+      "board_thickness_mm": 1.6,
+      "column_pitches_mm": [
+        18.0,
+        22.0,
+        18.0
+      ],
+      "row_pitch_mm": 20.0,
+      "mounting_strip_mm": 22.0,
+      "transducer_diameter_mm": 16.0,
+      "transducer_height_mm": 12.5,
+      "emitting_plane_separation_mm": 210
+    },
+    "face_zero_transverse_mm": [
+      -29.0,
+      -11.0,
+      11.0,
+      29.0
+    ],
+    "axial_levels_mm": [
+      -70.0,
+      -50.0,
+      -30.0,
+      -10.0,
+      10.0,
+      30.0,
+      50.0,
+      70.0
+    ],
+    "max_position_error_mm": 5.606087625430511e-14,
+    "max_normal_error": 3.179412736951441e-16,
+    "native_reopen_placement_matches_inputs": true,
+    "native_files_matching_archived_manifest": 13,
+    "native_sha256": {
+      "native/c0805_r1.prt": "0765916784b90067f08b0e8b68dabc0d58acb7ed86c4b9ee03efbdb8e302103c",
+      "native/cp63_r1.prt": "2cab2b4ece7f2be11f7e9c0bea165187adb2149165d1bc762aae7ec6b373d2de",
+      "native/hdr10_r1.prt": "77c3e811d9fa68153fc2f6a65762cab3d15efb861c0302acfbc85457d120413b",
+      "native/hdr3_r1.prt": "1dfb89e969e7e06cf7bc353e7f3250d6e25f65b2c541797269c59806802d228b",
+      "native/panel32_r2.asm": "227e84f904c5a0b2f13e4c93a289de43713a9c5466a3f6e92120a982a7bf4457",
+      "native/pcb32_r2.prt": "f89ad210ece472b67410c6ed73fccad01165429ce0e97933da84a4ea7b7875d0",
+      "native/r0805_r1.prt": "3a1d0cd9d0d7a9949f879369620e37197082e7b57b4d120ecb6abd730369fb3a",
+      "native/ring8_32_r2.prt": "5ffe9408a8b2e60625bb7ea3cf9d6000deed4b03098cc7c7d2a9197766aedade",
+      "native/so16_r1.prt": "564aea00a3396f6cb33d6b2872ecf8e17aa9977802b5da926f47ebfa64881140",
+      "native/so8_r1.prt": "19e832ec10712c603a8821e2ca8d5d7d7661381a9cd8deb014cabc006afaac12",
+      "native/sot23_r1.prt": "2c89cb3d8552c129457d841fd5802dab2f200b46ffd79317f4987abd4b1dd6ce",
+      "native/tunnel8_32_r2.asm": "e351237d1cd667021bd5935d91124cfdc704c6abe2c59c586184c587a2e429a3",
+      "native/tx16_r1.prt": "68988c065ac9678e3fc56eeb2976ad6e878a6ddb49c8493b4ab5884606481d66"
+    },
+    "input_sha256": {
+      "구상도/outputs/panel_8faces_32ch_R1/parameters.json": "07a88c8f1511a8b0e29b27a985b9cab23c0f8d632e205cd74b68e690578b0d7b",
+      "구상도/outputs/panel_8faces_32ch_R1/array_positions_256.json": "4fa1145fce5a3f39a84f85b83382aedb8aef7000a028728c60f8a2e68ebbfa79",
+      "구상도/outputs/panel_8faces_32ch_R1/channel_map.csv": "f1ab1289701e91ce288926e873f0c03bca154ae1f97feacb6c625472877989b5",
+      "구상도/outputs/panel_8faces_32ch_R1/physical_to_software_channel_map.json": "ccd2b8de6be33f3131139417f9583e18b13a12603eebbc768402d376eea7a22a",
+      "구상도/outputs/panel_8faces_32ch_R1/mechanical/creo32_frame_R2/geometry_checks.json": "aede30b49afdcd82dd57811d8e090b0c4796c1f786949141015d5cb61b56015c",
+      "구상도/outputs/panel_8faces_32ch_R1/mechanical/creo32_frame_R2/validation/native_reopen_report.json": "9f80fb622cb054b3ce237c2bae0b6eba4ac5edbdd03823ce2f5732d46a9d01d7"
+    },
+    "channel_map_is_candidate_not_measured": true,
+    "scope": "Current files compared with archived Creo placement evidence; no live Creo session or acoustic experiment."
+  },
+  "environments": [
+    {
+      "executable": "C:\\Users\\line0\\anaconda3\\python.exe",
+      "version": "3.13.9",
+      "prefix": "C:\\Users\\line0\\anaconda3",
+      "base_prefix": "C:\\Users\\line0\\anaconda3",
+      "packages": {
+        "numpy": "2.2.6",
+        "numba": "0.62.1",
+        "PySide6": "6.9.2",
+        "pyvista": "0.49.0",
+        "pyvistaqt": "0.13.1",
+        "vtk": "9.7.0",
+        "matplotlib": "3.10.9",
+        "levitate": "3.0.0",
+        "pyserial": "3.5",
+        "pytest": "8.4.2",
+        "scipy": "1.15.3",
+        "k-wave-python": "0.6.3rc1",
+        "torch": "2.14.0",
+        "taichi": "1.7.4",
+        "psutil": "7.0.0",
+        "GPUtil": "1.4.0",
+        "cadquery": null,
+        "cadquery-ocp": null
+      }
+    },
+    {
+      "executable": "C:\\Users\\line0\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "version": "3.14.6",
+      "prefix": "C:\\Users\\line0\\AppData\\Local\\Python\\pythoncore-3.14-64",
+      "base_prefix": "C:\\Users\\line0\\AppData\\Local\\Python\\pythoncore-3.14-64",
+      "packages": {
+        "numpy": null,
+        "numba": null,
+        "PySide6": null,
+        "pyvista": null,
+        "pyvistaqt": null,
+        "vtk": null,
+        "matplotlib": null,
+        "levitate": null,
+        "pyserial": null,
+        "pytest": null,
+        "scipy": null,
+        "k-wave-python": null,
+        "torch": null,
+        "taichi": null,
+        "psutil": null,
+        "GPUtil": null,
+        "cadquery": null,
+        "cadquery-ocp": null
+      }
+    },
+    {
+      "executable": "C:\\Users\\line0\\OneDrive\\바탕 화면\\초음파부상 및 역장제어 자료조사\\AcousticStudio\\구상도\\scratch\\creo_cad_env\\Scripts\\python.exe",
+      "version": "3.13.9",
+      "prefix": "C:\\Users\\line0\\OneDrive\\바탕 화면\\초음파부상 및 역장제어 자료조사\\AcousticStudio\\구상도\\scratch\\creo_cad_env",
+      "base_prefix": "C:\\Users\\line0\\anaconda3",
+      "packages": {
+        "numpy": "2.5.3",
+        "numba": "0.68.0",
+        "PySide6": null,
+        "pyvista": null,
+        "pyvistaqt": null,
+        "vtk": "9.6.2",
+        "matplotlib": "3.11.2",
+        "levitate": null,
+        "pyserial": null,
+        "pytest": null,
+        "scipy": "1.18.1",
+        "k-wave-python": null,
+        "torch": null,
+        "taichi": null,
+        "psutil": null,
+        "GPUtil": null,
+        "cadquery": "2.8.0",
+        "cadquery-ocp": "7.9.3.1.1"
+      }
+    },
+    {
+      "executable": "C:\\Users\\line0\\anaconda3\\envs\\sixsense\\python.exe",
+      "version": "3.9.25",
+      "prefix": "C:\\Users\\line0\\anaconda3\\envs\\sixsense",
+      "base_prefix": "C:\\Users\\line0\\anaconda3\\envs\\sixsense",
+      "packages": {
+        "numpy": "1.26.4",
+        "numba": null,
+        "PySide6": null,
+        "pyvista": null,
+        "pyvistaqt": null,
+        "vtk": null,
+        "matplotlib": null,
+        "levitate": null,
+        "pyserial": null,
+        "pytest": null,
+        "scipy": "1.13.1",
+        "k-wave-python": null,
+        "torch": null,
+        "taichi": null,
+        "psutil": "7.2.2",
+        "GPUtil": null,
+        "cadquery": null,
+        "cadquery-ocp": null
+      }
+    }
+  ],
+  "tools_on_path": {
+    "python": "C:\\Users\\line0\\anaconda3\\python.EXE",
+    "py": "C:\\Users\\line0\\AppData\\Local\\Microsoft\\WindowsApps\\py.EXE",
+    "java": "C:\\Program Files\\Eclipse Adoptium\\jdk-25.0.4.101-hotspot\\bin\\java.EXE",
+    "node": "C:\\Program Files\\nodejs\\node.EXE",
+    "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
+    "cl": null
+  },
+  "project_environment_paths": {
+    ".venv": false,
+    "venv": false,
+    "구상도/scratch/creo_cad_env": true,
+    "구상도/scratch/creo32_env": false,
+    "구상도/scratch/pcb32_tools": false,
+    "구상도/scratch/pcb32_support": false
+  },
+  "app_imports": {
+    "numpy": {
+      "ok": true
+    },
+    "numba": {
+      "ok": true
+    },
+    "PySide6.QtCore": {
+      "ok": true
+    },
+    "pyvista": {
+      "ok": true
+    },
+    "pyvistaqt": {
+      "ok": true
+    },
+    "vtk": {
+      "ok": true
+    },
+    "matplotlib": {
+      "ok": true
+    },
+    "levitate": {
+      "ok": true
+    },
+    "serial": {
+      "ok": true
+    },
+    "pytest": {
+      "ok": true
+    }
+  },
+  "package_installation_performed": false,
+  "app_started": false,
+  "hardware_accessed": false,
+  "tests_run": []
+}

@@ -14,14 +14,21 @@ from PySide6.QtWidgets import (QApplication, QSplitter, QMainWindow, QWidget, QV
                                      QScrollArea, QFormLayout, QListWidgetItem, QMessageBox, QFrame, QTabWidget)
 from PySide6.QtCore import Qt, QObject, QEvent, QRect, QThread, Signal
 import time
+from html import escape
+from copy import deepcopy
 
 # --- 분리된 모듈 import ---
 from acousticstudio.widgets import ResourceMonitorThread, MouseEventFilter, WheelBlocker, KeepOpenMenu
-from acousticstudio.phase_engine import PhaseEngine, calculate_field_slice_numba
+from acousticstudio.phase_engine import PhaseEngine, trajectory_diagnosis_is_valid
 from acousticstudio.hardware import BOARD_PROFILES, HardwareController
 from acousticstudio.state_manager import StateManager
 from acousticstudio import file_io
 from acousticstudio.ui_appearance import UIAppearance
+from acousticstudio.geometry import CREO_PRESET_LABEL, load_creo_tunnel, transform_geometry, validate_geometry
+from acousticstudio.geometry_scene import create_geometry_actors, vtk_matrix, transducer_inputs
+from acousticstudio.field_model import FieldConfig
+from acousticstudio.acoustic_model_ui import AcousticModelControls, field_kwargs, model_changed, model_failed, show_backend
+from acousticstudio.force_analysis import AnalysisSettings, FieldSnapshot
 
 
 class AcousticStudioMain(QMainWindow):
@@ -100,6 +107,7 @@ class AcousticStudioMain(QMainWindow):
         
         # --- 분리된 모듈 인스턴스 초기화 ---
         self.phase_engine = PhaseEngine()
+        self.force_analysis_settings = AnalysisSettings().to_dict()
         self.hw_controller = HardwareController(self)
         self.state_mgr = StateManager(max_undo=20)
         
@@ -293,6 +301,8 @@ class AcousticStudioMain(QMainWindow):
         self.plotter.add_key_event('Delete', self.delete_selected_objects)
         
         self.transducer_actors = []
+        self.geometry_arrays = []
+        self.geometry_support_actors = []
         self.control_points = []
         self.selected_actors = []
         self.selected_point_index = -1
@@ -529,11 +539,12 @@ class AcousticStudioMain(QMainWindow):
         array_group = QGroupBox("배열 구성")
         array_layout = QVBoxLayout()
         array_form = QFormLayout()
+        self.array_form = array_form
         
         self.transducer_type_cb = QComboBox()
         self.transducer_type_cb.addItems(["일반 초음파 (10mm)", "일반 초음파 (16mm)", "랑주뱅 진동자 (Langevin)"])
         self.array_type_cb = QComboBox()
-        self.array_type_cb.addItems(["NxM Matrix (평면)", "다면체 (상하좌우)", "대향형 (상하)", "반구형 (Hemisphere)", "튜브형 (Tube)"])
+        self.array_type_cb.addItems(["NxM Matrix (평면)", "다면체 (상하좌우)", "대향형 (상하)", "반구형 (Hemisphere)", "튜브형 (Tube)", CREO_PRESET_LABEL])
         
         self.grid_x_spin = QSpinBox(); self.grid_x_spin.setValue(16); self.grid_x_spin.setRange(1, 100)
         self.grid_y_spin = QSpinBox(); self.grid_y_spin.setValue(16); self.grid_y_spin.setRange(1, 100)
@@ -563,6 +574,11 @@ class AcousticStudioMain(QMainWindow):
             elif "16mm" in t: self.spacing_spin.setValue(16.5)
             else: self.spacing_spin.setValue(50.0)
         self.transducer_type_cb.currentTextChanged.connect(on_transducer_type_changed)
+        self.array_type_cb.currentTextChanged.connect(self.update_array_preset_controls)
+        self.array_preset_info = QLabel()
+        self.array_preset_info.setWordWrap(True)
+        array_layout.addWidget(self.array_preset_info)
+        self.update_array_preset_controls()
         gen_grid = QFormLayout()
         array_pos = QHBoxLayout()
         for name, spin in (("X", self.gen_pos_x), ("Y", self.gen_pos_y), ("Z", self.gen_pos_z)):
@@ -627,7 +643,7 @@ class AcousticStudioMain(QMainWindow):
         field_group = QGroupBox("위상 계산")
         field_layout = QFormLayout()
         self.trap_type_cb = QComboBox()
-        self.trap_type_cb.addItems(["Twin Trap", "Vortex Trap"])
+        self.trap_type_cb.addItems(["Twin Trap", "Vortex Trap", "Focus"])
         field_layout.addRow("트랩 종류:", self.trap_type_cb)
         
         self.run_btn = QPushButton("Calculate Phase (위상 계산 및 시각화)")
@@ -636,6 +652,8 @@ class AcousticStudioMain(QMainWindow):
         field_layout.addRow(self.run_btn)
         field_group.setLayout(field_layout)
         field_tab_layout.addWidget(field_group)
+        self.acoustic_model_controls = AcousticModelControls(lambda *_: model_changed(self))
+        field_tab_layout.addWidget(self.acoustic_model_controls)
         
         # [5. ?占쎌븬 ?占쎄컖??洹몃９]
         visual_group = QGroupBox("음장 분석")
@@ -694,6 +712,10 @@ class AcousticStudioMain(QMainWindow):
         self.field_mode_combo.currentIndexChanged.connect(self.update_field_slice)
         show_field_lyt.addWidget(self.field_mode_combo)
         visual_layout.addLayout(show_field_lyt)
+
+        self.btn_force_analysis = QPushButton('고정 위상 방사력·복원성 분석')
+        self.btn_force_analysis.clicked.connect(self.open_force_analysis)
+        visual_layout.addWidget(self.btn_force_analysis)
         
         self.btn_kwave_sim = QPushButton("k-Wave 기구물 음향 시뮬레이션 (Reflector/Tunnel)")
         self.btn_kwave_sim.setStyleSheet("background-color: #ffffff; color: #5e7f9d; height: 30px; font-weight: bold; border: 1px solid #b8c9d7; border-radius: 6px;")
@@ -797,7 +819,7 @@ class AcousticStudioMain(QMainWindow):
 
         res_lyt.addWidget(QLabel("간격 (ms):"))
         self.traj_delay = QSpinBox()
-        self.traj_delay.setRange(0, 5000)
+        self.traj_delay.setRange(1, 5000)
         self.traj_delay.setValue(50)
         res_lyt.addWidget(self.traj_delay)
 
@@ -1047,6 +1069,9 @@ class AcousticStudioMain(QMainWindow):
     def send_phase_data(self):
         if not self.hw_controller.is_connected():
             return
+        if getattr(self, '_field_model_dirty', False):
+            self.statusBar().showMessage('음향 설정이 변경되어 위상 재계산이 필요합니다.', 5000)
+            return
         try:
             phases = [getattr(act, '_phase', 0.0) for act in self.transducer_actors]
             if not phases:
@@ -1104,6 +1129,7 @@ class AcousticStudioMain(QMainWindow):
                     c = act.center
                     pt["x"], pt["y"], pt["z"] = c[0], c[1], c[2]
                     point_moved = True
+        self._sync_cad_geometry()
                     
         # 湲곗쫰紐 쐞移 뾽뜲씠듃
         if hasattr(self, 'gizmo_actors') and self.gizmo_actors:
@@ -1180,6 +1206,13 @@ class AcousticStudioMain(QMainWindow):
                 if pv_act is not None:
                     picked_props.append(pv_act)
                 prop = props.GetNextProp3D()
+        # A fixed CAD layout moves/selects as a complete assembly.
+        instance_ids = {getattr(actor, '_geometry_instance', None) for actor in picked_props}
+        instance_ids.discard(None)
+        if instance_ids:
+            picked_props = [actor for actor in picked_props if not hasattr(actor, '_geometry_instance')]
+            picked_props.extend(actor for actor in self.transducer_actors
+                                if getattr(actor, '_geometry_instance', None) in instance_ids)
         is_ctrl = bool(int(modifiers) & int(Qt.KeyboardModifier.ControlModifier)) if hasattr(modifiers, "__int__") else bool(modifiers & Qt.KeyboardModifier.ControlModifier.value) if type(modifiers) == int else bool(modifiers & Qt.KeyboardModifier.ControlModifier)
         
         if not is_ctrl:
@@ -1233,7 +1266,7 @@ class AcousticStudioMain(QMainWindow):
                 
         if has_sensor and not has_cp:
             self.prop_type_lbl.setText("珥덉쓬뙆 꽱꽌")
-            self.prop_sensor_cb.setEnabled(True)
+            self.prop_sensor_cb.setEnabled(not any(hasattr(a, '_geometry_element') for a in self.selected_actors))
         elif has_cp and not has_sensor:
             self.prop_type_lbl.setText("제어점")
             self.prop_radius_spin.setEnabled(True)
@@ -1337,6 +1370,8 @@ class AcousticStudioMain(QMainWindow):
     
     def on_prop_sensor_changed(self, idx):
         if getattr(self, '_is_updating_ui', False) or not self.selected_actors: return
+        if any(hasattr(actor, '_geometry_element') for actor in self.selected_actors):
+            return
         sensor_type = self.prop_sensor_cb.currentText()
         if "10mm" in sensor_type:
             height, color, amplitude = 4.0, "lightblue", 1.0
@@ -1404,6 +1439,18 @@ class AcousticStudioMain(QMainWindow):
     def delete_selected_objects(self):
         if not self.selected_actors:
             return
+        instance_ids = {getattr(actor, '_geometry_instance', None) for actor in self.selected_actors}
+        instance_ids.discard(None)
+        if instance_ids:
+            self.selected_actors = [actor for actor in self.selected_actors if not hasattr(actor, '_geometry_instance')]
+            self.selected_actors.extend(actor for actor in self.transducer_actors
+                                        if getattr(actor, '_geometry_instance', None) in instance_ids)
+            for actor in list(self.geometry_support_actors):
+                if actor._geometry_instance in instance_ids:
+                    self.plotter.remove_actor(actor, render=False)
+                    self.geometry_support_actors.remove(actor)
+            self.geometry_arrays = [geometry for geometry in self.geometry_arrays
+                                    if geometry['instance_id'] not in instance_ids]
             
         for actor in self.selected_actors:
             if actor in self.transducer_actors:
@@ -1523,10 +1570,18 @@ class AcousticStudioMain(QMainWindow):
         self.plotter.render()
     def get_state(self, for_file=False):
         data = {}
+        data['geometry_arrays'] = deepcopy(getattr(self, 'geometry_arrays', []))
+        if hasattr(self, 'acoustic_model_controls'):
+            data['acoustic_model'] = self.acoustic_model_controls.config().to_dict()
+        if hasattr(self, 'force_analysis_settings'):
+            data['force_analysis_settings'] = deepcopy(self.force_analysis_settings)
         # Array UI Params
         data['transducer_type'] = self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else ""
         data['array_type'] = self.array_type_cb.currentText() if hasattr(self, 'array_type_cb') else ""
         data['spacing'] = self.spacing_spin.value() if hasattr(self, 'spacing_spin') else 10.5
+        if hasattr(self, 'gen_pos_x'):
+            data['gen_position'] = [self.gen_pos_x.value(), self.gen_pos_y.value(), self.gen_pos_z.value()]
+            data['gen_rotation'] = [self.gen_rot_x.value(), self.gen_rot_y.value(), self.gen_rot_z.value()]
         
         # Field UI Params
         data['trap_type'] = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else ""
@@ -1572,7 +1627,12 @@ class AcousticStudioMain(QMainWindow):
                 for r in range(4):
                     for c in range(4):
                         matrix_vals.append(mat.GetElement(r, c))
-            data['transducers'].append({'matrix': matrix_vals})
+            tx = {'matrix': matrix_vals, 'amplitude': getattr(actor, '_amplitude', 1.0)}
+            if hasattr(actor, '_geometry_element'):
+                tx['amplitude'] = actor._geometry_element['amplitude']
+                tx['geometry_instance'] = actor._geometry_instance
+                tx['geometry_channel'] = actor._geometry_element['channel']
+            data['transducers'].append(tx)
             
         # Trajectory
         if hasattr(self, 'traj_start_x'):
@@ -1587,6 +1647,29 @@ class AcousticStudioMain(QMainWindow):
     def set_state(self, data):
         import pyvista as pv
         import vtk
+        geometries = deepcopy(data.get('geometry_arrays', []))
+        acoustic_config = FieldConfig(**data.get('acoustic_model', {}))
+        force_settings = AnalysisSettings.from_dict(data.get('force_analysis_settings', {}))
+        if hasattr(self, 'acoustic_model_controls'):
+            self.acoustic_model_controls.validate_config(acoustic_config)
+        for geometry in geometries:
+            validate_geometry(geometry)
+        geometry_by_id = {geometry['instance_id']: geometry for geometry in geometries}
+        if len(geometry_by_id) != len(geometries):
+            raise ValueError('CAD 배열 인스턴스 ID가 중복되었습니다.')
+        for tx in data.get('transducers', []):
+            if 'geometry_instance' in tx:
+                geometry = geometry_by_id.get(tx['geometry_instance'])
+                channel = tx.get('geometry_channel')
+                if geometry is None or not isinstance(channel, int) or not 0 <= channel < 256:
+                    raise ValueError('저장된 CAD 송신기의 배열 참조가 잘못되었습니다.')
+                if not np.allclose(np.asarray(tx['matrix']).reshape(4, 4), geometry['elements'][channel]['matrix'], atol=1e-7):
+                    raise ValueError('저장된 CAD 송신기 행렬과 방사면 좌표가 일치하지 않습니다.')
+        for instance_id in geometry_by_id:
+            channels = [tx.get('geometry_channel') for tx in data.get('transducers', [])
+                        if tx.get('geometry_instance') == instance_id]
+            if channels != list(range(256)):
+                raise ValueError('저장된 CAD 배열의 채널 순서와 수량이 잘못되었습니다.')
 
         # A board profile describes a physical protocol and is persisted with a
         # project, but never changed while a live board is connected.
@@ -1614,6 +1697,11 @@ class AcousticStudioMain(QMainWindow):
             idx = self.array_type_cb.findText(data['array_type'])
             if idx >= 0: self.array_type_cb.setCurrentIndex(idx)
         if 'spacing' in data and hasattr(self, 'spacing_spin'): self.spacing_spin.setValue(data['spacing'])
+        for key, names in (('gen_position', ('gen_pos_x', 'gen_pos_y', 'gen_pos_z')),
+                           ('gen_rotation', ('gen_rot_x', 'gen_rot_y', 'gen_rot_z'))):
+            if key in data:
+                for name, value in zip(names, data[key]):
+                    getattr(self, name).setValue(value)
         # Restore parameters
         if 'trap_type' in data:
             idx = self.trap_type_cb.findText(data['trap_type'])
@@ -1622,14 +1710,21 @@ class AcousticStudioMain(QMainWindow):
         if 'grid_y' in data: self.grid_y_spin.setValue(data['grid_y'])
         if 'point_size' in data: self.point_size_spin.setValue(data['point_size'])
         if 'prop_radius' in data: self.prop_radius_spin.setValue(data['prop_radius'])
+        if hasattr(self, 'acoustic_model_controls'):
+            self.acoustic_model_controls.restore(acoustic_config)
+            self._field_model_dirty = True
+        if hasattr(self, 'force_analysis_settings'):
+            self.force_analysis_settings = force_settings.to_dict()
         
         for ui in ui_elements:
             if ui: ui.blockSignals(False)
+        self.update_array_preset_controls()
         
         # Field Slice Visualization Params are excluded from state tracking to prevent Undo/Redo zombie actors
         # Optimize Transducer update
         tx_data = data.get('transducers', [])
         needs_rebuild = len(tx_data) != len(self.transducer_actors)
+        needs_rebuild = needs_rebuild or bool(geometries) or bool(getattr(self, 'geometry_arrays', []))
         
         if needs_rebuild:
             from PySide6.QtWidgets import QApplication
@@ -1638,6 +1733,15 @@ class AcousticStudioMain(QMainWindow):
                 self.plotter.remove_actor(actor, render=False)
                 if i % 20 == 0: QApplication.processEvents()
             self.transducer_actors.clear()
+            for actor in getattr(self, 'geometry_support_actors', []):
+                self.plotter.remove_actor(actor, render=False)
+            self.geometry_support_actors = []
+            self.geometry_arrays = geometries
+            cad_actors = {}
+            for geometry in geometries:
+                actors, supports = create_geometry_actors(geometry, self.plotter.renderer)
+                cad_actors[geometry['instance_id']] = actors
+                self.geometry_support_actors.extend(supports)
             
             sensor_type = data.get('transducer_type', self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else '')
             if "10mm" in sensor_type:
@@ -1660,6 +1764,9 @@ class AcousticStudioMain(QMainWindow):
             rgb_color = pv.Color(color).float_rgb
             
             for i, tx in enumerate(tx_data):
+                if 'geometry_instance' in tx:
+                    self.transducer_actors.append(cad_actors[tx['geometry_instance']][tx['geometry_channel']])
+                    continue
                 matrix_vals = tx.get('matrix')
                 if matrix_vals:
                     mat = vtk.vtkMatrix4x4()
@@ -1671,7 +1778,7 @@ class AcousticStudioMain(QMainWindow):
                     actor.SetUserMatrix(mat)
                     actor._initial_matrix = mat
                     actor._original_color = rgb_color
-                    actor._amplitude = self._current_amplitude
+                    actor._amplitude = tx.get('amplitude', self._current_amplitude)
                     self.plotter.renderer.AddActor(actor)
                     self.transducer_actors.append(actor)
                     if i % 100 == 0: QApplication.processEvents()
@@ -1685,6 +1792,7 @@ class AcousticStudioMain(QMainWindow):
                             for c in range(4):
                                 mat.SetElement(r, c, matrix_vals[r*4 + c])
                         self.transducer_actors[i].SetUserMatrix(mat)
+                        self.transducer_actors[i]._amplitude = tx.get('amplitude', getattr(self.transducer_actors[i], '_amplitude', 1.0))
         # Optimize Control Points update
         from PySide6.QtCore import Qt
         from PySide6.QtWidgets import QListWidgetItem
@@ -1742,7 +1850,8 @@ class AcousticStudioMain(QMainWindow):
             self.traj_end_y.setValue(data['traj_end'][1])
             self.traj_end_z.setValue(data['traj_end'][2])
         if 'traj_steps' in data: self.traj_steps.setValue(data['traj_steps'])
-        if 'traj_delay' in data: self.traj_delay.setValue(data['traj_delay'])
+        if 'traj_delay' in data:
+            self.traj_delay.setValue(data['traj_delay'] if data['traj_delay'] > 0 else 10)
         if 'traj_optim' in data: self.chk_optim_traj.setChecked(data['traj_optim'])
         if 'traj_show' in data and hasattr(self, 'chk_show_traj'):
             self.chk_show_traj.setChecked(data['traj_show'])
@@ -1845,6 +1954,7 @@ class AcousticStudioMain(QMainWindow):
         for actor in self.transducer_actors:
             self.plotter.remove_actor(actor, render=False)
         self.transducer_actors.clear()
+        self._clear_geometry_supports()
         
         # Clear control points
         for p in self.control_points:
@@ -1914,11 +2024,11 @@ class AcousticStudioMain(QMainWindow):
         if not filename: return
         try:
             data = file_io.load_project(filename)
+            self.set_state(data)
         except Exception as e:
             self.show_silent_msg("오류", f"작업 중 오류가 발생했습니다: {str(e)}")
             return
         self.current_project_file = filename
-        self.set_state(data)
         self.push_state()
         self.setWindowTitle(f"Acoustic Control Studio - {self.current_project_file}")
         self._last_saved_state = self.get_state(for_file=True)
@@ -1940,6 +2050,7 @@ class AcousticStudioMain(QMainWindow):
                 self.selected_actors.remove(actor)
             self.plotter.remove_actor(actor, render=False)
         self.transducer_actors.clear()
+        self._clear_geometry_supports()
         
         for p in self.control_points:
             if p["actor"] in self.selected_actors:
@@ -1990,6 +2101,9 @@ class AcousticStudioMain(QMainWindow):
         mesh = horn.merge(piezo).merge(backing)
         return mesh
     def generate_array(self):
+        if self.array_type_cb.currentText() == CREO_PRESET_LABEL:
+            self.generate_creo_tunnel()
+            return
         sensor_type = self.transducer_type_cb.currentText()
         array_type = self.array_type_cb.currentText()
         x_count = self.grid_x_spin.value()
@@ -2159,6 +2273,72 @@ class AcousticStudioMain(QMainWindow):
                 qapp.processEvents()
                 
         self.plotter.reset_camera()
+
+    def update_array_preset_controls(self, *_):
+        fixed = self.array_type_cb.currentText() == CREO_PRESET_LABEL
+        for widget in (self.grid_x_spin, self.grid_y_spin, self.spacing_spin, self.transducer_type_cb):
+            widget.setEnabled(not fixed)
+        if hasattr(self, 'array_form'):
+            for row in (0, 2, 3):
+                self.array_form.setRowVisible(row, not fixed)
+        if hasattr(self, 'array_preset_info'):
+            self.array_preset_info.setText(
+                "Creo R2 · 8면 · 8기판 · 256채널 · Z축 터널\n"
+                "4열 × 8행/면, 열 간격 18/22/18mm · CAD 고정 치수\n"
+                "16mm 송신기와 PCB·링 간략 표시 · 선택 시 배열 전체 이동/회전"
+                if fixed else ""
+            )
+            self.array_preset_info.setMinimumHeight(3 * self.array_preset_info.fontMetrics().lineSpacing() + 10 if fixed else 0)
+            self.array_preset_info.setVisible(fixed)
+
+    def generate_creo_tunnel(self):
+        try:
+            geometry = load_creo_tunnel()
+            pose = vtk.vtkTransform()
+            pose.PostMultiply()
+            pose.RotateX(self.gen_rot_x.value())
+            pose.RotateY(self.gen_rot_y.value())
+            pose.RotateZ(self.gen_rot_z.value())
+            pose.Translate(self.gen_pos_x.value(), self.gen_pos_y.value(), self.gen_pos_z.value())
+            matrix = [[pose.GetMatrix().GetElement(row, col) for col in range(4)] for row in range(4)]
+            geometry = transform_geometry(geometry, matrix)
+            actors, supports = create_geometry_actors(geometry, self.plotter.renderer)
+        except Exception as exc:
+            self.show_silent_msg("CAD 배열 오류", f"Creo 터널 배열을 불러올 수 없습니다:\n{exc}")
+            return
+        self.geometry_arrays.append(geometry)
+        self.geometry_support_actors.extend(supports)
+        self.transducer_actors.extend(actors)
+        self.plotter.reset_camera()
+        self.plotter.render()
+
+    def _clear_geometry_supports(self):
+        for actor in getattr(self, 'geometry_support_actors', []):
+            self.plotter.remove_actor(actor, render=False)
+        self.geometry_support_actors = []
+        self.geometry_arrays = []
+
+    def _sync_cad_geometry(self):
+        """A GUI transform updates the canonical layout and structural preview."""
+        for geometry in getattr(self, 'geometry_arrays', []):
+            actors = [actor for actor in self.transducer_actors
+                      if getattr(actor, '_geometry_instance', None) == geometry['instance_id']]
+            if not actors:
+                continue
+            first = actors[0]
+            matrix = np.array([[first.GetUserMatrix().GetElement(row, col) for col in range(4)] for row in range(4)])
+            pose = matrix @ np.linalg.inv(first._geometry_element['base_matrix'])
+            delta = pose @ np.linalg.inv(geometry['world_transform'])
+            geometry.update(transform_geometry(geometry, delta))
+            for actor in actors:
+                channel = actor._geometry_element['channel']
+                actor._geometry_element = geometry['elements'][channel]
+                actor.SetUserMatrix(vtk_matrix(actor._geometry_element['matrix']))
+            supports = [actor for actor in self.geometry_support_actors if actor._geometry_instance == geometry['instance_id']]
+            for actor, support in zip(supports, geometry['supports']):
+                actor._geometry_support = support
+                actor.SetUserMatrix(vtk_matrix(support['matrix']))
+
     def simulate_colors(self):
         import time
         if hasattr(self, 'run_btn') and self.run_btn.isCheckable() and not self.run_btn.isChecked():
@@ -2194,21 +2374,24 @@ class AcousticStudioMain(QMainWindow):
             if item and item.checkState() == Qt.Checked:
                 active_pts.append(pt)
                 
-        centers = np.array([actor.center for actor in self.transducer_actors])
+        centers, tx_amplitudes = transducer_inputs(self.transducer_actors)
         self._last_packet = None
         
-        tx_amplitudes = np.array([getattr(a, '_amplitude', 1.0) for a in self.transducer_actors])
         mode_idx = self.compute_mode_cb.currentIndex()
         
-        if active_pts:
+        try:
             total_phases, packet = self.phase_engine.calculate_phases(
                 centers, active_pts, tx_amplitudes, algorithm, mode_idx,
                 has_taichi=getattr(self, 'has_taichi', False),
-                has_pytorch=getattr(self, 'has_pytorch', False)
+                has_pytorch=getattr(self, 'has_pytorch', False), **field_kwargs(self)
             )
-            self._last_packet = packet
-        else:
-            total_phases = np.zeros(len(centers), dtype=np.float64)
+        except ValueError as exc:
+            model_failed(self, exc)
+            return
+        self._last_packet = packet
+
+        self._field_model_dirty = False
+        show_backend(self)
         
         color_vals = total_phases / (2.0 * np.pi)
         rgbas = cmap(color_vals)
@@ -2335,9 +2518,10 @@ class AcousticStudioMain(QMainWindow):
             self.plotter.render()
             return
         
-        tx_centers = np.array([a.center for a in self.transducer_actors])
+        tx_centers, tx_amplitudes = transducer_inputs(self.transducer_actors)
+        if getattr(self, '_field_model_dirty', False):
+            return
         tx_phases = np.array([getattr(a, '_phase', 0.0) for a in self.transducer_actors])
-        tx_amplitudes = np.array([getattr(a, '_amplitude', 1.0) for a in self.transducer_actors])
         
         (bx_min, bx_max), (by_min, by_max), (bz_min, bz_max) = self._get_field_bounds()
         
@@ -2370,11 +2554,16 @@ class AcousticStudioMain(QMainWindow):
             field_mode_idx = self.field_mode_combo.currentIndex() if hasattr(self, 'field_mode_combo') else 0
             mode_idx = self.compute_mode_cb.currentIndex()
             
-            real_p, imag_p = self.phase_engine.calculate_field_slice(
-                pts, tx_centers, tx_phases, tx_amplitudes, mode_idx,
-                has_taichi=getattr(self, 'has_taichi', False),
-                has_pytorch=getattr(self, 'has_pytorch', False)
-            )
+            try:
+                real_p, imag_p = self.phase_engine.calculate_field_slice(
+                    pts, tx_centers, tx_phases, tx_amplitudes, mode_idx,
+                    has_taichi=getattr(self, 'has_taichi', False),
+                    has_pytorch=getattr(self, 'has_pytorch', False), **field_kwargs(self)
+                )
+            except ValueError as exc:
+                model_failed(self, exc)
+                return
+            show_backend(self)
             if field_mode_idx == 1:
                 # 위상 분포 (Phase Angle)
                 scalar_data = np.arctan2(imag_p, real_p)
@@ -2548,20 +2737,26 @@ class AcousticStudioMain(QMainWindow):
             
         optim_metrics = None
         if hasattr(self, 'chk_optim_traj') and self.chk_optim_traj.isChecked():
-            tx_centers = np.array([a.center for a in self.transducer_actors]) if hasattr(self, 'transducer_actors') else np.empty((0, 3))
+            tx_centers, tx_amplitudes = transducer_inputs(getattr(self, 'transducer_actors', []))
             algo = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else "Twin Trap"
             delays, optim_metrics = self.phase_engine.optimize_trajectory_physical(
                 tx_centers=tx_centers,
                 points=points,
                 base_delay=self.traj_delay.value(),
                 algorithm=algo,
-                smooth_accel=True
+                smooth_accel=True,
+                amplitudes=tx_amplitudes,
+                mode_idx=self.compute_mode_cb.currentIndex(),
+                has_taichi=getattr(self, 'has_taichi', False),
+                has_pytorch=getattr(self, 'has_pytorch', False),
+                **field_kwargs(self),
             )
             if hasattr(self, 'statusBar') and self.statusBar():
-                self.statusBar().showMessage(
-                    f"물리 연산 기반 궤적 최적화 완료 (평균 안정도: {optim_metrics['avg_stability']:.1f}%, 최소: {optim_metrics['min_stability']:.1f}%)",
-                    5000
-                )
+                if trajectory_diagnosis_is_valid(optim_metrics):
+                    message = f"궤적 상대 트랩 강도 계산 완료 (평균 {optim_metrics['avg_stability']:.1f}%, 최저 {optim_metrics['min_stability']:.1f}%)"
+                else:
+                    message = "궤적 진단 불가 — 기하학적 지연만 적용했습니다."
+                self.statusBar().showMessage(message, 5000)
 
         if not hasattr(self, 'trajectories_list'):
             self.trajectories_list = []
@@ -2573,9 +2768,10 @@ class AcousticStudioMain(QMainWindow):
             traj_name = f"궤적 {len(self.trajectories_list)+1} [{type_str}]: 중심({sx:.1f}, {sy:.1f}, {sz:.1f}), 반경/크기({param:.1f}mm)"
 
         if optim_metrics is not None:
-            grade = optim_metrics.get('grade', '안정')
-            avg_val = optim_metrics.get('avg_stability', 0.0)
-            traj_name += f" [{grade} {avg_val:.0f}%]"
+            if trajectory_diagnosis_is_valid(optim_metrics):
+                traj_name += f" [상대 강도 {optim_metrics['avg_stability']:.0f}%]"
+            else:
+                traj_name += " [진단 불가]"
         else:
             traj_name += " [일반 등속]"
 
@@ -2904,133 +3100,107 @@ class AcousticStudioMain(QMainWindow):
             return
 
         if isinstance(metrics, dict):
-            grade = metrics.get('grade', '안정')
-            avg = metrics.get('avg_stability', 0.0)
-            min_val = metrics.get('min_stability', 0.0)
-            guide = metrics.get('guide_msg', '안정적인 이송 구간입니다.')
-            color = metrics.get('color', '#1565C0')
-            self.lbl_diag_title.setText(f"물리 안정성 진단: <span style='color: {color}; font-weight: bold;'>{grade}</span> (평균 {avg:.1f}% / 최저 {min_val:.1f}%)")
-            self.lbl_diag_desc.setText(f"안내: {guide}")
+            if trajectory_diagnosis_is_valid(metrics):
+                avg = metrics['avg_stability']
+                min_val = metrics['min_stability']
+                self.lbl_diag_title.setText(f"상대 트랩 강도: 평균 {avg:.1f}% / 최저 {min_val:.1f}%")
+                guide = metrics.get('guide_msg', '실제 부양 및 방향별 복원성은 별도 검증이 필요합니다.')
+            else:
+                self.lbl_diag_title.setText("물리 안정성 진단: 진단 불가")
+                guide = "물리 점수를 산출할 수 없습니다. " + metrics.get('guide_msg', str(metrics.get('status', '원인 정보 없음')))
+            self.lbl_diag_desc.setText(f"안내: {escape(str(guide))}")
         else:
             self.lbl_diag_title.setText("물리 안정성 진단: <span style='color: #555555; font-weight: bold;'>일반 등속</span>")
             self.lbl_diag_desc.setText("안내: 물리 최적화가 적용되지 않은 일반 기하학 등속 궤적입니다.")
 
     def export_selected_trajectory(self):
-        """선택된 궤적의 위상 데이터를 C헤더(.h), CSV(.csv), 또는 하드웨어 바이너리(.bin) 파일로 내보내기"""
+        """선택 궤적을 현재 연산 모드와 보드 프로파일로 내보냅니다."""
         if not hasattr(self, 'trajectories_list') or not hasattr(self, 'traj_list'):
             self.show_silent_msg("알림", "내보낼 궤적이 없습니다.")
             return
-
         row = self.traj_list.currentRow()
         if row < 0 or row >= len(self.trajectories_list):
             self.show_silent_msg("알림", "목록에서 내보낼 궤적을 먼저 선택해주세요.")
             return
-
         traj = self.trajectories_list[row]
         points = traj.get('points', [])
-        delays = traj.get('delays', [])
-        steps = len(points)
-        if steps == 0:
+        if len(points) == 0:
             self.show_silent_msg("오류", "선택된 궤적에 유효한 좌표 데이터가 없습니다.")
             return
 
         from PySide6.QtWidgets import QFileDialog
-        filters = "C/C++ Header (*.h);;CSV Data (*.csv);;Hardware Binary Packet (*.bin);;All Files (*.*)"
+        from acousticstudio.trajectory_export import save_trajectory_export
+        filters = ("C/C++ Header (*.h);;CSV Data (*.csv);;"
+                   "Board Wire Frames (*.bin);;Legacy FA File (*.legacy.bin)")
         file_path, selected_filter = QFileDialog.getSaveFileName(self, "궤적 데이터 내보내기", "", filters)
         if not file_path:
             return
-
-        tx_centers = np.array([a.center for a in self.transducer_actors]) if hasattr(self, 'transducer_actors') else np.empty((0, 3))
-        num_tx = len(tx_centers)
-        k = getattr(self.phase_engine, 'k', 2.0 * np.pi * 40000.0 / 343000.0)
-        algo = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else "Twin Trap"
-
-        from acousticstudio.sonic_wrapper import calculate_phases_sonic
-        all_discretized = []
-        all_phases_rad = []
-
-        for i in range(steps):
-            pt = points[i]
-            if num_tx > 0:
-                phases, _ = calculate_phases_sonic(
-                    np.array([pt[0]]), np.array([pt[1]]), np.array([pt[2]]),
-                    tx_centers[:, 0], tx_centers[:, 1], tx_centers[:, 2],
-                    np.ones(num_tx), algo, k
-                )
-                disc = np.round((phases % (2.0 * np.pi)) / (2.0 * np.pi) * 32.0).astype(int) % 32
-            else:
-                phases = np.zeros(num_tx)
-                disc = np.zeros(num_tx, dtype=int)
-            all_phases_rad.append(phases)
-            all_discretized.append(disc)
+        if file_path.lower().endswith('.legacy.bin') or "Legacy" in selected_filter:
+            format_key, suffix = 'legacy', '.legacy.bin'
+        elif file_path.lower().endswith('.h') or "Header" in selected_filter:
+            format_key, suffix = 'header', '.h'
+        elif file_path.lower().endswith('.csv') or "CSV" in selected_filter:
+            format_key, suffix = 'csv', '.csv'
+        else:
+            format_key, suffix = 'binary', '.bin'
+        if not file_path.lower().endswith(suffix):
+            file_path += suffix
 
         try:
-            if file_path.endswith('.h') or "Header" in selected_filter:
-                if not file_path.endswith('.h'): file_path += '.h'
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    f.write("// =========================================================\n")
-                    f.write("// AcousticStudio Trajectory Phase Data Header\n")
-                    f.write(f"// Trajectory: {traj.get('name', 'Trajectory')}\n")
-                    f.write(f"// Total Steps: {steps}, Transducers: {num_tx}\n")
-                    f.write("// =========================================================\n\n")
-                    f.write("#ifndef ACOUSTIC_TRAJECTORY_DATA_H\n")
-                    f.write("#define ACOUSTIC_TRAJECTORY_DATA_H\n\n")
-                    f.write("#include <stdint.h>\n\n")
-                    f.write(f"#define TRAJ_TOTAL_STEPS {steps}\n")
-                    f.write(f"#define TRAJ_NUM_TRANSDUCERS {num_tx}\n\n")
-
-                    f.write("// Step Delays (milliseconds)\n")
-                    f.write(f"const uint16_t traj_step_delays_ms[TRAJ_TOTAL_STEPS] = {{\n")
-                    for d_idx, d_val in enumerate(delays):
-                        end_char = "," if d_idx < steps - 1 else ""
-                        f.write(f"    {int(round(d_val))}{end_char}\n")
-                    f.write("};\n\n")
-
-                    f.write("// 32-Step Discretized Phases (0 ~ 31, 5-bit HW Packet format)\n")
-                    f.write(f"const uint8_t traj_phases[TRAJ_TOTAL_STEPS][TRAJ_NUM_TRANSDUCERS] = {{\n")
-                    for s_idx in range(steps):
-                        p_str = ", ".join(map(str, all_discretized[s_idx]))
-                        end_char = "," if s_idx < steps - 1 else ""
-                        f.write(f"    /* Step {s_idx:3d} */ {{ {p_str} }}{end_char}\n")
-                    f.write("};\n\n")
-                    f.write("#endif // ACOUSTIC_TRAJECTORY_DATA_H\n")
-
-            elif file_path.endswith('.csv') or "CSV" in selected_filter:
-                if not file_path.endswith('.csv'): file_path += '.csv'
-                import csv
-                with open(file_path, 'w', newline='', encoding='utf-8') as f:
-                    writer = csv.writer(f)
-                    header = ['Step', 'Target_X_mm', 'Target_Y_mm', 'Target_Z_mm', 'Delay_ms']
-                    for t_idx in range(num_tx):
-                        header.append(f"Tx{t_idx}_Phase32")
-                    writer.writerow(header)
-                    for s_idx in range(steps):
-                        row_data = [
-                            s_idx,
-                            f"{points[s_idx][0]:.3f}",
-                            f"{points[s_idx][1]:.3f}",
-                            f"{points[s_idx][2]:.3f}",
-                            f"{delays[s_idx]:.1f}"
-                        ]
-                        row_data.extend(list(all_discretized[s_idx]))
-                        writer.writerow(row_data)
-
-            elif file_path.endswith('.bin') or "Binary" in selected_filter:
-                if not file_path.endswith('.bin'): file_path += '.bin'
-                byte_buffer = bytearray()
-                for s_idx in range(steps):
-                    byte_buffer.append(0xFA)
-                    byte_buffer.extend(all_discretized[s_idx].astype(np.uint8).tobytes())
-                    byte_buffer.append(0xFD)
-                with open(file_path, 'wb') as f:
-                    f.write(byte_buffer)
-
+            actors = getattr(self, 'transducer_actors', [])
+            centers, amplitudes = transducer_inputs(actors)
+            phases = self.phase_engine.calculate_trajectory_phases(
+                centers, points, amplitudes, self.trap_type_cb.currentText(),
+                mode_idx=self.compute_mode_cb.currentIndex(),
+                has_taichi=getattr(self, 'has_taichi', False),
+                has_pytorch=getattr(self, 'has_pytorch', False),
+                **field_kwargs(self),
+            )
+            save_trajectory_export(
+                file_path, format_key, traj.get('name', 'Trajectory'), points,
+                traj.get('delays', np.full(len(points), self.traj_delay.value())),
+                phases, self.hw_controller,
+            )
             if hasattr(self, 'statusBar') and self.statusBar():
                 self.statusBar().showMessage(f"궤적 데이터 내보내기 완료: {file_path}", 5000)
-            self.show_silent_msg("내보내기 완료", f"궤적 데이터가 성공적으로 저장되었습니다.\n\n경로: {file_path}")
+            detail = "위상은 보정 및 물리 채널 순서가 적용된 값입니다."
+            if format_key == 'binary':
+                detail += "\n보드 프레임 파일에는 스텝 지연이 포함되지 않습니다."
+            elif format_key == 'legacy':
+                detail += "\n이전 0xFA 파일 형식입니다. 보드 직접 송신용 프레임과 구분하세요."
+            self.show_silent_msg("내보내기 완료", f"경로: {file_path}\n\n{detail}")
+        except Exception as exc:
+            self.show_silent_msg("내보내기 오류", f"위상 계산 또는 파일 저장 중 오류가 발생했습니다:\n{exc}")
 
-        except Exception as e:
-            self.show_silent_msg("내보내기 오류", f"파일 저장 중 오류가 발생했습니다:\n{e}")
+    def open_force_analysis(self):
+        if not self.transducer_actors or not self.control_points:
+            self.show_silent_msg('방사력 분석', '배열과 평가할 제어점을 추가한 뒤 위상을 계산하세요.')
+            return
+        if getattr(self, '_field_model_dirty', False) or any(not hasattr(actor, '_phase') for actor in self.transducer_actors):
+            self.show_silent_msg('방사력 분석', '현재 음향 설정으로 위상을 먼저 계산하세요.')
+            return
+        try:
+            from acousticstudio.force_analysis_ui import ForceAnalysisDialog
+            centres, amplitudes = transducer_inputs(self.transducer_actors)
+            kwargs = field_kwargs(self)
+            snapshot = FieldSnapshot(centres, kwargs['normals'],
+                                     np.array([actor._phase for actor in self.transducer_actors]),
+                                     amplitudes, kwargs['field_config'], kwargs['aperture_radii_mm'])
+            row = self.points_list.currentRow()
+            point = self.control_points[row if 0 <= row < len(self.control_points) else 0]
+            centre = point['actor'].center
+            dialog = ForceAnalysisDialog(snapshot, centre,
+                                         AnalysisSettings.from_dict(self.force_analysis_settings),
+                                         self.compute_mode_cb.currentIndex(),
+                                         getattr(self, 'has_taichi', False), getattr(self, 'has_pytorch', False), self)
+            dialog.settings_submitted.connect(self.store_force_analysis_settings)
+            dialog.exec()
+        except Exception as exc:
+            self.show_silent_msg('방사력 분석 오류', str(exc))
+
+    def store_force_analysis_settings(self, values):
+        self.force_analysis_settings = AnalysisSettings.from_dict(values).to_dict()
+        self.push_state()
 
     def open_kwave_simulation(self):
         if not self.transducer_actors:

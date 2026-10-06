@@ -1,5 +1,9 @@
 # Fixtureless 360° inspection software roadmap
 
+## Current implementation scope as of 2026-10-07
+
+For the current Ultraino migration, follow [the migration plan](ultraino_migration_plan.md): Creo R2, eight faces, one 32-transducer PCB per face, eight PCBs and 256 channels, with the tunnel along Z. The immediate workflow is levitation, axial transport and holding at the inspection position. The camera, inspection and orientation functions below remain a separate longer-term roadmap. Reuse the existing board profiles and calibration mapping API rather than implementing a second transport layer.
+
 ## Goal and current boundary
 
 The target system described in `설계문제정의보고서.hwp` is an inspection

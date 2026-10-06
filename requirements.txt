@@ -3,6 +3,8 @@ pyvista
 pyvistaqt
 vtk
 numpy
+scipy
+numba
 matplotlib
 levitate
 pyserial

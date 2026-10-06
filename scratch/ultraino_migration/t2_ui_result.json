@@ -1,0 +1,27 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "channels": 256,
+  "aperture_unknown_guard": true,
+  "synthetic_test_radius_mm": 4.5,
+  "models": {
+    "point_source": {
+      "target_real": 2081.4260085581905,
+      "target_imag": -1.1926570842035744e-13
+    },
+    "ultraino_sinc": {
+      "target_real": 1369.8235233402213,
+      "target_imag": -1.0361156377314273e-13
+    },
+    "circular_piston": {
+      "target_real": 1529.1056782142377,
+      "target_imag": -1.0788592241794959e-13
+    }
+  },
+  "native_backend": true,
+  "pressure_slice_points": 14400,
+  "save_restore": true,
+  "qt_controls_capture": true,
+  "qt_viewport_capture": false,
+  "standalone_vtk_slice_render": true,
+  "serial_connected": false
+}

@@ -3,22 +3,12 @@ import sys
 import os
 import subprocess
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
+from acousticstudio.dependencies import PACKAGE_INFO, installed_package_names
+
 def check_and_install_requirements():
-    import importlib.metadata
-    
-    packages_info = {
-        'PySide6': {'type': '필수', 'size': '~200MB', 'desc': 'GUI 프레임워크'},
-        'pyvista': {'type': '필수', 'size': '~40MB', 'desc': '3D 렌더링 엔진'},
-        'numpy': {'type': '필수', 'size': '~15MB', 'desc': '수치 연산 배열 처리'},
-        'pyserial': {'type': '필수', 'size': '~2MB', 'desc': '하드웨어 USB 통신'},
-        'numba': {'type': '필수', 'size': '~10MB', 'desc': 'CPU 병렬 최적화'},
-        'taichi': {'type': '선택', 'size': '~30MB', 'desc': '다중/GPU 병렬 가속 연산'},
-        'torch': {'type': '선택', 'size': '~2.5GB', 'desc': 'NVIDIA 그래픽카드 초고속 연산'},
-        'psutil': {'type': '선택', 'size': '~1MB', 'desc': 'CPU 리소스 실시간 모니터링'},
-        'GPUtil': {'type': '선택', 'size': '~1MB', 'desc': 'GPU 리소스 실시간 모니터링'}
-    }
-    
-    installed = {dist.metadata['Name'].lower() for dist in importlib.metadata.distributions()}
+    packages_info = PACKAGE_INFO
+    installed = installed_package_names()
     
     missing_required = []
     missing_optional = []
@@ -169,8 +159,6 @@ def check_and_install_requirements():
 
 # 가장 먼저 환경 검증 및 설치 실행
 check_and_install_requirements()
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
 from PySide6.QtWidgets import QApplication, QSplashScreen
 from PySide6.QtGui import QPixmap, QPainter, QFont, QColor
