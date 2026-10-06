@@ -2,6 +2,15 @@
 
 기존 모델 폴더와 함께 설계 산출물 및 작업 스크립트를 이 폴더에서 관리합니다.
 
+## 최신 제작분: 면당 32채널 PCB와 프레임
+
+- [KiCad 10 회로도·PCB·제작 자료](outputs/panel_8faces_32ch_R1/README.md): 한 면에 4×8개, 8면 총 256채널. PCB 84×224×1.6 mm, 발진면 간격 210 mm.
+- [진녹색 PCB 및 외부 프레임 Creo R2](outputs/panel_8faces_32ch_R1/mechanical/creo32_frame_R2/사용안내.md): 상하 팔각 링 2개, 외형 265×265×224 mm, 면 사이 촬영용 틈 유지.
+- [프레임 포함 모델 ZIP](outputs/panel_8faces_32ch_R1/mechanical/creo32_frame_R2/Creo32_frame_R2_models.zip), [전체 제작 자료 ZIP](outputs/panel_8faces_32ch_R1/Design_R1_complete.zip).
+- [기존 회로·제작 방식 분석](outputs/pcb_review_2026-10-06/), [KiCad 스킬 설치 기록](outputs/KiCad10_스킬_설치기록.md).
+
+이전 16장 구성은 아래 폴더에 보존했습니다. 최신 설계의 검사 범위와 미확정 사항은 각 사용안내·검토 문서에 기록했습니다. `scratch/creo32_env` 등 실행 환경, PTC 설치 파일, Creo 실행 로그 및 KiCad 로컬 UI 설정은 Git에 포함하지 않습니다. Creo 세션의 PTC 런타임은 설치된 Creo에서 `prepare_creo32_r1.py`로 복사하며, 새 컴퓨터에서는 경로와 실행 환경을 맞춰야 합니다. 최상위 `제개설/8면_256채널_PCB_프레임_2026-10-06` 폴더는 로컬 정리본이며 이 저장소의 최신 산출물을 복사한 것입니다.
+
 - `creo_tunnel/`: 정리된 Creo 모델. 단일 패널 초기안과 면당 두 패널의 최신안을 구분합니다.
 - `outputs/`: KiCad 설계, Gerber 견적 ZIP, BOM·PnP, 개념 모델, 분석 결과, 원본 업체 템플릿.
 - `scratch/`: 모델 생성·검증·견적 파일 생성 스크립트 및 중간 결과.

@@ -1,0 +1,32 @@
+
+const DIR="C:/Users/line0/OneDrive/\ubc14\ud0d5 \ud654\uba74/\uc81c\uac1c\uc124/\ucd08\uc74c\ud30c\ubd80\uc0c1 \ubc0f \uc5ed\uc7a5\uc81c\uc5b4 \uc790\ub8cc\uc870\uc0ac/AcousticStudio_ver2/\uad6c\uc0c1\ub3c4/outputs/panel_8faces_32ch_R1/mechanical/creo32_R1/native", GEO="C:/Users/line0/OneDrive/\ubc14\ud0d5 \ud654\uba74/\uc81c\uac1c\uc124/\ucd08\uc74c\ud30c\ubd80\uc0c1 \ubc0f \uc5ed\uc7a5\uc81c\uc5b4 \uc790\ub8cc\uc870\uc0ac/AcousticStudio_ver2/\uad6c\uc0c1\ub3c4/outputs/panel_8faces_32ch_R1/mechanical/creo32_R1/geometry";
+function sizeOf(s){return typeof s.Count==='number'?s.Count:s.length;}
+function itemOf(s,i){return typeof s.Item==='function'?s.Item(i):s[i];}
+function unitsMm(m){
+ const systems=m.ListUnitSystems();let chosen=null;
+ for(let i=0;i<sizeOf(systems);i++){const u=itemOf(systems,i);if(/mmns/i.test(u.Name)){chosen=u;break;}}
+ if(!chosen)throw new Error('mmNs system missing '+m.FileName);
+ if(m.GetPrincipalUnits().Name!==chosen.Name)m.SetPrincipalUnits(chosen,pfcUnitConversionOptions.Create(pfcUnitDimensionConversion.UNITCONVERT_SAME_SIZE));
+}
+function transform(values){const t=pfcTransform3D.Create(null),m=t.Matrix;for(let r=0;r<4;r++)for(let c=0;c<4;c++){if(typeof m.set==='function')m.set(r,c,values[r][c]);else m.Set(r,c,values[r][c]);}t.Matrix=m;return t;}
+function addFixed(a,m,matrix){const f=a.AssembleComponent(m,transform(matrix)),c=pfcCreate('pfcComponentConstraints');c.Append(pfcComponentConstraint.Create(pfcComponentConstraintType.ASM_CONSTRAINT_FIX));f.SetConstraints(c,null);if(f.IsPackaged)throw new Error('Packaged '+m.FileName);return f;}
+function components(m){const fs=m.ListFeaturesByType(false,pfcFeatureType.FEATTYPE_COMPONENT),out=[];if(fs)for(let i=0;i<sizeOf(fs);i++){const f=itemOf(fs,i),matrix=[];for(let r=0;r<4;r++){const row=[];for(let c=0;c<4;c++)row.push(f.Position.Matrix.Item(r,c));matrix.push(row);}out.push({model:f.ModelDescr.GetFileName().toLowerCase(),packaged:f.IsPackaged,matrix:matrix});}return out;}
+function bounds(m){const o=m.GeomOutline,out=[];for(let i=0;i<2;i++){const row=[];for(let j=0;j<3;j++)row.push(itemOf(itemOf(o,i),j));out.push(row);}return out;}
+
+function makePanel32(){
+ let phase='start';const created=[];
+ try{
+  const s=pfcGetCurrentSession();s.ChangeDirectory("C:/Program Files/PTC/Creo 9.0.10.0/Common Files/templates");
+  const template=s.RetrieveModel(pfcModelDescriptor.CreateFromFileName('mmns_asm_design_abs.asm'));
+  s.ChangeDirectory(DIR);const models={};const data=MODEL_DATA;
+  for(const p of data.parts){phase='import '+p.name;const m=s.ImportNewModel(GEO+'/'+p.name+'.step',pfcNewModelImportType.IMPORT_NEW_STEP,pfcModelType.MDL_PART,p.name,null);unitsMm(m);m.Save();models[p.name]=m;created.push(m.FileName);}
+  phase='panel assembly';const panel=template.CopyAndRetrieve('panel32_r1',null);unitsMm(panel);
+  for(const p of data.panel_components)addFixed(panel,models[p.model],p.matrix);
+  panel.Regenerate(null);panel.Save();created.push(panel.FileName);
+  phase='tunnel assembly';const tunnel=template.CopyAndRetrieve('tunnel8_32_r1',null);unitsMm(tunnel);
+  for(const m of data.face_matrices)addFixed(tunnel,panel,m);
+  tunnel.Regenerate(null);tunnel.Save();created.push(tunnel.FileName);
+  s.CreateModelWindow(tunnel);tunnel.Display();
+  return {ok:true,phase:'complete',created:created,pcbBounds:bounds(models.pcb32_r1),panelBounds:bounds(panel),tunnelBounds:bounds(tunnel),panelComponents:components(panel),tunnelComponents:components(tunnel),units:tunnel.GetPrincipalUnits().Name};
+ }catch(e){return {ok:false,phase:phase,error:String(e),created:created};}
+}

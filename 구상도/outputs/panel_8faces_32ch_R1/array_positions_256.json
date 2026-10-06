@@ -1,0 +1,5658 @@
+{
+  "units": "mm",
+  "coordinate_system": "Z=0 at board mid-height; XY origin at tunnel centre; face0 normal toward -X",
+  "status": "prototype_geometry_not_acoustically_validated",
+  "parameters": {
+    "revision": "R1",
+    "faces": 8,
+    "columns": 4,
+    "rows": 8,
+    "board_width_mm": 84,
+    "board_length_mm": 224.0,
+    "board_thickness_mm": 1.6,
+    "column_pitches_mm": [
+      18.0,
+      22.0,
+      18.0
+    ],
+    "row_pitch_mm": 20.0,
+    "mounting_strip_mm": 22.0,
+    "transducer_diameter_mm": 16.0,
+    "transducer_height_mm": 12.5,
+    "emitting_plane_separation_mm": 210
+  },
+  "elements": [
+    {
+      "channel": 0,
+      "face": 0,
+      "local_channel": 0,
+      "reference": "T1",
+      "row": 0,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 0,
+      "position_mm": [
+        105.0,
+        -29.0,
+        -70.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 1,
+      "face": 0,
+      "local_channel": 1,
+      "reference": "T2",
+      "row": 0,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 1,
+      "position_mm": [
+        105.0,
+        -11.0,
+        -70.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 2,
+      "face": 0,
+      "local_channel": 2,
+      "reference": "T3",
+      "row": 0,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 16,
+      "position_mm": [
+        105.0,
+        11.0,
+        -70.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 3,
+      "face": 0,
+      "local_channel": 3,
+      "reference": "T4",
+      "row": 0,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 17,
+      "position_mm": [
+        105.0,
+        29.0,
+        -70.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 4,
+      "face": 0,
+      "local_channel": 4,
+      "reference": "T5",
+      "row": 1,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 2,
+      "position_mm": [
+        105.0,
+        -29.0,
+        -50.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 5,
+      "face": 0,
+      "local_channel": 5,
+      "reference": "T6",
+      "row": 1,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 3,
+      "position_mm": [
+        105.0,
+        -11.0,
+        -50.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 6,
+      "face": 0,
+      "local_channel": 6,
+      "reference": "T7",
+      "row": 1,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 18,
+      "position_mm": [
+        105.0,
+        11.0,
+        -50.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 7,
+      "face": 0,
+      "local_channel": 7,
+      "reference": "T8",
+      "row": 1,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 19,
+      "position_mm": [
+        105.0,
+        29.0,
+        -50.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 8,
+      "face": 0,
+      "local_channel": 8,
+      "reference": "T9",
+      "row": 2,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 4,
+      "position_mm": [
+        105.0,
+        -29.0,
+        -30.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 9,
+      "face": 0,
+      "local_channel": 9,
+      "reference": "T10",
+      "row": 2,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 5,
+      "position_mm": [
+        105.0,
+        -11.0,
+        -30.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 10,
+      "face": 0,
+      "local_channel": 10,
+      "reference": "T11",
+      "row": 2,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 20,
+      "position_mm": [
+        105.0,
+        11.0,
+        -30.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 11,
+      "face": 0,
+      "local_channel": 11,
+      "reference": "T12",
+      "row": 2,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 21,
+      "position_mm": [
+        105.0,
+        29.0,
+        -30.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 12,
+      "face": 0,
+      "local_channel": 12,
+      "reference": "T13",
+      "row": 3,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 6,
+      "position_mm": [
+        105.0,
+        -29.0,
+        -10.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 13,
+      "face": 0,
+      "local_channel": 13,
+      "reference": "T14",
+      "row": 3,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 7,
+      "position_mm": [
+        105.0,
+        -11.0,
+        -10.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 14,
+      "face": 0,
+      "local_channel": 14,
+      "reference": "T15",
+      "row": 3,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 22,
+      "position_mm": [
+        105.0,
+        11.0,
+        -10.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 15,
+      "face": 0,
+      "local_channel": 15,
+      "reference": "T16",
+      "row": 3,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 23,
+      "position_mm": [
+        105.0,
+        29.0,
+        -10.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 16,
+      "face": 0,
+      "local_channel": 16,
+      "reference": "T17",
+      "row": 4,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 8,
+      "position_mm": [
+        105.0,
+        -29.0,
+        10.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 17,
+      "face": 0,
+      "local_channel": 17,
+      "reference": "T18",
+      "row": 4,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 9,
+      "position_mm": [
+        105.0,
+        -11.0,
+        10.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 18,
+      "face": 0,
+      "local_channel": 18,
+      "reference": "T19",
+      "row": 4,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 24,
+      "position_mm": [
+        105.0,
+        11.0,
+        10.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 19,
+      "face": 0,
+      "local_channel": 19,
+      "reference": "T20",
+      "row": 4,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 25,
+      "position_mm": [
+        105.0,
+        29.0,
+        10.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 20,
+      "face": 0,
+      "local_channel": 20,
+      "reference": "T21",
+      "row": 5,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 10,
+      "position_mm": [
+        105.0,
+        -29.0,
+        30.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 21,
+      "face": 0,
+      "local_channel": 21,
+      "reference": "T22",
+      "row": 5,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 11,
+      "position_mm": [
+        105.0,
+        -11.0,
+        30.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 22,
+      "face": 0,
+      "local_channel": 22,
+      "reference": "T23",
+      "row": 5,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 26,
+      "position_mm": [
+        105.0,
+        11.0,
+        30.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 23,
+      "face": 0,
+      "local_channel": 23,
+      "reference": "T24",
+      "row": 5,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 27,
+      "position_mm": [
+        105.0,
+        29.0,
+        30.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 24,
+      "face": 0,
+      "local_channel": 24,
+      "reference": "T25",
+      "row": 6,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 12,
+      "position_mm": [
+        105.0,
+        -29.0,
+        50.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 25,
+      "face": 0,
+      "local_channel": 25,
+      "reference": "T26",
+      "row": 6,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 13,
+      "position_mm": [
+        105.0,
+        -11.0,
+        50.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 26,
+      "face": 0,
+      "local_channel": 26,
+      "reference": "T27",
+      "row": 6,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 28,
+      "position_mm": [
+        105.0,
+        11.0,
+        50.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 27,
+      "face": 0,
+      "local_channel": 27,
+      "reference": "T28",
+      "row": 6,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 29,
+      "position_mm": [
+        105.0,
+        29.0,
+        50.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 28,
+      "face": 0,
+      "local_channel": 28,
+      "reference": "T29",
+      "row": 7,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 14,
+      "position_mm": [
+        105.0,
+        -29.0,
+        70.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 29,
+      "face": 0,
+      "local_channel": 29,
+      "reference": "T30",
+      "row": 7,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 15,
+      "position_mm": [
+        105.0,
+        -11.0,
+        70.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 30,
+      "face": 0,
+      "local_channel": 30,
+      "reference": "T31",
+      "row": 7,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 30,
+      "position_mm": [
+        105.0,
+        11.0,
+        70.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 31,
+      "face": 0,
+      "local_channel": 31,
+      "reference": "T32",
+      "row": 7,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 31,
+      "position_mm": [
+        105.0,
+        29.0,
+        70.0
+      ],
+      "normal": [
+        -1.0,
+        -0.0,
+        0
+      ]
+    },
+    {
+      "channel": 32,
+      "face": 1,
+      "local_channel": 0,
+      "reference": "T1",
+      "row": 0,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 32,
+      "position_mm": [
+        94.75230867899737,
+        53.74011537017761,
+        -70.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 33,
+      "face": 1,
+      "local_channel": 1,
+      "reference": "T2",
+      "row": 0,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 33,
+      "position_mm": [
+        82.02438661763952,
+        66.46803743153546,
+        -70.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 34,
+      "face": 1,
+      "local_channel": 2,
+      "reference": "T3",
+      "row": 0,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 48,
+      "position_mm": [
+        66.46803743153546,
+        82.02438661763952,
+        -70.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 35,
+      "face": 1,
+      "local_channel": 3,
+      "reference": "T4",
+      "row": 0,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 49,
+      "position_mm": [
+        53.74011537017761,
+        94.75230867899737,
+        -70.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 36,
+      "face": 1,
+      "local_channel": 4,
+      "reference": "T5",
+      "row": 1,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 34,
+      "position_mm": [
+        94.75230867899737,
+        53.74011537017761,
+        -50.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 37,
+      "face": 1,
+      "local_channel": 5,
+      "reference": "T6",
+      "row": 1,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 35,
+      "position_mm": [
+        82.02438661763952,
+        66.46803743153546,
+        -50.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 38,
+      "face": 1,
+      "local_channel": 6,
+      "reference": "T7",
+      "row": 1,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 50,
+      "position_mm": [
+        66.46803743153546,
+        82.02438661763952,
+        -50.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 39,
+      "face": 1,
+      "local_channel": 7,
+      "reference": "T8",
+      "row": 1,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 51,
+      "position_mm": [
+        53.74011537017761,
+        94.75230867899737,
+        -50.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 40,
+      "face": 1,
+      "local_channel": 8,
+      "reference": "T9",
+      "row": 2,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 36,
+      "position_mm": [
+        94.75230867899737,
+        53.74011537017761,
+        -30.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 41,
+      "face": 1,
+      "local_channel": 9,
+      "reference": "T10",
+      "row": 2,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 37,
+      "position_mm": [
+        82.02438661763952,
+        66.46803743153546,
+        -30.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 42,
+      "face": 1,
+      "local_channel": 10,
+      "reference": "T11",
+      "row": 2,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 52,
+      "position_mm": [
+        66.46803743153546,
+        82.02438661763952,
+        -30.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 43,
+      "face": 1,
+      "local_channel": 11,
+      "reference": "T12",
+      "row": 2,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 53,
+      "position_mm": [
+        53.74011537017761,
+        94.75230867899737,
+        -30.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 44,
+      "face": 1,
+      "local_channel": 12,
+      "reference": "T13",
+      "row": 3,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 38,
+      "position_mm": [
+        94.75230867899737,
+        53.74011537017761,
+        -10.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 45,
+      "face": 1,
+      "local_channel": 13,
+      "reference": "T14",
+      "row": 3,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 39,
+      "position_mm": [
+        82.02438661763952,
+        66.46803743153546,
+        -10.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 46,
+      "face": 1,
+      "local_channel": 14,
+      "reference": "T15",
+      "row": 3,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 54,
+      "position_mm": [
+        66.46803743153546,
+        82.02438661763952,
+        -10.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 47,
+      "face": 1,
+      "local_channel": 15,
+      "reference": "T16",
+      "row": 3,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 55,
+      "position_mm": [
+        53.74011537017761,
+        94.75230867899737,
+        -10.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 48,
+      "face": 1,
+      "local_channel": 16,
+      "reference": "T17",
+      "row": 4,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 40,
+      "position_mm": [
+        94.75230867899737,
+        53.74011537017761,
+        10.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 49,
+      "face": 1,
+      "local_channel": 17,
+      "reference": "T18",
+      "row": 4,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 41,
+      "position_mm": [
+        82.02438661763952,
+        66.46803743153546,
+        10.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 50,
+      "face": 1,
+      "local_channel": 18,
+      "reference": "T19",
+      "row": 4,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 56,
+      "position_mm": [
+        66.46803743153546,
+        82.02438661763952,
+        10.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 51,
+      "face": 1,
+      "local_channel": 19,
+      "reference": "T20",
+      "row": 4,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 57,
+      "position_mm": [
+        53.74011537017761,
+        94.75230867899737,
+        10.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 52,
+      "face": 1,
+      "local_channel": 20,
+      "reference": "T21",
+      "row": 5,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 42,
+      "position_mm": [
+        94.75230867899737,
+        53.74011537017761,
+        30.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 53,
+      "face": 1,
+      "local_channel": 21,
+      "reference": "T22",
+      "row": 5,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 43,
+      "position_mm": [
+        82.02438661763952,
+        66.46803743153546,
+        30.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 54,
+      "face": 1,
+      "local_channel": 22,
+      "reference": "T23",
+      "row": 5,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 58,
+      "position_mm": [
+        66.46803743153546,
+        82.02438661763952,
+        30.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 55,
+      "face": 1,
+      "local_channel": 23,
+      "reference": "T24",
+      "row": 5,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 59,
+      "position_mm": [
+        53.74011537017761,
+        94.75230867899737,
+        30.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 56,
+      "face": 1,
+      "local_channel": 24,
+      "reference": "T25",
+      "row": 6,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 44,
+      "position_mm": [
+        94.75230867899737,
+        53.74011537017761,
+        50.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 57,
+      "face": 1,
+      "local_channel": 25,
+      "reference": "T26",
+      "row": 6,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 45,
+      "position_mm": [
+        82.02438661763952,
+        66.46803743153546,
+        50.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 58,
+      "face": 1,
+      "local_channel": 26,
+      "reference": "T27",
+      "row": 6,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 60,
+      "position_mm": [
+        66.46803743153546,
+        82.02438661763952,
+        50.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 59,
+      "face": 1,
+      "local_channel": 27,
+      "reference": "T28",
+      "row": 6,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 61,
+      "position_mm": [
+        53.74011537017761,
+        94.75230867899737,
+        50.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 60,
+      "face": 1,
+      "local_channel": 28,
+      "reference": "T29",
+      "row": 7,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 46,
+      "position_mm": [
+        94.75230867899737,
+        53.74011537017761,
+        70.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 61,
+      "face": 1,
+      "local_channel": 29,
+      "reference": "T30",
+      "row": 7,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 47,
+      "position_mm": [
+        82.02438661763952,
+        66.46803743153546,
+        70.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 62,
+      "face": 1,
+      "local_channel": 30,
+      "reference": "T31",
+      "row": 7,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 62,
+      "position_mm": [
+        66.46803743153546,
+        82.02438661763952,
+        70.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 63,
+      "face": 1,
+      "local_channel": 31,
+      "reference": "T32",
+      "row": 7,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 63,
+      "position_mm": [
+        53.74011537017761,
+        94.75230867899737,
+        70.0
+      ],
+      "normal": [
+        -0.7071067811865476,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 64,
+      "face": 2,
+      "local_channel": 0,
+      "reference": "T1",
+      "row": 0,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 64,
+      "position_mm": [
+        29.000000000000007,
+        105.0,
+        -70.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 65,
+      "face": 2,
+      "local_channel": 1,
+      "reference": "T2",
+      "row": 0,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 65,
+      "position_mm": [
+        11.000000000000007,
+        105.0,
+        -70.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 66,
+      "face": 2,
+      "local_channel": 2,
+      "reference": "T3",
+      "row": 0,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 80,
+      "position_mm": [
+        -10.999999999999993,
+        105.0,
+        -70.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 67,
+      "face": 2,
+      "local_channel": 3,
+      "reference": "T4",
+      "row": 0,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 81,
+      "position_mm": [
+        -28.999999999999993,
+        105.0,
+        -70.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 68,
+      "face": 2,
+      "local_channel": 4,
+      "reference": "T5",
+      "row": 1,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 66,
+      "position_mm": [
+        29.000000000000007,
+        105.0,
+        -50.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 69,
+      "face": 2,
+      "local_channel": 5,
+      "reference": "T6",
+      "row": 1,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 67,
+      "position_mm": [
+        11.000000000000007,
+        105.0,
+        -50.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 70,
+      "face": 2,
+      "local_channel": 6,
+      "reference": "T7",
+      "row": 1,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 82,
+      "position_mm": [
+        -10.999999999999993,
+        105.0,
+        -50.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 71,
+      "face": 2,
+      "local_channel": 7,
+      "reference": "T8",
+      "row": 1,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 83,
+      "position_mm": [
+        -28.999999999999993,
+        105.0,
+        -50.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 72,
+      "face": 2,
+      "local_channel": 8,
+      "reference": "T9",
+      "row": 2,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 68,
+      "position_mm": [
+        29.000000000000007,
+        105.0,
+        -30.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 73,
+      "face": 2,
+      "local_channel": 9,
+      "reference": "T10",
+      "row": 2,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 69,
+      "position_mm": [
+        11.000000000000007,
+        105.0,
+        -30.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 74,
+      "face": 2,
+      "local_channel": 10,
+      "reference": "T11",
+      "row": 2,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 84,
+      "position_mm": [
+        -10.999999999999993,
+        105.0,
+        -30.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 75,
+      "face": 2,
+      "local_channel": 11,
+      "reference": "T12",
+      "row": 2,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 85,
+      "position_mm": [
+        -28.999999999999993,
+        105.0,
+        -30.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 76,
+      "face": 2,
+      "local_channel": 12,
+      "reference": "T13",
+      "row": 3,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 70,
+      "position_mm": [
+        29.000000000000007,
+        105.0,
+        -10.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 77,
+      "face": 2,
+      "local_channel": 13,
+      "reference": "T14",
+      "row": 3,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 71,
+      "position_mm": [
+        11.000000000000007,
+        105.0,
+        -10.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 78,
+      "face": 2,
+      "local_channel": 14,
+      "reference": "T15",
+      "row": 3,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 86,
+      "position_mm": [
+        -10.999999999999993,
+        105.0,
+        -10.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 79,
+      "face": 2,
+      "local_channel": 15,
+      "reference": "T16",
+      "row": 3,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 87,
+      "position_mm": [
+        -28.999999999999993,
+        105.0,
+        -10.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 80,
+      "face": 2,
+      "local_channel": 16,
+      "reference": "T17",
+      "row": 4,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 72,
+      "position_mm": [
+        29.000000000000007,
+        105.0,
+        10.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 81,
+      "face": 2,
+      "local_channel": 17,
+      "reference": "T18",
+      "row": 4,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 73,
+      "position_mm": [
+        11.000000000000007,
+        105.0,
+        10.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 82,
+      "face": 2,
+      "local_channel": 18,
+      "reference": "T19",
+      "row": 4,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 88,
+      "position_mm": [
+        -10.999999999999993,
+        105.0,
+        10.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 83,
+      "face": 2,
+      "local_channel": 19,
+      "reference": "T20",
+      "row": 4,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 89,
+      "position_mm": [
+        -28.999999999999993,
+        105.0,
+        10.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 84,
+      "face": 2,
+      "local_channel": 20,
+      "reference": "T21",
+      "row": 5,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 74,
+      "position_mm": [
+        29.000000000000007,
+        105.0,
+        30.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 85,
+      "face": 2,
+      "local_channel": 21,
+      "reference": "T22",
+      "row": 5,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 75,
+      "position_mm": [
+        11.000000000000007,
+        105.0,
+        30.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 86,
+      "face": 2,
+      "local_channel": 22,
+      "reference": "T23",
+      "row": 5,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 90,
+      "position_mm": [
+        -10.999999999999993,
+        105.0,
+        30.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 87,
+      "face": 2,
+      "local_channel": 23,
+      "reference": "T24",
+      "row": 5,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 91,
+      "position_mm": [
+        -28.999999999999993,
+        105.0,
+        30.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 88,
+      "face": 2,
+      "local_channel": 24,
+      "reference": "T25",
+      "row": 6,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 76,
+      "position_mm": [
+        29.000000000000007,
+        105.0,
+        50.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 89,
+      "face": 2,
+      "local_channel": 25,
+      "reference": "T26",
+      "row": 6,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 77,
+      "position_mm": [
+        11.000000000000007,
+        105.0,
+        50.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 90,
+      "face": 2,
+      "local_channel": 26,
+      "reference": "T27",
+      "row": 6,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 92,
+      "position_mm": [
+        -10.999999999999993,
+        105.0,
+        50.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 91,
+      "face": 2,
+      "local_channel": 27,
+      "reference": "T28",
+      "row": 6,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 93,
+      "position_mm": [
+        -28.999999999999993,
+        105.0,
+        50.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 92,
+      "face": 2,
+      "local_channel": 28,
+      "reference": "T29",
+      "row": 7,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 78,
+      "position_mm": [
+        29.000000000000007,
+        105.0,
+        70.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 93,
+      "face": 2,
+      "local_channel": 29,
+      "reference": "T30",
+      "row": 7,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 79,
+      "position_mm": [
+        11.000000000000007,
+        105.0,
+        70.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 94,
+      "face": 2,
+      "local_channel": 30,
+      "reference": "T31",
+      "row": 7,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 94,
+      "position_mm": [
+        -10.999999999999993,
+        105.0,
+        70.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 95,
+      "face": 2,
+      "local_channel": 31,
+      "reference": "T32",
+      "row": 7,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 95,
+      "position_mm": [
+        -28.999999999999993,
+        105.0,
+        70.0
+      ],
+      "normal": [
+        -6.123233995736766e-17,
+        -1.0,
+        0
+      ]
+    },
+    {
+      "channel": 96,
+      "face": 3,
+      "local_channel": 0,
+      "reference": "T1",
+      "row": 0,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 96,
+      "position_mm": [
+        -53.7401153701776,
+        94.75230867899737,
+        -70.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 97,
+      "face": 3,
+      "local_channel": 1,
+      "reference": "T2",
+      "row": 0,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 97,
+      "position_mm": [
+        -66.46803743153545,
+        82.02438661763952,
+        -70.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 98,
+      "face": 3,
+      "local_channel": 2,
+      "reference": "T3",
+      "row": 0,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 112,
+      "position_mm": [
+        -82.02438661763951,
+        66.46803743153546,
+        -70.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 99,
+      "face": 3,
+      "local_channel": 3,
+      "reference": "T4",
+      "row": 0,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 113,
+      "position_mm": [
+        -94.75230867899737,
+        53.74011537017762,
+        -70.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 100,
+      "face": 3,
+      "local_channel": 4,
+      "reference": "T5",
+      "row": 1,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 98,
+      "position_mm": [
+        -53.7401153701776,
+        94.75230867899737,
+        -50.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 101,
+      "face": 3,
+      "local_channel": 5,
+      "reference": "T6",
+      "row": 1,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 99,
+      "position_mm": [
+        -66.46803743153545,
+        82.02438661763952,
+        -50.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 102,
+      "face": 3,
+      "local_channel": 6,
+      "reference": "T7",
+      "row": 1,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 114,
+      "position_mm": [
+        -82.02438661763951,
+        66.46803743153546,
+        -50.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 103,
+      "face": 3,
+      "local_channel": 7,
+      "reference": "T8",
+      "row": 1,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 115,
+      "position_mm": [
+        -94.75230867899737,
+        53.74011537017762,
+        -50.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 104,
+      "face": 3,
+      "local_channel": 8,
+      "reference": "T9",
+      "row": 2,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 100,
+      "position_mm": [
+        -53.7401153701776,
+        94.75230867899737,
+        -30.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 105,
+      "face": 3,
+      "local_channel": 9,
+      "reference": "T10",
+      "row": 2,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 101,
+      "position_mm": [
+        -66.46803743153545,
+        82.02438661763952,
+        -30.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 106,
+      "face": 3,
+      "local_channel": 10,
+      "reference": "T11",
+      "row": 2,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 116,
+      "position_mm": [
+        -82.02438661763951,
+        66.46803743153546,
+        -30.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 107,
+      "face": 3,
+      "local_channel": 11,
+      "reference": "T12",
+      "row": 2,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 117,
+      "position_mm": [
+        -94.75230867899737,
+        53.74011537017762,
+        -30.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 108,
+      "face": 3,
+      "local_channel": 12,
+      "reference": "T13",
+      "row": 3,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 102,
+      "position_mm": [
+        -53.7401153701776,
+        94.75230867899737,
+        -10.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 109,
+      "face": 3,
+      "local_channel": 13,
+      "reference": "T14",
+      "row": 3,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 103,
+      "position_mm": [
+        -66.46803743153545,
+        82.02438661763952,
+        -10.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 110,
+      "face": 3,
+      "local_channel": 14,
+      "reference": "T15",
+      "row": 3,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 118,
+      "position_mm": [
+        -82.02438661763951,
+        66.46803743153546,
+        -10.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 111,
+      "face": 3,
+      "local_channel": 15,
+      "reference": "T16",
+      "row": 3,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 119,
+      "position_mm": [
+        -94.75230867899737,
+        53.74011537017762,
+        -10.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 112,
+      "face": 3,
+      "local_channel": 16,
+      "reference": "T17",
+      "row": 4,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 104,
+      "position_mm": [
+        -53.7401153701776,
+        94.75230867899737,
+        10.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 113,
+      "face": 3,
+      "local_channel": 17,
+      "reference": "T18",
+      "row": 4,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 105,
+      "position_mm": [
+        -66.46803743153545,
+        82.02438661763952,
+        10.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 114,
+      "face": 3,
+      "local_channel": 18,
+      "reference": "T19",
+      "row": 4,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 120,
+      "position_mm": [
+        -82.02438661763951,
+        66.46803743153546,
+        10.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 115,
+      "face": 3,
+      "local_channel": 19,
+      "reference": "T20",
+      "row": 4,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 121,
+      "position_mm": [
+        -94.75230867899737,
+        53.74011537017762,
+        10.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 116,
+      "face": 3,
+      "local_channel": 20,
+      "reference": "T21",
+      "row": 5,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 106,
+      "position_mm": [
+        -53.7401153701776,
+        94.75230867899737,
+        30.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 117,
+      "face": 3,
+      "local_channel": 21,
+      "reference": "T22",
+      "row": 5,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 107,
+      "position_mm": [
+        -66.46803743153545,
+        82.02438661763952,
+        30.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 118,
+      "face": 3,
+      "local_channel": 22,
+      "reference": "T23",
+      "row": 5,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 122,
+      "position_mm": [
+        -82.02438661763951,
+        66.46803743153546,
+        30.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 119,
+      "face": 3,
+      "local_channel": 23,
+      "reference": "T24",
+      "row": 5,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 123,
+      "position_mm": [
+        -94.75230867899737,
+        53.74011537017762,
+        30.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 120,
+      "face": 3,
+      "local_channel": 24,
+      "reference": "T25",
+      "row": 6,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 108,
+      "position_mm": [
+        -53.7401153701776,
+        94.75230867899737,
+        50.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 121,
+      "face": 3,
+      "local_channel": 25,
+      "reference": "T26",
+      "row": 6,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 109,
+      "position_mm": [
+        -66.46803743153545,
+        82.02438661763952,
+        50.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 122,
+      "face": 3,
+      "local_channel": 26,
+      "reference": "T27",
+      "row": 6,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 124,
+      "position_mm": [
+        -82.02438661763951,
+        66.46803743153546,
+        50.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 123,
+      "face": 3,
+      "local_channel": 27,
+      "reference": "T28",
+      "row": 6,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 125,
+      "position_mm": [
+        -94.75230867899737,
+        53.74011537017762,
+        50.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 124,
+      "face": 3,
+      "local_channel": 28,
+      "reference": "T29",
+      "row": 7,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 110,
+      "position_mm": [
+        -53.7401153701776,
+        94.75230867899737,
+        70.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 125,
+      "face": 3,
+      "local_channel": 29,
+      "reference": "T30",
+      "row": 7,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 111,
+      "position_mm": [
+        -66.46803743153545,
+        82.02438661763952,
+        70.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 126,
+      "face": 3,
+      "local_channel": 30,
+      "reference": "T31",
+      "row": 7,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 126,
+      "position_mm": [
+        -82.02438661763951,
+        66.46803743153546,
+        70.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 127,
+      "face": 3,
+      "local_channel": 31,
+      "reference": "T32",
+      "row": 7,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 127,
+      "position_mm": [
+        -94.75230867899737,
+        53.74011537017762,
+        70.0
+      ],
+      "normal": [
+        0.7071067811865475,
+        -0.7071067811865476,
+        0
+      ]
+    },
+    {
+      "channel": 128,
+      "face": 4,
+      "local_channel": 0,
+      "reference": "T1",
+      "row": 0,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 128,
+      "position_mm": [
+        -105.0,
+        29.000000000000014,
+        -70.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 129,
+      "face": 4,
+      "local_channel": 1,
+      "reference": "T2",
+      "row": 0,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 129,
+      "position_mm": [
+        -105.0,
+        11.000000000000012,
+        -70.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 130,
+      "face": 4,
+      "local_channel": 2,
+      "reference": "T3",
+      "row": 0,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 144,
+      "position_mm": [
+        -105.0,
+        -10.999999999999988,
+        -70.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 131,
+      "face": 4,
+      "local_channel": 3,
+      "reference": "T4",
+      "row": 0,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 145,
+      "position_mm": [
+        -105.0,
+        -28.999999999999986,
+        -70.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 132,
+      "face": 4,
+      "local_channel": 4,
+      "reference": "T5",
+      "row": 1,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 130,
+      "position_mm": [
+        -105.0,
+        29.000000000000014,
+        -50.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 133,
+      "face": 4,
+      "local_channel": 5,
+      "reference": "T6",
+      "row": 1,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 131,
+      "position_mm": [
+        -105.0,
+        11.000000000000012,
+        -50.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 134,
+      "face": 4,
+      "local_channel": 6,
+      "reference": "T7",
+      "row": 1,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 146,
+      "position_mm": [
+        -105.0,
+        -10.999999999999988,
+        -50.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 135,
+      "face": 4,
+      "local_channel": 7,
+      "reference": "T8",
+      "row": 1,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 147,
+      "position_mm": [
+        -105.0,
+        -28.999999999999986,
+        -50.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 136,
+      "face": 4,
+      "local_channel": 8,
+      "reference": "T9",
+      "row": 2,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 132,
+      "position_mm": [
+        -105.0,
+        29.000000000000014,
+        -30.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 137,
+      "face": 4,
+      "local_channel": 9,
+      "reference": "T10",
+      "row": 2,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 133,
+      "position_mm": [
+        -105.0,
+        11.000000000000012,
+        -30.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 138,
+      "face": 4,
+      "local_channel": 10,
+      "reference": "T11",
+      "row": 2,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 148,
+      "position_mm": [
+        -105.0,
+        -10.999999999999988,
+        -30.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 139,
+      "face": 4,
+      "local_channel": 11,
+      "reference": "T12",
+      "row": 2,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 149,
+      "position_mm": [
+        -105.0,
+        -28.999999999999986,
+        -30.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 140,
+      "face": 4,
+      "local_channel": 12,
+      "reference": "T13",
+      "row": 3,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 134,
+      "position_mm": [
+        -105.0,
+        29.000000000000014,
+        -10.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 141,
+      "face": 4,
+      "local_channel": 13,
+      "reference": "T14",
+      "row": 3,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 135,
+      "position_mm": [
+        -105.0,
+        11.000000000000012,
+        -10.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 142,
+      "face": 4,
+      "local_channel": 14,
+      "reference": "T15",
+      "row": 3,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 150,
+      "position_mm": [
+        -105.0,
+        -10.999999999999988,
+        -10.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 143,
+      "face": 4,
+      "local_channel": 15,
+      "reference": "T16",
+      "row": 3,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 151,
+      "position_mm": [
+        -105.0,
+        -28.999999999999986,
+        -10.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 144,
+      "face": 4,
+      "local_channel": 16,
+      "reference": "T17",
+      "row": 4,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 136,
+      "position_mm": [
+        -105.0,
+        29.000000000000014,
+        10.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 145,
+      "face": 4,
+      "local_channel": 17,
+      "reference": "T18",
+      "row": 4,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 137,
+      "position_mm": [
+        -105.0,
+        11.000000000000012,
+        10.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 146,
+      "face": 4,
+      "local_channel": 18,
+      "reference": "T19",
+      "row": 4,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 152,
+      "position_mm": [
+        -105.0,
+        -10.999999999999988,
+        10.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 147,
+      "face": 4,
+      "local_channel": 19,
+      "reference": "T20",
+      "row": 4,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 153,
+      "position_mm": [
+        -105.0,
+        -28.999999999999986,
+        10.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 148,
+      "face": 4,
+      "local_channel": 20,
+      "reference": "T21",
+      "row": 5,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 138,
+      "position_mm": [
+        -105.0,
+        29.000000000000014,
+        30.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 149,
+      "face": 4,
+      "local_channel": 21,
+      "reference": "T22",
+      "row": 5,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 139,
+      "position_mm": [
+        -105.0,
+        11.000000000000012,
+        30.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 150,
+      "face": 4,
+      "local_channel": 22,
+      "reference": "T23",
+      "row": 5,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 154,
+      "position_mm": [
+        -105.0,
+        -10.999999999999988,
+        30.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 151,
+      "face": 4,
+      "local_channel": 23,
+      "reference": "T24",
+      "row": 5,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 155,
+      "position_mm": [
+        -105.0,
+        -28.999999999999986,
+        30.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 152,
+      "face": 4,
+      "local_channel": 24,
+      "reference": "T25",
+      "row": 6,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 140,
+      "position_mm": [
+        -105.0,
+        29.000000000000014,
+        50.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 153,
+      "face": 4,
+      "local_channel": 25,
+      "reference": "T26",
+      "row": 6,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 141,
+      "position_mm": [
+        -105.0,
+        11.000000000000012,
+        50.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 154,
+      "face": 4,
+      "local_channel": 26,
+      "reference": "T27",
+      "row": 6,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 156,
+      "position_mm": [
+        -105.0,
+        -10.999999999999988,
+        50.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 155,
+      "face": 4,
+      "local_channel": 27,
+      "reference": "T28",
+      "row": 6,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 157,
+      "position_mm": [
+        -105.0,
+        -28.999999999999986,
+        50.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 156,
+      "face": 4,
+      "local_channel": 28,
+      "reference": "T29",
+      "row": 7,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 142,
+      "position_mm": [
+        -105.0,
+        29.000000000000014,
+        70.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 157,
+      "face": 4,
+      "local_channel": 29,
+      "reference": "T30",
+      "row": 7,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 143,
+      "position_mm": [
+        -105.0,
+        11.000000000000012,
+        70.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 158,
+      "face": 4,
+      "local_channel": 30,
+      "reference": "T31",
+      "row": 7,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 158,
+      "position_mm": [
+        -105.0,
+        -10.999999999999988,
+        70.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 159,
+      "face": 4,
+      "local_channel": 31,
+      "reference": "T32",
+      "row": 7,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 159,
+      "position_mm": [
+        -105.0,
+        -28.999999999999986,
+        70.0
+      ],
+      "normal": [
+        1.0,
+        -1.2246467991473532e-16,
+        0
+      ]
+    },
+    {
+      "channel": 160,
+      "face": 5,
+      "local_channel": 0,
+      "reference": "T1",
+      "row": 0,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 160,
+      "position_mm": [
+        -94.75230867899738,
+        -53.74011537017759,
+        -70.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 161,
+      "face": 5,
+      "local_channel": 1,
+      "reference": "T2",
+      "row": 0,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 161,
+      "position_mm": [
+        -82.02438661763952,
+        -66.46803743153545,
+        -70.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 162,
+      "face": 5,
+      "local_channel": 2,
+      "reference": "T3",
+      "row": 0,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 176,
+      "position_mm": [
+        -66.46803743153549,
+        -82.02438661763951,
+        -70.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 163,
+      "face": 5,
+      "local_channel": 3,
+      "reference": "T4",
+      "row": 0,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 177,
+      "position_mm": [
+        -53.740115370177634,
+        -94.75230867899737,
+        -70.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 164,
+      "face": 5,
+      "local_channel": 4,
+      "reference": "T5",
+      "row": 1,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 162,
+      "position_mm": [
+        -94.75230867899738,
+        -53.74011537017759,
+        -50.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 165,
+      "face": 5,
+      "local_channel": 5,
+      "reference": "T6",
+      "row": 1,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 163,
+      "position_mm": [
+        -82.02438661763952,
+        -66.46803743153545,
+        -50.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 166,
+      "face": 5,
+      "local_channel": 6,
+      "reference": "T7",
+      "row": 1,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 178,
+      "position_mm": [
+        -66.46803743153549,
+        -82.02438661763951,
+        -50.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 167,
+      "face": 5,
+      "local_channel": 7,
+      "reference": "T8",
+      "row": 1,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 179,
+      "position_mm": [
+        -53.740115370177634,
+        -94.75230867899737,
+        -50.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 168,
+      "face": 5,
+      "local_channel": 8,
+      "reference": "T9",
+      "row": 2,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 164,
+      "position_mm": [
+        -94.75230867899738,
+        -53.74011537017759,
+        -30.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 169,
+      "face": 5,
+      "local_channel": 9,
+      "reference": "T10",
+      "row": 2,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 165,
+      "position_mm": [
+        -82.02438661763952,
+        -66.46803743153545,
+        -30.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 170,
+      "face": 5,
+      "local_channel": 10,
+      "reference": "T11",
+      "row": 2,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 180,
+      "position_mm": [
+        -66.46803743153549,
+        -82.02438661763951,
+        -30.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 171,
+      "face": 5,
+      "local_channel": 11,
+      "reference": "T12",
+      "row": 2,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 181,
+      "position_mm": [
+        -53.740115370177634,
+        -94.75230867899737,
+        -30.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 172,
+      "face": 5,
+      "local_channel": 12,
+      "reference": "T13",
+      "row": 3,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 166,
+      "position_mm": [
+        -94.75230867899738,
+        -53.74011537017759,
+        -10.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 173,
+      "face": 5,
+      "local_channel": 13,
+      "reference": "T14",
+      "row": 3,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 167,
+      "position_mm": [
+        -82.02438661763952,
+        -66.46803743153545,
+        -10.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 174,
+      "face": 5,
+      "local_channel": 14,
+      "reference": "T15",
+      "row": 3,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 182,
+      "position_mm": [
+        -66.46803743153549,
+        -82.02438661763951,
+        -10.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 175,
+      "face": 5,
+      "local_channel": 15,
+      "reference": "T16",
+      "row": 3,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 183,
+      "position_mm": [
+        -53.740115370177634,
+        -94.75230867899737,
+        -10.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 176,
+      "face": 5,
+      "local_channel": 16,
+      "reference": "T17",
+      "row": 4,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 168,
+      "position_mm": [
+        -94.75230867899738,
+        -53.74011537017759,
+        10.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 177,
+      "face": 5,
+      "local_channel": 17,
+      "reference": "T18",
+      "row": 4,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 169,
+      "position_mm": [
+        -82.02438661763952,
+        -66.46803743153545,
+        10.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 178,
+      "face": 5,
+      "local_channel": 18,
+      "reference": "T19",
+      "row": 4,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 184,
+      "position_mm": [
+        -66.46803743153549,
+        -82.02438661763951,
+        10.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 179,
+      "face": 5,
+      "local_channel": 19,
+      "reference": "T20",
+      "row": 4,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 185,
+      "position_mm": [
+        -53.740115370177634,
+        -94.75230867899737,
+        10.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 180,
+      "face": 5,
+      "local_channel": 20,
+      "reference": "T21",
+      "row": 5,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 170,
+      "position_mm": [
+        -94.75230867899738,
+        -53.74011537017759,
+        30.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 181,
+      "face": 5,
+      "local_channel": 21,
+      "reference": "T22",
+      "row": 5,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 171,
+      "position_mm": [
+        -82.02438661763952,
+        -66.46803743153545,
+        30.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 182,
+      "face": 5,
+      "local_channel": 22,
+      "reference": "T23",
+      "row": 5,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 186,
+      "position_mm": [
+        -66.46803743153549,
+        -82.02438661763951,
+        30.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 183,
+      "face": 5,
+      "local_channel": 23,
+      "reference": "T24",
+      "row": 5,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 187,
+      "position_mm": [
+        -53.740115370177634,
+        -94.75230867899737,
+        30.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 184,
+      "face": 5,
+      "local_channel": 24,
+      "reference": "T25",
+      "row": 6,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 172,
+      "position_mm": [
+        -94.75230867899738,
+        -53.74011537017759,
+        50.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 185,
+      "face": 5,
+      "local_channel": 25,
+      "reference": "T26",
+      "row": 6,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 173,
+      "position_mm": [
+        -82.02438661763952,
+        -66.46803743153545,
+        50.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 186,
+      "face": 5,
+      "local_channel": 26,
+      "reference": "T27",
+      "row": 6,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 188,
+      "position_mm": [
+        -66.46803743153549,
+        -82.02438661763951,
+        50.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 187,
+      "face": 5,
+      "local_channel": 27,
+      "reference": "T28",
+      "row": 6,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 189,
+      "position_mm": [
+        -53.740115370177634,
+        -94.75230867899737,
+        50.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 188,
+      "face": 5,
+      "local_channel": 28,
+      "reference": "T29",
+      "row": 7,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 174,
+      "position_mm": [
+        -94.75230867899738,
+        -53.74011537017759,
+        70.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 189,
+      "face": 5,
+      "local_channel": 29,
+      "reference": "T30",
+      "row": 7,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 175,
+      "position_mm": [
+        -82.02438661763952,
+        -66.46803743153545,
+        70.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 190,
+      "face": 5,
+      "local_channel": 30,
+      "reference": "T31",
+      "row": 7,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 190,
+      "position_mm": [
+        -66.46803743153549,
+        -82.02438661763951,
+        70.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 191,
+      "face": 5,
+      "local_channel": 31,
+      "reference": "T32",
+      "row": 7,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 191,
+      "position_mm": [
+        -53.740115370177634,
+        -94.75230867899737,
+        70.0
+      ],
+      "normal": [
+        0.7071067811865477,
+        0.7071067811865475,
+        0
+      ]
+    },
+    {
+      "channel": 192,
+      "face": 6,
+      "local_channel": 0,
+      "reference": "T1",
+      "row": 0,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 192,
+      "position_mm": [
+        -29.000000000000018,
+        -105.0,
+        -70.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 193,
+      "face": 6,
+      "local_channel": 1,
+      "reference": "T2",
+      "row": 0,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 193,
+      "position_mm": [
+        -11.00000000000002,
+        -105.0,
+        -70.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 194,
+      "face": 6,
+      "local_channel": 2,
+      "reference": "T3",
+      "row": 0,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 208,
+      "position_mm": [
+        10.99999999999998,
+        -105.0,
+        -70.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 195,
+      "face": 6,
+      "local_channel": 3,
+      "reference": "T4",
+      "row": 0,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 209,
+      "position_mm": [
+        28.999999999999982,
+        -105.0,
+        -70.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 196,
+      "face": 6,
+      "local_channel": 4,
+      "reference": "T5",
+      "row": 1,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 194,
+      "position_mm": [
+        -29.000000000000018,
+        -105.0,
+        -50.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 197,
+      "face": 6,
+      "local_channel": 5,
+      "reference": "T6",
+      "row": 1,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 195,
+      "position_mm": [
+        -11.00000000000002,
+        -105.0,
+        -50.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 198,
+      "face": 6,
+      "local_channel": 6,
+      "reference": "T7",
+      "row": 1,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 210,
+      "position_mm": [
+        10.99999999999998,
+        -105.0,
+        -50.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 199,
+      "face": 6,
+      "local_channel": 7,
+      "reference": "T8",
+      "row": 1,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 211,
+      "position_mm": [
+        28.999999999999982,
+        -105.0,
+        -50.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 200,
+      "face": 6,
+      "local_channel": 8,
+      "reference": "T9",
+      "row": 2,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 196,
+      "position_mm": [
+        -29.000000000000018,
+        -105.0,
+        -30.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 201,
+      "face": 6,
+      "local_channel": 9,
+      "reference": "T10",
+      "row": 2,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 197,
+      "position_mm": [
+        -11.00000000000002,
+        -105.0,
+        -30.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 202,
+      "face": 6,
+      "local_channel": 10,
+      "reference": "T11",
+      "row": 2,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 212,
+      "position_mm": [
+        10.99999999999998,
+        -105.0,
+        -30.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 203,
+      "face": 6,
+      "local_channel": 11,
+      "reference": "T12",
+      "row": 2,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 213,
+      "position_mm": [
+        28.999999999999982,
+        -105.0,
+        -30.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 204,
+      "face": 6,
+      "local_channel": 12,
+      "reference": "T13",
+      "row": 3,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 198,
+      "position_mm": [
+        -29.000000000000018,
+        -105.0,
+        -10.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 205,
+      "face": 6,
+      "local_channel": 13,
+      "reference": "T14",
+      "row": 3,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 199,
+      "position_mm": [
+        -11.00000000000002,
+        -105.0,
+        -10.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 206,
+      "face": 6,
+      "local_channel": 14,
+      "reference": "T15",
+      "row": 3,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 214,
+      "position_mm": [
+        10.99999999999998,
+        -105.0,
+        -10.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 207,
+      "face": 6,
+      "local_channel": 15,
+      "reference": "T16",
+      "row": 3,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 215,
+      "position_mm": [
+        28.999999999999982,
+        -105.0,
+        -10.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 208,
+      "face": 6,
+      "local_channel": 16,
+      "reference": "T17",
+      "row": 4,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 200,
+      "position_mm": [
+        -29.000000000000018,
+        -105.0,
+        10.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 209,
+      "face": 6,
+      "local_channel": 17,
+      "reference": "T18",
+      "row": 4,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 201,
+      "position_mm": [
+        -11.00000000000002,
+        -105.0,
+        10.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 210,
+      "face": 6,
+      "local_channel": 18,
+      "reference": "T19",
+      "row": 4,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 216,
+      "position_mm": [
+        10.99999999999998,
+        -105.0,
+        10.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 211,
+      "face": 6,
+      "local_channel": 19,
+      "reference": "T20",
+      "row": 4,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 217,
+      "position_mm": [
+        28.999999999999982,
+        -105.0,
+        10.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 212,
+      "face": 6,
+      "local_channel": 20,
+      "reference": "T21",
+      "row": 5,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 202,
+      "position_mm": [
+        -29.000000000000018,
+        -105.0,
+        30.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 213,
+      "face": 6,
+      "local_channel": 21,
+      "reference": "T22",
+      "row": 5,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 203,
+      "position_mm": [
+        -11.00000000000002,
+        -105.0,
+        30.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 214,
+      "face": 6,
+      "local_channel": 22,
+      "reference": "T23",
+      "row": 5,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 218,
+      "position_mm": [
+        10.99999999999998,
+        -105.0,
+        30.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 215,
+      "face": 6,
+      "local_channel": 23,
+      "reference": "T24",
+      "row": 5,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 219,
+      "position_mm": [
+        28.999999999999982,
+        -105.0,
+        30.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 216,
+      "face": 6,
+      "local_channel": 24,
+      "reference": "T25",
+      "row": 6,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 204,
+      "position_mm": [
+        -29.000000000000018,
+        -105.0,
+        50.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 217,
+      "face": 6,
+      "local_channel": 25,
+      "reference": "T26",
+      "row": 6,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 205,
+      "position_mm": [
+        -11.00000000000002,
+        -105.0,
+        50.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 218,
+      "face": 6,
+      "local_channel": 26,
+      "reference": "T27",
+      "row": 6,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 220,
+      "position_mm": [
+        10.99999999999998,
+        -105.0,
+        50.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 219,
+      "face": 6,
+      "local_channel": 27,
+      "reference": "T28",
+      "row": 6,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 221,
+      "position_mm": [
+        28.999999999999982,
+        -105.0,
+        50.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 220,
+      "face": 6,
+      "local_channel": 28,
+      "reference": "T29",
+      "row": 7,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 206,
+      "position_mm": [
+        -29.000000000000018,
+        -105.0,
+        70.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 221,
+      "face": 6,
+      "local_channel": 29,
+      "reference": "T30",
+      "row": 7,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 207,
+      "position_mm": [
+        -11.00000000000002,
+        -105.0,
+        70.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 222,
+      "face": 6,
+      "local_channel": 30,
+      "reference": "T31",
+      "row": 7,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 222,
+      "position_mm": [
+        10.99999999999998,
+        -105.0,
+        70.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 223,
+      "face": 6,
+      "local_channel": 31,
+      "reference": "T32",
+      "row": 7,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 223,
+      "position_mm": [
+        28.999999999999982,
+        -105.0,
+        70.0
+      ],
+      "normal": [
+        1.8369701987210297e-16,
+        1.0,
+        0
+      ]
+    },
+    {
+      "channel": 224,
+      "face": 7,
+      "local_channel": 0,
+      "reference": "T1",
+      "row": 0,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 224,
+      "position_mm": [
+        53.74011537017759,
+        -94.75230867899738,
+        -70.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 225,
+      "face": 7,
+      "local_channel": 1,
+      "reference": "T2",
+      "row": 0,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 225,
+      "position_mm": [
+        66.46803743153545,
+        -82.02438661763952,
+        -70.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 226,
+      "face": 7,
+      "local_channel": 2,
+      "reference": "T3",
+      "row": 0,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 240,
+      "position_mm": [
+        82.02438661763951,
+        -66.46803743153549,
+        -70.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 227,
+      "face": 7,
+      "local_channel": 3,
+      "reference": "T4",
+      "row": 0,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 241,
+      "position_mm": [
+        94.75230867899737,
+        -53.740115370177634,
+        -70.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 228,
+      "face": 7,
+      "local_channel": 4,
+      "reference": "T5",
+      "row": 1,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 226,
+      "position_mm": [
+        53.74011537017759,
+        -94.75230867899738,
+        -50.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 229,
+      "face": 7,
+      "local_channel": 5,
+      "reference": "T6",
+      "row": 1,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 227,
+      "position_mm": [
+        66.46803743153545,
+        -82.02438661763952,
+        -50.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 230,
+      "face": 7,
+      "local_channel": 6,
+      "reference": "T7",
+      "row": 1,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 242,
+      "position_mm": [
+        82.02438661763951,
+        -66.46803743153549,
+        -50.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 231,
+      "face": 7,
+      "local_channel": 7,
+      "reference": "T8",
+      "row": 1,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 243,
+      "position_mm": [
+        94.75230867899737,
+        -53.740115370177634,
+        -50.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 232,
+      "face": 7,
+      "local_channel": 8,
+      "reference": "T9",
+      "row": 2,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 228,
+      "position_mm": [
+        53.74011537017759,
+        -94.75230867899738,
+        -30.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 233,
+      "face": 7,
+      "local_channel": 9,
+      "reference": "T10",
+      "row": 2,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 229,
+      "position_mm": [
+        66.46803743153545,
+        -82.02438661763952,
+        -30.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 234,
+      "face": 7,
+      "local_channel": 10,
+      "reference": "T11",
+      "row": 2,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 244,
+      "position_mm": [
+        82.02438661763951,
+        -66.46803743153549,
+        -30.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 235,
+      "face": 7,
+      "local_channel": 11,
+      "reference": "T12",
+      "row": 2,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 245,
+      "position_mm": [
+        94.75230867899737,
+        -53.740115370177634,
+        -30.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 236,
+      "face": 7,
+      "local_channel": 12,
+      "reference": "T13",
+      "row": 3,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 230,
+      "position_mm": [
+        53.74011537017759,
+        -94.75230867899738,
+        -10.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 237,
+      "face": 7,
+      "local_channel": 13,
+      "reference": "T14",
+      "row": 3,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 0,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 231,
+      "position_mm": [
+        66.46803743153545,
+        -82.02438661763952,
+        -10.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 238,
+      "face": 7,
+      "local_channel": 14,
+      "reference": "T15",
+      "row": 3,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 246,
+      "position_mm": [
+        82.02438661763951,
+        -66.46803743153549,
+        -10.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 239,
+      "face": 7,
+      "local_channel": 15,
+      "reference": "T16",
+      "row": 3,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 2,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 247,
+      "position_mm": [
+        94.75230867899737,
+        -53.740115370177634,
+        -10.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 240,
+      "face": 7,
+      "local_channel": 16,
+      "reference": "T17",
+      "row": 4,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 232,
+      "position_mm": [
+        53.74011537017759,
+        -94.75230867899738,
+        10.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 241,
+      "face": 7,
+      "local_channel": 17,
+      "reference": "T18",
+      "row": 4,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 233,
+      "position_mm": [
+        66.46803743153545,
+        -82.02438661763952,
+        10.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 242,
+      "face": 7,
+      "local_channel": 18,
+      "reference": "T19",
+      "row": 4,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 0,
+      "fpga_physical_channel": 248,
+      "position_mm": [
+        82.02438661763951,
+        -66.46803743153549,
+        10.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 243,
+      "face": 7,
+      "local_channel": 19,
+      "reference": "T20",
+      "row": 4,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 1,
+      "fpga_physical_channel": 249,
+      "position_mm": [
+        94.75230867899737,
+        -53.740115370177634,
+        10.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 244,
+      "face": 7,
+      "local_channel": 20,
+      "reference": "T21",
+      "row": 5,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 234,
+      "position_mm": [
+        53.74011537017759,
+        -94.75230867899738,
+        30.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 245,
+      "face": 7,
+      "local_channel": 21,
+      "reference": "T22",
+      "row": 5,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 235,
+      "position_mm": [
+        66.46803743153545,
+        -82.02438661763952,
+        30.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 246,
+      "face": 7,
+      "local_channel": 22,
+      "reference": "T23",
+      "row": 5,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 2,
+      "fpga_physical_channel": 250,
+      "position_mm": [
+        82.02438661763951,
+        -66.46803743153549,
+        30.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 247,
+      "face": 7,
+      "local_channel": 23,
+      "reference": "T24",
+      "row": 5,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 3,
+      "fpga_physical_channel": 251,
+      "position_mm": [
+        94.75230867899737,
+        -53.740115370177634,
+        30.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 248,
+      "face": 7,
+      "local_channel": 24,
+      "reference": "T25",
+      "row": 6,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 236,
+      "position_mm": [
+        53.74011537017759,
+        -94.75230867899738,
+        50.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 249,
+      "face": 7,
+      "local_channel": 25,
+      "reference": "T26",
+      "row": 6,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 237,
+      "position_mm": [
+        66.46803743153545,
+        -82.02438661763952,
+        50.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 250,
+      "face": 7,
+      "local_channel": 26,
+      "reference": "T27",
+      "row": 6,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 4,
+      "fpga_physical_channel": 252,
+      "position_mm": [
+        82.02438661763951,
+        -66.46803743153549,
+        50.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 251,
+      "face": 7,
+      "local_channel": 27,
+      "reference": "T28",
+      "row": 6,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 5,
+      "fpga_physical_channel": 253,
+      "position_mm": [
+        94.75230867899737,
+        -53.740115370177634,
+        50.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 252,
+      "face": 7,
+      "local_channel": 28,
+      "reference": "T29",
+      "row": 7,
+      "column": 0,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 238,
+      "position_mm": [
+        53.74011537017759,
+        -94.75230867899738,
+        70.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 253,
+      "face": 7,
+      "local_channel": 29,
+      "reference": "T30",
+      "row": 7,
+      "column": 1,
+      "bank": "A",
+      "data_line_on_face": 1,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 239,
+      "position_mm": [
+        66.46803743153545,
+        -82.02438661763952,
+        70.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 254,
+      "face": 7,
+      "local_channel": 30,
+      "reference": "T31",
+      "row": 7,
+      "column": 2,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 6,
+      "fpga_physical_channel": 254,
+      "position_mm": [
+        82.02438661763951,
+        -66.46803743153549,
+        70.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    },
+    {
+      "channel": 255,
+      "face": 7,
+      "local_channel": 31,
+      "reference": "T32",
+      "row": 7,
+      "column": 3,
+      "bank": "B",
+      "data_line_on_face": 3,
+      "shift_register_output": 7,
+      "fpga_physical_channel": 255,
+      "position_mm": [
+        94.75230867899737,
+        -53.740115370177634,
+        70.0
+      ],
+      "normal": [
+        -0.7071067811865474,
+        0.7071067811865477,
+        0
+      ]
+    }
+  ]
+}

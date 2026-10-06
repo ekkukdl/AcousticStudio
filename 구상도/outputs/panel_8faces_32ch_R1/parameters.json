@@ -1,0 +1,19 @@
+{
+  "revision": "R1",
+  "faces": 8,
+  "columns": 4,
+  "rows": 8,
+  "board_width_mm": 84,
+  "board_length_mm": 224.0,
+  "board_thickness_mm": 1.6,
+  "column_pitches_mm": [
+    18.0,
+    22.0,
+    18.0
+  ],
+  "row_pitch_mm": 20.0,
+  "mounting_strip_mm": 22.0,
+  "transducer_diameter_mm": 16.0,
+  "transducer_height_mm": 12.5,
+  "emitting_plane_separation_mm": 210
+}

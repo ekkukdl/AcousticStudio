@@ -1,0 +1,39 @@
+﻿Ref,Value,X_mm,Y_mm_down_from_top,Rotation_KiCad_deg,Side,Note
+T1,V40AN16T,13.0,42.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T2,V40AN16T,31.0,42.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T5,V40AN16T,13.0,62.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T6,V40AN16T,31.0,62.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T9,V40AN16T,13.0,82.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T10,V40AN16T,31.0,82.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T13,V40AN16T,13.0,102.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T14,V40AN16T,31.0,102.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T17,V40AN16T,13.0,122.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T18,V40AN16T,31.0,122.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T21,V40AN16T,13.0,142.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T22,V40AN16T,31.0,142.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T25,V40AN16T,13.0,162.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T26,V40AN16T,31.0,162.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T29,V40AN16T,13.0,182.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T30,V40AN16T,31.0,182.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+C19,220uF 25V,35.0,29.0,0,B,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+J1,FPGA_SIGNAL_3V3,16.92,195.0,-90,B,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+J3,POWER_INPUT,24.54,28.0,90,B,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T3,V40AN16T,53.0,42.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T4,V40AN16T,71.0,42.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T7,V40AN16T,53.0,62.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T8,V40AN16T,71.0,62.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T11,V40AN16T,53.0,82.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T12,V40AN16T,71.0,82.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T15,V40AN16T,53.0,102.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T16,V40AN16T,71.0,102.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T19,V40AN16T,53.0,122.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T20,V40AN16T,71.0,122.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T23,V40AN16T,53.0,142.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T24,V40AN16T,71.0,142.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T27,V40AN16T,53.0,162.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T28,V40AN16T,71.0,162.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T31,V40AN16T,53.0,182.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+T32,V40AN16T,71.0,182.0,0,F,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+C39,220uF 25V,75.0,29.0,0,B,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+J2,FPGA_SIGNAL_3V3,56.92,195.0,-90,B,TX pin1 driven pin2 GND; bulk capacitor pin1 positive
+J4,POWER_INPUT,64.53999999999999,28.0,90,B,TX pin1 driven pin2 GND; bulk capacitor pin1 positive

@@ -1,0 +1,1964 @@
+{
+  "diff_version": "1.0",
+  "analyzer_type": "schematic",
+  "base_file": "\uad6c\uc0c1\ub3c4/outputs/pcb_review_2026-10-06/skill_install_schematic_smoke.json",
+  "head_file": "\uad6c\uc0c1\ub3c4/outputs/panel_8faces_32ch_R1/analysis/schematic.json",
+  "has_changes": true,
+  "summary": {
+    "total_changes": 132,
+    "added": 75,
+    "removed": 0,
+    "modified": 57,
+    "severity": "breaking",
+    "regressions": 12
+  },
+  "diff": {
+    "statistics": {
+      "statistics.total_components": {
+        "base": 78,
+        "head": 152,
+        "delta": 74
+      },
+      "statistics.total_nets": {
+        "base": 62,
+        "head": 123,
+        "delta": 61
+      },
+      "statistics.total_wires": {
+        "base": 216,
+        "head": 180,
+        "delta": -36
+      },
+      "statistics.total_no_connects": {
+        "base": 18,
+        "head": 36,
+        "delta": 18
+      }
+    },
+    "components": {
+      "added": [
+        {
+          "reference": "T17",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "T18",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "T21",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "T22",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "U11",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "T25",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "T26",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "U12",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "T29",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "T30",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "C29",
+          "value": "100nF 16V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "U13",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "R26",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R27",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "C21",
+          "value": "100nF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "C31",
+          "value": "1uF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "U14",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "R28",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R29",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "C22",
+          "value": "100nF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "C32",
+          "value": "1uF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "U15",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "R30",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R31",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "C23",
+          "value": "100nF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "C33",
+          "value": "1uF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "U16",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "R32",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R33",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "C24",
+          "value": "100nF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "C34",
+          "value": "1uF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "C30",
+          "value": "100nF 16V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "U17",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "T19",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "R34",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "T20",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "R35",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "C25",
+          "value": "100nF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "C35",
+          "value": "1uF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "U18",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "T23",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "R36",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "T24",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "R37",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "C26",
+          "value": "100nF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "C36",
+          "value": "1uF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "U19",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "T27",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "R38",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "T28",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "R39",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "C27",
+          "value": "100nF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "C37",
+          "value": "1uF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "U20",
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8"
+        },
+        {
+          "reference": "T31",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "R40",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "T32",
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10"
+        },
+        {
+          "reference": "R41",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "C28",
+          "value": "100nF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "C38",
+          "value": "1uF 50V",
+          "footprint": "Levitation:C0805"
+        },
+        {
+          "reference": "J3",
+          "value": "POWER_INPUT",
+          "footprint": "Levitation:Header1x03"
+        },
+        {
+          "reference": "J4",
+          "value": "POWER_INPUT",
+          "footprint": "Levitation:Header1x03"
+        },
+        {
+          "reference": "Q2",
+          "value": "MMBT3904",
+          "footprint": "Levitation:SOT23"
+        },
+        {
+          "reference": "R42",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R43",
+          "value": "100k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R44",
+          "value": "10k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R45",
+          "value": "33R",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R46",
+          "value": "33R",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R47",
+          "value": "100k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R48",
+          "value": "100k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R49",
+          "value": "100k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "R50",
+          "value": "100k",
+          "footprint": "Levitation:R0805"
+        },
+        {
+          "reference": "C39",
+          "value": "220uF 25V",
+          "footprint": "Levitation:CP_Radial_D6.3_P2.5"
+        },
+        {
+          "reference": "C40",
+          "value": "10uF 16V",
+          "footprint": "Levitation:C0805"
+        }
+      ],
+      "removed": [],
+      "modified": [
+        {
+          "reference": "U1",
+          "changes": [
+            {
+              "field": "value",
+              "base": "SN74HCT595D",
+              "head": "74HCT595D"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "74HCT595D,118"
+            }
+          ]
+        },
+        {
+          "reference": "C9",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "U5",
+          "changes": [
+            {
+              "field": "value",
+              "base": "TC4427ACOA",
+              "head": "TC4427A"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TC4427ACOA713"
+            }
+          ]
+        },
+        {
+          "reference": "R1",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R2",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "C1",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "C11",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TCC0805X7R105K500DT"
+            }
+          ]
+        },
+        {
+          "reference": "U6",
+          "changes": [
+            {
+              "field": "value",
+              "base": "TC4427ACOA",
+              "head": "TC4427A"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TC4427ACOA713"
+            }
+          ]
+        },
+        {
+          "reference": "R3",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R4",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "C2",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "C12",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TCC0805X7R105K500DT"
+            }
+          ]
+        },
+        {
+          "reference": "U7",
+          "changes": [
+            {
+              "field": "value",
+              "base": "TC4427ACOA",
+              "head": "TC4427A"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TC4427ACOA713"
+            }
+          ]
+        },
+        {
+          "reference": "R5",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R6",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "C3",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "C13",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TCC0805X7R105K500DT"
+            }
+          ]
+        },
+        {
+          "reference": "U8",
+          "changes": [
+            {
+              "field": "value",
+              "base": "TC4427ACOA",
+              "head": "TC4427A"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TC4427ACOA713"
+            }
+          ]
+        },
+        {
+          "reference": "R7",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R8",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "C4",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "C14",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TCC0805X7R105K500DT"
+            }
+          ]
+        },
+        {
+          "reference": "U2",
+          "changes": [
+            {
+              "field": "value",
+              "base": "SN74HCT595D",
+              "head": "74HCT595D"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "74HCT595D,118"
+            }
+          ]
+        },
+        {
+          "reference": "C10",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "U9",
+          "changes": [
+            {
+              "field": "value",
+              "base": "TC4427ACOA",
+              "head": "TC4427A"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TC4427ACOA713"
+            }
+          ]
+        },
+        {
+          "reference": "R9",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R10",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "C5",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "C15",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TCC0805X7R105K500DT"
+            }
+          ]
+        },
+        {
+          "reference": "U10",
+          "changes": [
+            {
+              "field": "value",
+              "base": "TC4427ACOA",
+              "head": "TC4427A"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TC4427ACOA713"
+            }
+          ]
+        },
+        {
+          "reference": "R11",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R12",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "C6",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "C16",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TCC0805X7R105K500DT"
+            }
+          ]
+        },
+        {
+          "reference": "R13",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R14",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "C7",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "C17",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TCC0805X7R105K500DT"
+            }
+          ]
+        },
+        {
+          "reference": "R15",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R16",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "C8",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "CC0805KRX7R9BB104"
+            }
+          ]
+        },
+        {
+          "reference": "C18",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "TCC0805X7R105K500DT"
+            }
+          ]
+        },
+        {
+          "reference": "U3",
+          "changes": [
+            {
+              "field": "value",
+              "base": "TC4427ACOA",
+              "head": "74HCT595D"
+            },
+            {
+              "field": "footprint",
+              "base": "Levitation:SOIC8",
+              "head": "Levitation:SOIC16"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "74HCT595D,118"
+            }
+          ]
+        },
+        {
+          "reference": "U4",
+          "changes": [
+            {
+              "field": "value",
+              "base": "TC4427ACOA",
+              "head": "74HCT595D"
+            },
+            {
+              "field": "footprint",
+              "base": "Levitation:SOIC8",
+              "head": "Levitation:SOIC16"
+            },
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "74HCT595D,118"
+            }
+          ]
+        },
+        {
+          "reference": "Q1",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "MMBT3904,215"
+            }
+          ]
+        },
+        {
+          "reference": "R17",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R18",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-07100KL"
+            }
+          ]
+        },
+        {
+          "reference": "R19",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0710KL"
+            }
+          ]
+        },
+        {
+          "reference": "R20",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0733RL"
+            }
+          ]
+        },
+        {
+          "reference": "R21",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-0733RL"
+            }
+          ]
+        },
+        {
+          "reference": "R22",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-07100KL"
+            }
+          ]
+        },
+        {
+          "reference": "R23",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-07100KL"
+            }
+          ]
+        },
+        {
+          "reference": "R24",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-07100KL"
+            }
+          ]
+        },
+        {
+          "reference": "R25",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "RC0805FR-07100KL"
+            }
+          ]
+        },
+        {
+          "reference": "C19",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "25YXJ220M6.3X11"
+            }
+          ]
+        },
+        {
+          "reference": "C20",
+          "changes": [
+            {
+              "field": "mpn",
+              "base": "",
+              "head": "GRM21BR61E106KA73L"
+            }
+          ]
+        },
+        {
+          "reference": "J2",
+          "changes": [
+            {
+              "field": "value",
+              "base": "POWER_INPUT",
+              "head": "FPGA_SIGNAL_3V3"
+            },
+            {
+              "field": "footprint",
+              "base": "Levitation:Header1x03",
+              "head": "Levitation:Header2x05"
+            }
+          ]
+        }
+      ]
+    },
+    "signal_analysis": {
+      "transistor_circuits": {
+        "added": [
+          {
+            "reference": "Q2",
+            "value": "MMBT3904",
+            "type": "bjt"
+          }
+        ],
+        "removed": [],
+        "modified": [],
+        "unchanged_count": 1
+      }
+    },
+    "bom": {
+      "added": [
+        {
+          "value": "74HCT595D",
+          "footprint": "Levitation:SOIC16",
+          "quantity": 4
+        },
+        {
+          "value": "TC4427A",
+          "footprint": "Levitation:SOIC8",
+          "quantity": 16
+        }
+      ],
+      "removed": [
+        {
+          "value": "SN74HCT595D",
+          "footprint": "Levitation:SOIC16",
+          "quantity": 2
+        },
+        {
+          "value": "TC4427ACOA",
+          "footprint": "Levitation:SOIC8",
+          "quantity": 8
+        }
+      ],
+      "quantity_changes": [
+        {
+          "value": "100nF 50V",
+          "footprint": "Levitation:C0805",
+          "base_qty": 8,
+          "head_qty": 16,
+          "delta": 8
+        },
+        {
+          "value": "1uF 50V",
+          "footprint": "Levitation:C0805",
+          "base_qty": 8,
+          "head_qty": 16,
+          "delta": 8
+        },
+        {
+          "value": "220uF 25V",
+          "footprint": "Levitation:CP_Radial_D6.3_P2.5",
+          "base_qty": 1,
+          "head_qty": 2,
+          "delta": 1
+        },
+        {
+          "value": "10uF 16V",
+          "footprint": "Levitation:C0805",
+          "base_qty": 1,
+          "head_qty": 2,
+          "delta": 1
+        },
+        {
+          "value": "100nF 16V",
+          "footprint": "Levitation:C0805",
+          "base_qty": 2,
+          "head_qty": 4,
+          "delta": 2
+        },
+        {
+          "value": "FPGA_SIGNAL_3V3",
+          "footprint": "Levitation:Header2x05",
+          "base_qty": 1,
+          "head_qty": 2,
+          "delta": 1
+        },
+        {
+          "value": "POWER_INPUT",
+          "footprint": "Levitation:Header1x03",
+          "base_qty": 1,
+          "head_qty": 2,
+          "delta": 1
+        },
+        {
+          "value": "MMBT3904",
+          "footprint": "Levitation:SOT23",
+          "base_qty": 1,
+          "head_qty": 2,
+          "delta": 1
+        },
+        {
+          "value": "10k",
+          "footprint": "Levitation:R0805",
+          "base_qty": 18,
+          "head_qty": 36,
+          "delta": 18
+        },
+        {
+          "value": "100k",
+          "footprint": "Levitation:R0805",
+          "base_qty": 5,
+          "head_qty": 10,
+          "delta": 5
+        },
+        {
+          "value": "33R",
+          "footprint": "Levitation:R0805",
+          "base_qty": 2,
+          "head_qty": 4,
+          "delta": 2
+        },
+        {
+          "value": "V40AN16T",
+          "footprint": "Levitation:V40AN16T_P10",
+          "base_qty": 16,
+          "head_qty": 32,
+          "delta": 16
+        }
+      ]
+    },
+    "erc": {
+      "new_warnings": [
+        {
+          "type": "no_driver",
+          "net": "DATA_A0",
+          "message": "Net 'DATA_A0' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U1",
+              "pin_number": "14",
+              "pin_name": "SER",
+              "pin_type": "input"
+            },
+            {
+              "component": "J1",
+              "pin_number": "3",
+              "pin_name": "3",
+              "pin_type": "passive"
+            },
+            {
+              "component": "R22",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "DATA_A1",
+          "message": "Net 'DATA_A1' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U2",
+              "pin_number": "14",
+              "pin_name": "SER",
+              "pin_type": "input"
+            },
+            {
+              "component": "J1",
+              "pin_number": "5",
+              "pin_name": "5",
+              "pin_type": "passive"
+            },
+            {
+              "component": "R23",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "DATA_B0",
+          "message": "Net 'DATA_B0' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U3",
+              "pin_number": "14",
+              "pin_name": "SER",
+              "pin_type": "input"
+            },
+            {
+              "component": "J2",
+              "pin_number": "3",
+              "pin_name": "3",
+              "pin_type": "passive"
+            },
+            {
+              "component": "R47",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "DATA_B1",
+          "message": "Net 'DATA_B1' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U4",
+              "pin_number": "14",
+              "pin_name": "SER",
+              "pin_type": "input"
+            },
+            {
+              "component": "J2",
+              "pin_number": "5",
+              "pin_name": "5",
+              "pin_type": "passive"
+            },
+            {
+              "component": "R48",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "DRV_VDD_A",
+          "message": "Net 'DRV_VDD_A' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U5",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C1",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C11",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U6",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C2",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C12",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U7",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C3",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C13",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U8",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C4",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C14",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U9",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C5",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C15",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U10",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C6",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C16",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U11",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C7",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C17",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U12",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C8",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C18",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "J3",
+              "pin_number": "1",
+              "pin_name": "1",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C19",
+              "pin_number": "1",
+              "pin_name": "1",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "DRV_VDD_B",
+          "message": "Net 'DRV_VDD_B' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U13",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C21",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C31",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U14",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C22",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C32",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U15",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C23",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C33",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U16",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C24",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C34",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U17",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C25",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C35",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U18",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C26",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C36",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U19",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C27",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C37",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "U20",
+              "pin_number": "6",
+              "pin_name": "VDD",
+              "pin_type": "power_in"
+            },
+            {
+              "component": "C28",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C38",
+              "pin_number": "1",
+              "pin_name": "",
+              "pin_type": "passive"
+            },
+            {
+              "component": "J4",
+              "pin_number": "1",
+              "pin_name": "1",
+              "pin_type": "passive"
+            },
+            {
+              "component": "C39",
+              "pin_number": "1",
+              "pin_name": "1",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "LATCH_A",
+          "message": "Net 'LATCH_A' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U1",
+              "pin_number": "12",
+              "pin_name": "RCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "U2",
+              "pin_number": "12",
+              "pin_name": "RCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "R21",
+              "pin_number": "2",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "LATCH_B",
+          "message": "Net 'LATCH_B' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U3",
+              "pin_number": "12",
+              "pin_name": "RCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "U4",
+              "pin_number": "12",
+              "pin_name": "RCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "R46",
+              "pin_number": "2",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "OE_N_A",
+          "message": "Net 'OE_N_A' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U1",
+              "pin_number": "13",
+              "pin_name": "~OE",
+              "pin_type": "input"
+            },
+            {
+              "component": "U2",
+              "pin_number": "13",
+              "pin_name": "~OE",
+              "pin_type": "input"
+            },
+            {
+              "component": "Q1",
+              "pin_number": "3",
+              "pin_name": "C",
+              "pin_type": "passive"
+            },
+            {
+              "component": "R19",
+              "pin_number": "2",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "OE_N_B",
+          "message": "Net 'OE_N_B' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U3",
+              "pin_number": "13",
+              "pin_name": "~OE",
+              "pin_type": "input"
+            },
+            {
+              "component": "U4",
+              "pin_number": "13",
+              "pin_name": "~OE",
+              "pin_type": "input"
+            },
+            {
+              "component": "Q2",
+              "pin_number": "3",
+              "pin_name": "C",
+              "pin_type": "passive"
+            },
+            {
+              "component": "R44",
+              "pin_number": "2",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "SHIFT_A",
+          "message": "Net 'SHIFT_A' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U1",
+              "pin_number": "11",
+              "pin_name": "SRCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "U2",
+              "pin_number": "11",
+              "pin_name": "SRCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "R20",
+              "pin_number": "2",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "SHIFT_B",
+          "message": "Net 'SHIFT_B' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U3",
+              "pin_number": "11",
+              "pin_name": "SRCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "U4",
+              "pin_number": "11",
+              "pin_name": "SRCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "R45",
+              "pin_number": "2",
+              "pin_name": "",
+              "pin_type": "passive"
+            }
+          ]
+        }
+      ],
+      "resolved_warnings": [
+        {
+          "type": "no_driver",
+          "net": "DATA_A",
+          "message": "Net 'DATA_A' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U1",
+              "pin_number": "14",
+              "pin_name": "SER",
+              "pin_type": "input"
+            },
+            {
+              "component": "R22",
+              "pin_number": "1",
+              "pin_name": "1",
+              "pin_type": "passive"
+            },
+            {
+              "component": "J1",
+              "pin_number": "3",
+              "pin_name": "3",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "DATA_B",
+          "message": "Net 'DATA_B' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U2",
+              "pin_number": "14",
+              "pin_name": "SER",
+              "pin_type": "input"
+            },
+            {
+              "component": "R23",
+              "pin_number": "1",
+              "pin_name": "1",
+              "pin_type": "passive"
+            },
+            {
+              "component": "J1",
+              "pin_number": "5",
+              "pin_name": "5",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "LATCH",
+          "message": "Net 'LATCH' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U1",
+              "pin_number": "12",
+              "pin_name": "RCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "U2",
+              "pin_number": "12",
+              "pin_name": "RCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "R21",
+              "pin_number": "2",
+              "pin_name": "2",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "OE_N",
+          "message": "Net 'OE_N' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U1",
+              "pin_number": "13",
+              "pin_name": "~OE",
+              "pin_type": "input"
+            },
+            {
+              "component": "U2",
+              "pin_number": "13",
+              "pin_name": "~OE",
+              "pin_type": "input"
+            },
+            {
+              "component": "Q1",
+              "pin_number": "3",
+              "pin_name": "C",
+              "pin_type": "passive"
+            },
+            {
+              "component": "R19",
+              "pin_number": "2",
+              "pin_name": "2",
+              "pin_type": "passive"
+            }
+          ]
+        },
+        {
+          "type": "no_driver",
+          "net": "SHIFT",
+          "message": "Net 'SHIFT' has input pins but no output driver",
+          "pins": [
+            {
+              "component": "U1",
+              "pin_number": "11",
+              "pin_name": "SRCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "U2",
+              "pin_number": "11",
+              "pin_name": "SRCLK",
+              "pin_type": "input"
+            },
+            {
+              "component": "R20",
+              "pin_number": "2",
+              "pin_name": "2",
+              "pin_type": "passive"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "regressions": [
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on DATA_A0"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on DATA_A1"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on DATA_B0"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on DATA_B1"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on DRV_VDD_A"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on DRV_VDD_B"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on LATCH_A"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on LATCH_B"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on OE_N_A"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on OE_N_B"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on SHIFT_A"
+    },
+    {
+      "category": "erc",
+      "severity": "breaking",
+      "detail": "New ERC warning: no_driver on SHIFT_B"
+    }
+  ]
+}

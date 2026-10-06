@@ -1,5 +1,23 @@
 # KiCad 10 설계 지원 스킬 설치 기록
 
+## 2026-10-06 현재 계정 설치
+
+사용자가 KiCad 10.0 회로도 설계 스킬 다운로드를 요청하여 현재 계정에 아래 두 스킬을 설치했다. 아래의 2026-10-04 기록은 다른 계정의 설치 이력이며 현재 설치 위치와 구분한다.
+
+- 설치 루트: `C:\Users\line0\AppData\Roaming\orca\codex-accounts\a053bc42-2712-4a29-83e3-7bca6d3b0d3f\home\skills`.
+- `kicad-schematic`: American-Embedded/kistack의 `skills/schematic`, 커밋 `8494dbde095669df081950cbb6b24d08a21e25b0`. 회로도 작성·수정, 이미지 검토와 넷리스트 검증 지침. 특정 KiCad 버전 전용 코드는 아니며 현재 KiCad 10.0.6 CLI로 적용한다.
+- `kicad`: aklofas/kicad-happy의 `skills/kicad`, 커밋 `78b8f02e70af5a29aef99ebd66b0d3538fb6010c`. 스킬 설명에 KiCad 5~10 지원 명시. 회로도·PCB·넷리스트 분석 및 교차 검토 도구 포함.
+- Skills CLI 검색 설치 수: 회로도 스킬 312, kicad 893. GitHub 조회 stars: 각각 395, 1,336. 조회 시점 값이며 품질이나 전체 호환성 보증은 아니다.
+- 공식 skill-installer의 GitHub 설치 스크립트로 커밋을 고정하여 다운로드. 설치된 SKILL.md 및 분석 스크립트 존재 확인.
+- 실제 KiCad CLI: `C:\Program Files\KiCad\10.0\bin\kicad-cli.exe`, 버전 10.0.6.
+- 검증: `analyze_schematic.py --help` 정상 종료, 기존 KiCad 10.0.6 회로도 `panel_8faces_16ch.kicad_sch`를 분석기에 입력해 JSON 출력 정상 완료. 결과는 `pcb_review_2026-10-06/skill_install_schematic_smoke.json`에 저장.
+- 이 실행은 설치 및 파일 파싱 확인이며 새 회로 설계·전체 설계 리뷰·전기적 타당성 검증이 아니다. 기존 회로도/PCB는 변경하지 않았다.
+- 두 스킬은 KiCad 내부 플러그인이 아니라 Codex가 사용하는 설계 지원 스킬이다. 다음 대화 턴부터 사용 가능하다.
+
+출처: [회로도 작성 스킬](https://github.com/American-Embedded/kistack/blob/8494dbde095669df081950cbb6b24d08a21e25b0/skills/schematic/SKILL.md), [KiCad 5~10 분석 스킬](https://github.com/aklofas/kicad-happy/blob/78b8f02e70af5a29aef99ebd66b0d3538fb6010c/skills/kicad/SKILL.md).
+
+---
+
 확인일: 2026-10-04
 
 ## 현재 환경
