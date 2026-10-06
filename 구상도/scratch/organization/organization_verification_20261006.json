@@ -1,0 +1,2426 @@
+{
+  "date": "2026-10-06",
+  "files_checked": 336,
+  "moves": {
+    "outputs/polygon_panels": "outputs/pcb/polygon_panels",
+    "outputs/creo_tunnel_models": "outputs/cad_generation/creo_tunnel_models",
+    "outputs/creo_tunnel_reused_v2": "outputs/cad_generation/creo_tunnel_reused_v2",
+    "outputs/sonicsurface_analysis": "outputs/reference_analysis/sonicsurface_analysis",
+    "outputs/tunnel_128_concept": "outputs/concepts/tunnel_128_concept",
+    "outputs/levitation_128": "outputs/budgets/levitation_128",
+    "outputs/DOILLABS_BOM_Template.xlsx": "outputs/vendor_templates/DOILLABS_BOM_Template.xlsx",
+    "outputs/DOILLABS_PnP_Template.xlsx": "outputs/vendor_templates/DOILLABS_PnP_Template.xlsx",
+    "scratch/pcba_parts_8f.json": "scratch/pcba_inputs/pcba_parts_8f.json",
+    "scratch/pcba_native_smt.csv": "scratch/pcba_inputs/pcba_native_smt.csv",
+    "outputs/PCB_6면_8면_설계_P0.zip": "outputs/pcb/PCB_6면_8면_설계_P0.zip",
+    "outputs/KiCad10_스킬_설치기록.md": "outputs/docs/KiCad10_스킬_설치기록.md",
+    "scratch/doillabs_public_main.js": "scratch/vendor_research/doillabs_public_main.js",
+    "scratch/manufacturing-intake-CG5Cxffz.js": "scratch/vendor_research/manufacturing-intake-CG5Cxffz.js",
+    "scratch/pipeline-6phNCDVq.js": "scratch/vendor_research/pipeline-6phNCDVq.js",
+    "scratch/UploadPage-rDE8Vlxa.js": "scratch/vendor_research/UploadPage-rDE8Vlxa.js",
+    "scratch/check_git_model_index.py": "scratch/organization/history/check_git_model_index.py",
+    "scratch/check_organized_creo.py": "scratch/organization/history/check_organized_creo.py",
+    "scratch/creo_conversion_receiver.py": "scratch/creo_scripts/creo_conversion_receiver.py",
+    "scratch/debug_creo_verify.py": "scratch/creo_scripts/debug_creo_verify.py",
+    "scratch/extract_creo_pcb.py": "scratch/creo_scripts/extract_creo_pcb.py",
+    "scratch/extract_pcba_parts.py": "scratch/pcba_scripts/extract_pcba_parts.py",
+    "scratch/finalize_creo_package.py": "scratch/creo_scripts/finalize_creo_package.py",
+    "scratch/finalize_creo_reused_v2.py": "scratch/creo_scripts/finalize_creo_reused_v2.py",
+    "scratch/inspect_doillabs_public_page.py": "scratch/vendor_research/inspect_doillabs_public_page.py",
+    "scratch/move_project_artifacts.py": "scratch/organization/history/move_project_artifacts.py",
+    "scratch/organize_creo_in_acousticstudio.py": "scratch/organization/history/organize_creo_in_acousticstudio.py",
+    "scratch/package_creo_native.py": "scratch/creo_scripts/package_creo_native.py",
+    "scratch/package_gerber_quotes.py": "scratch/pcba_scripts/package_gerber_quotes.py",
+    "scratch/prepare_creo_converter.py": "scratch/creo_scripts/prepare_creo_converter.py",
+    "scratch/prepare_creo_reused_v2.py": "scratch/creo_scripts/prepare_creo_reused_v2.py",
+    "scratch/prepare_pcba_package.py": "scratch/pcba_scripts/prepare_pcba_package.py",
+    "scratch/verify_creo_reused_v2.py": "scratch/creo_scripts/verify_creo_reused_v2.py",
+    "scratch/verify_package_pcba.py": "scratch/pcba_scripts/verify_package_pcba.py"
+  },
+  "text_updates": [
+    "creo_tunnel/v1_single_panel/사용안내.md",
+    "outputs/cad_generation/creo_tunnel_models/사용안내.md",
+    "outputs/pcb/polygon_panels/설계설명_및_확인방법.md",
+    "outputs/cad_generation/creo_tunnel_reused_v2/automation/prepare_creo_reused_v2.py",
+    "outputs/cad_generation/creo_tunnel_reused_v2/automation/verify_creo_reused_v2.py",
+    "scratch/organization/history/check_git_model_index.py",
+    "scratch/organization/history/check_organized_creo.py",
+    "scratch/creo_scripts/extract_creo_pcb.py",
+    "scratch/pcba_scripts/extract_pcba_parts.py",
+    "scratch/creo_scripts/finalize_creo_package.py",
+    "scratch/creo_scripts/finalize_creo_reused_v2.py",
+    "scratch/organization/history/organize_creo_in_acousticstudio.py",
+    "scratch/creo_scripts/package_creo_native.py",
+    "scratch/pcba_scripts/package_gerber_quotes.py",
+    "scratch/creo_scripts/prepare_creo_converter.py",
+    "scratch/creo_scripts/prepare_creo_reused_v2.py",
+    "scratch/pcba_scripts/prepare_pcba_package.py",
+    "scratch/creo_scripts/verify_creo_reused_v2.py",
+    "scratch/pcba_scripts/verify_package_pcba.py",
+    "scratch/organization/reorganize_files.py",
+    "scratch/pcba_artifact/build.mjs",
+    "scratch/pcba_artifact/check_doillabs_upload.mjs",
+    "scratch/pcba_artifact/doillabs.mjs"
+  ],
+  "files": [
+    {
+      "before": "creo_tunnel/.gitattributes",
+      "after": "creo_tunnel/.gitattributes",
+      "sha256_before": "fe3e08df4ec6ec49e4e3169734bdfe8b92f0d57dfb6f3d383369b293d9498fb9",
+      "sha256_after": "fe3e08df4ec6ec49e4e3169734bdfe8b92f0d57dfb6f3d383369b293d9498fb9",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/manifest.json",
+      "after": "creo_tunnel/manifest.json",
+      "sha256_before": "31f89babbdff99c8e8762ffdd6e7d3c9f0f5e068bddefd61af9981b6a6e3dddc",
+      "sha256_after": "31f89babbdff99c8e8762ffdd6e7d3c9f0f5e068bddefd61af9981b6a6e3dddc",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/README.md",
+      "after": "creo_tunnel/README.md",
+      "sha256_before": "a6a6703493fd34e11454847099d59ceb461682e2605ea4193174c58710d6429b",
+      "sha256_after": "a6a6703493fd34e11454847099d59ceb461682e2605ea4193174c58710d6429b",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/native_generation_report.json",
+      "after": "creo_tunnel/v1_single_panel/native_generation_report.json",
+      "sha256_before": "e8e784339117c5773d8efc13e9935f9ce376ce73bd8b317d137245d728a9ef27",
+      "sha256_after": "e8e784339117c5773d8efc13e9935f9ce376ce73bd8b317d137245d728a9ef27",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/native_reopen_report.json",
+      "after": "creo_tunnel/v1_single_panel/native_reopen_report.json",
+      "sha256_before": "c637f8f3ed3db304fabda2b712d5f5c4bc7ff13bce56e7173dc30058a6dd7718",
+      "sha256_after": "c637f8f3ed3db304fabda2b712d5f5c4bc7ff13bce56e7173dc30058a6dd7718",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/pcb_geometry.json",
+      "after": "creo_tunnel/v1_single_panel/pcb_geometry.json",
+      "sha256_before": "e87b3cb642fa7ca7cdc595d71c68e97bd79df9e3156ac0e3783789ad63afe843",
+      "sha256_after": "e87b3cb642fa7ca7cdc595d71c68e97bd79df9e3156ac0e3783789ad63afe843",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/사용안내.md",
+      "after": "creo_tunnel/v1_single_panel/사용안내.md",
+      "sha256_before": "b3f8dd3b251d746122446b7aa76ec5b9813e6ff95dc951f8e4396016c1eb0dfa",
+      "sha256_after": "ae0825b971046b56e9504085aa3d3a1e413a9f8300e34bdced608d0fbc09b853",
+      "path_text_updated": true
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native_build_report.json",
+      "after": "creo_tunnel/v2_dual_panel/native_build_report.json",
+      "sha256_before": "70bd50cdc97dd6398bc9b44f461c54a112fd53a7dcc2813c412e5a03ba7b5039",
+      "sha256_after": "70bd50cdc97dd6398bc9b44f461c54a112fd53a7dcc2813c412e5a03ba7b5039",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native_reopen_report.json",
+      "after": "creo_tunnel/v2_dual_panel/native_reopen_report.json",
+      "sha256_before": "7b18a3a26548f0b5b829f9b077f92252226f0282eda52d5dc7058cafba0755be",
+      "sha256_after": "7b18a3a26548f0b5b829f9b077f92252226f0282eda52d5dc7058cafba0755be",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/pcb_geometry.json",
+      "after": "creo_tunnel/v2_dual_panel/pcb_geometry.json",
+      "sha256_before": "e87b3cb642fa7ca7cdc595d71c68e97bd79df9e3156ac0e3783789ad63afe843",
+      "sha256_after": "e87b3cb642fa7ca7cdc595d71c68e97bd79df9e3156ac0e3783789ad63afe843",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/preview_6f.png",
+      "after": "creo_tunnel/v2_dual_panel/preview_6f.png",
+      "sha256_before": "3f11ba75de2bb7bc512f2c8ae0c78aacb22a3a39f79746df14a88e3aef79cd4b",
+      "sha256_after": "3f11ba75de2bb7bc512f2c8ae0c78aacb22a3a39f79746df14a88e3aef79cd4b",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/preview_8f.png",
+      "after": "creo_tunnel/v2_dual_panel/preview_8f.png",
+      "sha256_before": "dcb8bc49dad5e904577173dbe0f848b6b15fa850ba225fffe9acad43a1d8eb3a",
+      "sha256_after": "dcb8bc49dad5e904577173dbe0f848b6b15fa850ba225fffe9acad43a1d8eb3a",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/사용안내.md",
+      "after": "creo_tunnel/v2_dual_panel/사용안내.md",
+      "sha256_before": "23701c0f058057809c6730add0ace55191455d3c869def7a0d81c14e5a4a846a",
+      "sha256_after": "23701c0f058057809c6730add0ace55191455d3c869def7a0d81c14e5a4a846a",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/geometry/checks_6f.json",
+      "after": "creo_tunnel/v2_dual_panel/geometry/checks_6f.json",
+      "sha256_before": "b293d2ee33768c47ee042bf75e5460ab5d6cd66fd9bf24a954ba467b037cff94",
+      "sha256_after": "b293d2ee33768c47ee042bf75e5460ab5d6cd66fd9bf24a954ba467b037cff94",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/geometry/checks_8f.json",
+      "after": "creo_tunnel/v2_dual_panel/geometry/checks_8f.json",
+      "sha256_before": "a8118d737209e888c8d33921bcebc1fcecaeee0e7bbf0bc810f42babb1f7a9a6",
+      "sha256_after": "a8118d737209e888c8d33921bcebc1fcecaeee0e7bbf0bc810f42babb1f7a9a6",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/geometry/ring_6f.step",
+      "after": "creo_tunnel/v2_dual_panel/geometry/ring_6f.step",
+      "sha256_before": "684baab31adb7aa20e6f70c0e2e3424d09de05cfd9fc6ff3e9c1e48ae53b5e62",
+      "sha256_after": "684baab31adb7aa20e6f70c0e2e3424d09de05cfd9fc6ff3e9c1e48ae53b5e62",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/geometry/ring_8f.step",
+      "after": "creo_tunnel/v2_dual_panel/geometry/ring_8f.step",
+      "sha256_before": "cce296a49fbbfc1577fb127ff84eea903c7a0283521c3e83af48eae6d0c514b3",
+      "sha256_after": "cce296a49fbbfc1577fb127ff84eea903c7a0283521c3e83af48eae6d0c514b3",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/geometry/tunnel_6f_v2.step",
+      "after": "creo_tunnel/v2_dual_panel/geometry/tunnel_6f_v2.step",
+      "sha256_before": "ab02a95c1e1483323aa222bce69db840badd50034afb40a28b8db7d4aeceefb7",
+      "sha256_after": "ab02a95c1e1483323aa222bce69db840badd50034afb40a28b8db7d4aeceefb7",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/geometry/tunnel_8f_v2.step",
+      "after": "creo_tunnel/v2_dual_panel/geometry/tunnel_8f_v2.step",
+      "sha256_before": "99e24c68b29cea1016a263989abaac128965f2698e3c0b8375cb118ddc50c108",
+      "sha256_after": "99e24c68b29cea1016a263989abaac128965f2698e3c0b8375cb118ddc50c108",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/facepair_8f.asm",
+      "after": "creo_tunnel/v2_dual_panel/native/facepair_8f.asm",
+      "sha256_before": "a498ad2df2a0bcec03e53135f99c89e0fd220c34ef6eb3ff626bdbab27a256c8",
+      "sha256_after": "a498ad2df2a0bcec03e53135f99c89e0fd220c34ef6eb3ff626bdbab27a256c8",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/panel_6f.asm",
+      "after": "creo_tunnel/v2_dual_panel/native/panel_6f.asm",
+      "sha256_before": "41c9a5bc0a918d7b2e2ec1adb2d1a6d0f500b19d53087b40027b95f9379e31c2",
+      "sha256_after": "41c9a5bc0a918d7b2e2ec1adb2d1a6d0f500b19d53087b40027b95f9379e31c2",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/panel_8f.asm",
+      "after": "creo_tunnel/v2_dual_panel/native/panel_8f.asm",
+      "sha256_before": "bf29da0a090eb907c3afcad561f4f92f51b377072cf7c3f15c309a3b1866f936",
+      "sha256_after": "bf29da0a090eb907c3afcad561f4f92f51b377072cf7c3f15c309a3b1866f936",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/pcb_6f.prt",
+      "after": "creo_tunnel/v2_dual_panel/native/pcb_6f.prt",
+      "sha256_before": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37",
+      "sha256_after": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/pcb_8f.prt",
+      "after": "creo_tunnel/v2_dual_panel/native/pcb_8f.prt",
+      "sha256_before": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58",
+      "sha256_after": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/ring_6f.prt",
+      "after": "creo_tunnel/v2_dual_panel/native/ring_6f.prt",
+      "sha256_before": "11c9e6e96790ca0366dc70585ccefcfb6ab837771f204a3b4a1409b48de46f0f",
+      "sha256_after": "11c9e6e96790ca0366dc70585ccefcfb6ab837771f204a3b4a1409b48de46f0f",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/ring_8f.prt",
+      "after": "creo_tunnel/v2_dual_panel/native/ring_8f.prt",
+      "sha256_before": "5662030bb23901dad46b74eabc55326e0bc6de1bca998cad6788eb397066e8e3",
+      "sha256_after": "5662030bb23901dad46b74eabc55326e0bc6de1bca998cad6788eb397066e8e3",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/tunnel_6f_v2.asm",
+      "after": "creo_tunnel/v2_dual_panel/native/tunnel_6f_v2.asm",
+      "sha256_before": "43b4889b1cc8eff293db02c7964af6947192cfc539921c3ca8404d815c18f40e",
+      "sha256_after": "43b4889b1cc8eff293db02c7964af6947192cfc539921c3ca8404d815c18f40e",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/tunnel_8f_dual.asm",
+      "after": "creo_tunnel/v2_dual_panel/native/tunnel_8f_dual.asm",
+      "sha256_before": "b64e632c9f3a1b31403b3d7b9088425a8aab6600e86484cbe0a2b55c4115c6a2",
+      "sha256_after": "b64e632c9f3a1b31403b3d7b9088425a8aab6600e86484cbe0a2b55c4115c6a2",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v2_dual_panel/native/tx16.prt",
+      "after": "creo_tunnel/v2_dual_panel/native/tx16.prt",
+      "sha256_before": "9f9e72537080af11d75be7769be37f5d61a511b6f1b6d130c29b29bff5d10d41",
+      "sha256_after": "9f9e72537080af11d75be7769be37f5d61a511b6f1b6d130c29b29bff5d10d41",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/geometry_checks.json",
+      "after": "creo_tunnel/v1_single_panel/6faces/geometry_checks.json",
+      "sha256_before": "ac3556efda23a37a4711a38cc3bc25e7938494b903a8a397bc9e1788a07c8c65",
+      "sha256_after": "ac3556efda23a37a4711a38cc3bc25e7938494b903a8a397bc9e1788a07c8c65",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/panel_6f.step",
+      "after": "creo_tunnel/v1_single_panel/6faces/panel_6f.step",
+      "sha256_before": "05e4d61717398256381f1db918a938cad10c53f28abbacda4dad9cceb8c6e76b",
+      "sha256_after": "05e4d61717398256381f1db918a938cad10c53f28abbacda4dad9cceb8c6e76b",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/pcb_6f.step",
+      "after": "creo_tunnel/v1_single_panel/6faces/pcb_6f.step",
+      "sha256_before": "71b84f7c8fe1609a9e2ed16fa007e1282eb05853dd43f50efee4295229a599d5",
+      "sha256_after": "71b84f7c8fe1609a9e2ed16fa007e1282eb05853dd43f50efee4295229a599d5",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/ring_6f.step",
+      "after": "creo_tunnel/v1_single_panel/6faces/ring_6f.step",
+      "sha256_before": "34c636c9a478fc363b0ff289345dccb36e48fd64db00122f5d4083e7a705c457",
+      "sha256_after": "34c636c9a478fc363b0ff289345dccb36e48fd64db00122f5d4083e7a705c457",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/transducer_6f.step",
+      "after": "creo_tunnel/v1_single_panel/6faces/transducer_6f.step",
+      "sha256_before": "72c956c837100e4969a24282da697e87726b5f95a1495bde2db34e50c316cf30",
+      "sha256_after": "72c956c837100e4969a24282da697e87726b5f95a1495bde2db34e50c316cf30",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/tunnel_6faces.step",
+      "after": "creo_tunnel/v1_single_panel/6faces/tunnel_6faces.step",
+      "sha256_before": "beb6ce386fb510dfa24695b767785101f6f08f6f20430c36eae84690fe105660",
+      "sha256_after": "beb6ce386fb510dfa24695b767785101f6f08f6f20430c36eae84690fe105660",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/tunnel_6faces_preview.png",
+      "after": "creo_tunnel/v1_single_panel/6faces/tunnel_6faces_preview.png",
+      "sha256_before": "15191ae1ee8c28527a69a2aba07d4f17f934aee3661f203896cccd3d2449746f",
+      "sha256_after": "15191ae1ee8c28527a69a2aba07d4f17f934aee3661f203896cccd3d2449746f",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/geometry_checks.json",
+      "after": "creo_tunnel/v1_single_panel/8faces/geometry_checks.json",
+      "sha256_before": "6e1fcef496268ef67b0b0fc17f1190171091704cc4a721c72e900702c3823c81",
+      "sha256_after": "6e1fcef496268ef67b0b0fc17f1190171091704cc4a721c72e900702c3823c81",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/panel_8f.step",
+      "after": "creo_tunnel/v1_single_panel/8faces/panel_8f.step",
+      "sha256_before": "e928cac24307c1813485ad74623c7669556f187737ab70047bb42becc823703a",
+      "sha256_after": "e928cac24307c1813485ad74623c7669556f187737ab70047bb42becc823703a",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/pcb_8f.step",
+      "after": "creo_tunnel/v1_single_panel/8faces/pcb_8f.step",
+      "sha256_before": "80981013f99a97dc111e1087fdf1165589221f44023854b6349d2c32649de744",
+      "sha256_after": "80981013f99a97dc111e1087fdf1165589221f44023854b6349d2c32649de744",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/ring_8f.step",
+      "after": "creo_tunnel/v1_single_panel/8faces/ring_8f.step",
+      "sha256_before": "345ccdc37d43b10106926846ff79effe986e4c040cb964f2ad8234180d8196d0",
+      "sha256_after": "345ccdc37d43b10106926846ff79effe986e4c040cb964f2ad8234180d8196d0",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/transducer_8f.step",
+      "after": "creo_tunnel/v1_single_panel/8faces/transducer_8f.step",
+      "sha256_before": "8beef7c75b45f3305dfc9948b8ce20fe2fd32054b4f84b75508d07527e073946",
+      "sha256_after": "8beef7c75b45f3305dfc9948b8ce20fe2fd32054b4f84b75508d07527e073946",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/tunnel_8faces.step",
+      "after": "creo_tunnel/v1_single_panel/8faces/tunnel_8faces.step",
+      "sha256_before": "57249df19a815ad56fcbadc1190871c7b9c7b533ee08c57c99330431d2b68398",
+      "sha256_after": "57249df19a815ad56fcbadc1190871c7b9c7b533ee08c57c99330431d2b68398",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/tunnel_8faces_preview.png",
+      "after": "creo_tunnel/v1_single_panel/8faces/tunnel_8faces_preview.png",
+      "sha256_before": "4e5afa2d6c310e86e7ee024df6ff2b03fd3c763fd054be79c1e8f7ee7edfeed2",
+      "sha256_after": "4e5afa2d6c310e86e7ee024df6ff2b03fd3c763fd054be79c1e8f7ee7edfeed2",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_01.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_01.asm",
+      "sha256_before": "02457cf98951da9323b624f07f36c8e308b39d0916ac1f753cdcf0669f685e5f",
+      "sha256_after": "02457cf98951da9323b624f07f36c8e308b39d0916ac1f753cdcf0669f685e5f",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_02.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_02.asm",
+      "sha256_before": "e5d374cc046ad36049e0176a39c7cb2538453f750ed14fdfb044e0252d2b6d3d",
+      "sha256_after": "e5d374cc046ad36049e0176a39c7cb2538453f750ed14fdfb044e0252d2b6d3d",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_03.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_03.asm",
+      "sha256_before": "5526f85e72f70dc7ed4aaaf6109c7acc50e2a5a0f9fc45a19b68ebd82691e77d",
+      "sha256_after": "5526f85e72f70dc7ed4aaaf6109c7acc50e2a5a0f9fc45a19b68ebd82691e77d",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_04.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_04.asm",
+      "sha256_before": "e2e462c39174981f2583093af0485914d8d8b441b551b58cc420ef4b0401d462",
+      "sha256_after": "e2e462c39174981f2583093af0485914d8d8b441b551b58cc420ef4b0401d462",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_05.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_05.asm",
+      "sha256_before": "f6d23303ca6fa7377e58e67792de59d92ed5f3d5a18ff48577a19b11c16a44d2",
+      "sha256_after": "f6d23303ca6fa7377e58e67792de59d92ed5f3d5a18ff48577a19b11c16a44d2",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_06.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_06.asm",
+      "sha256_before": "5d48310b26f3315ea74f613c3e6635feb2bd3c05ead00fe52c6bc32c5b8aa9d6",
+      "sha256_after": "5d48310b26f3315ea74f613c3e6635feb2bd3c05ead00fe52c6bc32c5b8aa9d6",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_07.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_07.asm",
+      "sha256_before": "1dcc94714320b92a9fa803f265fcfb377c5f44a401b3c6b8d750ad1643ffefc7",
+      "sha256_after": "1dcc94714320b92a9fa803f265fcfb377c5f44a401b3c6b8d750ad1643ffefc7",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_08.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/panel_8f_08.asm",
+      "sha256_before": "e01492d8ea98b9eed1ac67a0d1dd0e38f0dfe4a37b69b8b7a176b52caad1db45",
+      "sha256_after": "e01492d8ea98b9eed1ac67a0d1dd0e38f0dfe4a37b69b8b7a176b52caad1db45",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/pcb_8f.prt",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/pcb_8f.prt",
+      "sha256_before": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58",
+      "sha256_after": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/ring_8f_lower.prt",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/ring_8f_lower.prt",
+      "sha256_before": "8696b6c82df83b3058ad5cf35c4e2f283ec2bb7ef2fdccba58d7f07ea90bae02",
+      "sha256_after": "8696b6c82df83b3058ad5cf35c4e2f283ec2bb7ef2fdccba58d7f07ea90bae02",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/tunnel_8faces.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/tunnel_8faces.asm",
+      "sha256_before": "dfc2df46da5ff7cba9d3e5165ba14e4542cdab430f432bd4a05e18e20e68e94b",
+      "sha256_after": "dfc2df46da5ff7cba9d3e5165ba14e4542cdab430f432bd4a05e18e20e68e94b",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/tunnel_8faces_1.asm",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/tunnel_8faces_1.asm",
+      "sha256_before": "3f35aab96a28dbdb30e492fa5d67e0c195fdc5bfa33b081d189749195293c9f2",
+      "sha256_after": "3f35aab96a28dbdb30e492fa5d67e0c195fdc5bfa33b081d189749195293c9f2",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/8faces/native/tx_8f_t1.prt",
+      "after": "creo_tunnel/v1_single_panel/8faces/native/tx_8f_t1.prt",
+      "sha256_before": "6779b72770785d1ef47b72b660259c9b44548d016929ed1e68a00d35103c74aa",
+      "sha256_after": "6779b72770785d1ef47b72b660259c9b44548d016929ed1e68a00d35103c74aa",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_01.asm",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_01.asm",
+      "sha256_before": "b1cae41248c265d2cb2ddda8ba4a8c568ddf05a1bc860d0edc3fc113a00f93c6",
+      "sha256_after": "b1cae41248c265d2cb2ddda8ba4a8c568ddf05a1bc860d0edc3fc113a00f93c6",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_02.asm",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_02.asm",
+      "sha256_before": "7966599877c35498cccdea06831ed56f431e45c3fe8808d7887c84058ead50c4",
+      "sha256_after": "7966599877c35498cccdea06831ed56f431e45c3fe8808d7887c84058ead50c4",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_03.asm",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_03.asm",
+      "sha256_before": "2bcb2cf6a9753fbc08f8d588a746daa3c1c46116957d3c8b47546913978e76c3",
+      "sha256_after": "2bcb2cf6a9753fbc08f8d588a746daa3c1c46116957d3c8b47546913978e76c3",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_04.asm",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_04.asm",
+      "sha256_before": "30916cee59ce7374d8ac0395f4fcf51cf2991acc6a2d28374083377f69f78308",
+      "sha256_after": "30916cee59ce7374d8ac0395f4fcf51cf2991acc6a2d28374083377f69f78308",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_05.asm",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_05.asm",
+      "sha256_before": "34fdccd85db10ac1eec9d4769316551e15be2acd998f00ab7e93a328c72cffe5",
+      "sha256_after": "34fdccd85db10ac1eec9d4769316551e15be2acd998f00ab7e93a328c72cffe5",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_06.asm",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/panel_6f_06.asm",
+      "sha256_before": "d2f222513077e9b5a5fea0cda9ad1788c64fd2d3be15db9c58b981633b044fa5",
+      "sha256_after": "d2f222513077e9b5a5fea0cda9ad1788c64fd2d3be15db9c58b981633b044fa5",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/pcb_6f.prt",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/pcb_6f.prt",
+      "sha256_before": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37",
+      "sha256_after": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/ring_6f_lower.prt",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/ring_6f_lower.prt",
+      "sha256_before": "75511dbfb7a63af50e1d2010a893f7dd27f9fd7464566f06fd9f4b72d19cf84d",
+      "sha256_after": "75511dbfb7a63af50e1d2010a893f7dd27f9fd7464566f06fd9f4b72d19cf84d",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/tunnel_6faces.asm",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/tunnel_6faces.asm",
+      "sha256_before": "22228d532f8c3b5667b77f8997bc6fee64580e8fd9a4485b513a099a98166853",
+      "sha256_after": "22228d532f8c3b5667b77f8997bc6fee64580e8fd9a4485b513a099a98166853",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/tunnel_6faces_1.asm",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/tunnel_6faces_1.asm",
+      "sha256_before": "c343642739f5b4f4fb8c1cacf40fe65964d250b638be0f84738de96482d7b779",
+      "sha256_after": "c343642739f5b4f4fb8c1cacf40fe65964d250b638be0f84738de96482d7b779",
+      "path_text_updated": false
+    },
+    {
+      "before": "creo_tunnel/v1_single_panel/6faces/native/tx_6f_t1.prt",
+      "after": "creo_tunnel/v1_single_panel/6faces/native/tx_6f_t1.prt",
+      "sha256_before": "ba3829b8561b77b9e7433e39e80fad5398519453b51e71dfd757f691abb71537",
+      "sha256_after": "ba3829b8561b77b9e7433e39e80fad5398519453b51e71dfd757f691abb71537",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/DOILLABS_BOM_Template.xlsx",
+      "after": "outputs/vendor_templates/DOILLABS_BOM_Template.xlsx",
+      "sha256_before": "4894917fc2cb8ec82504b349421bac5c8620110ce9f503d60c798b955c0d3b11",
+      "sha256_after": "4894917fc2cb8ec82504b349421bac5c8620110ce9f503d60c798b955c0d3b11",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/DOILLABS_PnP_Template.xlsx",
+      "after": "outputs/vendor_templates/DOILLABS_PnP_Template.xlsx",
+      "sha256_before": "8c93a073dc7dca445d7cd2105e88e3d2f69382836e78f87944038c87b488873f",
+      "sha256_after": "8c93a073dc7dca445d7cd2105e88e3d2f69382836e78f87944038c87b488873f",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/KiCad10_스킬_설치기록.md",
+      "after": "outputs/docs/KiCad10_스킬_설치기록.md",
+      "sha256_before": "fa42b0e4a48906c9ff5563d26218a83ba1f4bae483cd99b266a6df678d564e50",
+      "sha256_after": "fa42b0e4a48906c9ff5563d26218a83ba1f4bae483cd99b266a6df678d564e50",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/PCB_6면_8면_설계_P0.zip",
+      "after": "outputs/pcb/PCB_6면_8면_설계_P0.zip",
+      "sha256_before": "fef29ed6331d612e78a21dfbddbf5fea9fc4b0b1f0319fe17732ff026a4360a6",
+      "sha256_after": "fef29ed6331d612e78a21dfbddbf5fea9fc4b0b1f0319fe17732ff026a4360a6",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/build_models.py",
+      "after": "outputs/cad_generation/creo_tunnel_models/build_models.py",
+      "sha256_before": "0d3436b2ef770cba2317a07c38a68b0e335133e9eae20b90c5beb8c9dde81ac9",
+      "sha256_after": "0d3436b2ef770cba2317a07c38a68b0e335133e9eae20b90c5beb8c9dde81ac9",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/creo9_tunnel_6faces_8faces.zip",
+      "after": "outputs/cad_generation/creo_tunnel_models/creo9_tunnel_6faces_8faces.zip",
+      "sha256_before": "f99c2f7275b097e53f9c68851212b491f6c04ecd3abbd1a1e5d1a95502285202",
+      "sha256_after": "f99c2f7275b097e53f9c68851212b491f6c04ecd3abbd1a1e5d1a95502285202",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/native_generation_report.json",
+      "after": "outputs/cad_generation/creo_tunnel_models/native_generation_report.json",
+      "sha256_before": "e8e784339117c5773d8efc13e9935f9ce376ce73bd8b317d137245d728a9ef27",
+      "sha256_after": "e8e784339117c5773d8efc13e9935f9ce376ce73bd8b317d137245d728a9ef27",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/native_reopen_report.json",
+      "after": "outputs/cad_generation/creo_tunnel_models/native_reopen_report.json",
+      "sha256_before": "c637f8f3ed3db304fabda2b712d5f5c4bc7ff13bce56e7173dc30058a6dd7718",
+      "sha256_after": "c637f8f3ed3db304fabda2b712d5f5c4bc7ff13bce56e7173dc30058a6dd7718",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/package_manifest.json",
+      "after": "outputs/cad_generation/creo_tunnel_models/package_manifest.json",
+      "sha256_before": "0179916e2bb362627005fd7af22496211333b66361c6bfa1cc47e51d72c00a3a",
+      "sha256_after": "0179916e2bb362627005fd7af22496211333b66361c6bfa1cc47e51d72c00a3a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/pcb_geometry.json",
+      "after": "outputs/cad_generation/creo_tunnel_models/pcb_geometry.json",
+      "sha256_before": "e87b3cb642fa7ca7cdc595d71c68e97bd79df9e3156ac0e3783789ad63afe843",
+      "sha256_after": "e87b3cb642fa7ca7cdc595d71c68e97bd79df9e3156ac0e3783789ad63afe843",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/render_models.py",
+      "after": "outputs/cad_generation/creo_tunnel_models/render_models.py",
+      "sha256_before": "4e171c949e5c9dfe3ad0e67e44bc70cd0b7688e5a1ced665473f98402babccf7",
+      "sha256_after": "4e171c949e5c9dfe3ad0e67e44bc70cd0b7688e5a1ced665473f98402babccf7",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/사용안내.md",
+      "after": "outputs/cad_generation/creo_tunnel_models/사용안내.md",
+      "sha256_before": "3ed6f75ea443bb844cf3fcc2fa6770fe3c7756abfb58a582d891fef01c3e107e",
+      "sha256_after": "ce09ead6c66123e91241b4475f7ad08e669fcd57cd7f72f694778d7fe8f2fc3e",
+      "path_text_updated": true
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/build_geometry.py",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/build_geometry.py",
+      "sha256_before": "187880cb7411f02fe6db3298dce4f5fe14645abcdceaff4a9aeb09069b662891",
+      "sha256_after": "187880cb7411f02fe6db3298dce4f5fe14645abcdceaff4a9aeb09069b662891",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/creo9_shared_6f_dualpcb_8f_v2.zip",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/creo9_shared_6f_dualpcb_8f_v2.zip",
+      "sha256_before": "ea10e1f1199c8983d570ce0edadf1e4d3b505d7bde4b454d2a6a6650ca834317",
+      "sha256_after": "ea10e1f1199c8983d570ce0edadf1e4d3b505d7bde4b454d2a6a6650ca834317",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/manifest.json",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/manifest.json",
+      "sha256_before": "81f733b66096084d49643c12c71ecbe95d1874fec1efb52df9e19c0550503c00",
+      "sha256_after": "81f733b66096084d49643c12c71ecbe95d1874fec1efb52df9e19c0550503c00",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native_build_report.json",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native_build_report.json",
+      "sha256_before": "70bd50cdc97dd6398bc9b44f461c54a112fd53a7dcc2813c412e5a03ba7b5039",
+      "sha256_after": "70bd50cdc97dd6398bc9b44f461c54a112fd53a7dcc2813c412e5a03ba7b5039",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native_reopen_report.json",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native_reopen_report.json",
+      "sha256_before": "7b18a3a26548f0b5b829f9b077f92252226f0282eda52d5dc7058cafba0755be",
+      "sha256_after": "7b18a3a26548f0b5b829f9b077f92252226f0282eda52d5dc7058cafba0755be",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/preview_6f.png",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/preview_6f.png",
+      "sha256_before": "3f11ba75de2bb7bc512f2c8ae0c78aacb22a3a39f79746df14a88e3aef79cd4b",
+      "sha256_after": "3f11ba75de2bb7bc512f2c8ae0c78aacb22a3a39f79746df14a88e3aef79cd4b",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/preview_8f.png",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/preview_8f.png",
+      "sha256_before": "dcb8bc49dad5e904577173dbe0f848b6b15fa850ba225fffe9acad43a1d8eb3a",
+      "sha256_after": "dcb8bc49dad5e904577173dbe0f848b6b15fa850ba225fffe9acad43a1d8eb3a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/render_preview.py",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/render_preview.py",
+      "sha256_before": "a4f93732ced5606826300d295fb56eb78d2f587c890b47ef4cedcdc060078686",
+      "sha256_after": "a4f93732ced5606826300d295fb56eb78d2f587c890b47ef4cedcdc060078686",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/사용안내.md",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/사용안내.md",
+      "sha256_before": "23701c0f058057809c6730add0ace55191455d3c869def7a0d81c14e5a4a846a",
+      "sha256_after": "23701c0f058057809c6730add0ace55191455d3c869def7a0d81c14e5a4a846a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/levitation_128/부양장치_128채널_부품별_상세예산.xlsx",
+      "after": "outputs/budgets/levitation_128/부양장치_128채널_부품별_상세예산.xlsx",
+      "sha256_before": "1f8e41cb564e4cf90455f6df92890e78a4c970222ef98ff2acbe90e0c5fba94e",
+      "sha256_after": "1f8e41cb564e4cf90455f6df92890e78a4c970222ef98ff2acbe90e0c5fba94e",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/levitation_128/부양장치_128채널_부품별_상세예산.xlsx.inspect.ndjson",
+      "after": "outputs/budgets/levitation_128/부양장치_128채널_부품별_상세예산.xlsx.inspect.ndjson",
+      "sha256_before": "bd14a615db92b10f6ac509eb5545753c80e9db8c911a90b1b920d5d027c29871",
+      "sha256_after": "bd14a615db92b10f6ac509eb5545753c80e9db8c911a90b1b920d5d027c29871",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/assembly_6faces.png",
+      "after": "outputs/pcb/polygon_panels/assembly_6faces.png",
+      "sha256_before": "885dabee08a37698c882e2ff78fb224ebdce19b9fa776c3157983dbd4ebef837",
+      "sha256_after": "885dabee08a37698c882e2ff78fb224ebdce19b9fa776c3157983dbd4ebef837",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/assembly_6faces_CONCEPT.scad",
+      "after": "outputs/pcb/polygon_panels/assembly_6faces_CONCEPT.scad",
+      "sha256_before": "2b1ce09906132c86279d60939b45011df9823a6b8f206fa1230cc5eba912d4df",
+      "sha256_after": "2b1ce09906132c86279d60939b45011df9823a6b8f206fa1230cc5eba912d4df",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/assembly_8faces.png",
+      "after": "outputs/pcb/polygon_panels/assembly_8faces.png",
+      "sha256_before": "339a453a4cb7ed03cca6b332bd58b8c581f9395ccc04fee0ec17bd7647b0f42a",
+      "sha256_after": "339a453a4cb7ed03cca6b332bd58b8c581f9395ccc04fee0ec17bd7647b0f42a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/assembly_8faces_CONCEPT.scad",
+      "after": "outputs/pcb/polygon_panels/assembly_8faces_CONCEPT.scad",
+      "sha256_before": "24de659110990bef2d28ae3d961a9f343c35875fa4e43b8c3885764bba1b7f45",
+      "sha256_after": "24de659110990bef2d28ae3d961a9f343c35875fa4e43b8c3885764bba1b7f45",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/capability_mode.json",
+      "after": "outputs/pcb/polygon_panels/capability_mode.json",
+      "sha256_before": "e12de88df6d19026de57369d22c871cf623fc0b3293910987e62072614c66324",
+      "sha256_after": "e12de88df6d19026de57369d22c871cf623fc0b3293910987e62072614c66324",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/estimate_6faces_analysis.json",
+      "after": "outputs/pcb/polygon_panels/estimate_6faces_analysis.json",
+      "sha256_before": "271bca5021760a45e65ebfb3a18a974720ebb259a2c879919052c7307c8dbfea",
+      "sha256_after": "271bca5021760a45e65ebfb3a18a974720ebb259a2c879919052c7307c8dbfea",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/estimate_8faces_analysis.json",
+      "after": "outputs/pcb/polygon_panels/estimate_8faces_analysis.json",
+      "sha256_before": "1a50e141dda27502cb8de036e09cd4b030fcb70abba53498965e3b31431609b7",
+      "sha256_after": "1a50e141dda27502cb8de036e09cd4b030fcb70abba53498965e3b31431609b7",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/file_hashes.json",
+      "after": "outputs/pcb/polygon_panels/file_hashes.json",
+      "sha256_before": "63222654d9c1b7fd6187436ec556ce7a4036d1d4f783755b28666099cc350e86",
+      "sha256_after": "63222654d9c1b7fd6187436ec556ce7a4036d1d4f783755b28666099cc350e86",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/PCBA_8faces_16boards_quote_package.zip",
+      "after": "outputs/pcb/polygon_panels/PCBA_8faces_16boards_quote_package.zip",
+      "sha256_before": "7bb70b6df72ccc1994c978c12858aad6c885aaf76b9b6ea9a3d7abfa3c1138e7",
+      "sha256_after": "7bb70b6df72ccc1994c978c12858aad6c885aaf76b9b6ea9a3d7abfa3c1138e7",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/PCB_6_8_comparison.png",
+      "after": "outputs/pcb/polygon_panels/PCB_6_8_comparison.png",
+      "sha256_before": "dd93dbedc5930d17174d7ed6ee42660725d02944e45f916df82799956ccacff8",
+      "sha256_after": "dd93dbedc5930d17174d7ed6ee42660725d02944e45f916df82799956ccacff8",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/verify_designs.ps1",
+      "after": "outputs/pcb/polygon_panels/verify_designs.ps1",
+      "sha256_before": "f08d35632848808bbb4ce73a06d5ee15499c74719fcfe37a657c75da18a7f3e3",
+      "sha256_after": "f08d35632848808bbb4ce73a06d5ee15499c74719fcfe37a657c75da18a7f3e3",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/부품견적_6면_8면.md",
+      "after": "outputs/pcb/polygon_panels/부품견적_6면_8면.md",
+      "sha256_before": "3f664cb2213fda9e869d1b722e49958f55881a4a07eac6f7b9ba68e61eb0666c",
+      "sha256_after": "3f664cb2213fda9e869d1b722e49958f55881a4a07eac6f7b9ba68e61eb0666c",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/부품구성.md",
+      "after": "outputs/pcb/polygon_panels/부품구성.md",
+      "sha256_before": "312c062c0a38438aa32ffbcd4cbc9cc55f52a515e5fc755c70461e9ea634b549",
+      "sha256_after": "312c062c0a38438aa32ffbcd4cbc9cc55f52a515e5fc755c70461e9ea634b549",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/설계설명_및_확인방법.md",
+      "after": "outputs/pcb/polygon_panels/설계설명_및_확인방법.md",
+      "sha256_before": "979073815c5b1bd49f1f8ec2217231de987937f313827baec7474224a561ac24",
+      "sha256_after": "2b2f111e9576a0bffebd48b8b1d76214dd50f94a359f086adef3940168ca75ae",
+      "path_text_updated": true
+    },
+    {
+      "before": "outputs/polygon_panels/제작및추가부품견적_센서제외.md",
+      "after": "outputs/pcb/polygon_panels/제작및추가부품견적_센서제외.md",
+      "sha256_before": "bb11de3d153bb889384cd22378a66328da231f17914d3a19184e236d99d2dd83",
+      "sha256_after": "bb11de3d153bb889384cd22378a66328da231f17914d3a19184e236d99d2dd83",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/channel_routes.csv",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/channel_routes.csv",
+      "sha256_before": "32e54c07a4397538c3c19a79806a5342442ba97786405c94f558cc2b7579c4ef",
+      "sha256_after": "32e54c07a4397538c3c19a79806a5342442ba97786405c94f558cc2b7579c4ef",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/copper_connectivity.json",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/copper_connectivity.json",
+      "sha256_before": "356ef1a7a65216c8a22d12fd245639bbdba07dba984ce7b4e566282f96235c33",
+      "sha256_after": "356ef1a7a65216c8a22d12fd245639bbdba07dba984ce7b4e566282f96235c33",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/pad_connectivity.csv",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/pad_connectivity.csv",
+      "sha256_before": "eb47145dc095d00aa8347cd8f0fd77458fa9788af0ceb641f61a68f9cedb0244",
+      "sha256_after": "eb47145dc095d00aa8347cd8f0fd77458fa9788af0ceb641f61a68f9cedb0244",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/paper_Figure2_circuit.png",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/paper_Figure2_circuit.png",
+      "sha256_before": "d4ccb670ac732289b6d8dab67155c7212825c5c9b10e9e147364378fdfdc61fc",
+      "sha256_after": "d4ccb670ac732289b6d8dab67155c7212825c5c9b10e9e147364378fdfdc61fc",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/paper_Figure3_assembly.png",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/paper_Figure3_assembly.png",
+      "sha256_before": "ea9ebbf424a08849bc7de42ed9c87b335d3c2d72e75c34c093424ded32ce7237",
+      "sha256_after": "ea9ebbf424a08849bc7de42ed9c87b335d3c2d72e75c34c093424ded32ce7237",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/SonicSurface_copper_layers.png",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/SonicSurface_copper_layers.png",
+      "sha256_before": "0444f6da4a23809472c002850bc369ea9ca99901463d7c725b930c9abefbd540",
+      "sha256_after": "0444f6da4a23809472c002850bc369ea9ca99901463d7c725b930c9abefbd540",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/SonicSurface_placement_comparison.png",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/SonicSurface_placement_comparison.png",
+      "sha256_before": "48e4e64b997b0f4167c4037c5f451e710777028d78a50da3a46c673adf0a54db",
+      "sha256_after": "48e4e64b997b0f4167c4037c5f451e710777028d78a50da3a46c673adf0a54db",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/SonicSurface_placement_comparison.svg",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/SonicSurface_placement_comparison.svg",
+      "sha256_before": "2c7a4227ef39c7c175be3f08c2369b5ebf67b4ff16d0e9475d2fc5c2c4238e6c",
+      "sha256_after": "2c7a4227ef39c7c175be3f08c2369b5ebf67b4ff16d0e9475d2fc5c2c4238e6c",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/SonicSurface_동박연결_검증.md",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/SonicSurface_동박연결_검증.md",
+      "sha256_before": "e764811fef63fc315c3e9aecdea3f10e5b59a912f95987865c7ebc8cd2b6b5fc",
+      "sha256_after": "e764811fef63fc315c3e9aecdea3f10e5b59a912f95987865c7ebc8cd2b6b5fc",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/SonicSurface_원문근거_대조.md",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/SonicSurface_원문근거_대조.md",
+      "sha256_before": "8077e99c4f9f963ab3d8bafcd47dc6c8d8923ec171f57a9f9a08b754ef5ebbde",
+      "sha256_after": "8077e99c4f9f963ab3d8bafcd47dc6c8d8923ec171f57a9f9a08b754ef5ebbde",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/sonicsurface_analysis/SonicSurface_제조파일_분석.md",
+      "after": "outputs/reference_analysis/sonicsurface_analysis/SonicSurface_제조파일_분석.md",
+      "sha256_before": "2431f2923a09263f6b78495e3c57a5ca8e49e8f56e5739d96638a76d449d8aa9",
+      "sha256_after": "2431f2923a09263f6b78495e3c57a5ca8e49e8f56e5739d96638a76d449d8aa9",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/tunnel_128_concept/8면_평면PCB_설계방향.md",
+      "after": "outputs/concepts/tunnel_128_concept/8면_평면PCB_설계방향.md",
+      "sha256_before": "175be709f311d373b587a94d490ae0930784ce437db0224a45df624b57c91506",
+      "sha256_after": "175be709f311d373b587a94d490ae0930784ce437db0224a45df624b57c91506",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/tunnel_128_concept/parameters_CONCEPT.json",
+      "after": "outputs/concepts/tunnel_128_concept/parameters_CONCEPT.json",
+      "sha256_before": "e845e491b732c2d93be29b42b251165d3dbe889e29a1432de663ebf5e647aa12",
+      "sha256_after": "e845e491b732c2d93be29b42b251165d3dbe889e29a1432de663ebf5e647aa12",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/tunnel_128_concept/transducer_positions_CONCEPT.csv",
+      "after": "outputs/concepts/tunnel_128_concept/transducer_positions_CONCEPT.csv",
+      "sha256_before": "e83c89df705771ca3edfc60ebc833e6fddc54f04672ecb685874a07321dc5ecc",
+      "sha256_after": "e83c89df705771ca3edfc60ebc833e6fddc54f04672ecb685874a07321dc5ecc",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/tunnel_128_concept/tunnel_4panels_128_CONCEPT.scad",
+      "after": "outputs/concepts/tunnel_128_concept/tunnel_4panels_128_CONCEPT.scad",
+      "sha256_before": "9243b856cbea966aeea7b5e444bd4df7986f3832079ac964d791a6ba4c3e84c1",
+      "sha256_after": "9243b856cbea966aeea7b5e444bd4df7986f3832079ac964d791a6ba4c3e84c1",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/tunnel_128_concept/tunnel_layout_CONCEPT.png",
+      "after": "outputs/concepts/tunnel_128_concept/tunnel_layout_CONCEPT.png",
+      "sha256_before": "8434a5f8405b98bd713ae343e278d64b74d53e053765c63e8bb96565d5b1a09b",
+      "sha256_after": "8434a5f8405b98bd713ae343e278d64b74d53e053765c63e8bb96565d5b1a09b",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/tunnel_128_concept/설계검토_및_제작전_확정사항.md",
+      "after": "outputs/concepts/tunnel_128_concept/설계검토_및_제작전_확정사항.md",
+      "sha256_before": "901ee573a391d619afd83a2011cf091044aa110e16be9e1f0d61ea0ddcef52fd",
+      "sha256_after": "901ee573a391d619afd83a2011cf091044aa110e16be9e1f0d61ea0ddcef52fd",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/gerber_quotes/panel_6faces_16ch_Gerber_P0_quote.zip",
+      "after": "outputs/pcb/polygon_panels/gerber_quotes/panel_6faces_16ch_Gerber_P0_quote.zip",
+      "sha256_before": "a54ebd1f508ebb25788b0e2affeb501d25fc48dbccd7abd0292af6959a7670ef",
+      "sha256_after": "a54ebd1f508ebb25788b0e2affeb501d25fc48dbccd7abd0292af6959a7670ef",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/gerber_quotes/panel_8faces_16ch_Gerber_P0_quote.zip",
+      "after": "outputs/pcb/polygon_panels/gerber_quotes/panel_8faces_16ch_Gerber_P0_quote.zip",
+      "sha256_before": "932a65f20b425d12bca6fe27c9b3f04ad110716b8faa56af17eb04c83321985c",
+      "sha256_after": "932a65f20b425d12bca6fe27c9b3f04ad110716b8faa56af17eb04c83321985c",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/array_geometry_checks.json",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/array_geometry_checks.json",
+      "sha256_before": "d1d04c950167a1b694bd49c14c918829d947e240bc2543da57778687d813fdd5",
+      "sha256_after": "d1d04c950167a1b694bd49c14c918829d947e240bc2543da57778687d813fdd5",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/array_positions.json",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/array_positions.json",
+      "sha256_before": "7404a38bde0b40b669c9bb7591125d65313d81ae94f8f0dbfcf675bb357b79a9",
+      "sha256_after": "7404a38bde0b40b669c9bb7591125d65313d81ae94f8f0dbfcf675bb357b79a9",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/component_manifest.json",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/component_manifest.json",
+      "sha256_before": "72f4493b2cfe54f73eac1fe3fd053815aad5a77ebb8a6c999affb3ae0baea214",
+      "sha256_after": "72f4493b2cfe54f73eac1fe3fd053815aad5a77ebb8a6c999affb3ae0baea214",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/DRC.json",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/DRC.json",
+      "sha256_before": "4d58106668b13f5542b619f5e8606296f161636d0d8fb3c4c799de5146bf293d",
+      "sha256_after": "4d58106668b13f5542b619f5e8606296f161636d0d8fb3c4c799de5146bf293d",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/ERC.json",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/ERC.json",
+      "sha256_before": "1646209bbf15e50b6cddb5fb68f58a9835e521b12803376af2f5a7bd419e60b0",
+      "sha256_after": "1646209bbf15e50b6cddb5fb68f58a9835e521b12803376af2f5a7bd419e60b0",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/fp-lib-table",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/fp-lib-table",
+      "sha256_before": "6ed7d329181dd265c7b95dd8b3e8740436737fe80e8a75b264c5a9269f669250",
+      "sha256_after": "6ed7d329181dd265c7b95dd8b3e8740436737fe80e8a75b264c5a9269f669250",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.kicad_sym",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.kicad_sym",
+      "sha256_before": "1041b851d7e9a1c58f5039af8091357fadb3eaa270ff8ead0ea57a822865a390",
+      "sha256_after": "1041b851d7e9a1c58f5039af8091357fadb3eaa270ff8ead0ea57a822865a390",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/panel_6faces_16ch.kicad_pcb",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/panel_6faces_16ch.kicad_pcb",
+      "sha256_before": "0beb3709820f859cc6a3c4aef37b08e13ce18d8af5823e418108acddaeea4dbc",
+      "sha256_after": "0beb3709820f859cc6a3c4aef37b08e13ce18d8af5823e418108acddaeea4dbc",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/panel_6faces_16ch.kicad_prl",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/panel_6faces_16ch.kicad_prl",
+      "sha256_before": "45eba23c11f90f33e3ad7f4c2d5a80682b6bfe192c1186943a374b5b3466e96a",
+      "sha256_after": "45eba23c11f90f33e3ad7f4c2d5a80682b6bfe192c1186943a374b5b3466e96a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/panel_6faces_16ch.kicad_pro",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/panel_6faces_16ch.kicad_pro",
+      "sha256_before": "b1c0cea96abc10e15dec2fcf4f9bd33c75f4efae48d34543e3f17c839c760c50",
+      "sha256_after": "b1c0cea96abc10e15dec2fcf4f9bd33c75f4efae48d34543e3f17c839c760c50",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/panel_6faces_16ch.kicad_sch",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/panel_6faces_16ch.kicad_sch",
+      "sha256_before": "42b6b3250a1fe231074199d210cfa0d7b5b81a557f08b7df5548865fb97e42cb",
+      "sha256_after": "42b6b3250a1fe231074199d210cfa0d7b5b81a557f08b7df5548865fb97e42cb",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/pcb_bottom.png",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/pcb_bottom.png",
+      "sha256_before": "f7313f932617fc984096b5d21deeb5c23053931086fe4b484fdf5451f11367c7",
+      "sha256_after": "f7313f932617fc984096b5d21deeb5c23053931086fe4b484fdf5451f11367c7",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/pcb_top.png",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/pcb_top.png",
+      "sha256_before": "bd5253aeb0db8015649d3f038a83dcbf424645b26edc1e321364657f0013c097",
+      "sha256_after": "bd5253aeb0db8015649d3f038a83dcbf424645b26edc1e321364657f0013c097",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/schematic.net.xml",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/schematic.net.xml",
+      "sha256_before": "6478391f08c42de89ef0163479937304b3d05fce15f27587e0fa1f088f0dcad0",
+      "sha256_after": "6478391f08c42de89ef0163479937304b3d05fce15f27587e0fa1f088f0dcad0",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/schematic_preview.png",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/schematic_preview.png",
+      "sha256_before": "7294850aa9b34f0635916657fd6d57384ca46da3f3d851f63b01864ee3325e1e",
+      "sha256_after": "7294850aa9b34f0635916657fd6d57384ca46da3f3d851f63b01864ee3325e1e",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/static_checks.json",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/static_checks.json",
+      "sha256_before": "445977c7f6e761a8e189e3f76ae6fa6490d34e4712604703cd057943517b435a",
+      "sha256_after": "445977c7f6e761a8e189e3f76ae6fa6490d34e4712604703cd057943517b435a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/sym-lib-table",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/sym-lib-table",
+      "sha256_before": "470959b879210f49fb2aabc3a4d1651929b4f9326b7093f1eddecbcbd4a343ea",
+      "sha256_after": "470959b879210f49fb2aabc3a4d1651929b4f9326b7093f1eddecbcbd4a343ea",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/array_geometry_checks.json",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/array_geometry_checks.json",
+      "sha256_before": "807e974d1303d5f869afafc1df9838fd1eacef7d613ac62011ee780b2d9ecd36",
+      "sha256_after": "807e974d1303d5f869afafc1df9838fd1eacef7d613ac62011ee780b2d9ecd36",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/array_positions.json",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/array_positions.json",
+      "sha256_before": "cd4f905aff81d26b95726a212aea0963c2e0e9ed99365783cca1f9c29af4d022",
+      "sha256_after": "cd4f905aff81d26b95726a212aea0963c2e0e9ed99365783cca1f9c29af4d022",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/component_manifest.json",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/component_manifest.json",
+      "sha256_before": "6d7fb55dd3cfb42959404a979541105deaf525a4dcee99b5d827032821771fc6",
+      "sha256_after": "6d7fb55dd3cfb42959404a979541105deaf525a4dcee99b5d827032821771fc6",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/DRC.json",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/DRC.json",
+      "sha256_before": "d47c4911a8d452e11916cc70c07955a1f0a9f732450b5a483084c21e378bbc5d",
+      "sha256_after": "d47c4911a8d452e11916cc70c07955a1f0a9f732450b5a483084c21e378bbc5d",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/ERC.json",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/ERC.json",
+      "sha256_before": "8ca6eec26adcafdf58453eb9ae2aeecf774e22120e7a7ade6849acdf1ff0b25d",
+      "sha256_after": "8ca6eec26adcafdf58453eb9ae2aeecf774e22120e7a7ade6849acdf1ff0b25d",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/fp-lib-table",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/fp-lib-table",
+      "sha256_before": "6ed7d329181dd265c7b95dd8b3e8740436737fe80e8a75b264c5a9269f669250",
+      "sha256_after": "6ed7d329181dd265c7b95dd8b3e8740436737fe80e8a75b264c5a9269f669250",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.kicad_sym",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.kicad_sym",
+      "sha256_before": "1041b851d7e9a1c58f5039af8091357fadb3eaa270ff8ead0ea57a822865a390",
+      "sha256_after": "1041b851d7e9a1c58f5039af8091357fadb3eaa270ff8ead0ea57a822865a390",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/panel_8faces_16ch.kicad_pcb",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/panel_8faces_16ch.kicad_pcb",
+      "sha256_before": "f3f6dd83527634e501152ea15e70d8534f6eeb01c2caa54a2b335c86cc029cfd",
+      "sha256_after": "f3f6dd83527634e501152ea15e70d8534f6eeb01c2caa54a2b335c86cc029cfd",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/panel_8faces_16ch.kicad_prl",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/panel_8faces_16ch.kicad_prl",
+      "sha256_before": "ae8bcc7d5adfc5b60ef0d21c42f9d0f764f3cbf54d5f1922c59cf7b1ddee657c",
+      "sha256_after": "ae8bcc7d5adfc5b60ef0d21c42f9d0f764f3cbf54d5f1922c59cf7b1ddee657c",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/panel_8faces_16ch.kicad_pro",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/panel_8faces_16ch.kicad_pro",
+      "sha256_before": "e140904e61acc3e92c98a82626d79831826c885dfb04210140d1bc93f05515d3",
+      "sha256_after": "e140904e61acc3e92c98a82626d79831826c885dfb04210140d1bc93f05515d3",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/panel_8faces_16ch.kicad_sch",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/panel_8faces_16ch.kicad_sch",
+      "sha256_before": "403a3e82c3fa201ef0de9335fc8e833a4ec5e4f420d36cf57b4e8a3f1997a0b1",
+      "sha256_after": "403a3e82c3fa201ef0de9335fc8e833a4ec5e4f420d36cf57b4e8a3f1997a0b1",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/pcb_bottom.png",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/pcb_bottom.png",
+      "sha256_before": "12ebec24eeae4643b2358f9aa606aa0ccb58acc86753e79562bf770fb2a049d1",
+      "sha256_after": "12ebec24eeae4643b2358f9aa606aa0ccb58acc86753e79562bf770fb2a049d1",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/pcb_top.png",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/pcb_top.png",
+      "sha256_before": "8990574616718960b51ab4be7ab6c3a5cf2546c96958c0b4220a6c9fcb68d4b3",
+      "sha256_after": "8990574616718960b51ab4be7ab6c3a5cf2546c96958c0b4220a6c9fcb68d4b3",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/schematic.net.xml",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/schematic.net.xml",
+      "sha256_before": "bebb13fbe468f7fd6cab03f4bc1dd0e1686f4fc68bc3fea18b7bd4f94695097d",
+      "sha256_after": "bebb13fbe468f7fd6cab03f4bc1dd0e1686f4fc68bc3fea18b7bd4f94695097d",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/schematic_preview.png",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/schematic_preview.png",
+      "sha256_before": "d9db9185444578d32b96e918ce1c16843567c4a0219dd6cb9e22282f15b4cb78",
+      "sha256_after": "d9db9185444578d32b96e918ce1c16843567c4a0219dd6cb9e22282f15b4cb78",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/static_checks.json",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/static_checks.json",
+      "sha256_before": "878a5e4ecaad596322f7b1932a7e7a5acf1d49d0a85c57b6d031feee02de843b",
+      "sha256_after": "878a5e4ecaad596322f7b1932a7e7a5acf1d49d0a85c57b6d031feee02de843b",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/sym-lib-table",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/sym-lib-table",
+      "sha256_before": "470959b879210f49fb2aabc3a4d1651929b4f9326b7093f1eddecbcbd4a343ea",
+      "sha256_after": "470959b879210f49fb2aabc3a4d1651929b4f9326b7093f1eddecbcbd4a343ea",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/BOM_ALL.csv",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/BOM_ALL.csv",
+      "sha256_before": "bbd8f7a81d9a75fea4e1c0e2cdf2fc4a48d7a3f89b0fa604b2f0266c74e715c8",
+      "sha256_after": "bbd8f7a81d9a75fea4e1c0e2cdf2fc4a48d7a3f89b0fa604b2f0266c74e715c8",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/BOM_SMT.csv",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/BOM_SMT.csv",
+      "sha256_before": "4245e92b2fa39b0b2d1e24e5fd7eec3ba06692c8a390fd6a8f108dd5411b016d",
+      "sha256_after": "4245e92b2fa39b0b2d1e24e5fd7eec3ba06692c8a390fd6a8f108dd5411b016d",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/BOM_THT.csv",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/BOM_THT.csv",
+      "sha256_before": "ec969e8e0ea275a120bae34c24422bf6e710c2b82e576ecf6fe8782a75bc56e5",
+      "sha256_after": "ec969e8e0ea275a120bae34c24422bf6e710c2b82e576ecf6fe8782a75bc56e5",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/panel_8faces_16ch_Gerber_P0_quote.zip",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/panel_8faces_16ch_Gerber_P0_quote.zip",
+      "sha256_before": "932a65f20b425d12bca6fe27c9b3f04ad110716b8faa56af17eb04c83321985c",
+      "sha256_after": "932a65f20b425d12bca6fe27c9b3f04ad110716b8faa56af17eb04c83321985c",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/Parts_16_boards.csv",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/Parts_16_boards.csv",
+      "sha256_before": "0bdde05856b56bf61a4f44370f7cd95b8a64b02cdd9775494d96424088f4bac2",
+      "sha256_after": "0bdde05856b56bf61a4f44370f7cd95b8a64b02cdd9775494d96424088f4bac2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/PnP_SMT.csv",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/PnP_SMT.csv",
+      "sha256_before": "bd9498413e16df4c7d022583f64a235c9cc7b59a85859512e683c2a248c413ec",
+      "sha256_after": "bd9498413e16df4c7d022583f64a235c9cc7b59a85859512e683c2a248c413ec",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/README_업로드_및_납땜요청.md",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/README_업로드_및_납땜요청.md",
+      "sha256_before": "e1ea637f2e6a00675b630e23b7e0e72e5aa0c28a7985cf82be628426d10decf9",
+      "sha256_after": "e1ea637f2e6a00675b630e23b7e0e72e5aa0c28a7985cf82be628426d10decf9",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/THT_position_guide.csv",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/THT_position_guide.csv",
+      "sha256_before": "669fef92da5fcdf7cf33f92e8fc7b05c49707c71647113683ae6338c25f12abd",
+      "sha256_after": "669fef92da5fcdf7cf33f92e8fc7b05c49707c71647113683ae6338c25f12abd",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/validation_and_sources.json",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/validation_and_sources.json",
+      "sha256_before": "748c1584c7ff64939f7c4b572c6dccd0884a0158ac87ff66796243ae7f5cf30c",
+      "sha256_after": "748c1584c7ff64939f7c4b572c6dccd0884a0158ac87ff66796243ae7f5cf30c",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_BOM_8faces_16ch.xlsx",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_BOM_8faces_16ch.xlsx",
+      "sha256_before": "4c0441dc0bd5894c1f559c305e557c5a8b2c253e1d9ab81af7d432ee71eac4fa",
+      "sha256_after": "4c0441dc0bd5894c1f559c305e557c5a8b2c253e1d9ab81af7d432ee71eac4fa",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_BOM_8faces_16ch_UPLOAD.csv",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_BOM_8faces_16ch_UPLOAD.csv",
+      "sha256_before": "f35ab4a547fd2f4f80c71105975ceaf4484d8b8aaf231a60a98defacb1c90d23",
+      "sha256_after": "f35ab4a547fd2f4f80c71105975ceaf4484d8b8aaf231a60a98defacb1c90d23",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_BOM_8faces_16ch_UPLOAD.xlsx",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_BOM_8faces_16ch_UPLOAD.xlsx",
+      "sha256_before": "7085bbcf0af88b1234241e2c7e298e7c32ed53c60594ecf3d258d51d5d76a2ea",
+      "sha256_after": "7085bbcf0af88b1234241e2c7e298e7c32ed53c60594ecf3d258d51d5d76a2ea",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_PnP_8faces_16ch.xlsx",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_PnP_8faces_16ch.xlsx",
+      "sha256_before": "9e03ce935bc0d39da2a24d1bce241fef1d540090ad6274012ec4e5f2aec60b4b",
+      "sha256_after": "9e03ce935bc0d39da2a24d1bce241fef1d540090ad6274012ec4e5f2aec60b4b",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_PnP_8faces_16ch_UPLOAD.csv",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_PnP_8faces_16ch_UPLOAD.csv",
+      "sha256_before": "d9e963a46639d9c7a501a32bd1c9f78fcef1484fdaa4cbeef139cdaed8be81ca",
+      "sha256_after": "d9e963a46639d9c7a501a32bd1c9f78fcef1484fdaa4cbeef139cdaed8be81ca",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_PnP_8faces_16ch_UPLOAD.xlsx",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS/DOILLABS_PnP_8faces_16ch_UPLOAD.xlsx",
+      "sha256_before": "a1150133c27e7886a479844c79e790086d93229e957049bfebb978d6d79f1cf6",
+      "sha256_after": "a1150133c27e7886a479844c79e790086d93229e957049bfebb978d6d79f1cf6",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/DOILLABS/UPLOAD_validation.json",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS/UPLOAD_validation.json",
+      "sha256_before": "c96d0cfa341f2ba70916509687abbd725d52085b975307a55d20ba50cc5d31b2",
+      "sha256_after": "c96d0cfa341f2ba70916509687abbd725d52085b975307a55d20ba50cc5d31b2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/pcba_8faces_16boards/DOILLABS/사용안내.txt",
+      "after": "outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS/사용안내.txt",
+      "sha256_before": "cf847ae2ce43bd434f01da427eca0772485cc505462a188b859c77539ae896ca",
+      "sha256_after": "cf847ae2ce43bd434f01da427eca0772485cc505462a188b859c77539ae896ca",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-B_Cu.gbl",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-B_Cu.gbl",
+      "sha256_before": "21dadd99a9acdc9e9d729af7d9b7231a23a2bbed7223df327c09bd43808cf6f2",
+      "sha256_after": "21dadd99a9acdc9e9d729af7d9b7231a23a2bbed7223df327c09bd43808cf6f2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-B_Mask.gbs",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-B_Mask.gbs",
+      "sha256_before": "ace49fb807c2cc3c521e73bf597a3363c522bb34d0b23496b19ead9dd301a58a",
+      "sha256_after": "ace49fb807c2cc3c521e73bf597a3363c522bb34d0b23496b19ead9dd301a58a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-B_Paste.gbp",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-B_Paste.gbp",
+      "sha256_before": "5622031c9018d82e36991f8da3f69f416a272ada8e73013b4c5c291a0909fa6f",
+      "sha256_after": "5622031c9018d82e36991f8da3f69f416a272ada8e73013b4c5c291a0909fa6f",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-B_Silkscreen.gbo",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-B_Silkscreen.gbo",
+      "sha256_before": "dd9b4e75f21c19b2ffd35a01a982162f6c182bff33ad3a4ea03bc6cb7f7cc5b4",
+      "sha256_after": "dd9b4e75f21c19b2ffd35a01a982162f6c182bff33ad3a4ea03bc6cb7f7cc5b4",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-Edge_Cuts.gm1",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-Edge_Cuts.gm1",
+      "sha256_before": "aa8d29a1ebccff308fb1fe0c7db55fb770c478d77bec276e2ec4bd5dc4d7ef66",
+      "sha256_after": "aa8d29a1ebccff308fb1fe0c7db55fb770c478d77bec276e2ec4bd5dc4d7ef66",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-F_Cu.gtl",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-F_Cu.gtl",
+      "sha256_before": "48e90899f2f3fc482a94e4391d3129529fcd9c4dc2cfecbeac054a2b708f1715",
+      "sha256_after": "48e90899f2f3fc482a94e4391d3129529fcd9c4dc2cfecbeac054a2b708f1715",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-F_Mask.gts",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-F_Mask.gts",
+      "sha256_before": "8e7d664b38115fdd26fffde157e2e41e3fff3ce7d69ba346ad42b577d3a7d155",
+      "sha256_after": "8e7d664b38115fdd26fffde157e2e41e3fff3ce7d69ba346ad42b577d3a7d155",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-F_Silkscreen.gto",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-F_Silkscreen.gto",
+      "sha256_before": "32dc24fde99d424789cfa9685d0ec636cebdbe118910039269d20397463a6295",
+      "sha256_after": "32dc24fde99d424789cfa9685d0ec636cebdbe118910039269d20397463a6295",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-job.gbrjob",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch-job.gbrjob",
+      "sha256_before": "3e5612908365b8e726313e1ab111da5a54462db4db1ecacade66e7c7fb9315ee",
+      "sha256_after": "3e5612908365b8e726313e1ab111da5a54462db4db1ecacade66e7c7fb9315ee",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch.drl",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/panel_8faces_16ch.drl",
+      "sha256_before": "f62285b5dd6dfe0c4dece615c94ef0f77fb7a6a4c0842ec4c91dc10280a9bdc9",
+      "sha256_after": "f62285b5dd6dfe0c4dece615c94ef0f77fb7a6a4c0842ec4c91dc10280a9bdc9",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/gerbers_P0/README_P0.txt",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/gerbers_P0/README_P0.txt",
+      "sha256_before": "415399ee0b1aa0c30124096abaf288f345b792550f891d7aff74a39f5722fb1a",
+      "sha256_after": "415399ee0b1aa0c30124096abaf288f345b792550f891d7aff74a39f5722fb1a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-B_Cu.svg",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-B_Cu.svg",
+      "sha256_before": "5e21423f7248ddb958549422c3037f6a7f1b4f8bbcf8000b4426d993d41986f4",
+      "sha256_after": "5e21423f7248ddb958549422c3037f6a7f1b4f8bbcf8000b4426d993d41986f4",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-B_Fab.svg",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-B_Fab.svg",
+      "sha256_before": "06a88d0c2c7d99211b9250e22ef8e0b083e17e5cbcd3f8b03114b7793d1c88b0",
+      "sha256_after": "06a88d0c2c7d99211b9250e22ef8e0b083e17e5cbcd3f8b03114b7793d1c88b0",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-Edge_Cuts.svg",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-Edge_Cuts.svg",
+      "sha256_before": "52304e66dd76d4d79928af05f978e718be810bd78d28620a2e0a62da9d8c4a1b",
+      "sha256_after": "52304e66dd76d4d79928af05f978e718be810bd78d28620a2e0a62da9d8c4a1b",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-F_Cu.svg",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-F_Cu.svg",
+      "sha256_before": "51174e382d5def2b1471a07ac77f65636914a49f0d10e47ca3ac8f1d1edce426",
+      "sha256_after": "51174e382d5def2b1471a07ac77f65636914a49f0d10e47ca3ac8f1d1edce426",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-F_Fab.svg",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/layers_svg/panel_8faces_16ch-F_Fab.svg",
+      "sha256_before": "bfd8ef2be3c89cb43984e4e5c613fbb3ef0756e57c8341c50e6a163444905c08",
+      "sha256_after": "bfd8ef2be3c89cb43984e4e5c613fbb3ef0756e57c8341c50e6a163444905c08",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/C0805.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/C0805.kicad_mod",
+      "sha256_before": "df7ef3a0ef2fa98954d3e5fe24228e4e0014c4a81af5601f16a4717f4628d1a9",
+      "sha256_after": "df7ef3a0ef2fa98954d3e5fe24228e4e0014c4a81af5601f16a4717f4628d1a9",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/CP_Radial_D6.3_P2.5.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/CP_Radial_D6.3_P2.5.kicad_mod",
+      "sha256_before": "879acf4fac4375040ec64d543a3f79f57c60c5b30f027414596cfe746b3b30ae",
+      "sha256_after": "879acf4fac4375040ec64d543a3f79f57c60c5b30f027414596cfe746b3b30ae",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/Header1x03.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/Header1x03.kicad_mod",
+      "sha256_before": "f8d702933d9665914aa410bff1a5f00ea399550b455e76c6988b760ecaba034a",
+      "sha256_after": "f8d702933d9665914aa410bff1a5f00ea399550b455e76c6988b760ecaba034a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/Header2x05.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/Header2x05.kicad_mod",
+      "sha256_before": "1cc7633574a2601c352d9f3cbef8685aeafce7bd0c52d96da9bb11d462e109ae",
+      "sha256_after": "1cc7633574a2601c352d9f3cbef8685aeafce7bd0c52d96da9bb11d462e109ae",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/Mount_M3.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/Mount_M3.kicad_mod",
+      "sha256_before": "279b0d0816eaeda037c950862959b3cb2778c7c95e2ab14e18ad2d0ae6267dae",
+      "sha256_after": "279b0d0816eaeda037c950862959b3cb2778c7c95e2ab14e18ad2d0ae6267dae",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/R0805.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/R0805.kicad_mod",
+      "sha256_before": "36cfafcdde111e69e4ca68bdc4652792f6b6d9d79a598701756e050a42ab87fe",
+      "sha256_after": "36cfafcdde111e69e4ca68bdc4652792f6b6d9d79a598701756e050a42ab87fe",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/SOIC16.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/SOIC16.kicad_mod",
+      "sha256_before": "1cc4d85cfbc283a7561f104b8ff0e14d97dc7ca54254ddc00185e951e499860f",
+      "sha256_after": "1cc4d85cfbc283a7561f104b8ff0e14d97dc7ca54254ddc00185e951e499860f",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/SOIC8.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/SOIC8.kicad_mod",
+      "sha256_before": "75b8a90d363cc2454649930f1c6ed729dae8b29cfe121d627f0d4cd05c592b88",
+      "sha256_after": "75b8a90d363cc2454649930f1c6ed729dae8b29cfe121d627f0d4cd05c592b88",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/SOT23.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/SOT23.kicad_mod",
+      "sha256_before": "64821b0abe8b42aa3b51e367cf345bd8d16c5fa7bf04fbd096388c926b6632d7",
+      "sha256_after": "64821b0abe8b42aa3b51e367cf345bd8d16c5fa7bf04fbd096388c926b6632d7",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/Levitation.pretty/V40AN16T_P10.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/Levitation.pretty/V40AN16T_P10.kicad_mod",
+      "sha256_before": "87dcd8d5dc7e110ed470a9c2e8af8a766c1e07c1c263ba91952b03377dfbd884",
+      "sha256_after": "87dcd8d5dc7e110ed470a9c2e8af8a766c1e07c1c263ba91952b03377dfbd884",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/models/V40AN16T_envelope.wrl",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/models/V40AN16T_envelope.wrl",
+      "sha256_before": "efbc26c2341ebbfcaab89d9e466e1a9149a84185ed271e2fbf04da8c500a06b8",
+      "sha256_after": "efbc26c2341ebbfcaab89d9e466e1a9149a84185ed271e2fbf04da8c500a06b8",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/recheck/DRC.json",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/recheck/DRC.json",
+      "sha256_before": "38060267a0418b00566c05c3d9b80550a2081de1d9afc9f58eed46f333a45daa",
+      "sha256_after": "38060267a0418b00566c05c3d9b80550a2081de1d9afc9f58eed46f333a45daa",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/recheck/ERC.json",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/recheck/ERC.json",
+      "sha256_before": "1be7fe2269df608b7a74fe5549a2d604b1c012d52d2af66a50dbb7a64885a8c6",
+      "sha256_after": "1be7fe2269df608b7a74fe5549a2d604b1c012d52d2af66a50dbb7a64885a8c6",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_8faces_16ch/schematic_svg/panel_8faces_16ch.svg",
+      "after": "outputs/pcb/polygon_panels/panel_8faces_16ch/schematic_svg/panel_8faces_16ch.svg",
+      "sha256_before": "c6df0ee63e5ded8789baa4c6b00b24c914cd57b9ec1bc58ce4bc431c38b2e6d1",
+      "sha256_after": "c6df0ee63e5ded8789baa4c6b00b24c914cd57b9ec1bc58ce4bc431c38b2e6d1",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-B_Cu.gbl",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-B_Cu.gbl",
+      "sha256_before": "5bb1464a35aa24e722d4ae6d21daabe87e2dcd31f9ce63f00bee11904875ab03",
+      "sha256_after": "5bb1464a35aa24e722d4ae6d21daabe87e2dcd31f9ce63f00bee11904875ab03",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-B_Mask.gbs",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-B_Mask.gbs",
+      "sha256_before": "f95f03804f2da0597b0a2231995d36d1468d0da8ae6d2fc06c09f52f3383c1f5",
+      "sha256_after": "f95f03804f2da0597b0a2231995d36d1468d0da8ae6d2fc06c09f52f3383c1f5",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-B_Paste.gbp",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-B_Paste.gbp",
+      "sha256_before": "ba6698760b2ab98f48702198cc2e1aada3db3b36471d5b4e6ceedfd2dc820b31",
+      "sha256_after": "ba6698760b2ab98f48702198cc2e1aada3db3b36471d5b4e6ceedfd2dc820b31",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-B_Silkscreen.gbo",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-B_Silkscreen.gbo",
+      "sha256_before": "8b363a108ecbe496d52181a0a1ee0f487fbeb6ae1eee61bb43a481f8744bd698",
+      "sha256_after": "8b363a108ecbe496d52181a0a1ee0f487fbeb6ae1eee61bb43a481f8744bd698",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-Edge_Cuts.gm1",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-Edge_Cuts.gm1",
+      "sha256_before": "fd3cdb208b6eb52b5e387b8890b6bb6f63738f1020b916e679ed3dc160a4dcbc",
+      "sha256_after": "fd3cdb208b6eb52b5e387b8890b6bb6f63738f1020b916e679ed3dc160a4dcbc",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-F_Cu.gtl",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-F_Cu.gtl",
+      "sha256_before": "3c79da11806df19d97e02afbba37677ee94789ed437db2ac5638d35ea8baba53",
+      "sha256_after": "3c79da11806df19d97e02afbba37677ee94789ed437db2ac5638d35ea8baba53",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-F_Mask.gts",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-F_Mask.gts",
+      "sha256_before": "f2a8141eb876a4db423271585c55647ef198ded62e5b57c48bfc2cc0bba994c2",
+      "sha256_after": "f2a8141eb876a4db423271585c55647ef198ded62e5b57c48bfc2cc0bba994c2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-F_Silkscreen.gto",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-F_Silkscreen.gto",
+      "sha256_before": "22940fe1d9ee68dd8531eb532780651712c3987d4165ac1b0737b54b8c4eb189",
+      "sha256_after": "22940fe1d9ee68dd8531eb532780651712c3987d4165ac1b0737b54b8c4eb189",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-job.gbrjob",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch-job.gbrjob",
+      "sha256_before": "99acf19b34120d584dd1462f85399e24bcee32642d5dcdfea5f53bc4bf1a18c4",
+      "sha256_after": "99acf19b34120d584dd1462f85399e24bcee32642d5dcdfea5f53bc4bf1a18c4",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch.drl",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/panel_6faces_16ch.drl",
+      "sha256_before": "3152b9248ab0e9673c3c22b9ba34f005f1f9c3f4bacc22d9d1e6dec3d837e49a",
+      "sha256_after": "3152b9248ab0e9673c3c22b9ba34f005f1f9c3f4bacc22d9d1e6dec3d837e49a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/gerbers_P0/README_P0.txt",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/gerbers_P0/README_P0.txt",
+      "sha256_before": "415399ee0b1aa0c30124096abaf288f345b792550f891d7aff74a39f5722fb1a",
+      "sha256_after": "415399ee0b1aa0c30124096abaf288f345b792550f891d7aff74a39f5722fb1a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-B_Cu.svg",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-B_Cu.svg",
+      "sha256_before": "5280a5ed6d1a707659cf3e97bdca5b79effc9fce330cc88f2814bfa72243c123",
+      "sha256_after": "5280a5ed6d1a707659cf3e97bdca5b79effc9fce330cc88f2814bfa72243c123",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-B_Fab.svg",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-B_Fab.svg",
+      "sha256_before": "67cf1033ca1b8f5f3ceeefd0632208a5a012760b41f8bdad16fc986819a90ce4",
+      "sha256_after": "67cf1033ca1b8f5f3ceeefd0632208a5a012760b41f8bdad16fc986819a90ce4",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-Edge_Cuts.svg",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-Edge_Cuts.svg",
+      "sha256_before": "053ae01e5409ae5276287102720626ccf25b504a416c237540affd0815f80304",
+      "sha256_after": "053ae01e5409ae5276287102720626ccf25b504a416c237540affd0815f80304",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-F_Cu.svg",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-F_Cu.svg",
+      "sha256_before": "2a5eeda3e726e192d370fdb95956d45fc93b3e4d8da223c18d2536e72bb005a5",
+      "sha256_after": "2a5eeda3e726e192d370fdb95956d45fc93b3e4d8da223c18d2536e72bb005a5",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-F_Fab.svg",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/layers_svg/panel_6faces_16ch-F_Fab.svg",
+      "sha256_before": "4708204da75daee78009fcaf8a8c6ae5bad837041a3d97cdb811d5b36289b265",
+      "sha256_after": "4708204da75daee78009fcaf8a8c6ae5bad837041a3d97cdb811d5b36289b265",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/C0805.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/C0805.kicad_mod",
+      "sha256_before": "5da73ff97a5623da4b5578ac2e157a9a6a26598b32bb88dd4ac0ccd8c8d09bc2",
+      "sha256_after": "5da73ff97a5623da4b5578ac2e157a9a6a26598b32bb88dd4ac0ccd8c8d09bc2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/CP_Radial_D6.3_P2.5.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/CP_Radial_D6.3_P2.5.kicad_mod",
+      "sha256_before": "2938c05412936650f1e7d9b0463bb78fc309d2207221aa91fe52440ab8ae6e2e",
+      "sha256_after": "2938c05412936650f1e7d9b0463bb78fc309d2207221aa91fe52440ab8ae6e2e",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/Header1x03.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/Header1x03.kicad_mod",
+      "sha256_before": "5854b08cdaaf6b5123b1526730f1d6e194ccfe01917d767e278e700e960e7663",
+      "sha256_after": "5854b08cdaaf6b5123b1526730f1d6e194ccfe01917d767e278e700e960e7663",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/Header2x05.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/Header2x05.kicad_mod",
+      "sha256_before": "09839be924305e1c518a6b329b4b55eb59616c8bfb6b3665860753637e48391f",
+      "sha256_after": "09839be924305e1c518a6b329b4b55eb59616c8bfb6b3665860753637e48391f",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/Mount_M3.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/Mount_M3.kicad_mod",
+      "sha256_before": "426c8b88f840e489f2e117e97da6041cd473d7b53a82773c16a290504b10e16a",
+      "sha256_after": "426c8b88f840e489f2e117e97da6041cd473d7b53a82773c16a290504b10e16a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/R0805.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/R0805.kicad_mod",
+      "sha256_before": "93351dc55a18b15598053fca175cbffb42cf7ccd7d12b2cc0b2c49bc55f73aa3",
+      "sha256_after": "93351dc55a18b15598053fca175cbffb42cf7ccd7d12b2cc0b2c49bc55f73aa3",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/SOIC16.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/SOIC16.kicad_mod",
+      "sha256_before": "ffeb606fc600bba25e65285e7ef9881b14bfed263dcd7acf37f2feff4b5e9431",
+      "sha256_after": "ffeb606fc600bba25e65285e7ef9881b14bfed263dcd7acf37f2feff4b5e9431",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/SOIC8.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/SOIC8.kicad_mod",
+      "sha256_before": "30b16e4cce7d9ada68149cf9c0585a883f6b96594a48027c7d14d0257158075b",
+      "sha256_after": "30b16e4cce7d9ada68149cf9c0585a883f6b96594a48027c7d14d0257158075b",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/SOT23.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/SOT23.kicad_mod",
+      "sha256_before": "31154b91dca824245339b9a9b11ca46cfcfb9328d05b96c455eff902b53ea087",
+      "sha256_after": "31154b91dca824245339b9a9b11ca46cfcfb9328d05b96c455eff902b53ea087",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/Levitation.pretty/V40AN16T_P10.kicad_mod",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/Levitation.pretty/V40AN16T_P10.kicad_mod",
+      "sha256_before": "217731c0f23e5d1ce03e13eb48aa833c2a38a17f580a1326e5f80451ce0d04cf",
+      "sha256_after": "217731c0f23e5d1ce03e13eb48aa833c2a38a17f580a1326e5f80451ce0d04cf",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/models/V40AN16T_envelope.wrl",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/models/V40AN16T_envelope.wrl",
+      "sha256_before": "efbc26c2341ebbfcaab89d9e466e1a9149a84185ed271e2fbf04da8c500a06b8",
+      "sha256_after": "efbc26c2341ebbfcaab89d9e466e1a9149a84185ed271e2fbf04da8c500a06b8",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/recheck/DRC.json",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/recheck/DRC.json",
+      "sha256_before": "fe70f4908d739030778787f9f4720f206665f9fb48306779d9f3934e44b83bf7",
+      "sha256_after": "fe70f4908d739030778787f9f4720f206665f9fb48306779d9f3934e44b83bf7",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/recheck/ERC.json",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/recheck/ERC.json",
+      "sha256_before": "4b616f72fb5622fa6bed08910b33279a8466a9bb3a125e126f32332a8f855a23",
+      "sha256_after": "4b616f72fb5622fa6bed08910b33279a8466a9bb3a125e126f32332a8f855a23",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/polygon_panels/panel_6faces_16ch/schematic_svg/panel_6faces_16ch.svg",
+      "after": "outputs/pcb/polygon_panels/panel_6faces_16ch/schematic_svg/panel_6faces_16ch.svg",
+      "sha256_before": "25d7af5093c4e9b40415a5ed8a8d361ba2b4f00086140e356d59cdf629d6fa1f",
+      "sha256_after": "25d7af5093c4e9b40415a5ed8a8d361ba2b4f00086140e356d59cdf629d6fa1f",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/automation/prepare_creo_reused_v2.py",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/automation/prepare_creo_reused_v2.py",
+      "sha256_before": "a5cca60050093313475377f9f31939d1144ec4260c050caef4a4fcadb7366f29",
+      "sha256_after": "1b304085ad2040ae3608f4ac8ccc82f5183d99f2294917a67d87e7c51686df06",
+      "path_text_updated": true
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/automation/verify_creo_reused_v2.py",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/automation/verify_creo_reused_v2.py",
+      "sha256_before": "052175705eb905e0c0de76928a696954de5eda8b1d2e6b45a2b21ba0ca194446",
+      "sha256_after": "412732c3be8810aee50b2d9198c139816d89265bcfd2c3224aeea0f2b25c4e8d",
+      "path_text_updated": true
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/geometry/checks_6f.json",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/geometry/checks_6f.json",
+      "sha256_before": "b293d2ee33768c47ee042bf75e5460ab5d6cd66fd9bf24a954ba467b037cff94",
+      "sha256_after": "b293d2ee33768c47ee042bf75e5460ab5d6cd66fd9bf24a954ba467b037cff94",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/geometry/checks_8f.json",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/geometry/checks_8f.json",
+      "sha256_before": "a8118d737209e888c8d33921bcebc1fcecaeee0e7bbf0bc810f42babb1f7a9a6",
+      "sha256_after": "a8118d737209e888c8d33921bcebc1fcecaeee0e7bbf0bc810f42babb1f7a9a6",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/geometry/ring_6f.step",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/geometry/ring_6f.step",
+      "sha256_before": "684baab31adb7aa20e6f70c0e2e3424d09de05cfd9fc6ff3e9c1e48ae53b5e62",
+      "sha256_after": "684baab31adb7aa20e6f70c0e2e3424d09de05cfd9fc6ff3e9c1e48ae53b5e62",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/geometry/ring_8f.step",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/geometry/ring_8f.step",
+      "sha256_before": "cce296a49fbbfc1577fb127ff84eea903c7a0283521c3e83af48eae6d0c514b3",
+      "sha256_after": "cce296a49fbbfc1577fb127ff84eea903c7a0283521c3e83af48eae6d0c514b3",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/geometry/tunnel_6f_v2.step",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/geometry/tunnel_6f_v2.step",
+      "sha256_before": "ab02a95c1e1483323aa222bce69db840badd50034afb40a28b8db7d4aeceefb7",
+      "sha256_after": "ab02a95c1e1483323aa222bce69db840badd50034afb40a28b8db7d4aeceefb7",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/geometry/tunnel_8f_v2.step",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/geometry/tunnel_8f_v2.step",
+      "sha256_before": "99e24c68b29cea1016a263989abaac128965f2698e3c0b8375cb118ddc50c108",
+      "sha256_after": "99e24c68b29cea1016a263989abaac128965f2698e3c0b8375cb118ddc50c108",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/facepair_8f.asm",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/facepair_8f.asm",
+      "sha256_before": "a498ad2df2a0bcec03e53135f99c89e0fd220c34ef6eb3ff626bdbab27a256c8",
+      "sha256_after": "a498ad2df2a0bcec03e53135f99c89e0fd220c34ef6eb3ff626bdbab27a256c8",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/panel_6f.asm",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/panel_6f.asm",
+      "sha256_before": "41c9a5bc0a918d7b2e2ec1adb2d1a6d0f500b19d53087b40027b95f9379e31c2",
+      "sha256_after": "41c9a5bc0a918d7b2e2ec1adb2d1a6d0f500b19d53087b40027b95f9379e31c2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/panel_8f.asm",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/panel_8f.asm",
+      "sha256_before": "bf29da0a090eb907c3afcad561f4f92f51b377072cf7c3f15c309a3b1866f936",
+      "sha256_after": "bf29da0a090eb907c3afcad561f4f92f51b377072cf7c3f15c309a3b1866f936",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/pcb_6f.prt",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/pcb_6f.prt",
+      "sha256_before": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37",
+      "sha256_after": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/pcb_8f.prt",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/pcb_8f.prt",
+      "sha256_before": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58",
+      "sha256_after": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/ring_6f.prt",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/ring_6f.prt",
+      "sha256_before": "11c9e6e96790ca0366dc70585ccefcfb6ab837771f204a3b4a1409b48de46f0f",
+      "sha256_after": "11c9e6e96790ca0366dc70585ccefcfb6ab837771f204a3b4a1409b48de46f0f",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/ring_8f.prt",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/ring_8f.prt",
+      "sha256_before": "5662030bb23901dad46b74eabc55326e0bc6de1bca998cad6788eb397066e8e3",
+      "sha256_after": "5662030bb23901dad46b74eabc55326e0bc6de1bca998cad6788eb397066e8e3",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/tunnel_6f_v2.asm",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/tunnel_6f_v2.asm",
+      "sha256_before": "43b4889b1cc8eff293db02c7964af6947192cfc539921c3ca8404d815c18f40e",
+      "sha256_after": "43b4889b1cc8eff293db02c7964af6947192cfc539921c3ca8404d815c18f40e",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/tunnel_8f_dual.asm",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/tunnel_8f_dual.asm",
+      "sha256_before": "b64e632c9f3a1b31403b3d7b9088425a8aab6600e86484cbe0a2b55c4115c6a2",
+      "sha256_after": "b64e632c9f3a1b31403b3d7b9088425a8aab6600e86484cbe0a2b55c4115c6a2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_reused_v2/native/tx16.prt",
+      "after": "outputs/cad_generation/creo_tunnel_reused_v2/native/tx16.prt",
+      "sha256_before": "9f9e72537080af11d75be7769be37f5d61a511b6f1b6d130c29b29bff5d10d41",
+      "sha256_after": "9f9e72537080af11d75be7769be37f5d61a511b6f1b6d130c29b29bff5d10d41",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/geometry_checks.json",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/geometry_checks.json",
+      "sha256_before": "ac3556efda23a37a4711a38cc3bc25e7938494b903a8a397bc9e1788a07c8c65",
+      "sha256_after": "ac3556efda23a37a4711a38cc3bc25e7938494b903a8a397bc9e1788a07c8c65",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/panel_6f.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/panel_6f.step",
+      "sha256_before": "05e4d61717398256381f1db918a938cad10c53f28abbacda4dad9cceb8c6e76b",
+      "sha256_after": "05e4d61717398256381f1db918a938cad10c53f28abbacda4dad9cceb8c6e76b",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/pcb_6f.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/pcb_6f.step",
+      "sha256_before": "71b84f7c8fe1609a9e2ed16fa007e1282eb05853dd43f50efee4295229a599d5",
+      "sha256_after": "71b84f7c8fe1609a9e2ed16fa007e1282eb05853dd43f50efee4295229a599d5",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/ring_6f.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/ring_6f.step",
+      "sha256_before": "34c636c9a478fc363b0ff289345dccb36e48fd64db00122f5d4083e7a705c457",
+      "sha256_after": "34c636c9a478fc363b0ff289345dccb36e48fd64db00122f5d4083e7a705c457",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/transducer_6f.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/transducer_6f.step",
+      "sha256_before": "72c956c837100e4969a24282da697e87726b5f95a1495bde2db34e50c316cf30",
+      "sha256_after": "72c956c837100e4969a24282da697e87726b5f95a1495bde2db34e50c316cf30",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/tunnel_6faces.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/tunnel_6faces.step",
+      "sha256_before": "beb6ce386fb510dfa24695b767785101f6f08f6f20430c36eae84690fe105660",
+      "sha256_after": "beb6ce386fb510dfa24695b767785101f6f08f6f20430c36eae84690fe105660",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/tunnel_6faces_preview.png",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/tunnel_6faces_preview.png",
+      "sha256_before": "15191ae1ee8c28527a69a2aba07d4f17f934aee3661f203896cccd3d2449746f",
+      "sha256_after": "15191ae1ee8c28527a69a2aba07d4f17f934aee3661f203896cccd3d2449746f",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/geometry_checks.json",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/geometry_checks.json",
+      "sha256_before": "6e1fcef496268ef67b0b0fc17f1190171091704cc4a721c72e900702c3823c81",
+      "sha256_after": "6e1fcef496268ef67b0b0fc17f1190171091704cc4a721c72e900702c3823c81",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/panel_8f.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/panel_8f.step",
+      "sha256_before": "e928cac24307c1813485ad74623c7669556f187737ab70047bb42becc823703a",
+      "sha256_after": "e928cac24307c1813485ad74623c7669556f187737ab70047bb42becc823703a",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/pcb_8f.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/pcb_8f.step",
+      "sha256_before": "80981013f99a97dc111e1087fdf1165589221f44023854b6349d2c32649de744",
+      "sha256_after": "80981013f99a97dc111e1087fdf1165589221f44023854b6349d2c32649de744",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/ring_8f.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/ring_8f.step",
+      "sha256_before": "345ccdc37d43b10106926846ff79effe986e4c040cb964f2ad8234180d8196d0",
+      "sha256_after": "345ccdc37d43b10106926846ff79effe986e4c040cb964f2ad8234180d8196d0",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/trail.txt.1",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/trail.txt.1",
+      "sha256_before": "3b71c49fcf800e1aa49e8f640b96884f82f6e65fb73e746dca5d19fb718e665e",
+      "sha256_after": "3b71c49fcf800e1aa49e8f640b96884f82f6e65fb73e746dca5d19fb718e665e",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/transducer_8f.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/transducer_8f.step",
+      "sha256_before": "8beef7c75b45f3305dfc9948b8ce20fe2fd32054b4f84b75508d07527e073946",
+      "sha256_after": "8beef7c75b45f3305dfc9948b8ce20fe2fd32054b4f84b75508d07527e073946",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/tunnel_8faces.step",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/tunnel_8faces.step",
+      "sha256_before": "57249df19a815ad56fcbadc1190871c7b9c7b533ee08c57c99330431d2b68398",
+      "sha256_after": "57249df19a815ad56fcbadc1190871c7b9c7b533ee08c57c99330431d2b68398",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/tunnel_8faces_preview.png",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/tunnel_8faces_preview.png",
+      "sha256_before": "4e5afa2d6c310e86e7ee024df6ff2b03fd3c763fd054be79c1e8f7ee7edfeed2",
+      "sha256_after": "4e5afa2d6c310e86e7ee024df6ff2b03fd3c763fd054be79c1e8f7ee7edfeed2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/__pycache__/build_models.cpython-313.pyc",
+      "after": "outputs/cad_generation/creo_tunnel_models/__pycache__/build_models.cpython-313.pyc",
+      "sha256_before": "e1ee50a57befc09d6dfdc24d35118d99fabd35aa6b1089092d77aeb220e39ef8",
+      "sha256_after": "e1ee50a57befc09d6dfdc24d35118d99fabd35aa6b1089092d77aeb220e39ef8",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/panel_8f_01.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/panel_8f_01.asm",
+      "sha256_before": "02457cf98951da9323b624f07f36c8e308b39d0916ac1f753cdcf0669f685e5f",
+      "sha256_after": "02457cf98951da9323b624f07f36c8e308b39d0916ac1f753cdcf0669f685e5f",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/panel_8f_02.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/panel_8f_02.asm",
+      "sha256_before": "e5d374cc046ad36049e0176a39c7cb2538453f750ed14fdfb044e0252d2b6d3d",
+      "sha256_after": "e5d374cc046ad36049e0176a39c7cb2538453f750ed14fdfb044e0252d2b6d3d",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/panel_8f_03.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/panel_8f_03.asm",
+      "sha256_before": "5526f85e72f70dc7ed4aaaf6109c7acc50e2a5a0f9fc45a19b68ebd82691e77d",
+      "sha256_after": "5526f85e72f70dc7ed4aaaf6109c7acc50e2a5a0f9fc45a19b68ebd82691e77d",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/panel_8f_04.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/panel_8f_04.asm",
+      "sha256_before": "e2e462c39174981f2583093af0485914d8d8b441b551b58cc420ef4b0401d462",
+      "sha256_after": "e2e462c39174981f2583093af0485914d8d8b441b551b58cc420ef4b0401d462",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/panel_8f_05.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/panel_8f_05.asm",
+      "sha256_before": "f6d23303ca6fa7377e58e67792de59d92ed5f3d5a18ff48577a19b11c16a44d2",
+      "sha256_after": "f6d23303ca6fa7377e58e67792de59d92ed5f3d5a18ff48577a19b11c16a44d2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/panel_8f_06.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/panel_8f_06.asm",
+      "sha256_before": "5d48310b26f3315ea74f613c3e6635feb2bd3c05ead00fe52c6bc32c5b8aa9d6",
+      "sha256_after": "5d48310b26f3315ea74f613c3e6635feb2bd3c05ead00fe52c6bc32c5b8aa9d6",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/panel_8f_07.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/panel_8f_07.asm",
+      "sha256_before": "1dcc94714320b92a9fa803f265fcfb377c5f44a401b3c6b8d750ad1643ffefc7",
+      "sha256_after": "1dcc94714320b92a9fa803f265fcfb377c5f44a401b3c6b8d750ad1643ffefc7",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/panel_8f_08.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/panel_8f_08.asm",
+      "sha256_before": "e01492d8ea98b9eed1ac67a0d1dd0e38f0dfe4a37b69b8b7a176b52caad1db45",
+      "sha256_after": "e01492d8ea98b9eed1ac67a0d1dd0e38f0dfe4a37b69b8b7a176b52caad1db45",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/pcb_8f.prt",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/pcb_8f.prt",
+      "sha256_before": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58",
+      "sha256_after": "659cfc6d48c601f5267820be1ef01f0b0e33833e48ca925f6934fe016ebf3f58",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/ring_8f_lower.prt",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/ring_8f_lower.prt",
+      "sha256_before": "8696b6c82df83b3058ad5cf35c4e2f283ec2bb7ef2fdccba58d7f07ea90bae02",
+      "sha256_after": "8696b6c82df83b3058ad5cf35c4e2f283ec2bb7ef2fdccba58d7f07ea90bae02",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/tunnel_8faces.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/tunnel_8faces.asm",
+      "sha256_before": "dfc2df46da5ff7cba9d3e5165ba14e4542cdab430f432bd4a05e18e20e68e94b",
+      "sha256_after": "dfc2df46da5ff7cba9d3e5165ba14e4542cdab430f432bd4a05e18e20e68e94b",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/tunnel_8faces_1.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/tunnel_8faces_1.asm",
+      "sha256_before": "3f35aab96a28dbdb30e492fa5d67e0c195fdc5bfa33b081d189749195293c9f2",
+      "sha256_after": "3f35aab96a28dbdb30e492fa5d67e0c195fdc5bfa33b081d189749195293c9f2",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/8faces/native/tx_8f_t1.prt",
+      "after": "outputs/cad_generation/creo_tunnel_models/8faces/native/tx_8f_t1.prt",
+      "sha256_before": "6779b72770785d1ef47b72b660259c9b44548d016929ed1e68a00d35103c74aa",
+      "sha256_after": "6779b72770785d1ef47b72b660259c9b44548d016929ed1e68a00d35103c74aa",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/panel_6f_01.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/panel_6f_01.asm",
+      "sha256_before": "b1cae41248c265d2cb2ddda8ba4a8c568ddf05a1bc860d0edc3fc113a00f93c6",
+      "sha256_after": "b1cae41248c265d2cb2ddda8ba4a8c568ddf05a1bc860d0edc3fc113a00f93c6",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/panel_6f_02.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/panel_6f_02.asm",
+      "sha256_before": "7966599877c35498cccdea06831ed56f431e45c3fe8808d7887c84058ead50c4",
+      "sha256_after": "7966599877c35498cccdea06831ed56f431e45c3fe8808d7887c84058ead50c4",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/panel_6f_03.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/panel_6f_03.asm",
+      "sha256_before": "2bcb2cf6a9753fbc08f8d588a746daa3c1c46116957d3c8b47546913978e76c3",
+      "sha256_after": "2bcb2cf6a9753fbc08f8d588a746daa3c1c46116957d3c8b47546913978e76c3",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/panel_6f_04.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/panel_6f_04.asm",
+      "sha256_before": "30916cee59ce7374d8ac0395f4fcf51cf2991acc6a2d28374083377f69f78308",
+      "sha256_after": "30916cee59ce7374d8ac0395f4fcf51cf2991acc6a2d28374083377f69f78308",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/panel_6f_05.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/panel_6f_05.asm",
+      "sha256_before": "34fdccd85db10ac1eec9d4769316551e15be2acd998f00ab7e93a328c72cffe5",
+      "sha256_after": "34fdccd85db10ac1eec9d4769316551e15be2acd998f00ab7e93a328c72cffe5",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/panel_6f_06.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/panel_6f_06.asm",
+      "sha256_before": "d2f222513077e9b5a5fea0cda9ad1788c64fd2d3be15db9c58b981633b044fa5",
+      "sha256_after": "d2f222513077e9b5a5fea0cda9ad1788c64fd2d3be15db9c58b981633b044fa5",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/pcb_6f.prt",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/pcb_6f.prt",
+      "sha256_before": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37",
+      "sha256_after": "733df9be6233521325ad5edccbfbc604730e8a6b2d4b9a6da8e17dcf91f8be37",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/ring_6f_lower.prt",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/ring_6f_lower.prt",
+      "sha256_before": "75511dbfb7a63af50e1d2010a893f7dd27f9fd7464566f06fd9f4b72d19cf84d",
+      "sha256_after": "75511dbfb7a63af50e1d2010a893f7dd27f9fd7464566f06fd9f4b72d19cf84d",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/std.out",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/std.out",
+      "sha256_before": "cf7c4535d44045e93c643244d55225e7b40bd42545651b09be560944d3ff2dcd",
+      "sha256_after": "cf7c4535d44045e93c643244d55225e7b40bd42545651b09be560944d3ff2dcd",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/trail.txt.1",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/trail.txt.1",
+      "sha256_before": "9020bfceb1be90fd4d18854b568ed9e4d90e426de3c489f99a6c6f518b06c6a8",
+      "sha256_after": "9020bfceb1be90fd4d18854b568ed9e4d90e426de3c489f99a6c6f518b06c6a8",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/trail.txt.2",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/trail.txt.2",
+      "sha256_before": "b879bf60d204fa68e5c7f99a12639b7c6276fcaf1c073904fd7a68173d9f171e",
+      "sha256_after": "b879bf60d204fa68e5c7f99a12639b7c6276fcaf1c073904fd7a68173d9f171e",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/tunnel_6faces.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/tunnel_6faces.asm",
+      "sha256_before": "22228d532f8c3b5667b77f8997bc6fee64580e8fd9a4485b513a099a98166853",
+      "sha256_after": "22228d532f8c3b5667b77f8997bc6fee64580e8fd9a4485b513a099a98166853",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/tunnel_6faces_1.asm",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/tunnel_6faces_1.asm",
+      "sha256_before": "c343642739f5b4f4fb8c1cacf40fe65964d250b638be0f84738de96482d7b779",
+      "sha256_after": "c343642739f5b4f4fb8c1cacf40fe65964d250b638be0f84738de96482d7b779",
+      "path_text_updated": false
+    },
+    {
+      "before": "outputs/creo_tunnel_models/6faces/native/tx_6f_t1.prt",
+      "after": "outputs/cad_generation/creo_tunnel_models/6faces/native/tx_6f_t1.prt",
+      "sha256_before": "ba3829b8561b77b9e7433e39e80fad5398519453b51e71dfd757f691abb71537",
+      "sha256_after": "ba3829b8561b77b9e7433e39e80fad5398519453b51e71dfd757f691abb71537",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/check_git_model_index.py",
+      "after": "scratch/organization/history/check_git_model_index.py",
+      "sha256_before": "cb22a4e89a2004f8fcee8fe1ee8bcc0d48a2a59b988aac14a2755af92e670aa0",
+      "sha256_after": "836f1629fbe176ee825c84a21bfed69712746e4f1ddcc6f2184e2ca9252ac9f7",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/check_organized_creo.py",
+      "after": "scratch/organization/history/check_organized_creo.py",
+      "sha256_before": "2758cbdd6e399360ed8218ffddeba496aa487d53244ea9ebf5a2e3f8fe56ef7b",
+      "sha256_after": "89874188ae5168896ba4430bb353e6ef96e72259f25a36e3915a04a278a79777",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/creo_conversion_receiver.py",
+      "after": "scratch/creo_scripts/creo_conversion_receiver.py",
+      "sha256_before": "9cd4c2fca06d8bce9c561cfd579577888b1297a7b2b89f925814f97a8c7afeb7",
+      "sha256_after": "9cd4c2fca06d8bce9c561cfd579577888b1297a7b2b89f925814f97a8c7afeb7",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/debug_creo_verify.py",
+      "after": "scratch/creo_scripts/debug_creo_verify.py",
+      "sha256_before": "75b1501c19b1a7719206863f237de8f63b3735770c44ee9399276fac667a5c4d",
+      "sha256_after": "75b1501c19b1a7719206863f237de8f63b3735770c44ee9399276fac667a5c4d",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/doillabs_public_main.js",
+      "after": "scratch/vendor_research/doillabs_public_main.js",
+      "sha256_before": "4cc52c084fba6a2cb537d7c366461e42d829c22f99adfc539fda83376d70145c",
+      "sha256_after": "4cc52c084fba6a2cb537d7c366461e42d829c22f99adfc539fda83376d70145c",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/extract_creo_pcb.py",
+      "after": "scratch/creo_scripts/extract_creo_pcb.py",
+      "sha256_before": "9281c0780e31c899e1e45d51d2db443c796d1f411732b3459eee3d4a08d07d3a",
+      "sha256_after": "823236198d302e15fd28cfacfd02a9bc648a50fc389d5f309027bb7c3ae56579",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/extract_pcba_parts.py",
+      "after": "scratch/pcba_scripts/extract_pcba_parts.py",
+      "sha256_before": "5360ba886dcc55743082cf7c6be5584d17356501e807d260719c3cb5442578a6",
+      "sha256_after": "5230aecd38e33fa1f99f998156122522a4882ca023f6301ef35f26ead1ecf2a7",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/finalize_creo_package.py",
+      "after": "scratch/creo_scripts/finalize_creo_package.py",
+      "sha256_before": "c1f0fbb7cccee2c938166e0e3513b9e3f355f0d3b10fc8735b7bff284bdccb77",
+      "sha256_after": "82bbae80f00c110843901355d86c9b608caa7402be462ef2f8dbf64305288cf2",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/finalize_creo_reused_v2.py",
+      "after": "scratch/creo_scripts/finalize_creo_reused_v2.py",
+      "sha256_before": "9c6569588c0df8f0cfb3f3223c8363c30e7f1dd52e2d9d215e34928d9c39510b",
+      "sha256_after": "bd62e5cb8e974c322899e6fb4ca2274e9b6682880346a17d1a8d609818a23dbd",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/inspect_doillabs_public_page.py",
+      "after": "scratch/vendor_research/inspect_doillabs_public_page.py",
+      "sha256_before": "2c93fa2f9f076cd52bfbf4b7a72d8b0de0b8ea5e8a13a74b89a4e8fff119de85",
+      "sha256_after": "2c93fa2f9f076cd52bfbf4b7a72d8b0de0b8ea5e8a13a74b89a4e8fff119de85",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/manufacturing-intake-CG5Cxffz.js",
+      "after": "scratch/vendor_research/manufacturing-intake-CG5Cxffz.js",
+      "sha256_before": "ea3fbc671cfd915d0b9a1c0c0dcf8f3e02f47bed1d0d95b7b79a9b8c3140f72a",
+      "sha256_after": "ea3fbc671cfd915d0b9a1c0c0dcf8f3e02f47bed1d0d95b7b79a9b8c3140f72a",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/move_project_artifacts.py",
+      "after": "scratch/organization/history/move_project_artifacts.py",
+      "sha256_before": "d0b2735a233206d53b001e952cea8655d8e699f22605ee212d25a70c5a075a53",
+      "sha256_after": "d0b2735a233206d53b001e952cea8655d8e699f22605ee212d25a70c5a075a53",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/organize_creo_in_acousticstudio.py",
+      "after": "scratch/organization/history/organize_creo_in_acousticstudio.py",
+      "sha256_before": "3d6dd8a00cc4092932748944dac091bc2619e9c0a7d1cd7087cf60dac43afefc",
+      "sha256_after": "421feb8c665cd7a3a2a8a57d7770d50afd9658e1c153cc97bbcf41072a9d6f9e",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/package_creo_native.py",
+      "after": "scratch/creo_scripts/package_creo_native.py",
+      "sha256_before": "1b88960b0c0abd3c652aad255f94300f17c1c89e39b7242bf23b3a655d8347c8",
+      "sha256_after": "ee719208a1462ec985e7a26975fd9bcba61ab21ec27d263c711cd9d0004c9cf5",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/package_gerber_quotes.py",
+      "after": "scratch/pcba_scripts/package_gerber_quotes.py",
+      "sha256_before": "eb78831ec0f1113a96d2926073354f15d268ea4642708cc10a6b2f6e953f7f1c",
+      "sha256_after": "0abf3378d101dcf43810ae0a38fea822ce8c0448fdcf3aa7fd3bd1486fe9afcc",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/pcba_native_smt.csv",
+      "after": "scratch/pcba_inputs/pcba_native_smt.csv",
+      "sha256_before": "66b49e78b85660acb1c8b5dbaca7cecb1f300b8eda26ed3de90bddb6633e4178",
+      "sha256_after": "66b49e78b85660acb1c8b5dbaca7cecb1f300b8eda26ed3de90bddb6633e4178",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_parts_8f.json",
+      "after": "scratch/pcba_inputs/pcba_parts_8f.json",
+      "sha256_before": "e31b28901f78656d606f6eebb6d004b42f56375df9f2780b66d31388e86fbed5",
+      "sha256_after": "e31b28901f78656d606f6eebb6d004b42f56375df9f2780b66d31388e86fbed5",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pipeline-6phNCDVq.js",
+      "after": "scratch/vendor_research/pipeline-6phNCDVq.js",
+      "sha256_before": "1af6a857e9ecbe175e967cf99d83515702026123bed4ef3d23bacd59e75caaf9",
+      "sha256_after": "1af6a857e9ecbe175e967cf99d83515702026123bed4ef3d23bacd59e75caaf9",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/prepare_creo_converter.py",
+      "after": "scratch/creo_scripts/prepare_creo_converter.py",
+      "sha256_before": "c91285f0148125f6142a1f888f92998112e58668ea6cb4df644999c32b7cb4c3",
+      "sha256_after": "4a3fdee94479ac0eb387e0b5e7724ffc61adc6b751d751e8f94b1e5a5232c652",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/prepare_creo_reused_v2.py",
+      "after": "scratch/creo_scripts/prepare_creo_reused_v2.py",
+      "sha256_before": "a5cca60050093313475377f9f31939d1144ec4260c050caef4a4fcadb7366f29",
+      "sha256_after": "1b304085ad2040ae3608f4ac8ccc82f5183d99f2294917a67d87e7c51686df06",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/prepare_pcba_package.py",
+      "after": "scratch/pcba_scripts/prepare_pcba_package.py",
+      "sha256_before": "b04df99a8229c97f859f76d8ef7f8b354b5c951199710359cd2f0ff654242bd1",
+      "sha256_after": "e258256123168ef971e29dea7913cb5a686838e79135eba7c01114d8816a4bb8",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/UploadPage-rDE8Vlxa.js",
+      "after": "scratch/vendor_research/UploadPage-rDE8Vlxa.js",
+      "sha256_before": "879a6788b8fb239618c0ba1fb4302e8142901b044510610d14bdef4205c1f64a",
+      "sha256_after": "879a6788b8fb239618c0ba1fb4302e8142901b044510610d14bdef4205c1f64a",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/verify_creo_reused_v2.py",
+      "after": "scratch/creo_scripts/verify_creo_reused_v2.py",
+      "sha256_before": "052175705eb905e0c0de76928a696954de5eda8b1d2e6b45a2b21ba0ca194446",
+      "sha256_after": "412732c3be8810aee50b2d9198c139816d89265bcfd2c3224aeea0f2b25c4e8d",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/verify_package_pcba.py",
+      "after": "scratch/pcba_scripts/verify_package_pcba.py",
+      "sha256_before": "e4a1116bd8b177437a87c62faca29bfe60fad8c10d8c631c45db1ea56028eac8",
+      "sha256_after": "6f72f0c98c4d698775826eb98c4335f6b0414399522c265e7ffa074bc2d1da4c",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/organization/reorganize_files.py",
+      "after": "scratch/organization/reorganize_files.py",
+      "sha256_before": "740fbc767fe66c886e6d33f149932ab7a876f38825f6c09abc79d039790522d4",
+      "sha256_after": "d30eb0262d5e05a128af6902d400ab5e995e73094bdab16b522a1452a9d52d48",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/pcba_artifact/BOM_preview.png",
+      "after": "scratch/pcba_artifact/BOM_preview.png",
+      "sha256_before": "a99ec66d444ee39ffcfa589776286927bff5cbd56f671b244bde997beb7e28e0",
+      "sha256_after": "a99ec66d444ee39ffcfa589776286927bff5cbd56f671b244bde997beb7e28e0",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/build.mjs",
+      "after": "scratch/pcba_artifact/build.mjs",
+      "sha256_before": "db6cce820f84bcd88362940c7822517e1161c091163bce1b8131edbe31879522",
+      "sha256_after": "093d1a0f0aa8e4db1a37fb4ed618013418f045605c0019269f3c9f0b21b764b0",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/pcba_artifact/check_doillabs_upload.mjs",
+      "after": "scratch/pcba_artifact/check_doillabs_upload.mjs",
+      "sha256_before": "babfff9872b8ec3fb75c70e43b830a6bd85e5bbd9a69155a534c6fa6fb0e6518",
+      "sha256_after": "21790ae8208e3f5c584cc5648f6cc13329ff01b0205fd3a22773e2e05000dad6",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/pcba_artifact/doillabs.mjs",
+      "after": "scratch/pcba_artifact/doillabs.mjs",
+      "sha256_before": "d4596a7dcf2ef1faf30e2ac04e06e4cebc4b55cf624fdb474566d0ba11f80ca8",
+      "sha256_after": "da9f1bba3f5c8cdda1453a1681fdf7a7f5ff584c3b7c677f060202faed9f69af",
+      "path_text_updated": true
+    },
+    {
+      "before": "scratch/pcba_artifact/DOILLABS_BOM.inspect.ndjson",
+      "after": "scratch/pcba_artifact/DOILLABS_BOM.inspect.ndjson",
+      "sha256_before": "ff357d35b8ecec38494478b66d1cb993b2598f15389378fe49e205f6771fdf11",
+      "sha256_after": "ff357d35b8ecec38494478b66d1cb993b2598f15389378fe49e205f6771fdf11",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/doillabs_BOM.png",
+      "after": "scratch/pcba_artifact/doillabs_BOM.png",
+      "sha256_before": "004e6b5ad8473787ad97cf5bafb90c344bd8b6a226da921eed0ba2a6c7d7536c",
+      "sha256_after": "004e6b5ad8473787ad97cf5bafb90c344bd8b6a226da921eed0ba2a6c7d7536c",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/DOILLABS_BOM_8faces_16ch_UPLOAD.xlsx.inspect.ndjson",
+      "after": "scratch/pcba_artifact/DOILLABS_BOM_8faces_16ch_UPLOAD.xlsx.inspect.ndjson",
+      "sha256_before": "6b7eb19278b379035827e13a3eeb0e8ce69ec283ef89614d9a9be1e1a56d4d8d",
+      "sha256_after": "6b7eb19278b379035827e13a3eeb0e8ce69ec283ef89614d9a9be1e1a56d4d8d",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/doillabs_BOM_guide.png",
+      "after": "scratch/pcba_artifact/doillabs_BOM_guide.png",
+      "sha256_before": "2ad43342cf590eee84c81c28b0a6fb9ba31ba39eb1b0f35bee84d184f65831f6",
+      "sha256_after": "2ad43342cf590eee84c81c28b0a6fb9ba31ba39eb1b0f35bee84d184f65831f6",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/doillabs_BOM_UPLOAD.png",
+      "after": "scratch/pcba_artifact/doillabs_BOM_UPLOAD.png",
+      "sha256_before": "aadabaa972a577363a5111c49ed8e7ab047b46339ba53daf5352c5f489f326ff",
+      "sha256_after": "aadabaa972a577363a5111c49ed8e7ab047b46339ba53daf5352c5f489f326ff",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/DOILLABS_PnP.inspect.ndjson",
+      "after": "scratch/pcba_artifact/DOILLABS_PnP.inspect.ndjson",
+      "sha256_before": "18bf742517a0b080ce0091613f046370482898472bc8041ceea3948e54a7470a",
+      "sha256_after": "18bf742517a0b080ce0091613f046370482898472bc8041ceea3948e54a7470a",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/doillabs_PnP.png",
+      "after": "scratch/pcba_artifact/doillabs_PnP.png",
+      "sha256_before": "da6151c5019bbcf19ec3827be76f9076807440298a9e88b525177b2d111d7401",
+      "sha256_after": "da6151c5019bbcf19ec3827be76f9076807440298a9e88b525177b2d111d7401",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/DOILLABS_PnP_8faces_16ch_UPLOAD.xlsx.inspect.ndjson",
+      "after": "scratch/pcba_artifact/DOILLABS_PnP_8faces_16ch_UPLOAD.xlsx.inspect.ndjson",
+      "sha256_before": "e88b96da0305fa8770f9b31f1c648ea55963a8f522d787bd6434b981ba47f594",
+      "sha256_after": "e88b96da0305fa8770f9b31f1c648ea55963a8f522d787bd6434b981ba47f594",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/doillabs_PnP_guide.png",
+      "after": "scratch/pcba_artifact/doillabs_PnP_guide.png",
+      "sha256_before": "dcb49496d2f51f920bfd2c0baa7a8e723d084d26bc8628f15f26e4ce22032895",
+      "sha256_after": "dcb49496d2f51f920bfd2c0baa7a8e723d084d26bc8628f15f26e4ce22032895",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/doillabs_PnP_UPLOAD.png",
+      "after": "scratch/pcba_artifact/doillabs_PnP_UPLOAD.png",
+      "sha256_before": "98171d56b4abf48e6c97348d1a863fa8b26f63f6ce853b4102e00a500efbb46f",
+      "sha256_after": "98171d56b4abf48e6c97348d1a863fa8b26f63f6ce853b4102e00a500efbb46f",
+      "path_text_updated": false
+    },
+    {
+      "before": "scratch/pcba_artifact/tables.json",
+      "after": "scratch/pcba_artifact/tables.json",
+      "sha256_before": "4da0d05f9defc0ab800d18e42cfccab8f6cf452648d3c8d93ca51b35eeaf6b6e",
+      "sha256_after": "4da0d05f9defc0ab800d18e42cfccab8f6cf452648d3c8d93ca51b35eeaf6b6e",
+      "path_text_updated": false
+    }
+  ],
+  "runtime_folders_unchanged": [
+    "scratch/creo_cad_env",
+    "scratch/pcba_artifact/node_modules"
+  ],
+  "verification": "All original files exist; SHA-256 unchanged except listed path-text updates. Python syntax checked. No CAD or manufacturing generation run.",
+  "critical_files_byte_identical": 156,
+  "local_guidance_links_checked": 44
+}

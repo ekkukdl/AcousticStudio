@@ -1,0 +1,75 @@
+Reference,Value,Package,Quantity,Description,Manufacturer,MPN
+C1,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C2,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C3,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C4,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C5,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C6,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C7,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C8,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C9,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C10,100nF 50V,0805,1,SMT: 100nF 50V X7R 10% 0805,YAGEO,CC0805KRX7R9BB104
+C11,1uF 50V,0805,1,SMT: 1uF 50V X7R 10% 0805,CCTC,TCC0805X7R105K500DT
+C12,1uF 50V,0805,1,SMT: 1uF 50V X7R 10% 0805,CCTC,TCC0805X7R105K500DT
+C13,1uF 50V,0805,1,SMT: 1uF 50V X7R 10% 0805,CCTC,TCC0805X7R105K500DT
+C14,1uF 50V,0805,1,SMT: 1uF 50V X7R 10% 0805,CCTC,TCC0805X7R105K500DT
+C15,1uF 50V,0805,1,SMT: 1uF 50V X7R 10% 0805,CCTC,TCC0805X7R105K500DT
+C16,1uF 50V,0805,1,SMT: 1uF 50V X7R 10% 0805,CCTC,TCC0805X7R105K500DT
+C17,1uF 50V,0805,1,SMT: 1uF 50V X7R 10% 0805,CCTC,TCC0805X7R105K500DT
+C18,1uF 50V,0805,1,SMT: 1uF 50V X7R 10% 0805,CCTC,TCC0805X7R105K500DT
+C19,220uF 25V,Radial D6.3 P2.5 (THT),1,THT hand solder: 220uF 25V radial D6.3mm P2.5mm,Rubycon,25YXJ220M6.3X11
+C20,10uF >=16V,0805,1,SMT: 10uF >=16V 0805,Murata,GRM21BR61E106KA73L
+J1,FPGA_SIGNAL_3V3,2x5 P2.54 (THT),1,THT hand solder: Male straight header 2x5 P2.54mm,,
+J2,POWER_INPUT,1x3 P2.54 (THT),1,THT hand solder: Male straight header 1x3 P2.54mm,,
+Q1,MMBT3904,SOT-23,1,SMT: MMBT3904 NPN SOT23,Nexperia,"MMBT3904,215"
+R1,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R2,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R3,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R4,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R5,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R6,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R7,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R8,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R9,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R10,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R11,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R12,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R13,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R14,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R15,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R16,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R17,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R18,100k,0805,1,SMT: 100k 1% 0805 0.125W,YAGEO,RC0805FR-07100KL
+R19,10k,0805,1,SMT: 10k 1% 0805 0.125W,YAGEO,RC0805FR-0710KL
+R20,33R,0805,1,SMT: 33 ohm 1% 0805 0.125W,YAGEO,RC0805FR-0733RL
+R21,33R,0805,1,SMT: 33 ohm 1% 0805 0.125W,YAGEO,RC0805FR-0733RL
+R22,100k,0805,1,SMT: 100k 1% 0805 0.125W,YAGEO,RC0805FR-07100KL
+R23,100k,0805,1,SMT: 100k 1% 0805 0.125W,YAGEO,RC0805FR-07100KL
+R24,100k,0805,1,SMT: 100k 1% 0805 0.125W,YAGEO,RC0805FR-07100KL
+R25,100k,0805,1,SMT: 100k 1% 0805 0.125W,YAGEO,RC0805FR-07100KL
+T1,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T2,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T3,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T4,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T5,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T6,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T7,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T8,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T9,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T10,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T11,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T12,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T13,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T14,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T15,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+T16,V40AN16T,D16 P10 (THT),1,THT hand solder: 40kHz transmitter D16mm pin pitch 10mm / manufacturer and phase polarity confirmation required,,
+U1,74HCT595D,SOIC-16,1,SMT: 74HCT595 SO16 shift register,Nexperia,"74HCT595D,118"
+U2,74HCT595D,SOIC-16,1,SMT: 74HCT595 SO16 shift register,Nexperia,"74HCT595D,118"
+U3,TC4427A,SOIC-8,1,SMT: TC4427A dual non-inverting driver SOIC8,Microchip,TC4427ACOA713
+U4,TC4427A,SOIC-8,1,SMT: TC4427A dual non-inverting driver SOIC8,Microchip,TC4427ACOA713
+U5,TC4427A,SOIC-8,1,SMT: TC4427A dual non-inverting driver SOIC8,Microchip,TC4427ACOA713
+U6,TC4427A,SOIC-8,1,SMT: TC4427A dual non-inverting driver SOIC8,Microchip,TC4427ACOA713
+U7,TC4427A,SOIC-8,1,SMT: TC4427A dual non-inverting driver SOIC8,Microchip,TC4427ACOA713
+U8,TC4427A,SOIC-8,1,SMT: TC4427A dual non-inverting driver SOIC8,Microchip,TC4427ACOA713
+U9,TC4427A,SOIC-8,1,SMT: TC4427A dual non-inverting driver SOIC8,Microchip,TC4427ACOA713
+U10,TC4427A,SOIC-8,1,SMT: TC4427A dual non-inverting driver SOIC8,Microchip,TC4427ACOA713

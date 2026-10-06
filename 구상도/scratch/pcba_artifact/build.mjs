@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {Workbook} from '@oai/artifact-tool';
 const tables=JSON.parse(await fs.readFile(new URL('./tables.json',import.meta.url),'utf8'));
-const output=path.resolve('outputs/polygon_panels/pcba_8faces_16boards');
+const output=path.resolve('outputs/pcb/polygon_panels/pcba_8faces_16boards');
 const wb=Workbook.create();
 function col(n){let s='';while(n){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s}
 function quote(v){const s=v==null?'':String(v);return /[",\r\n]/.test(s)?'"'+s.replaceAll('"','""')+'"':s}

@@ -1,0 +1,16 @@
+import fs from 'node:fs/promises';
+import vm from 'node:vm';
+import path from 'node:path';
+const root=process.cwd();
+const source=await fs.readFile(path.join(root,'scratch/vendor_research/pipeline-6phNCDVq.js'),'utf8');
+const parserSource=source.slice(source.indexOf('function ls('),source.indexOf('const t_='));
+const reconciliationSource=source.slice(source.indexOf('function Wn('),source.indexOf('const Bs='));
+const context=vm.createContext({});
+vm.runInContext(parserSource+'\n'+reconciliationSource+'\n globalThis.parsers={bom:Ul,pnp:e_,compare:Wn};',context,{timeout:1000});
+const out=path.join(root,'outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS');
+const bom=context.parsers.bom(await fs.readFile(path.join(out,'DOILLABS_BOM_8faces_16ch_UPLOAD.csv'),'utf8'));
+const pnp=context.parsers.pnp(await fs.readFile(path.join(out,'DOILLABS_PnP_8faces_16ch_UPLOAD.csv'),'utf8'));
+const result=context.parsers.compare(bom.lines,pnp.placements);
+if(bom.lines.length!==74||pnp.placements.length!==74||result.matchedCount!==74||result.issues.length)throw Error(JSON.stringify({bom,pnp,result}));
+console.log(JSON.stringify({bomRows:bom.lines.length,pnpRows:pnp.placements.length,matched:result.matchedCount,reconciliationIssues:result.issues,bomWarnings:bom.warnings,pnpWarnings:pnp.warnings},null,2));
+await fs.writeFile(path.join(out,'UPLOAD_validation.json'),JSON.stringify({sourceURL:'https://doillabs.com/assets/pipeline-6phNCDVq.js',testedAt:'2026-10-06',mode:'local execution of public CSV parsing and reconciliation functions; no external upload',bomRows:bom.lines.length,pnpRows:pnp.placements.length,reconciliation:result,bomWarnings:bom.warnings,pnpWarnings:pnp.warnings},null,2),'utf8');

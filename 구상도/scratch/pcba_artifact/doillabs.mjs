@@ -2,9 +2,9 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {Workbook,SpreadsheetFile,FileBlob} from '@oai/artifact-tool';
 const root=process.cwd();
-const out=path.join(root,'outputs/polygon_panels/pcba_8faces_16boards/DOILLABS');
+const out=path.join(root,'outputs/pcb/polygon_panels/pcba_8faces_16boards/DOILLABS');
 await fs.mkdir(out,{recursive:true});
-const parts=JSON.parse(await fs.readFile(path.join(root,'scratch/pcba_parts_8f.json'),'utf8'));
+const parts=JSON.parse(await fs.readFile(path.join(root,'scratch/pcba_inputs/pcba_parts_8f.json'),'utf8'));
 const tables=JSON.parse(await fs.readFile(new URL('./tables.json',import.meta.url),'utf8'));
 const lookup=new Map();
 for(const r of tables.BOM_ALL.slice(1)) for(const ref of r[1].split(','))lookup.set(ref,r);
@@ -22,7 +22,26 @@ for(let i=0;i<74;i++){
  if(bom[i][0]!==pnp[i][0]||bom[i][1]!==pnp[i][1]||bom[i][2]!==pnp[i][2])throw Error('BOM / PnP mismatch');
  if(!(pnp[i][3]>=0&&pnp[i][3]<=48&&pnp[i][4]>=0&&pnp[i][4]<=180))throw Error('Coordinate outside outline');
 }
+const headers={BOM:['Reference','Value','Package','Quantity','Description','Manufacturer','MPN'],PnP:['Reference','Value','Package','X(mm)','Y(mm)','Rotation','Side']};
 for(const [kind,rows] of [['BOM',bom],['PnP',pnp]]){
+ if(process.argv.includes('--upload-only')){
+  const wb=Workbook.create();const sh=wb.worksheets.add(kind);
+  const data=[headers[kind],...rows];const range=sh.getRange('A1:G75');range.values=data;
+  range.format.columnWidth=22;range.format.rowHeight=28;range.format.wrapText=true;
+  sh.getRange('C2:C75').setNumberFormat('@');
+  sh.getRange('A1:G1').format.fill='#DBEAFE';
+  if(kind==='BOM'){sh.getRange('E1:E75').format.columnWidth=65;sh.getRange('G1:G75').format.columnWidth=30;sh.getRange('A2:G75').format.rowHeight=42;sh.getRange('D2:D75').setNumberFormat('0');}
+  else{sh.getRange('D2:E75').setNumberFormat('0.000');sh.getRange('F2:F75').setNumberFormat('0');}
+  wb.recalculate();if(JSON.stringify(range.values)!==JSON.stringify(data))throw Error('Upload table roundtrip mismatch');
+  const base=path.join(out,`DOILLABS_${kind}_8faces_16ch_UPLOAD`);
+  const quote=v=>{const s=v==null?'':String(v);return /[",\r\n]/.test(s)?'"'+s.replaceAll('"','""')+'"':s;};
+  await fs.writeFile(base+'.csv',range.values.map(r=>r.map(quote).join(',')).join('\r\n')+'\r\n','utf8');
+  await (await SpreadsheetFile.exportXlsx(wb)).save(base+'.xlsx');
+  const preview=await wb.render({sheetName:kind,range:'A1:G9',scale:1,format:'png'});
+  await fs.writeFile(path.join(root,`scratch/pcba_artifact/doillabs_${kind}_UPLOAD.png`),new Uint8Array(await preview.arrayBuffer()));
+  console.log(`Created ${kind} UPLOAD XLSX/CSV: first-row headers, 74 components, single worksheet`);
+  continue;
+ }
  const wb=await SpreadsheetFile.importXlsx(await FileBlob.load(path.join(root,`outputs/DOILLABS_${kind}_Template.xlsx`)));
  const sh=wb.worksheets.getItem(kind);
  const guide=wb.worksheets.getItem('입력 안내');
@@ -67,5 +86,5 @@ for(const [kind,rows] of [['BOM',bom],['PnP',pnp]]){
   await fs.writeFile(path.join(root,`scratch/pcba_artifact/doillabs_${suffix}.png`),new Uint8Array(await preview.arrayBuffer()));
  }
 }
-await fs.writeFile(path.join(out,'사용안내.txt'),`DOILLABS 양식: 두 XLSX 파일을 BOM 및 PnP 항목에 업로드하세요.\n한 보드 기준 부품 74개, SMT 55개/THT 19개이며 제작 수량은 16장입니다.\nPnP는 템플릿의 보드 좌하단 원점 규칙으로 변환했습니다 (X 그대로, Y=기존 Gerber Y+180 mm).\nC19/J1/J2 좌표는 실물 중심에 맞추어 패드 중심 평균을 사용했습니다.\nTHT 부품은 자동 SMT 대상이 아니므로 트랜스듀서 포함 별도 수삽 납땜 공정을 업체에 요청하세요.\n부품 후보 확인, 0.002 mm 간격 경고 검토 및 미리보기에서 핀1 방향 확인 후 주문하세요.\n`,'utf8');
+await fs.writeFile(path.join(out,'사용안내.txt'),`사이트에서 기존 BOM/PnP 업로드를 제거하고 *_UPLOAD.csv 두 파일을 BOM 및 PnP 항목에 다시 업로드하세요.\n동일 이름의 *_UPLOAD.xlsx는 단일 시트 대체 파일입니다. CSV와 XLSX를 중복 업로드하지 마세요.\nUPLOAD 파일은 첫 행에 헤더, 둘째 행부터 실제 부품 데이터를 배치하며 제목/안내/예시 행을 제거했습니다.\n한 보드 기준 부품 74개, SMT 55개/THT 19개이며 제작 수량은 16장입니다.\nPnP는 보드 좌하단 원점 규칙입니다 (X 그대로, Y=기존 Gerber Y+180 mm).\nC19/J1/J2 좌표는 실물 중심에 맞추어 패드 중심 평균을 사용했습니다.\nTHT 부품은 자동 SMT 대상이 아니므로 트랜스듀서 포함 별도 수삽 납땜 공정을 업체에 요청하세요.\n부품 후보 확인, 0.002 mm 간격 경고 검토 및 미리보기에서 핀1 방향 확인 후 주문하세요.\n`,'utf8');
 console.log('Saved two DOILLABS template workbooks; matched 74 references; all coordinates inside board');

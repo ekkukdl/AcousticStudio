@@ -1,0 +1,40 @@
+{
+  "old_upstream": "197962ca5fa094eb3a86be79b76d43763e02c5ec",
+  "ver2_upstream": "2417356f9939ebfd070c5c3c945d11d8d2b78c06",
+  "compared_paths": 19,
+  "identical_files": [
+    "docs/skill_audit.md",
+    "docs/software_requirements.md",
+    "main.py",
+    "requirements.txt",
+    "src/acousticstudio/__init__.py",
+    "src/acousticstudio/build.bat",
+    "src/acousticstudio/file_io.py",
+    "src/acousticstudio/hardware.py",
+    "src/acousticstudio/installer_ui.py",
+    "src/acousticstudio/kwave_engine.py",
+    "src/acousticstudio/phase_engine.py",
+    "src/acousticstudio/sonic_core.cpp",
+    "src/acousticstudio/sonic_core.dll",
+    "src/acousticstudio/sonic_wrapper.py",
+    "src/acousticstudio/state_manager.py",
+    "src/acousticstudio/widgets.py",
+    "tests/test_hardware_profiles.py"
+  ],
+  "changed_files": [
+    "docs/project_status.txt",
+    "src/acousticstudio/app.py"
+  ],
+  "missing_files": [],
+  "missing_methods": [],
+  "changed_methods": [
+    "__init__"
+  ],
+  "additional_methods": [
+    "select_board_profile",
+    "sync_board_profile_menu"
+  ],
+  "old_progress_record_preserved_in_order": true,
+  "old_latest_commit_in_ver2_history": false,
+  "scope": "old GitHub src/tests/main.py/requirements.txt/docs compared against current ver2 working tree; ignored runtime, backups and generated hardware artifacts excluded"
+}

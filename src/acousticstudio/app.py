@@ -21,6 +21,7 @@ from acousticstudio.phase_engine import PhaseEngine, calculate_field_slice_numba
 from acousticstudio.hardware import BOARD_PROFILES, HardwareController
 from acousticstudio.state_manager import StateManager
 from acousticstudio import file_io
+from acousticstudio.ui_appearance import UIAppearance
 
 
 class AcousticStudioMain(QMainWindow):
@@ -207,6 +208,20 @@ class AcousticStudioMain(QMainWindow):
         
         from PySide6.QtCore import QSettings
         self.settings = QSettings("AcousticStudioTeam", "AcousticStudio")
+        from PySide6.QtGui import QActionGroup
+        self.ui_menu = view_menu.addMenu("UI")
+        self.ui_action_group = QActionGroup(self)
+        self.ui_action_group.setExclusive(True)
+        self.classic_ui_action = QAction("클래식", self)
+        self.modern_ui_action = QAction("모던", self)
+        for action in (self.classic_ui_action, self.modern_ui_action):
+            action.setCheckable(True)
+            self.ui_action_group.addAction(action)
+            self.ui_menu.addAction(action)
+        use_classic = self.settings.value(UIAppearance.SETTINGS_KEY, False, type=bool)
+        self.classic_ui_action.setChecked(use_classic)
+        self.modern_ui_action.setChecked(not use_classic)
+        view_menu.addSeparator()
         
         self.show_cpu = self.settings.value("show_cpu", False, type=bool)
         self.show_gpu = self.settings.value("show_gpu", False, type=bool)
@@ -945,6 +960,14 @@ class AcousticStudioMain(QMainWindow):
         self.resource_label = QLabel("")
         self.resource_label.setStyleSheet("color: #555; font-weight: bold; padding-right: 10px;")
         self.statusBar().addPermanentWidget(self.resource_label)
+
+        self.ui_appearance = UIAppearance(
+            self, main_layout, hw_top_bar, (design_scroll, field_scroll, motion_scroll)
+        )
+        self.ui_appearance.apply(self.classic_ui_action.isChecked(), persist=False)
+        self.ui_action_group.triggered.connect(
+            lambda action: self.ui_appearance.apply(action is self.classic_ui_action)
+        )
         
         self.resource_monitor = ResourceMonitorThread(self)
         self.resource_monitor.show_cpu = self.show_cpu
