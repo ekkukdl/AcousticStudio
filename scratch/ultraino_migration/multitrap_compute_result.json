@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "devices": {
+    "cpp_available": true,
+    "taichi_installed": true,
+    "taichi_arch": "cuda",
+    "taichi_error": null,
+    "torch_installed": true,
+    "torch_version": "2.14.0+cpu",
+    "torch_cuda_build": null,
+    "cuda_available": false,
+    "cuda_device": null,
+    "cuda_error": "설치된 PyTorch에 CUDA 빌드가 없습니다 (CPU 전용)."
+  },
+  "default_mode": 2,
+  "array": "Creo R2 8 faces × 8 PCBs × 32 channels = 256",
+  "settings": {
+    "iterations": 50,
+    "phase_tolerance_rad": 0.0,
+    "default_trap_type": "focus",
+    "initialization": "zeros"
+  },
+  "field_config": {
+    "model": "point_source",
+    "frequency_hz": 40000.0,
+    "sound_speed_m_s": 343.0,
+    "density_kg_m3": 1.2040847588826422,
+    "source_strength": 1.0,
+    "aperture_radius_mm": null,
+    "min_distance_m": 1e-06
+  },
+  "cases": {
+    "two_focus": {
+      "targets": [
+        {
+          "position_mm": [
+            -12.0,
+            -8.0,
+            -15.0
+          ],
+          "trap_type": "focus",
+          "weight": 1.0,
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "position_mm": [
+            12.0,
+            8.0,
+            15.0
+          ],
+          "trap_type": "focus",
+          "weight": 1.0,
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "virtual_point_count": 2,
+      "modes": {
+        "0": {
+          "backend": {
+            "requested_mode": 0,
+            "backend": "Numba CPU",
+            "fallback_reason": null
+          },
+          "first_seconds": 0.42431070000020554,
+          "warm_seconds": [
+            0.005112599999847589,
+            0.00559019999946031,
+            0.004727200000161247
+          ],
+          "warm_median_seconds": 0.005112599999847589,
+          "max_phasor_error_vs_cpu": 0.0,
+          "max_field_error_vs_cpu": 0.0,
+          "relative_residual": 0.010101932842384191
+        },
+        "1": {
+          "backend": {
+            "requested_mode": 1,
+            "backend": "C++",
+            "fallback_reason": null
+          },
+          "first_seconds": 0.013214399999924353,
+          "warm_seconds": [
+            0.011816499999440566,
+            0.010666999999557447,
+            0.014368499999363848
+          ],
+          "warm_median_seconds": 0.011816499999440566,
+          "max_phasor_error_vs_cpu": 0.0,
+          "max_field_error_vs_cpu": 0.0,
+          "relative_residual": 0.010101932842384191
+        },
+        "2": {
+          "backend": {
+            "requested_mode": 2,
+            "backend": "Taichi cuda",
+            "fallback_reason": null
+          },
+          "first_seconds": 0.1940959000003204,
+          "warm_seconds": [
+            0.07335380000040459,
+            0.08480999999937922,
+            0.0812644999996337
+          ],
+          "warm_median_seconds": 0.0812644999996337,
+          "max_phasor_error_vs_cpu": 1.0668291563206119e-14,
+          "max_field_error_vs_cpu": 3.6662903532026344e-12,
+          "relative_residual": 0.010101932842384285
+        },
+        "3": {
+          "backend": {
+            "requested_mode": 3,
+            "backend": "Numba CPU",
+            "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+          },
+          "first_seconds": 0.004677799999626586,
+          "warm_seconds": [
+            0.005097099999147758,
+            0.005999400000291644,
+            0.0046595999992860015
+          ],
+          "warm_median_seconds": 0.005097099999147758,
+          "max_phasor_error_vs_cpu": 0.0,
+          "max_field_error_vs_cpu": 0.0,
+          "relative_residual": 0.010101932842384191
+        }
+      }
+    },
+    "eight_mixed": {
+      "targets": [
+        {
+          "position_mm": [
+            -12.0,
+            -8.0,
+            -20.0
+          ],
+          "trap_type": "focus",
+          "weight": 1.0,
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "position_mm": [
+            12.0,
+            -8.0,
+            -15.0
+          ],
+          "trap_type": "twin",
+          "weight": 1.0,
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "position_mm": [
+            -12.0,
+            8.0,
+            -5.0
+          ],
+          "trap_type": "standing_wave",
+          "weight": 1.0,
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "position_mm": [
+            12.0,
+            8.0,
+            5.0
+          ],
+          "trap_type": "focus",
+          "weight": 1.0,
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "position_mm": [
+            -12.0,
+            -8.0,
+            15.0
+          ],
+          "trap_type": "twin",
+          "weight": 1.0,
+          "direction": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "position_mm": [
+            12.0,
+            -8.0,
+            25.0
+          ],
+          "trap_type": "standing_wave",
+          "weight": 1.0,
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "position_mm": [
+            -12.0,
+            8.0,
+            30.0
+          ],
+          "trap_type": "focus",
+          "weight": 1.0,
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "position_mm": [
+            12.0,
+            8.0,
+            35.0
+          ],
+          "trap_type": "focus",
+          "weight": 1.0,
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "virtual_point_count": 12,
+      "modes": {
+        "0": {
+          "backend": {
+            "requested_mode": 0,
+            "backend": "Numba CPU",
+            "fallback_reason": null
+          },
+          "first_seconds": 0.008121699999719567,
+          "warm_seconds": [
+            0.007515600000260747,
+            0.007366599999841128,
+            0.007377799999630952
+          ],
+          "warm_median_seconds": 0.007377799999630952,
+          "max_phasor_error_vs_cpu": 0.0,
+          "max_field_error_vs_cpu": 0.0,
+          "relative_residual": 0.24129841527386514
+        },
+        "1": {
+          "backend": {
+            "requested_mode": 1,
+            "backend": "C++",
+            "fallback_reason": null
+          },
+          "first_seconds": 0.0152485999997225,
+          "warm_seconds": [
+            0.015567800000098941,
+            0.015583699999297096,
+            0.01622739999947953
+          ],
+          "warm_median_seconds": 0.015583699999297096,
+          "max_phasor_error_vs_cpu": 0.0,
+          "max_field_error_vs_cpu": 0.0,
+          "relative_residual": 0.24129841527386514
+        },
+        "2": {
+          "backend": {
+            "requested_mode": 2,
+            "backend": "Taichi cuda",
+            "fallback_reason": null
+          },
+          "first_seconds": 0.09249720000025263,
+          "warm_seconds": [
+            0.08032480000019859,
+            0.07983390000026702,
+            0.0741743000007773
+          ],
+          "warm_median_seconds": 0.07983390000026702,
+          "max_phasor_error_vs_cpu": 5.329359630937609e-15,
+          "max_field_error_vs_cpu": 1.1036995510350834e-12,
+          "relative_residual": 0.24129841527386509
+        },
+        "3": {
+          "backend": {
+            "requested_mode": 3,
+            "backend": "Numba CPU",
+            "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+          },
+          "first_seconds": 0.007877200000621087,
+          "warm_seconds": [
+            0.00714220000008936,
+            0.00743250000050466,
+            0.008178099999895494
+          ],
+          "warm_median_seconds": 0.00743250000050466,
+          "max_phasor_error_vs_cpu": 0.0,
+          "max_field_error_vs_cpu": 0.0,
+          "relative_residual": 0.24129841527386514
+        }
+      }
+    }
+  },
+  "gpu_scope": "Complex matvec only. Propagation, constraints, phase projection and diagnostics use CPU.",
+  "transfers": "Matrices/vectors are copied for every matvec; results return to CPU every iteration.",
+  "timing_scope": "Solver wall time including CPU work and transfers; first run may include JIT. Warm runs reuse Green cache. No hardware timing.",
+  "no_environment_changes": true,
+  "no_serial_io": true,
+  "code_sha256": {
+    "src/acousticstudio/compute_devices.py": "80a9dceb39eaa2ae197c4aa611a9532809f6346e0072b0c394a0452e1f60c1f0",
+    "src/acousticstudio/app.py": "a226bbf6bf79f796ac6e8a84d44d76e571ed8c8cc39ae7cbeb6a7c4af6fd2ddd",
+    "src/acousticstudio/hologram.py": "401470af9eea8aa2a693c5d16af505d924aa0b097ae3f5d8ec1d5ceea9346fab",
+    "src/acousticstudio/hologram_ui.py": "aa90ad39d8b3dde279ea83d8ed4c1641511b343b742fc7d0dccd101759864394",
+    "src/acousticstudio/field_model.py": "72204059eab888611087416ba92e6670038c28e646d4187c0add8eb7c32b5d47",
+    "src/acousticstudio/field_backends.py": "449e29553800a8fa16a97eb4c76ce6347f5e37d6081a185112480a8e3debdd33",
+    "src/acousticstudio/sonic_wrapper.py": "03fe0a9c85a24713889588063327c86add6740a1a27185e7e4fa678f203d5aa8",
+    "src/acousticstudio/sonic_core.dll": "f361f6b91fb1ab9adfb4139d13de6d9d5b3b24e87a9e7bc5a6c34a8aa450ccc1"
+  },
+  "source_array_sha256": "4fa1145fce5a3f39a84f85b83382aedb8aef7000a028728c60f8a2e68ebbfa79"
+}

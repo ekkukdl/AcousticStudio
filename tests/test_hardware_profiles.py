@@ -67,5 +67,5 @@ def test_controller_writes_a_complete_profile_frame_to_fake_serial():
     frame = controller.send_phases([0.0] * 256)
 
     assert fake_serial.frames == [frame]
-    assert fake_serial.flushed
+    assert not fake_serial.flushed  # avoid an unbounded serial.flush() on the GUI thread
     assert frame == bytes((0xFE,)) + bytes(256) + bytes((0xFD,))

@@ -10,7 +10,9 @@ def transducer_inputs(actors):
     for actor in actors:
         element = getattr(actor, '_geometry_element', None)
         positions.append(element['position_mm'] if element is not None else actor.center)
-        amplitudes.append(element['amplitude'] if element is not None else getattr(actor, '_amplitude', 1.))
+        gain = element['amplitude'] if element is not None else getattr(actor, '_amplitude', 1.)
+        enabled = (element.get('enabled', True) if element is not None else True) and getattr(actor, '_enabled', True)
+        amplitudes.append(gain if enabled else 0.)
     return np.asarray(positions, dtype=float).reshape(-1, 3), np.asarray(amplitudes, dtype=float)
 
 

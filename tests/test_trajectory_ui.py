@@ -77,7 +77,7 @@ def test_failed_generation_stores_unavailable_name_and_status(qt_app, monkeypatc
 
 def export_window():
     points = np.array([[1., 2., 3.], [3., -1., 2.]])
-    actors = [SimpleNamespace(center=[-20., 0., -40.], _amplitude=0.),
+    actors = [SimpleNamespace(center=[-20., 0., -40.], _amplitude=0.2),
               SimpleNamespace(center=[20., 0., 40.], _amplitude=0.7),
               SimpleNamespace(center=[0., 20., -40.], _amplitude=1.)]
     messages = []
@@ -113,12 +113,12 @@ def test_export_handler_uses_selected_mode_weights_and_handles_no_dll(qt_app, mo
     saved = Path(str(path) + suffix)
     assert saved.is_file() and saved.stat().st_size > 0
     assert calls[0][0] == (3, 3) and calls[0][2] == 1
-    np.testing.assert_array_equal(calls[0][1], [0., 0.7, 1.])
+    np.testing.assert_array_equal(calls[0][1], [0.2, 0.7, 1.])
     assert messages[-1][0] == '내보내기 완료'
     if suffix == '.bin':
         trajectory = window.trajectories_list[0]
         phases = original(np.array([a.center for a in window.transducer_actors]),
-                          trajectory['points'], np.array([0., 0.7, 1.]), 'Twin Trap', 0)
+                          trajectory['points'], np.array([0.2, 0.7, 1.]), 'Twin Trap', 0)
         assert saved.read_bytes() == b''.join(window.hw_controller.build_phase_frame(row) for row in phases)
 
 
@@ -129,6 +129,16 @@ def test_export_handler_reports_calculation_failure_without_file(qt_app, monkeyp
     monkeypatch.setattr(QFileDialog, 'getSaveFileName', lambda *args: (str(path), 'Board Wire Frames (*.bin)'))
     AcousticStudioMain.export_selected_trajectory(window)
     assert messages[-1][0] == '내보내기 오류'
+    assert not path.exists()
+
+
+def test_legacy_export_rejects_zero_gain_instead_of_emitting_an_active_phase(qt_app, monkeypatch, tmp_path):
+    window, messages = export_window()
+    window.transducer_actors[0]._amplitude = 0.
+    path = tmp_path / 'unsupported.bin'
+    monkeypatch.setattr(QFileDialog, 'getSaveFileName', lambda *args: (str(path), 'Board Wire Frames (*.bin)'))
+    AcousticStudioMain.export_selected_trajectory(window)
+    assert messages[-1][0] == '내보내기 오류' and 'OFF' in messages[-1][1]
     assert not path.exists()
 
 

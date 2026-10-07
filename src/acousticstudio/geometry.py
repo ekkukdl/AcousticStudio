@@ -107,6 +107,8 @@ def validate_geometry(geometry):
         amplitude = element['amplitude']
         if not np.isfinite(amplitude) or amplitude < 0:
             raise ValueError('CAD 구동 진폭은 유한한 비음수 가중치여야 합니다.')
+        if type(element.get('enabled', True)) is not bool:
+            raise ValueError('CAD 송신기 활성 상태는 참/거짓이어야 합니다.')
     supports = geometry['supports']
     if [s.get('face') for s in supports if s['kind'] == 'pcb'] != list(range(8)) or sum(s['kind'] == 'ring' for s in supports) != 2:
         raise ValueError('CAD 구조물은 PCB 8개와 프레임 링 2개여야 합니다.')

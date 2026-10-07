@@ -1,0 +1,146 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "hashes": {
+    "src/acousticstudio/calibration.py": "7bc331482cf6a91fcff8f10a8c13a59c2e52856290e294fbe7c358dc80d32f61",
+    "src/acousticstudio/calibration_ui.py": "51719f0075152eb12afd66bf467843394377a6be7bfba2b4a20c4bc5dc4adaee",
+    "src/acousticstudio/hardware.py": "d19ea6152e351c63ef724c1601473d1a13a7488af6e72ff678040ecfce8312db",
+    "src/acousticstudio/trajectory_export.py": "9e63550d531ba866c3266872848b59444496cd6b8081ea75956fb28acbe1ebab",
+    "src/acousticstudio/app.py": "ab01c8fa17d0c0b553a9fdd47e15909127586763e1258140f600643efdc02d7b",
+    "src/acousticstudio/geometry_scene.py": "801e1aa1306d19a67ca78e67051990e29d8ddda3c94dd8d4f0c2affda3cf5a4a",
+    "src/acousticstudio/geometry.py": "b8969abbcc8b5c338ea0cbd6fef7ecdf384c1e5b58bc9eba8bcd16ad0eb0aa3b",
+    "src/acousticstudio/sonic_core.dll": "f361f6b91fb1ab9adfb4139d13de6d9d5b3b24e87a9e7bc5a6c34a8aa450ccc1",
+    "구상도/outputs/panel_8faces_32ch_R1/array_positions_256.json": "4fa1145fce5a3f39a84f85b83382aedb8aef7000a028728c60f8a2e68ebbfa79",
+    "구상도/outputs/panel_8faces_32ch_R1/channel_map.csv": "f1ab1289701e91ce288926e873f0c03bca154ae1f97feacb6c625472877989b5",
+    "구상도/outputs/panel_8faces_32ch_R1/physical_to_software_channel_map.json": "ccd2b8de6be33f3131139417f9583e18b13a12603eebbc768402d376eea7a22a"
+  },
+  "source_hashes": {
+    "simulations/Ultraino/AcousticFieldSim/src/acousticfield3d/protocols/SimpleFPGA.java": "ecad2d5826bea4ab8c832d9407f561ff449f19200d2ce495dbe2be9d82e1aa20",
+    "simulations/Ultraino/AcousticFieldSim/src/acousticfield3d/simulation/Transducer.java": "e6b2ec1b81822b762aa24d7eab11513b1621b7d800aee49c471021b37cab7911",
+    "simulations/SonicSurface/Firmware/ESP32 controller/CommandSenderESP32/CommandSenderESP32.ino": "bcb5e4ca11f2cfe841b64d2c2ed5313442e15ea0ecf1a35549d011a42b901679",
+    "simulations/SonicSurface/Firmware/ESP32 haptic controller/TestHoloConnection4/TestHoloConnection4.ino": "75a514493e13dc51e5223fab18fb80b7a761f4cb8cc6c470a1297f3a08565da6"
+  },
+  "candidate_mapping_csv_matches": true,
+  "candidate_sha256": "ccd2b8de6be33f3131139417f9583e18b13a12603eebbc768402d376eea7a22a",
+  "mapping_status": "candidate_unverified",
+  "protocol_cases": [
+    {
+      "profile": "ultraino_simplefpga_256",
+      "kind": "pattern",
+      "bytes": 258,
+      "inactive_channels": 16,
+      "frame_sha256": "2c92c0f2dba3f5710e7ff945490378e853eca91e90a6892f4db05eb568fe6a51",
+      "send_export_equal": true
+    },
+    {
+      "profile": "ultraino_simplefpga_256",
+      "kind": "single",
+      "bytes": 258,
+      "inactive_channels": 255,
+      "frame_sha256": "19f7cf9753decaaf4e98d65c1c49e62a1bb784d8e11cdd43853e1fa5fcff300e",
+      "send_export_equal": true
+    },
+    {
+      "profile": "ultraino_simplefpga_256",
+      "kind": "all_off",
+      "bytes": 258,
+      "inactive_channels": 256,
+      "frame_sha256": "0121f14e964e66cfdf076a9e786117a049c7bebe946fc133a98fb27f1c383bee",
+      "send_export_equal": true
+    },
+    {
+      "profile": "sonicsurface_fpga_256",
+      "kind": "pattern",
+      "bytes": 258,
+      "inactive_channels": 16,
+      "frame_sha256": "2c92c0f2dba3f5710e7ff945490378e853eca91e90a6892f4db05eb568fe6a51",
+      "send_export_equal": true
+    },
+    {
+      "profile": "sonicsurface_fpga_256",
+      "kind": "single",
+      "bytes": 258,
+      "inactive_channels": 255,
+      "frame_sha256": "19f7cf9753decaaf4e98d65c1c49e62a1bb784d8e11cdd43853e1fa5fcff300e",
+      "send_export_equal": true
+    },
+    {
+      "profile": "sonicsurface_fpga_256",
+      "kind": "all_off",
+      "bytes": 258,
+      "inactive_channels": 256,
+      "frame_sha256": "0121f14e964e66cfdf076a9e786117a049c7bebe946fc133a98fb27f1c383bee",
+      "send_export_equal": true
+    },
+    {
+      "profile": "sonicsurface_fpga_two_board",
+      "kind": "pattern",
+      "bytes": 260,
+      "inactive_channels": 16,
+      "frame_sha256": "1fafefec5ed3fa3702de2911ebad7f86b4028ea6a4fc79884c14eed0df9b60c8",
+      "send_export_equal": true
+    },
+    {
+      "profile": "sonicsurface_fpga_two_board",
+      "kind": "single",
+      "bytes": 260,
+      "inactive_channels": 255,
+      "frame_sha256": "9de1d4a3e6d3942787ea3b7c2154ca39d3ca2472aec456eb33d7959b4f10f240",
+      "send_export_equal": true
+    },
+    {
+      "profile": "sonicsurface_fpga_two_board",
+      "kind": "all_off",
+      "bytes": 260,
+      "inactive_channels": 256,
+      "frame_sha256": "13a6098d9bafe630aac0aeb11fb171ae7ee946263c83f45f75c6be3eb5118c00",
+      "send_export_equal": true
+    },
+    {
+      "profile": "sonicsurface_esp32_command",
+      "kind": "pattern",
+      "bytes": 701,
+      "inactive_channels": 16,
+      "frame_sha256": "260bd105ae415f249789d2ac5737c15944016fb48501254c1a5e8c29140cf535",
+      "send_export_equal": true
+    },
+    {
+      "profile": "sonicsurface_esp32_command",
+      "kind": "single",
+      "bytes": 775,
+      "inactive_channels": 255,
+      "frame_sha256": "502189902cb669bca525921e32cfccdf9f23e6b61c3d0a7d0409d9adeffc28d4",
+      "send_export_equal": true
+    },
+    {
+      "profile": "sonicsurface_esp32_command",
+      "kind": "all_off",
+      "bytes": 776,
+      "inactive_channels": 256,
+      "frame_sha256": "108d6374c78d7c5f6134f09c6678fe4fa8fb26200bc3be6fdc03cec2c399f165",
+      "send_export_equal": true
+    }
+  ],
+  "qt_main_integration": true,
+  "calibrated_gain_inputs": true,
+  "project_restore": true,
+  "legacy_off_rejected": true,
+  "force_guard": {
+    "restoring": {
+      "status": "non_restoring",
+      "eigenvalues": [
+        -0.00041995268813589697,
+        -0.0004142692371721467,
+        -9.466847102500701e-05
+      ],
+      "uncertainty": 5.576863385786088e-09,
+      "symmetry_relative_error": 0.0
+    },
+    "converged": true,
+    "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+  },
+  "physical_serial_opened": false,
+  "pressure_calibrated": false,
+  "hardware_measured": false,
+  "qt_dialog_capture": true,
+  "qt_viewport_capture": false
+}

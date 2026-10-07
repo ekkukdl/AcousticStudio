@@ -5,6 +5,7 @@ __pycache__/
 *.lib
 venv/
 .venv/
+runtime/torch_cuda/
 구상도/scratch/pcb32_tools/
 구상도/scratch/pcb32_support/
 구상도/scratch/creo32_env/

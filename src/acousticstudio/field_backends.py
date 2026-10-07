@@ -71,11 +71,16 @@ def reduce_field(matrix, weights, mode_idx=0, has_taichi=False, has_pytorch=Fals
         elif mode_idx == 3:
             if not has_pytorch:
                 raise RuntimeError('PyTorch CUDA 모드를 사용할 수 없습니다.')
-            import torch
-            if not torch.cuda.is_available():
-                raise RuntimeError('PyTorch CUDA 장치를 사용할 수 없습니다.')
-            result = (torch.as_tensor(matrix, device='cuda') @
-                      torch.as_tensor(weights, device='cuda')).cpu().numpy()
+            from acousticstudio.cuda_runtime import run_remote
+            try:
+                import torch
+            except Exception:
+                torch = None
+            if torch is not None and torch.cuda.is_available():
+                result = (torch.as_tensor(matrix, device='cuda') @
+                          torch.as_tensor(weights, device='cuda')).cpu().numpy()
+            else:
+                result = run_remote('matvec', matrix, weights)
             backend = 'PyTorch CUDA'
     except Exception as exc:
         reason = str(exc)

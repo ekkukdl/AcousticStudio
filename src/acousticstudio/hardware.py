@@ -6,12 +6,13 @@ Communicates state changes through Qt signals rather than direct UI access.
 """
 
 from dataclasses import dataclass
-from math import isfinite, pi
+from math import floor, isfinite, pi
 from typing import Iterable
 
 import serial
 import serial.tools.list_ports
 from PySide6.QtCore import QObject, QTimer, Signal
+from acousticstudio.calibration import validate_active, validate_mapping
 
 
 @dataclass(frozen=True)
@@ -29,6 +30,8 @@ class BoardProfile:
     baud_rate: int
     transport: str
     source: str
+    off_code: int | None = None
+    rounding: str = 'ties_even'
 
 
 BOARD_PROFILES = {
@@ -38,41 +41,44 @@ BOARD_PROFILES = {
     ),
     "ultraino_simplefpga_256": BoardProfile(
         "ultraino_simplefpga_256", "Ultraino SimpleFPGA 256", 256, 230400,
-        "phase32_frame", "Ultraino SimpleFPGA.java",
+        "phase32_frame", "Ultraino SimpleFPGA.java", 32, 'half_up',
     ),
     "sonicsurface_fpga_256": BoardProfile(
         "sonicsurface_fpga_256", "SonicSurface FPGA 256 (direct)", 256, 230400,
-        "phase32_frame", "SonicSurface TestHoloConnection4.ino",
+        "phase32_frame", "SonicSurface TestHoloConnection4.ino", 32, 'half_up',
     ),
     "sonicsurface_fpga_two_board": BoardProfile(
         "sonicsurface_fpga_two_board", "SonicSurface FPGA 256 (board tags)", 256, 230400,
-        "sonicsurface_two_board", "SonicSurface CommandSenderESP32.ino",
+        "sonicsurface_two_board", "SonicSurface CommandSenderESP32.ino", 32, 'half_up',
     ),
     "sonicsurface_esp32_command": BoardProfile(
         "sonicsurface_esp32_command", "SonicSurface ESP32 CommandSender", 256, 230400,
-        "sonicsurface_ascii", "SonicSurface CommandSenderESP32.ino",
+        "sonicsurface_ascii", "SonicSurface CommandSenderESP32.ino", 32, 'half_up',
     ),
 }
 
 
-def phases_to_steps(phases_radians: Iterable[float], steps: int = 32) -> list[int]:
-    """Quantise radians into firmware phase steps, wrapping at 2π.
+def phases_to_steps(phases_radians: Iterable[float], steps: int = 32, rounding: str = 'ties_even') -> list[int]:
+    """Quantise radians using an explicit client rounding policy, wrapping at 2π.
 
     Firmware uses 0–31 while 32 is its *off* value.  Modulo before rounding
     avoids incorrectly turning a phase near 2π into the off code.
     """
+    if type(steps) is not int or not 1 <= steps <= 255 or rounding not in ('ties_even', 'half_up'):
+        raise ValueError('위상 분할 수 또는 반올림 방식이 잘못되었습니다.')
     values: list[int] = []
     for phase in phases_radians:
         value = float(phase)
         if not isfinite(value):
             raise ValueError("위상 값에는 NaN 또는 무한대를 사용할 수 없습니다.")
-        values.append(int(round(((value % (2.0 * pi)) / (2.0 * pi)) * steps)) % steps)
+        scaled = ((value % (2.0 * pi)) / (2.0 * pi)) * steps
+        values.append((floor(scaled + .5) if rounding == 'half_up' else int(round(scaled))) % steps)
     return values
 
 
-def encode_phase_frame(profile: BoardProfile, phases_radians: Iterable[float]) -> bytes:
+def encode_phase_frame(profile: BoardProfile, phases_radians: Iterable[float], active=None) -> bytes:
     """Encode one complete, committed phase frame for *profile*."""
-    phase_steps = phases_to_steps(phases_radians)
+    phase_steps = phases_to_steps(phases_radians, rounding=profile.rounding)
     if not phase_steps:
         raise ValueError("전송할 트랜스듀서 위상이 없습니다.")
     if profile.channel_count is not None and len(phase_steps) != profile.channel_count:
@@ -81,6 +87,16 @@ def encode_phase_frame(profile: BoardProfile, phases_radians: Iterable[float]) -
             f"현재 배열은 {len(phase_steps)}채널입니다."
         )
 
+    if active is not None:
+        enabled = validate_active(active, len(phase_steps))
+        if not all(enabled) and profile.off_code is None:
+            raise ValueError(f'{profile.label} 프로파일은 OFF를 지원하지 않습니다.')
+        phase_steps = [step if enabled[index] else profile.off_code for index, step in enumerate(phase_steps)]
+    return encode_steps(profile, phase_steps)
+
+
+def encode_steps(profile, phase_steps):
+    """Internal encoder for validated physical-order Phase32/OFF values."""
     payload = bytes(phase_steps)
     if profile.transport == "phase32_frame":
         return bytes((0xFE,)) + payload + bytes((0xFD,))
@@ -117,6 +133,8 @@ class HardwareController(QObject):
         self.board_profile = BOARD_PROFILES["legacy_phase32"]
         self.channel_map: list[int] | None = None
         self.phase_offsets: list[float] | None = None
+        self.active_channels: list[bool] | None = None
+        self.write_timeout_s = .1
 
         # Timer-based health check (1 s interval)
         self.hw_health_timer = QTimer(self)
@@ -146,6 +164,7 @@ class HardwareController(QObject):
             raise ValueError(f"알 수 없는 보드 프로파일: {profile_key}") from exc
         self.channel_map = None
         self.phase_offsets = None
+        self.active_channels = None
         return self.board_profile
 
     def set_channel_map(self, channel_map: Iterable[int]) -> None:
@@ -158,10 +177,33 @@ class HardwareController(QObject):
         count = self.board_profile.channel_count
         if count is None:
             raise ValueError("Legacy 프로파일에는 고정 채널 맵을 설정할 수 없습니다.")
-        mapping = [int(channel) for channel in channel_map]
-        if len(mapping) != count or set(mapping) != set(range(count)):
-            raise ValueError(f"채널 맵은 0부터 {count - 1}까지를 한 번씩 포함해야 합니다.")
-        self.channel_map = mapping
+        self.channel_map = list(validate_mapping(channel_map, count))
+
+    def set_active_channels(self, enabled):
+        values = list(enabled)
+        count = self.board_profile.channel_count or len(values)
+        self.active_channels = list(validate_active(values, count))
+
+    def settings(self):
+        return dict(board_profile=self.board_profile.key, channel_map=self.channel_map,
+                    phase_offsets_rad=self.phase_offsets, active_channels=self.active_channels)
+
+    def restore_settings(self, values):
+        """Validate a whole configuration before replacing any controller state."""
+        if not isinstance(values, dict) or set(values) - {'board_profile', 'channel_map', 'phase_offsets_rad', 'active_channels'}:
+            raise ValueError('보드 설정 필드가 잘못되었습니다.')
+        candidate = HardwareController()
+        candidate.set_board_profile(values.get('board_profile', 'legacy_phase32'))
+        if values.get('channel_map') is not None:
+            candidate.set_channel_map(values['channel_map'])
+        if values.get('phase_offsets_rad') is not None:
+            candidate.set_phase_offsets(values['phase_offsets_rad'])
+        if values.get('active_channels') is not None:
+            candidate.set_active_channels(values['active_channels'])
+        if self.is_connected() and candidate.settings() != self.settings():
+            raise RuntimeError('보드 연결을 해제한 뒤 보정/맵/프로파일을 변경하세요.')
+        self.board_profile = candidate.board_profile
+        self.channel_map, self.phase_offsets, self.active_channels = candidate.channel_map, candidate.phase_offsets, candidate.active_channels
 
     def set_phase_offsets(self, offsets_radians: Iterable[float]) -> None:
         """Set additive calibration offsets in software channel order.
@@ -193,13 +235,34 @@ class HardwareController(QObject):
             phases = [phases[source] for source in self.channel_map]
         return phases
 
-    def prepare_phase_steps(self, phases_radians: Iterable[float]) -> list[int]:
+    def prepare_phase_steps(self, phases_radians: Iterable[float], active=None) -> list[int]:
         """Return the same corrected, mapped phase steps used on the wire."""
-        return phases_to_steps(self.prepare_phases(phases_radians))
+        corrected = self.prepare_phases(phases_radians)
+        enabled = [True] * len(corrected) if active is None else list(validate_active(active, len(corrected)))
+        if self.active_channels is not None:
+            mask = validate_active(self.active_channels, len(corrected))
+            enabled = [first and second for first, second in zip(enabled, mask)]
+        if self.channel_map is not None:
+            enabled = [enabled[source] for source in self.channel_map]
+        if not all(enabled) and self.board_profile.off_code is None:
+            raise ValueError(f'{self.board_profile.label} 프로파일은 OFF를 지원하지 않습니다.')
+        steps = phases_to_steps(corrected, rounding=self.board_profile.rounding)
+        return [step if enabled[index] else self.board_profile.off_code for index, step in enumerate(steps)]
 
-    def build_phase_frame(self, phases_radians: Iterable[float]) -> bytes:
+    def build_phase_frame(self, phases_radians: Iterable[float], active=None) -> bytes:
         """Build a profile frame without touching a serial port."""
-        return encode_phase_frame(self.board_profile, self.prepare_phases(phases_radians))
+        return encode_steps(self.board_profile, self.prepare_phase_steps(phases_radians, active))
+
+    def build_test_frame(self, software_channel=None, phase_rad=0., count=None):
+        count = self.board_profile.channel_count or count
+        if type(count) is not int or count <= 0:
+            raise ValueError('테스트 프레임에는 채널 수가 필요합니다.')
+        if software_channel is not None and (type(software_channel) is not int or not 0 <= software_channel < count):
+            raise ValueError('테스트할 소프트웨어 채널이 범위를 벗어났습니다.')
+        active = [index == software_channel for index in range(count)]
+        if software_channel is not None and self.active_channels is not None and not self.active_channels[software_channel]:
+            raise ValueError('비활성 보정 채널은 활성화한 뒤 테스트하세요.')
+        return self.build_phase_frame([phase_rad] * count, active)
 
     # ------------------------------------------------------------------
     # Connection management
@@ -217,7 +280,7 @@ class HardwareController(QObject):
             return True
 
         try:
-            self.serial_port = serial.Serial(port, baud, timeout=1)
+            self.serial_port = serial.Serial(port, baud, timeout=1, write_timeout=self.write_timeout_s)
             self.hw_health_timer.start()
             self.connected.emit(port)
             return True
@@ -255,15 +318,15 @@ class HardwareController(QObject):
     # ------------------------------------------------------------------
     # Packet transmission
     # ------------------------------------------------------------------
-    def send_packet(self, packet_bytes: bytes) -> None:
+    def send_packet(self, packet_bytes: bytes) -> bool:
         """Write raw *packet_bytes* to the serial port.
 
-        If the port is not connected the call is silently ignored.
+        Returns False if disconnected or failed, True for a complete local write.
         On write failure :pyattr:`send_failed` is emitted and the
-        connection is torn down via :pymeth:`_handle_disconnect`.
+        connection is torn down via :pymeth:`_handle_disconnect`. No board ACK is implied.
         """
         if self.serial_port is None:
-            return
+            return False
 
         try:
             written = self.serial_port.write(packet_bytes)
@@ -271,19 +334,22 @@ class HardwareController(QObject):
                 raise serial.SerialTimeoutException(
                     f"부분 전송: {written}/{len(packet_bytes)} bytes"
                 )
-            self.serial_port.flush()
+            # Serial.flush() waits for the driver indefinitely on some platforms.
+            # write_timeout bounds this write; success only means local acceptance.
+            return True
         except Exception as e:
             print(f"HW Send Error: {e}")
             self.send_failed.emit(f"보드 프레임 전송 실패: {e}")
             self._handle_disconnect()
+            return False
 
-    def send_phases(self, phases_radians: Iterable[float]) -> bytes:
+    def send_phases(self, phases_radians: Iterable[float], active=None) -> bytes:
         """Map, frame and transmit radians using the selected board protocol.
 
         Returns the transmitted frame to allow deterministic fake-transport
         tests.  It does not claim that a physical board accepted the frame.
         """
-        frame = self.build_phase_frame(phases_radians)
+        frame = self.build_phase_frame(phases_radians, active)
         self.send_packet(frame)
         return frame
 

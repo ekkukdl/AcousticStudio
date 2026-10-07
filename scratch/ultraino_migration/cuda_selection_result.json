@@ -1,0 +1,68 @@
+{
+  "audited_at_utc": "2026-10-07T22:32:38.301003+00:00",
+  "environment": {
+    "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+    "python_version": "3.13.9",
+    "torch_version": "2.14.0+cpu",
+    "torch_cuda_build": null,
+    "cuda_available": false,
+    "isolated_runtime_directory_exists": false,
+    "nvidia_smi": "NVIDIA GeForce RTX 4070 SUPER, 617.42"
+  },
+  "ast_files": 11,
+  "utf8_documents": 7,
+  "local_links": 102,
+  "source_hashes": {
+    "src/acousticstudio/cuda_protocol.py": "14954ef485c4c2c6e71d7cff1f6a8bf963d7b8693db3b018ddb934f9dec54146",
+    "src/acousticstudio/cuda_runtime.py": "c6582e0bef32ce36ecc501eed6fb00229b642779cc3a5053a05095b3c81dc646",
+    "src/acousticstudio/cuda_worker.py": "7c85436afacd89c7669de87fe6cdd67ad82bf1d8f2a6c8582e9cee02d1894955",
+    "src/acousticstudio/compute_devices.py": "452d8044c080ae60677c4049c5e814b86619b2dad30aa711ae1e3c000f180c61",
+    "src/acousticstudio/field_backends.py": "d11b28468aa5bb73f652035704f0f40623eca02bea5f63dc06ed2eaa8968a5b3",
+    "src/acousticstudio/sonic_wrapper.py": "18a1cfd5589cf752f89708312fcd1ac41235e6d0ae8d2914bb18d57dd74dc70d",
+    "src/acousticstudio/installer_ui.py": "dac44c5f712db7f68159227a89b7e28362d5472f8e514d140c0a7ef6213c1e92",
+    "src/acousticstudio/app.py": "2aea5173c53454fd85be5824fd422cd69a60857c4cfe8eef4710e8adc7c0b1dc",
+    "tests/test_compute_devices.py": "bca54c1a7a4e2761bb106d9fd6a983bc3c034ed1e3559b3267d4f8c5bb17cd53",
+    "tests/test_cuda_selection.py": "846b46e0378695fbc9cf36cf9126b536730809c92b7f651df997fc5417598c2a",
+    "scratch/ultraino_migration/verify_cuda_selection_static.py": "62d8191dc95f8528d33dd2e37eeb0f863f128b1534dc52a3a5b551513192a213"
+  },
+  "preserved_model_calibration_native_hashes": {
+    "src/acousticstudio/hologram.py": "401470af9eea8aa2a693c5d16af505d924aa0b097ae3f5d8ec1d5ceea9346fab",
+    "src/acousticstudio/field_model.py": "72204059eab888611087416ba92e6670038c28e646d4187c0add8eb7c32b5d47",
+    "src/acousticstudio/sonic_core.dll": "f361f6b91fb1ab9adfb4139d13de6d9d5b3b24e87a9e7bc5a6c34a8aa450ccc1",
+    "구상도/outputs/panel_8faces_32ch_R1/array_positions_256.json": "4fa1145fce5a3f39a84f85b83382aedb8aef7000a028728c60f8a2e68ebbfa79",
+    "src/acousticstudio/calibration.py": "7bc331482cf6a91fcff8f10a8c13a59c2e52856290e294fbe7c358dc80d32f61",
+    "src/acousticstudio/calibration_ui.py": "51719f0075152eb12afd66bf467843394377a6be7bfba2b4a20c4bc5dc4adaee",
+    "src/acousticstudio/hardware.py": "d19ea6152e351c63ef724c1601473d1a13a7488af6e72ff678040ecfce8312db",
+    "src/acousticstudio/trajectory_export.py": "9e63550d531ba866c3266872848b59444496cd6b8081ea75956fb28acbe1ebab",
+    "src/acousticstudio/geometry_scene.py": "801e1aa1306d19a67ca78e67051990e29d8ddda3c94dd8d4f0c2affda3cf5a4a",
+    "src/acousticstudio/geometry.py": "b8969abbcc8b5c338ea0cbd6fef7ecdf384c1e5b58bc9eba8bcd16ad0eb0aa3b",
+    "구상도/outputs/panel_8faces_32ch_R1/channel_map.csv": "f1ab1289701e91ce288926e873f0c03bca154ae1f97feacb6c625472877989b5",
+    "구상도/outputs/panel_8faces_32ch_R1/physical_to_software_channel_map.json": "ccd2b8de6be33f3131139417f9583e18b13a12603eebbc768402d376eea7a22a"
+  },
+  "original_protocol_hashes_match": true,
+  "historic_artifact_hashes": {
+    "multitrap_compute_result.json": "c4d58d6b22daff63122126aeb6913de0bdd4825cfa89e909e13fe3d2d8fc9dcb",
+    "multitrap_compute_pytest.xml": "925896ebdda304ea4c68baeb0a49961824275bb4aa643177cc5a6740f7177fc2",
+    "t5_pipeline_result.json": "7d8c8a704c5fab4c751c2cb466c68f97ebf88e59ff578cb18a4e9305e9e3dfb4",
+    "t5_static_result.json": "c048470913771d4a5b747cb892005268fb2322836632348316d4e43e76a08fed",
+    "t5_pytest.xml": "cf27214941a63ab6dae705381f8a297a532eaf79065d0f39618924a2ad0f78a4"
+  },
+  "pytest": {
+    "cases": 230,
+    "passed": 227,
+    "skipped": 3,
+    "failures": 0,
+    "errors": 0,
+    "cuda_selection_cases": 10,
+    "timestamp": "2026-10-07T22:58:59.973306+09:00",
+    "seconds": 13.936,
+    "junit_sha256": "0ce817492e5db856e5f6a63c9ba91b815ddc97f8b81fbcffcc1fb09af75dce14",
+    "cuda_and_pip_test_implementation": "fake; real Qt/QThread and Python pipes"
+  },
+  "actual_cuda_package_install_performed": false,
+  "actual_pytorch_cuda_kernel_verified": false,
+  "physical_serial_opened": false,
+  "t6_complete": false,
+  "git_diff_check": true,
+  "git_head": "1d3d83faa289d0cc9d619fc37097d954442e5052"
+}

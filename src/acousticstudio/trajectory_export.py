@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 
 
-def save_trajectory_export(filepath, format_key, name, points, delays, phases, controller):
+def save_trajectory_export(filepath, format_key, name, points, delays, phases, controller, active=None, calibration_id=''):
     """Write validated waypoint data; phases enter in software channel order.
 
     Binary files contain consecutive on-wire frames, without timing information.
@@ -29,11 +29,11 @@ def save_trajectory_export(filepath, format_key, name, points, delays, phases, c
     # Build every frame before opening a file, so invalid channels cannot leave
     # an empty/partially generated export behind.
     if format_key == 'binary':
-        frames = [controller.build_phase_frame(row) for row in phases]
+        frames = [controller.build_phase_frame(row, active) for row in phases]
         path.write_bytes(b''.join(frames))
         return path
 
-    phase_steps = [controller.prepare_phase_steps(row) for row in phases]
+    phase_steps = [controller.prepare_phase_steps(row, active) for row in phases]
     if format_key == 'legacy':
         path.write_bytes(b''.join(b'\xfa' + bytes(row) + b'\xfd' for row in phase_steps))
         return path
@@ -48,13 +48,14 @@ def save_trajectory_export(filepath, format_key, name, points, delays, phases, c
         with path.open('w', encoding='utf-8') as output:
             output.write('// AcousticStudio Trajectory Phase Data Header\n')
             output.write(f'// Trajectory: {safe_name}\n// Board profile: {profile}\n')
+            output.write(f'// Calibration: {str(calibration_id).replace(chr(10), " ").replace(chr(13), " ")}\n')
             output.write('// Phases: corrected physical channel order; offsets/map already applied.\n')
             output.write('#ifndef ACOUSTIC_TRAJECTORY_DATA_H\n#define ACOUSTIC_TRAJECTORY_DATA_H\n\n')
             output.write('#include <stdint.h>\n\n')
             output.write(f'#define TRAJ_TOTAL_STEPS {steps}\n#define TRAJ_NUM_TRANSDUCERS {num_tx}\n\n')
             output.write('const uint16_t traj_step_delays_ms[TRAJ_TOTAL_STEPS] = {\n')
             output.write(',\n'.join(f'    {int(delay)}' for delay in rounded_delays))
-            output.write('\n};\n\n// Phase32 values: 0–31\n')
+            output.write('\n};\n\n// Phase32 values: 0–31; 32=OFF only for profiles with documented support.\n')
             output.write('const uint8_t traj_phases[TRAJ_TOTAL_STEPS][TRAJ_NUM_TRANSDUCERS] = {\n')
             output.write(',\n'.join('    { ' + ', '.join(map(str, row)) + ' }' for row in phase_steps))
             output.write('\n};\n\n#endif // ACOUSTIC_TRAJECTORY_DATA_H\n')
@@ -62,7 +63,8 @@ def save_trajectory_export(filepath, format_key, name, points, delays, phases, c
         with path.open('w', newline='', encoding='utf-8') as output:
             writer = csv.writer(output)
             writer.writerow(['Step', 'Target_X_mm', 'Target_Y_mm', 'Target_Z_mm', 'Delay_ms',
-                             'Board_Profile'] + [f'Physical{index}_Phase32' for index in range(num_tx)])
+                             'Board_Profile'] + [f'Physical{index}_Phase32' for index in range(num_tx)]
+                            + (['Calibration_ID'] if calibration_id else []))
             for index, row in enumerate(phase_steps):
-                writer.writerow([index, *points[index], delays[index], profile, *row])
+                writer.writerow([index, *points[index], delays[index], profile, *row] + ([calibration_id] if calibration_id else []))
     return path

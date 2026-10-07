@@ -2,14 +2,14 @@
 
 2026-10-07 사용자 지시에 따라 현재 개발 기준을 **8면, 면당 PCB 1장, PCB당 트랜스듀서 32개, 총 8기판·256채널**로 확정한다. 현재 Creo R2의 배치와 일치하는 배열을 AcousticStudio에 추가하고, 그 배열을 공통 입력으로 Ultraino의 다중 트랩·방사력 분석·조작·캘리브레이션 기능을 이식한다.
 
-이 문서는 이후 에이전트의 구현 기준이다. 입력 형상·개발 환경 점검에 이어 T0 계산 경로 수정, T1 CAD 배열 로더·프리셋 연결, T2 공통 복소 음장·방향성, T3 고정 위상 방사력 분석, T4 Kinoforms·다중 트랩을 완료했다. [T0 기록](ultraino_t0_result.md), [T1 기록](ultraino_t1_result.md), [T2 기록](ultraino_t2_result.md), [T3 기록](ultraino_t3_result.md), [T4 기록](ultraino_t4_result.md)을 확인하고 다음 T5부터 진행한다. 사용자의 최신 지시가 과거 보고서·안내의 8면 16기판 구성을 대체한다.
+이 문서는 이후 에이전트의 구현 기준이다. 입력 형상·개발 환경 점검에 이어 T0 계산 경로 수정, T1 CAD 배열 로더·프리셋 연결, T2 공통 복소 음장·방향성, T3 고정 위상 방사력 분석, T4 Kinoforms·다중 트랩, T5 통신·캘리브레이션의 소프트웨어 구현과 검증을 완료했다. [T0 기록](ultraino_t0_result.md), [T1 기록](ultraino_t1_result.md), [T2 기록](ultraino_t2_result.md), [T3 기록](ultraino_t3_result.md), [T4 기록](ultraino_t4_result.md), [T5 기록](ultraino_t5_result.md)을 확인하고 다음 소프트웨어 단계 T6부터 진행한다. 실제 펌웨어·배선·OFF/파형 측정은 미완료다. 사용자의 최신 지시가 과거 보고서·안내의 8면 16기판 구성을 대체한다.
 
 ## 작업 시작 순서
 
 1. [AGENTS.md](../AGENTS.md), 이 문서, [진행 기록](project_status.txt)을 읽는다.
 2. `git status --short`와 관련 소스를 확인하고 기존 사용자 변경을 보존한다.
 3. [점검 결과 JSON](ultraino_migration_audit.json)에서 형상 및 인터프리터 근거를 확인한다. 날짜·해시가 달라졌다면 입력을 다시 확인한다.
-4. 완료된 작업의 검증 기록을 확인하고 첫 미완료 단계부터 작업한다. 현재 T0·T1·T2·T3·T4 완료, 다음은 T5다. 각 작업의 산출물과 완료 기준을 만족한 후 의존하는 작업으로 넘어간다.
+4. 완료된 작업의 검증 기록을 확인하고 첫 미완료 단계부터 작업한다. 현재 T0·T1·T2·T3·T4·T5 소프트웨어 완료, 다음은 T6다. T5 실제 하드웨어 검증은 사용자 요청 실물 단계에서 수행한다. 각 작업의 산출물과 완료 기준을 만족한 후 의존하는 작업으로 넘어간다.
 5. 구현 후 진행 기록에 변경·실행한 검증·남은 한계를 기록한다. 다른 에이전트에게 맡길 때 작업 ID, 파일 범위, 완료 기준, 실제 검증 결과를 전달한다.
 
 사용자 승인 전 `backup/`을 갱신하지 않으며, 명시적 요청 없이 commit/push하지 않는다. 이 계획 자체가 실제 보드 송신이나 CAD 재생성의 실행 요청은 아니다.
@@ -112,7 +112,7 @@ UI의 actor를 계산 데이터의 원본으로 사용하지 않는다. 로더�
 - 송신: 계산 위상 → 소프트웨어 채널별 보정 → 위상 및 활성 상태의 물리 채널 매핑 → 프로파일별 양자화/OFF → 인코딩. 실시간과 파일 내보내기가 같은 경로를 사용한다.
 - 저장: 배열과 보정 메타데이터, 송신 프로파일을 기록하고 이전 `test1.json`을 읽는 이행 경로를 제공한다. Undo/Redo에서도 배열 메타데이터가 소실되지 않아야 한다.
 
-새 파일은 필요 범위에만 추가한다. `geometry.py`의 CAD 배열 로딩·검증과 `geometry_scene.py`의 VTK 어댑터는 T1, `field_model.py`와 `field_backends.py`의 공통 복소 전파·합산은 T2, `force_analysis.py`와 `force_analysis_ui.py`의 고정 위상 힘/퍼텐셜 분석은 T3에서 구현했다. T4는 `hologram.py`의 가상점/IBP와 `hologram_ui.py`의 취소·최신 요청 관리 및 설계 UI를 추가했다. `calibration.py`의 보정 데이터는 T5에서 추가한다. PhaseEngine은 계산 진입점, hardware.py는 전송 책임, app.py/widgets.py는 UI 연결을 유지한다. 외부 라이브러리나 별도 위상 엔진·시리얼 컨트롤러를 중복 도입하지 않는다.
+새 파일은 필요 범위에만 추가한다. `geometry.py`의 CAD 배열 로딩·검증과 `geometry_scene.py`의 VTK 어댑터는 T1, `field_model.py`와 `field_backends.py`의 공통 복소 전파·합산은 T2, `force_analysis.py`와 `force_analysis_ui.py`의 고정 위상 힘/퍼텐셜 분석은 T3에서 구현했다. T4는 `hologram.py`의 가상점/IBP와 `hologram_ui.py`의 취소·최신 요청 관리 및 설계 UI를 추가했다. T5는 `calibration.py`의 상대 보정/출처/배열 서명과 `calibration_ui.py`의 수동 편집·OFF 파일을 추가하고 기존 hardware.py/trajectory_export.py를 확장했다. PhaseEngine은 계산 진입점, hardware.py는 전송 책임, app.py/widgets.py는 UI 연결을 유지한다. 외부 라이브러리나 별도 위상 엔진·시리얼 컨트롤러를 중복 도입하지 않는다.
 
 ## 작업 단위와 완료 기준
 
@@ -168,6 +168,8 @@ Ultraino의 [CalcField.java](../../simulations/Ultraino/AcousticFieldSim/src/aco
 
 ### T5 실제 뱅크 연결에 맞는 통신과 캘리브레이션
 
+상태: **소프트웨어 구현 및 fake-serial/Qt 검증 완료**. [상세 결과·사용법·T6 인계](ultraino_t5_result.md). 전체 테스트 208개 통과·3개 skip. 4프로파일×일반/1채널/전체 OFF 12건의 송신/내보내기 일치, 맵·보정·활성·반올림·부분 쓰기/timeout 및 상태 복원을 확인했다. 실제 펌웨어 식별·배선·파형/OFF·지속 갱신률의 측정은 미완료다.
+
 의존: T0, T1. 보정 데이터와 프로토콜의 소프트웨어 준비는 T2~T4 진행 중 별도 작업 단위로 가능하다. 실제 송신은 사용자 요청 하드웨어 작업에서 수행한다.
 
 기존 BoardProfile·set_channel_map·프레임 테스트를 확장한다. 입력 [channel_map.csv](../구상도/outputs/panel_8faces_32ch_R1/channel_map.csv)와 후보 맵을 읽되 실물에서 검증된 것으로 표시하지 않는다. PCB당 A/B 뱅크가 있고 DATA 4선, SHIFT/LATCH/ARM은 뱅크별 외부 연결이 필요하다. **8기판은 8개 FPGA 주소를 뜻하지 않으며, 16뱅크도 16개 체인 보드를 뜻하지 않는다.** 실제 컨트롤러 개수·펌웨어·DATA 할당·시프트 비트 방향을 확인한 뒤 프로파일을 선택한다.
@@ -210,7 +212,7 @@ Ultraino [ChainedFPGA.java](../../simulations/Ultraino/AcousticFieldSim/src/acou
 보고: 변경 내용, 통과/실패한 검사, 미실행 항목, 남은 입력
 ```
 
-현재 미확정 입력은 실제 컨트롤러/펌웨어/헤더 배선, 소자의 유효 음향 개구와 음압 보정, 실제 입자 물성이다. 이 입력을 가정한 실물 완료 판정은 금지하지만 T0~T4 및 fake-serial 개발은 계속할 수 있다.
+현재 미확정 입력은 실제 컨트롤러/펌웨어/헤더 배선, 소자의 유효 음향 개구와 음압 보정, 실제 입자 물성이다. 이 입력을 가정한 실물 완료 판정은 금지하지만 완료한 T0~T5 소프트웨어 및 fake-serial 경로를 재사용해 T6 개발은 계속할 수 있다.
 
 ## 이번 정리의 검증 범위
 

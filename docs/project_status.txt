@@ -1,5 +1,34 @@
 # AcousticStudio 프로젝트 상태 및 계획
 
+### 2026-10-08 PyTorch/CUDA 선택 작업 최종 기록·정적 점검
+- 중단된 작업의 사용 안내·정적 검증 재현 도구·환경/코드 해시 기록을 마무리했다. 변경 소스 구문, UTF-8 문서/로컬 링크, 기존 Creo 배열/후보 맵·음장/홀로그램 모델·보정/통신·native DLL 보존과 git diff를 확인했다.
+- 전체 테스트 결과는 2026-10-07의 227 passed, 3 skipped를 그대로 보존했다. 실제 PyTorch CUDA 설치·커널 실행은 아직 수행하지 않았고 앱의 선택 항목에서 준비한다. T6 미완료 상태와 인계 기준은 유지한다.
+
+### 2026-10-07 선택 항목의 PyTorch/CUDA 자동 준비·전환 적용
+- 사용자 요청으로 상단 연산 모드 및 도구→라이브러리 관리자에서 PyTorch/CUDA를 선택하면 준비·설치·CUDA 확인 후 그 모드로 전환하도록 연결했다. CPU 전용 PyTorch가 설치돼 있어도 CUDA 선택 항목을 제공한다. 준비된 경우 즉시 전환하며 취소·실패는 이전 모드로 복귀한다.
+- 실행 중인 CPU PyTorch DLL을 교체하지 않고 공식 torch2.14.0+cu130을 runtime/torch_cuda 아래에 pip --target으로 설치한다. 같은 앱 Python의 새 계산 프로세스에서 실제 CUDA/complex128 확인 후 active.json을 기록하고 확인한 프로세스를 재사용한다. 기존 기본 환경은 덮어쓰지 않는다. Windows Python3.10~3.14·NVIDIA580계열 이상을 자동 설치 조건으로 검사한다.
+- field_backends와 레거시 GPU wrapper에 새 런타임을 연결했다. 전파/IBP 데이터 계약은 유지하며 수치 배열만 bounded private pipe로 주고받는다. 1개 요청·64MiB·30초 제한, 프로세스 오류·timeout의 CPU 전환 사유를 보존한다. 설치 중 Kinoforms/재생을 중단하고 새 계산·송신을 보류한다.
+- 기존 Qt 설치 창의 pip 종료 코드/취소/닫기·thread 종료를 처리하고 실패를 성공으로 표시하던 오류와 가짜 진행률을 수정했다. CPU 모드 전환 시 중복 단면 계산도 줄였다.
+- 검증: 전체 227 passed, 3 skipped, 6 warnings. 실제 Qt 모드/관리자·설치창·QThread와 새 Python IPC를 실행했고 pip/CUDA API는 fake로 검증했다. CUDA 직접 실행3개는 기존 CPU 빌드 때문에 skip이며 실제 CUDA 패키지 다운로드·설치는 앱의 사용자 선택 시 수행한다. 기본 환경은 여전히 torch2.14.0+cpu, 런타임 설치 폴더는 미생성이다.
+- 상세·재현 근거는 docs/cuda_optional_selection.md 및 scratch/ultraino_migration/cuda_selection_*이다. T6 조작·이송은 미완료이고 기존 인계를 이어서 따른다. 실제 COM 송신·CAD/backup/commit/push는 수행하지 않았다.
+
+### 2026-10-07 다중 트랩 CUDA 장치 선택 수정·실행 점검
+- Anaconda Python 3.13.9의 PyTorch 2.14.0+cpu는 CUDA build=None/device unavailable이었다. 기존 UI가 패키지 존재만 보고 CUDA 모드를 기본 선택하고 실제 계산은 Numba CPU로 전환되는 원인을 확인했다. Taichi 1.7.4는 실제 CUDA를 사용했다.
+- compute_devices.py에서 설치 여부와 실제 장치/런타임 사용 가능 상태를 분리하고 app.py의 기본 선택·표시·라이브러리 관리자 갱신에 연결했다. 현재 환경은 Taichi cuda 기본 선택이며 CPU PyTorch의 사용 불가 사유를 표시한다. 사용 불가 항목 선택은 가능한 모드로 전환하고 환경을 자동 교체하지 않는다. 모드 변경 시 이전 Kinoforms 요청을 취소한다.
+- Creo 256채널, 50회 고정 반복, 2 Focus 및 혼합 8트랩을 네 모드에서 비교했다. CUDA 복소 연산은 CPU와 phasor 최대 오차 1.07e-14 이내로 일치했다. 3회 warm 중앙값은 Numba CPU 5.1~7.4ms, Taichi CUDA 약80ms로, 매 행렬 곱의 CPU/GPU 복사와 작은 작업 크기 때문에 현재 GPU가 더 느렸다. 전파 행렬·제약·투영·진단은 CPU이고 복소 행렬 곱만 선택 엔진을 사용한다.
+- 실제 Qt 전체 창의 기본 모드·CPU PyTorch 표시·선택/갱신 처리 및 QThread의 Creo 혼합 트랩 CUDA/CPU 일치를 확인했다. 집중 36 passed, 전체 217 passed, 3 skipped, 6 warnings. 상세와 재현 근거는 docs/multitrap_cuda_diagnosis.md 및 scratch/ultraino_migration/multitrap_compute_*에 있다.
+- T6 조작·이송은 아직 미완료이며 T5 인계 기준을 이어서 따른다. 기존 T5 해시 기록은 기준본으로 보존했다. 패키지 설치/환경 변경, 실제 COM 송신, CAD/backup/commit/push는 수행하지 않았다.
+
+### 2026-10-07 T4 GitHub push 및 T5 통신·캘리브레이션 소프트웨어 완료
+- 사용자 요청으로 T4 코드·테스트·사용/인계 문서·검증 기록26개 파일을 1d3d83faa289d0cc9d619fc37097d954442e5052에 commit하고 origin/main으로 push했다. 원격 HEAD와 로컬 일치를 확인했고 관련 없는 Creo std.out은 포함하지 않았다.
+- calibration.py에 SW 순서의 불변 명령 위상 오프셋·고정 상대 이득·활성 상태·후보 물리 맵·배열 서명·UTC/출처/측정 조건/펌웨어/배선/이력을 구현했다. absolute pressure 표시는 거절하고 pressure_calibrated=false를 유지한다. source_inputs로 모든 계산/T3/T4/궤적에 보정 이득과 비활성 상태를 전달한다. 명령 보정은 송신 계층에서 한 번 적용한다.
+- 기존 보드 메뉴에 수동 보정·JSON·후보 맵·1채널/전체 OFF 프레임 저장 및 연결 상태의 테스트 전송 동작을 추가했다. 맵은 map[physical_frame_channel]=software_channel이며 위상/활성 상태를 함께 매핑한다. 지원 프로파일은 OFF32, 활성 위상은0~31; Legacy OFF는 거절한다. Ultraino Math.round의 반 스텝과 Python ties-even을 구분했고 SonicSurface는 명시한 클라이언트 반올림 정책을 사용한다.
+- hardware.py/trajectory_export.py에서 보정→맵→양자화/OFF→전체 frame/commit을 공통 사용한다. write_timeout0.1s, GUI serial.flush 제거, 부분 쓰기/timeout/실패 시 재시도 없이 연결 종료, 재연결 자동 재생 없음 및 실시간 전송 체크 해제를 구현했다. 로컬 write 성공은 보드 ACK나 실물 출력 확인이 아니다. 일반 송신 큐·갱신률 분리는 T6에 남아 있다.
+- 보정/맵/프로파일을 프로젝트·Undo/Redo로 저장하고 손상/불일치 및 connected 설정 변경을 장면 변경 전에 거절한다. CAD pose 변경은 같은 보정, 채널 순서/원본/기준 형상/새 인스턴스는 다른 서명이다. Legacy 위치 변경은 새 보정이 필요하다. 이전 파일 기본값·보정 제거·새 프로젝트 초기화도 확인했다.
+- 검증: 전체 pytest 208 passed, 3 skipped, 6 warnings (20.69s). 기존 PyTorch CUDA 테스트3개 skip, 기존 Taichi locale1건/Matplotlib get_cmap5건 warning. 부호/맵/반 스텝/활성0≠OFF/모든 OFF 프로파일/내보내기/출처·서명/부분 write·timeout·connect/health 실패·상태/실제 Qt 편집을 확인했다. 기존 Legacy 이득0 내보내기는 활성 위상으로 대체하지 않고 OFF 미지원 실패로 변경하여 별도 회귀를 추가했다.
+- 후보 맵과 채널CSV 전256개 일치, 4프로파일×일반/1채널/전체OFF12건의 독립 expected frame·fake 송신·binary/CSV/header 일치를 확인했다. 실제 Qt 메인 창에서 Creo256채널 보정→Kinoforms→같은 이득의 T3→fake 송신/export→프로젝트 복원을 실행했다. 예시Focus는 국소 비복원이며 미보정 중력 평형 판정은 보류한다. PNG/예시프로젝트/보정JSON/프레임·검증JSON/JUnit·도구는 scratch/ultraino_migration에 있다.
+- 기존 Anaconda/Qt/pyserial/T2 DLL/CAD 입력을 재사용했다. 설치·새 환경·CAD 재생성·DLL 재빌드·backup 갱신·실제 COM 열기/송신·파형/부양/k-Wave 측정은 하지 않았다. T5는 아직 commit/push하지 않았다. 상세 및 다음 T6 인계는 docs/ultraino_t5_result.md. 실제 컨트롤러/펌웨어·DATA/뱅크 배선·출력 OFF·지속 갱신률·유효 개구·입자·절대 음압 보정은 남아 있다.
+
 ### 2026-10-07 Ultraino 이식 T4 Kinoforms·다중 트랩 완료
 - Creo R2 8면·8기판·기판당32개·총256채널을 유지하고 hologram.py에 Focus/Twin/Standing Wave 가상점, 목표 상대 음압·π 위상 제약, 전방/공액 역전파 IBP를 구현했다. T2 전파·합산을 재사용하고 고정 음원 이득과 위상만 조절하는 구동을 구분한다. Java Y→터널 Z의 오른손 좌표 변환 및 원본 중심 기준 ±λ/1.5, ±λ/2를 확인했다.
 - 음장 탭의 다중 트랩 설계 창에서 트랩별 타입·가중치·세계 방향, 초기 위상·반복 설정, 잔차·균일도, 현재 배열 위상 적용·설계 JSON 저장·선택 후보의 T3 고정 위상 분석을 연결했다. 메인 Kinoforms 계산은 한 worker/마지막 대기 요청 방식이며 현재 입력 해시가 다른 결과는 폐기한다. Qt/VTK 갱신은 GUI 스레드, 취소·닫기·Escape는 worker 종료 후 처리한다.
@@ -7,7 +36,7 @@
 - 검증: 전체 pytest 171 passed, 3 skipped, 1 warning (12.58s). 기존 OpenJDK25.0.4.1로 수정하지 않은 원본 Kinoforms.java와 공통 점음원 어댑터를 컴파일·12회 반복하여 3타입을 비교했다. 최대 공통 위상 정렬 phasor 오차2.05e−7. Creo256채널 3모델×3타입×4엔진 요청36건에서 CPU/C++/실제 Taichi CUDA 일치, Torch는 CUDA 없는 환경에서 CPU 전환; 최대 phasor오차2.89e−14/복소음장 상대오차1.44e−15.
 - 고정 위상 T3 진단18건의 h 수렴·전체 K·힘·미보정 평형 보류를 기록했다. 예시0.25mm EPS 조건에서 두 목표 모두 Focus/Twin은 비복원, Z Standing Wave는 국소 복원 부호였다. 조건부 소프트웨어 결과이며 실제 평형·부양 성공은 아니다. 잔차는 반복에 따라 단조 감소를 보장하지 않고 위상 정체도 최적해를 뜻하지 않는다.
 - 실제 Qt 메인 창에서 Creo256·혼합 트랩 적용·선택 후보 T3 분석·오래된 결과 폐기·설정/목표/비활성 체크 복원·계산 중 종료를 확인했다. 설계 창 PNG는 확인했으나 offscreen 3D 뷰포트 캡처·실제 보드·부양·k-Wave는 검증하지 않았다. 단일 CPU 점음원 캐시 사용 사례4.4~8.6ms는 통제된 벤치마크가 아니며 GPU 최초 컴파일과 작은 행렬 호출 비용을 별도 해석해야 한다.
-- 기존 Anaconda/NumPy/SciPy/Qt/T2 DLL 및 기존 JDK를 재사용했다. 추가 설치·환경 생성·CAD 재생성·DLL 재빌드·backup 갱신을 하지 않았다. T0~T3는 사용자 요청으로 00de06b를 main에 push했고 이번 T4 변경은 아직 commit/push하지 않았다. 관련 없는 Creo std.out은 보존했다.
+- 기존 Anaconda/NumPy/SciPy/Qt/T2 DLL 및 기존 JDK를 재사용했다. 추가 설치·환경 생성·CAD 재생성·DLL 재빌드·backup 갱신을 하지 않았다. T0~T3는 사용자 요청으로 00de06b를 main에 push했고 T4도 이후 사용자 요청으로 1d3d83f를 main에 push했다. 관련 없는 Creo std.out은 보존했다.
 - 상세 및 다음 T5 통신·캘리브레이션 인계: docs/ultraino_t4_result.md. 수치/원본Java/Qt/정적 JSON·JUnit·PNG·재현 스크립트는 scratch/ultraino_migration에 있다. 실제 개구·입자 물성·음압 보정 및 컨트롤러/펌웨어/배선 확정은 남아 있다.
 
 ### 2026-10-07 Ultraino 이식 T3 고정 위상 방사력 분석 완료

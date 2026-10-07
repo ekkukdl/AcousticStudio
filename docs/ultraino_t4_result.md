@@ -125,9 +125,11 @@ $env:PATH='C:/Program Files/Eclipse Adoptium/jdk-25.0.4.101-hotspot/bin;' + $env
 & 'C:/Users/line0/anaconda3/python.exe' scratch/ultraino_migration/verify_t4_static.py
 ```
 
-[정적 점검 도구](../scratch/ultraino_migration/verify_t4_static.py)와 [기록](../scratch/ultraino_migration/t4_static_result.json)은 Python 45개 AST, 문서 14개 UTF-8·로컬 링크 164개, 원본/수치 입력/T2 native 해시, JUnit, Qt 결과, `git diff --check`를 확인했다. T0~T3는 사용자 요청으로 [00de06b](https://github.com/ekkukdl/AcousticStudio/commit/00de06b6607c9a822d11f38f1c8f563095d41ae1)를 main에 push했다. 이번 T4는 아직 commit/push하지 않았다. 관련 없는 Creo `std.out`은 보존했다.
+[정적 점검 도구](../scratch/ultraino_migration/verify_t4_static.py)와 [기록](../scratch/ultraino_migration/t4_static_result.json)은 Python 45개 AST, 문서 14개 UTF-8·로컬 링크 164개, 원본/수치 입력/T2 native 해시, JUnit, Qt 결과, `git diff --check`를 확인했다. T0~T3는 사용자 요청으로 [00de06b](https://github.com/ekkukdl/AcousticStudio/commit/00de06b6607c9a822d11f38f1c8f563095d41ae1)를 main에 push했다. T4도 이후 사용자 요청으로 [1d3d83f](https://github.com/ekkukdl/AcousticStudio/commit/1d3d83faa289d0cc9d619fc37097d954442e5052)를 main에 push했다. 관련 없는 Creo `std.out`은 보존했다.
 
-## 다음 에이전트의 T5 시작 기준
+## T5 구현에 사용한 인계 기준
+
+아래 기준에 따른 T5 소프트웨어 검증도 완료했다. 현재 T6 인계와 남은 실제 하드웨어 검증은 [T5 결과](ultraino_t5_result.md)를 따른다.
 
 1. AGENTS.md, 계획과 이 결과를 읽고 현재 변경을 확인한다. 다음 미완료 단계는 **T5 실제 뱅크 연결에 맞는 통신·캘리브레이션**이다. 기존 `HardwareController`, `BoardProfile`, `set_channel_map`, `phases_to_steps`, `encode_phase_frame` 및 테스트를 확장한다. 별도 시리얼/위상/전파 계층을 만들지 않는다.
 2. 소프트웨어 순서의 위상 오프셋·음원 이득과 출처/측정 조건/단위/압력 보정 여부, CAD·배선·보드 버전을 가진 보정 데이터를 추가한다. 이득은 음향 모델 입력이며 보드의 가변 구동 진폭 지원을 가정하지 않는다. 위상 보정의 부호를 명시하고 기준 파형으로 확인한다.

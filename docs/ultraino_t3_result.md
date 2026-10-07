@@ -93,7 +93,7 @@ $env:PYTHONIOENCODING = 'utf-8'
 
 ## T4 구현에 사용한 인계 기준
 
-T0~T3는 이후 사용자 요청으로 [00de06b 커밋](https://github.com/ekkukdl/AcousticStudio/commit/00de06b6607c9a822d11f38f1c8f563095d41ae1)에 기록하여 main에 push했다. 아래 기준에 따른 T4도 소프트웨어 검증을 완료했으며 현재 다음 단계는 T5다. 최신 인계는 [T4 결과](ultraino_t4_result.md)를 따른다.
+T0~T3는 이후 사용자 요청으로 [00de06b 커밋](https://github.com/ekkukdl/AcousticStudio/commit/00de06b6607c9a822d11f38f1c8f563095d41ae1)에 기록하여 main에 push했다. 아래 기준에 따른 T4 및 T5도 소프트웨어 검증을 완료했으며 현재 다음 소프트웨어 단계는 T6다. 최신 인계는 [T5 결과](ultraino_t5_result.md)를 따른다.
 
 1. AGENTS.md, 계획, T2/T3 결과를 읽고 `git status --short`를 확인한다. T4 구현은 기존 형상·전파·분석 경로를 재사용한다.
 2. 원본 [Kinoforms.java](../../simulations/Ultraino/AcousticFieldSim/src/acousticfield3d/algorithms/Kinoforms.java)를 읽고 `hologram.py`에 가상점 생성과 IBP를 추가한다. PhaseEngine 진입점과 T2 전파 행렬을 연결한다. 배열 로더·전파 엔진·시리얼 계층을 중복 작성하지 않는다.

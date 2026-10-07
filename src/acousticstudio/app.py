@@ -30,11 +30,35 @@ from acousticstudio.field_model import FieldConfig
 from acousticstudio.acoustic_model_ui import AcousticModelControls, field_kwargs, model_changed, model_failed, show_backend
 from acousticstudio.force_analysis import AnalysisSettings, FieldSnapshot
 from acousticstudio.hologram import HologramSettings, TrapTarget, input_signature
+from acousticstudio.calibration import Calibration, layout_signature
+from acousticstudio.compute_devices import probe_compute_devices
 
 
 def hologram_kwargs(window):
     values = getattr(window, 'hologram_settings', None)
     return {} if values is None else dict(hologram_settings=HologramSettings(**values))
+
+
+def window_layout(window):
+    transducers = []
+    for actor in window.transducer_actors:
+        if hasattr(actor, '_geometry_element'):
+            transducers.append(dict(geometry_instance=actor._geometry_instance, geometry_channel=actor._geometry_element['channel']))
+        else:
+            matrix = actor.GetUserMatrix()
+            transducers.append(dict(matrix=[] if matrix is None else [matrix.GetElement(row, col) for row in range(4) for col in range(4)]))
+    return layout_signature(getattr(window, 'geometry_arrays', []), transducers)
+
+
+def source_inputs(window):
+    centres, gains = transducer_inputs(getattr(window, 'transducer_actors', []))
+    calibration = getattr(window, 'calibration', None)
+    if calibration is not None:
+        calibration.validate_context(len(gains), window.hw_controller.board_profile.key, window_layout(window))
+        gains = gains * np.asarray(calibration.source_gains) * np.asarray(calibration.enabled)
+    if not np.isfinite(gains).all():
+        raise ValueError('보정 후 음원 이득이 유한하지 않습니다.')
+    return centres, gains
 
 
 class AcousticStudioMain(QMainWindow):
@@ -118,6 +142,7 @@ class AcousticStudioMain(QMainWindow):
         self._hologram_controller = None
         self._closing_for_hologram = False
         self.hw_controller = HardwareController(self)
+        self.calibration = None
         self.state_mgr = StateManager(max_undo=20)
         
         from PySide6.QtGui import QIcon
@@ -404,6 +429,10 @@ class AcousticStudioMain(QMainWindow):
             self.board_profile_actions[profile.key] = action
         self.board_profile_cb.currentIndexChanged.connect(self.sync_board_profile_menu)
         self.sync_board_profile_menu()
+        self.board_menu.addSeparator()
+        self.calibration_action = self.board_menu.addAction('채널 보정·맵 및 OFF 프레임…', self.open_calibration)
+        self.board_menu.addAction('단일 채널 테스트 전송…', self.send_single_channel_test)
+        self.board_menu.addAction('전체 채널 OFF 전송', self.send_all_off)
 
         self.btn_connect_hw = QPushButton("연결")
         self.btn_send_phase = QPushButton("위상 전송")
@@ -434,37 +463,25 @@ class AcousticStudioMain(QMainWindow):
         
         # Add Compute Mode UI
         try:
-            from acousticstudio.sonic_wrapper import is_gpu_available, get_cpu_name, get_gpu_name
-            has_gpu = is_gpu_available()
+            from acousticstudio.sonic_wrapper import get_cpu_name
             cpu_name = get_cpu_name()
-            gpu_name = get_gpu_name()
-        except ImportError:
-            has_gpu = False
+        except Exception:
             cpu_name = "Unknown CPU"
-            gpu_name = "Unknown GPU"
-            
-        import importlib.util
-        self.has_taichi = importlib.util.find_spec("taichi") is not None
-        self.has_pytorch = importlib.util.find_spec("torch") is not None
+        self.refresh_compute_devices()
             
         self.compute_mode_cb = QComboBox()
         self.compute_mode_cb.setStyleSheet("QComboBox { combobox-popup: 0; }")
-        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (보통) (Numba JIT)")
-        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (빠름) (C++ 최적화)")
-        self.compute_mode_cb.addItem("GPU: 범용 그래픽 (매우 빠름) (Taichi 가속)")
-        self.compute_mode_cb.addItem(f"GPU: {gpu_name} (가장 빠름) (PyTorch/CUDA 가속)")
+        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (Numba JIT)")
+        self.compute_mode_cb.addItem(f"CPU: {cpu_name} (C++ 최적화)")
+        self.compute_mode_cb.addItem("Taichi")
+        self.compute_mode_cb.addItem("PyTorch/CUDA")
+        self.compute_mode_cb.setToolTip("선택 엔진은 복소 행렬 곱을 계산합니다. 전파 행렬 생성과 Kinoforms 제약 처리는 CPU에서 수행합니다.\n실제 사용 엔진과 CPU 전환 사유는 음장 탭의 계산 상태에 표시됩니다.")
         
         if hasattr(self, "update_compute_mode_styles"):
             self.update_compute_mode_styles()
             
-        best_idx = 0
-        try:
-            from acousticstudio.sonic_wrapper import _cpp_lib
-            if _cpp_lib is not None: best_idx = 1
-        except: pass
-        if getattr(self, 'has_taichi', False): best_idx = 2
-        if getattr(self, 'has_pytorch', False): best_idx = 3
-        self.compute_mode_cb.setCurrentIndex(best_idx)
+        self.compute_mode_cb.setCurrentIndex(self.compute_devices.preferred_mode())
+        self._active_compute_mode = self.compute_mode_cb.currentIndex()
             
         self.compute_mode_cb.currentIndexChanged.connect(self.on_compute_mode_changed)
             
@@ -1019,6 +1036,75 @@ class AcousticStudioMain(QMainWindow):
         return None
     def get_control_point_actors(self):
         return [p["actor"] for p in self.control_points]
+    def open_calibration(self):
+        from pathlib import Path
+        from acousticstudio.calibration_ui import CalibrationDialog
+        try:
+            if self.hw_controller.is_connected():
+                raise ValueError('보드 연결을 해제한 뒤 보정 설정을 변경하세요.')
+            count = len(self.transducer_actors)
+            if not 1 <= count <= 4096:
+                raise ValueError('보정할 배열을 먼저 추가하세요. 최대 4096채널을 지원합니다.')
+            profile = self.hw_controller.board_profile
+            if profile.channel_count is not None and count != profile.channel_count:
+                raise ValueError(f'{profile.label}은 {profile.channel_count}채널 배열을 요구합니다.')
+            candidate = Path(__file__).resolve().parents[2] / '구상도/outputs/panel_8faces_32ch_R1/physical_to_software_channel_map.json'
+            signature = window_layout(self)
+            current, mismatch = self.calibration, ''
+            if current is not None:
+                try:
+                    current.validate_context(count, profile.key, signature)
+                except ValueError as exc:
+                    current, mismatch = None, str(exc)
+            dialog = CalibrationDialog(count, profile, signature, current, candidate, self)
+            if mismatch:
+                dialog.status.setText(f'{mismatch} 새 보정을 작성하거나 보정을 제거하세요.')
+            dialog.applied.connect(self.apply_calibration)
+            dialog.exec()
+        except (ValueError, KeyError) as exc:
+            self.show_silent_msg('채널 보정', str(exc))
+
+    def apply_calibration(self, values):
+        try:
+            profile = self.hw_controller.board_profile.key
+            if values is not None:
+                values.validate_context(len(self.transducer_actors), profile, window_layout(self))
+            settings = dict(board_profile=profile,
+                            channel_map=None if values is None or values.channel_map is None else list(values.channel_map),
+                            phase_offsets_rad=None if values is None else list(values.phase_offsets_rad),
+                            active_channels=None if values is None else list(values.active))
+            self.hw_controller.restore_settings(settings)
+            self.calibration = values
+            if self._hologram_controller is not None:
+                self._hologram_controller.cancel()
+            model_changed(self)
+            self.statusBar().showMessage('채널 보정 변경 — 위상을 다시 계산하세요.', 5000)
+        except (ValueError, RuntimeError) as exc:
+            self.show_silent_msg('보정 적용 불가', str(exc))
+
+    def send_single_channel_test(self):
+        from PySide6.QtWidgets import QInputDialog
+        if not self.transducer_actors or not self.hw_controller.is_connected():
+            self.show_silent_msg('채널 테스트', '배열과 보드 연결이 필요합니다.')
+            return
+        channel, accepted = QInputDialog.getInt(self, '단일 채널 테스트', '소프트웨어 채널:', 0, 0, len(self.transducer_actors) - 1)
+        if accepted:
+            self.send_test_frame(channel)
+
+    def send_all_off(self):
+        self.send_test_frame(None)
+
+    def send_test_frame(self, channel):
+        try:
+            if not self.hw_controller.is_connected():
+                raise ValueError('보드 연결이 필요합니다. 프레임 파일은 보정 창에서 저장할 수 있습니다.')
+            source_inputs(self)  # validate the current calibration/layout before any write
+            frame = self.hw_controller.build_test_frame(channel, count=len(self.transducer_actors))
+            if self.hw_controller.send_packet(frame):
+                self.statusBar().showMessage('테스트 프레임을 포트에 전달했습니다. 보드 수신 확인은 별도입니다.', 5000)
+        except (ValueError, KeyError) as exc:
+            self.show_silent_msg('테스트 전송 불가', str(exc))
+
     def select_board_profile(self, profile_key):
         """Apply the board profile selected from the top-level board menu."""
         index = self.board_profile_cb.findData(profile_key)
@@ -1047,7 +1133,11 @@ class AcousticStudioMain(QMainWindow):
             return
         try:
             profile = self.hw_controller.set_board_profile(profile_key)
+            self.calibration = None
+            self._field_model_dirty = True
             self.serial_baud_cb.setCurrentText(str(profile.baud_rate))
+            if hasattr(self, 'state_mgr') and hasattr(self, 'transducer_actors'):
+                self.push_state()
         except RuntimeError as e:
             self.show_silent_msg("보드 프로파일", str(e))
             self.board_profile_cb.blockSignals(True)
@@ -1088,7 +1178,8 @@ class AcousticStudioMain(QMainWindow):
             phases = [getattr(act, '_phase', 0.0) for act in self.transducer_actors]
             if not phases:
                 return
-            self.hw_controller.send_phases(phases)
+            _, gains = source_inputs(self)
+            self.hw_controller.send_phases(phases, active=(gains > 0).tolist())
         except ValueError as e:
             self.show_silent_msg("위상 전송", str(e))
         except Exception as e:
@@ -1098,6 +1189,7 @@ class AcousticStudioMain(QMainWindow):
         self.btn_connect_hw.setText("연결")
         self.btn_send_phase.setEnabled(False)
         if hasattr(self, 'chk_realtime_send'):
+            self.chk_realtime_send.setChecked(False)
             self.chk_realtime_send.setEnabled(False)
         if reason:
             self.show_silent_msg("하드웨어 연결 끊김", reason)
@@ -1589,6 +1681,10 @@ class AcousticStudioMain(QMainWindow):
     def get_state(self, for_file=False):
         data = {}
         data['geometry_arrays'] = deepcopy(getattr(self, 'geometry_arrays', []))
+        if hasattr(self, 'calibration'):
+            data['calibration'] = None if self.calibration is None else self.calibration.to_dict()
+        if hasattr(getattr(self, 'hw_controller', None), 'settings'):
+            data['hardware_settings'] = deepcopy(self.hw_controller.settings())
         if hasattr(self, 'acoustic_model_controls'):
             data['acoustic_model'] = self.acoustic_model_controls.config().to_dict()
         if hasattr(self, 'force_analysis_settings'):
@@ -1651,6 +1747,8 @@ class AcousticStudioMain(QMainWindow):
                     for c in range(4):
                         matrix_vals.append(mat.GetElement(r, c))
             tx = {'matrix': matrix_vals, 'amplitude': getattr(actor, '_amplitude', 1.0)}
+            if getattr(actor, '_enabled', True) is False:
+                tx['enabled'] = False
             if hasattr(actor, '_geometry_element'):
                 tx['amplitude'] = actor._geometry_element['amplitude']
                 tx['geometry_instance'] = actor._geometry_instance
@@ -1700,16 +1798,40 @@ class AcousticStudioMain(QMainWindow):
             if channels != list(range(256)):
                 raise ValueError('저장된 CAD 배열의 채널 순서와 수량이 잘못되었습니다.')
 
+        # A board profile describes a physical protocol and is persisted with a
+        # project, but never changed while a live board is connected.
+        for tx in data.get('transducers', []):
+            if 'enabled' in tx and type(tx['enabled']) is not bool:
+                raise ValueError('송신기 활성 상태는 참/거짓이어야 합니다.')
+        candidate_hardware = HardwareController()
+        hardware_settings = data.get('hardware_settings', dict(board_profile=data.get('board_profile', 'legacy_phase32')))
+        candidate_hardware.restore_settings(hardware_settings)
+        calibration = None if data.get('calibration') is None else Calibration.from_dict(data['calibration'])
+        if calibration is not None:
+            calibration.validate_context(len(data.get('transducers', [])), candidate_hardware.board_profile.key,
+                                         layout_signature(geometries, data.get('transducers', [])))
+            expected = dict(board_profile=calibration.board_profile,
+                            channel_map=None if calibration.channel_map is None else list(calibration.channel_map),
+                            phase_offsets_rad=list(calibration.phase_offsets_rad), active_channels=list(calibration.active))
+            if candidate_hardware.settings() != expected:
+                raise ValueError('보정 파일과 저장된 하드웨어 보정 설정이 다릅니다.')
+        if hasattr(self.hw_controller, 'settings') and self.hw_controller.is_connected() and self.hw_controller.settings() != candidate_hardware.settings():
+            raise RuntimeError('보드 연결을 해제한 뒤 다른 보정/맵/프로파일을 복원하세요.')
         controller = getattr(self, '_hologram_controller', None)
         if controller is not None:
             controller.cancel()
-        # A board profile describes a physical protocol and is persisted with a
-        # project, but never changed while a live board is connected.
-        profile_key = data.get('board_profile')
-        if profile_key in BOARD_PROFILES and not self.hw_controller.is_connected():
-            profile_index = self.board_profile_cb.findData(profile_key)
-            if profile_index >= 0:
-                self.board_profile_cb.setCurrentIndex(profile_index)
+        if hasattr(self.hw_controller, 'restore_settings'):
+            self.hw_controller.restore_settings(candidate_hardware.settings())
+        if hasattr(self, 'calibration'):
+            self.calibration = calibration
+        profile_key = candidate_hardware.board_profile.key
+        if profile_key in BOARD_PROFILES and not self.hw_controller.is_connected() and hasattr(self, 'board_profile_cb'):
+            blocked = self.board_profile_cb.blockSignals(True)
+            self.board_profile_cb.setCurrentIndex(self.board_profile_cb.findData(profile_key))
+            self.board_profile_cb.blockSignals(blocked)
+            if hasattr(self, 'sync_board_profile_menu'):
+                self.sync_board_profile_menu()
+            self.serial_baud_cb.setCurrentText(str(candidate_hardware.board_profile.baud_rate))
         
         # Block signals to prevent UI triggers (e.g. generate_array) while loading state
         ui_elements = [
@@ -1827,6 +1949,8 @@ class AcousticStudioMain(QMainWindow):
                                 mat.SetElement(r, c, matrix_vals[r*4 + c])
                         self.transducer_actors[i].SetUserMatrix(mat)
                         self.transducer_actors[i]._amplitude = tx.get('amplitude', getattr(self.transducer_actors[i], '_amplitude', 1.0))
+        for actor, stored in zip(self.transducer_actors, tx_data):
+            actor._enabled = stored.get('enabled', True)
         # Optimize Control Points update
         from PySide6.QtCore import Qt
         from PySide6.QtWidgets import QListWidgetItem
@@ -1996,6 +2120,14 @@ class AcousticStudioMain(QMainWindow):
     def new_project(self):
         if not self.check_unsaved_changes():
             return
+        try:
+            self.hw_controller.restore_settings(dict(board_profile=self.hw_controller.board_profile.key))
+        except RuntimeError as exc:
+            self.show_silent_msg('새 프로젝트', str(exc))
+            return
+        self.calibration = None
+        if self._hologram_controller is not None:
+            self._hologram_controller.cancel()
             
         # Clear transducers
         for actor in self.transducer_actors:
@@ -2387,6 +2519,8 @@ class AcousticStudioMain(QMainWindow):
                 actor.SetUserMatrix(vtk_matrix(support['matrix']))
 
     def simulate_colors(self):
+        if getattr(self, '_compute_installing', False):
+            return
         import time
         if hasattr(self, 'run_btn') and self.run_btn.isCheckable() and not self.run_btn.isChecked():
             return
@@ -2418,7 +2552,11 @@ class AcousticStudioMain(QMainWindow):
             if item and item.checkState() == Qt.Checked:
                 active_pts.append(pt)
                 
-        centers, tx_amplitudes = transducer_inputs(self.transducer_actors)
+        try:
+            centers, tx_amplitudes = source_inputs(self)
+        except ValueError as exc:
+            model_failed(self, exc)
+            return
         self._last_packet = None
         
         mode_idx = self.compute_mode_cb.currentIndex()
@@ -2576,7 +2714,11 @@ class AcousticStudioMain(QMainWindow):
             self.plotter.render()
             return
         
-        tx_centers, tx_amplitudes = transducer_inputs(self.transducer_actors)
+        try:
+            tx_centers, tx_amplitudes = source_inputs(self)
+        except ValueError as exc:
+            model_failed(self, exc)
+            return
         if getattr(self, '_field_model_dirty', False):
             return
         tx_phases = np.array([getattr(a, '_phase', 0.0) for a in self.transducer_actors])
@@ -2678,59 +2820,113 @@ class AcousticStudioMain(QMainWindow):
                 actor.SetVisibility(False)
                 
         self.plotter.render()
+    def refresh_compute_devices(self):
+        self.compute_devices = probe_compute_devices()
+        self.has_taichi = self.compute_devices.taichi_available
+        self.has_pytorch = self.compute_devices.cuda_available
+
     def update_compute_mode_styles(self):
         from PySide6.QtGui import QColor, QBrush
         if not hasattr(self, 'compute_mode_cb'): return
         model = self.compute_mode_cb.model()
         if not model: return
         
-        if getattr(self, 'has_taichi', False):
-            self.compute_mode_cb.setItemText(2, "GPU: 범용 그래픽 (매우 빠름) (Taichi 가속)")
+        devices = self.compute_devices
+        if devices.taichi_available:
+            self.compute_mode_cb.setItemText(2, f"GPU: Taichi ({devices.taichi_arch})")
             model.item(2).setForeground(QBrush(QColor(0,0,0)))
         else:
-            self.compute_mode_cb.setItemText(2, "GPU: 범용 그래픽 (미설치 - 클릭 시 설치)")
+            self.compute_mode_cb.setItemText(2, "Taichi: 사용 불가" if devices.taichi_installed else "Taichi: 미설치 - 클릭 시 설치")
             model.item(2).setForeground(QBrush(QColor(150, 150, 150)))
+        model.item(2).setToolTip(devices.taichi_error or f"실제 Taichi 런타임: {devices.taichi_arch}")
             
-        if getattr(self, 'has_pytorch', False):
-            gpu_name = "GPU"
-            try:
-                from acousticstudio.sonic_wrapper import get_gpu_name
-                gpu_name = get_gpu_name()
-            except: pass
-            self.compute_mode_cb.setItemText(3, f"GPU: {gpu_name} (가장 빠름) (PyTorch/CUDA 가속)")
+        if devices.cuda_available:
+            self.compute_mode_cb.setItemText(3, f"GPU: {devices.cuda_device} (PyTorch/CUDA)")
             model.item(3).setForeground(QBrush(QColor(0,0,0)))
         else:
-            self.compute_mode_cb.setItemText(3, "GPU: CUDA 전용 (미설치 - 클릭 시 설치)")
+            text = "PyTorch/CUDA: 장치 사용 불가" if devices.torch_cuda_build is not None else "PyTorch/CUDA: 선택 시 준비"
+            if devices.torch_version is not None and devices.torch_cuda_build is None:
+                text += " (CUDA 빌드 없음)"
+            self.compute_mode_cb.setItemText(3, text)
             model.item(3).setForeground(QBrush(QColor(150, 150, 150)))
+        help_text = devices.cuda_error or f"PyTorch {devices.torch_version} · CUDA {devices.torch_cuda_build}"
+        if not devices.cuda_available and devices.torch_cuda_build is None:
+            help_text += "\n선택하면 CUDA 설치본을 준비하고 계산 모드에 적용합니다."
+        model.item(3).setToolTip(help_text)
             
     def on_compute_mode_changed(self, index):
-        if index == 2 and not getattr(self, 'has_taichi', False):
-            self._prompt_install_from_cb("taichi")
-        elif index == 3 and not getattr(self, 'has_pytorch', False):
-            self._prompt_install_from_cb("torch")
-        else:
-            if hasattr(self, 'simulate_colors'):
+        if getattr(self, '_changing_compute_mode', False):
+            return
+        self._changing_compute_mode = True
+        try:
+            setup_error = None
+            devices = self.compute_devices
+            if index == 2 and not devices.taichi_installed:
+                self._prompt_install_from_cb("taichi")
+            elif index == 3 and not devices.cuda_available and devices.torch_cuda_build is None:
+                setup_error = self.configure_pytorch_cuda()
+            devices = self.compute_devices
+            index = self.compute_mode_cb.currentIndex()
+            if (index == 2 and not devices.taichi_available) or (index == 3 and (setup_error or not devices.cuda_available)):
+                reason = devices.taichi_error if index == 2 else setup_error or devices.cuda_error
+                fallback = getattr(self, '_active_compute_mode', devices.preferred_mode())
+                usable = (True, devices.cpp_available, devices.taichi_available, devices.cuda_available)
+                if not usable[fallback]:
+                    fallback = devices.preferred_mode()
+                previous = self.compute_mode_cb.blockSignals(True)
+                self.compute_mode_cb.setCurrentIndex(fallback)
+                self.compute_mode_cb.blockSignals(previous)
+                self.statusBar().showMessage(f"{reason} 사용 가능한 계산 모드를 적용했습니다.", 10000)
+            self._compute_installing = False
+            self._active_compute_mode = self.compute_mode_cb.currentIndex()
+            if self._hologram_controller is not None:
+                self._hologram_controller.cancel()
+            self._last_sim_time = 0.
+            stopped = self.run_btn.isCheckable() and not self.run_btn.isChecked()
+            if self.transducer_actors and self.control_points and not stopped:
                 self.simulate_colors()
-            if hasattr(self, 'update_field_slice'):
+            else:
                 self.update_field_slice()
-                
+        finally:
+            self._compute_installing = False
+            self._changing_compute_mode = False
+
+    def prepare_compute_install(self):
+        self._compute_installing = True
+        if self._hologram_controller is not None:
+            self._hologram_controller.cancel()
+        self.pause_traj_playback()
+        if hasattr(self, '_sim_timer'):
+            self._sim_timer.stop()
+        self._field_model_dirty = True
+        self.acoustic_model_controls.backend.setText('CUDA 준비 중 — 새 위상 계산 대기')
+
+    def configure_pytorch_cuda(self):
+        from acousticstudio.installer_ui import LiveInstallerDialog
+        self.prepare_compute_install()
+        dialog = LiveInstallerDialog(['torch'], self, cuda=True)
+        outcome = dialog.exec()
+        self.refresh_compute_devices()
+        self.update_compute_mode_styles()
+        if outcome != dialog.Accepted:
+            return dialog.worker.error or 'CUDA 준비를 취소했습니다.'
+        return None if dialog.worker.success else dialog.worker.error
+
     def _prompt_install_from_cb(self, pkg):
+        if pkg == 'torch':
+            self.configure_pytorch_cuda()
+            return
         from PySide6.QtWidgets import QMessageBox
         reply = self.show_silent_msg("라이브러리 설치 필요", f"해당 기능을 사용하려면 '{pkg}' 라이브러리가 필요합니다.\n지금 다운로드 및 설치하시겠습니까?", is_question=True)
         if reply == 1:
             from acousticstudio.installer_ui import LiveInstallerDialog
             dlg = LiveInstallerDialog([pkg], self)
             dlg.exec()
-            import importlib.util
-            if pkg == "taichi":
-                self.has_taichi = importlib.util.find_spec("taichi") is not None
-            elif pkg == "torch":
-                self.has_pytorch = importlib.util.find_spec("torch") is not None
+            self.refresh_compute_devices()
             self.update_compute_mode_styles()
             
-            if (pkg == "taichi" and self.has_taichi) or (pkg == "torch" and self.has_pytorch):
-                if hasattr(self, 'simulate_colors'):
-                    self.simulate_colors()
+            if (pkg == "taichi" and self.compute_devices.taichi_installed) or (pkg == "torch" and self.compute_devices.torch_installed):
+                self.on_compute_mode_changed(self.compute_mode_cb.currentIndex())
             else:
                 self.compute_mode_cb.blockSignals(True)
                 self.compute_mode_cb.setCurrentIndex(0)
@@ -2744,11 +2940,14 @@ class AcousticStudioMain(QMainWindow):
         from acousticstudio.installer_ui import LibraryManagerDialog
         dlg = LibraryManagerDialog(self)
         dlg.exec()
-        import importlib.util
-        self.has_taichi = importlib.util.find_spec("taichi") is not None
-        self.has_pytorch = importlib.util.find_spec("torch") is not None
+        self.refresh_compute_devices()
         if hasattr(self, 'update_compute_mode_styles'):
             self.update_compute_mode_styles()
+        if dlg.requested_compute_mode == 3 and self.compute_devices.cuda_available:
+            previous = self.compute_mode_cb.blockSignals(True)
+            self.compute_mode_cb.setCurrentIndex(3)
+            self.compute_mode_cb.blockSignals(previous)
+        self.on_compute_mode_changed(self.compute_mode_cb.currentIndex())
 
     def set_traj_start_from_selected(self):
         if not getattr(self, 'selected_actors', []):
@@ -2795,7 +2994,7 @@ class AcousticStudioMain(QMainWindow):
             
         optim_metrics = None
         if hasattr(self, 'chk_optim_traj') and self.chk_optim_traj.isChecked():
-            tx_centers, tx_amplitudes = transducer_inputs(getattr(self, 'transducer_actors', []))
+            tx_centers, tx_amplitudes = source_inputs(self)
             algo = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else "Twin Trap"
             delays, optim_metrics = self.phase_engine.optimize_trajectory_physical(
                 tx_centers=tx_centers,
@@ -3206,7 +3405,7 @@ class AcousticStudioMain(QMainWindow):
 
         try:
             actors = getattr(self, 'transducer_actors', [])
-            centers, amplitudes = transducer_inputs(actors)
+            centers, amplitudes = source_inputs(self)
             phases = self.phase_engine.calculate_trajectory_phases(
                 centers, points, amplitudes, self.trap_type_cb.currentText(),
                 mode_idx=self.compute_mode_cb.currentIndex(),
@@ -3217,7 +3416,8 @@ class AcousticStudioMain(QMainWindow):
             save_trajectory_export(
                 file_path, format_key, traj.get('name', 'Trajectory'), points,
                 traj.get('delays', np.full(len(points), self.traj_delay.value())),
-                phases, self.hw_controller,
+                phases, self.hw_controller, active=(amplitudes > 0).tolist(),
+                calibration_id='' if getattr(self, 'calibration', None) is None else self.calibration.calibration_id,
             )
             if hasattr(self, 'statusBar') and self.statusBar():
                 self.statusBar().showMessage(f"궤적 데이터 내보내기 완료: {file_path}", 5000)
@@ -3240,7 +3440,7 @@ class AcousticStudioMain(QMainWindow):
             values = dict(zip(('x', 'y', 'z'), point['actor'].center))
             values['hologram_target'] = deepcopy(point.get('hologram_target', {}))
             points.append(TrapTarget.from_point(values, settings.default_trap_type))
-        centres, amplitudes = transducer_inputs(self.transducer_actors)
+        centres, amplitudes = source_inputs(self)
         kwargs = field_kwargs(self)
         snapshot = FieldSnapshot(centres, kwargs['normals'],
                                  np.array([getattr(actor, '_phase', 0.) for actor in self.transducer_actors]),
@@ -3339,7 +3539,7 @@ class AcousticStudioMain(QMainWindow):
             return
         try:
             from acousticstudio.force_analysis_ui import ForceAnalysisDialog
-            centres, amplitudes = transducer_inputs(self.transducer_actors)
+            centres, amplitudes = source_inputs(self)
             kwargs = field_kwargs(self)
             snapshot = FieldSnapshot(centres, kwargs['normals'],
                                      np.array([actor._phase for actor in self.transducer_actors]),

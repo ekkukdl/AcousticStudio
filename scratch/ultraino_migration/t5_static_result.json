@@ -1,0 +1,19 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "ast_files": 51,
+  "utf8_documents": 15,
+  "local_links": 193,
+  "native_hash_matches": true,
+  "t4_model_hashes_match": true,
+  "t5_input_hashes_match": true,
+  "original_protocol_hashes_match": true,
+  "example_project_and_calibration_match": true,
+  "protocol_cases": 12,
+  "qt_main_verified": true,
+  "pytest_cases": 211,
+  "pytest_passed": 208,
+  "pytest_skipped": 3,
+  "pytest_failures": 0,
+  "pytest_errors": 0,
+  "git_diff_check": true
+}

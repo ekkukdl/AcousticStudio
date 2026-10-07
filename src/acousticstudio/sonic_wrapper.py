@@ -123,16 +123,26 @@ try:
     import torch
     _has_torch = True
     _has_cuda = torch.cuda.is_available()
-except ImportError:
+except Exception:
     _has_torch = False
     _has_cuda = False
 
 def is_gpu_available():
-    return _has_torch and _has_cuda
+    if _has_torch and _has_cuda:
+        return True
+    from acousticstudio.cuda_runtime import runtime_info
+    try:
+        info = runtime_info()
+        return info is not None and info['cuda_available']
+    except Exception:
+        return False
 
 def calculate_phases_gpu(cx, cy, cz, tx, ty, tz, amplitudes, algorithm_str, k):
     if not is_gpu_available():
         return None, None
+    if not _has_cuda:
+        from acousticstudio.cuda_runtime import run_remote
+        return run_remote('phases', cx, cy, cz, tx, ty, tz, amplitudes, algorithm_str, k)
         
     device = torch.device('cuda')
     
@@ -181,6 +191,9 @@ def calculate_phases_gpu(cx, cy, cz, tx, ty, tz, amplitudes, algorithm_str, k):
 def calculate_field_slice_gpu(pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k):
     if not is_gpu_available():
         return None
+    if not _has_cuda:
+        from acousticstudio.cuda_runtime import run_remote
+        return run_remote('field_slice', pts_x, pts_y, pts_z, tx_x, tx_y, tx_z, tx_phases, tx_amplitudes, k)
         
     device = torch.device('cuda')
     
@@ -223,10 +236,17 @@ def get_cpu_name():
         return platform.processor()
 
 def get_gpu_name():
-    if is_gpu_available():
+    if _has_torch and _has_cuda:
         import torch
         return torch.cuda.get_device_name(0)
     else:
+        from acousticstudio.cuda_runtime import runtime_info
+        try:
+            info = runtime_info()
+            if info is not None and info['cuda_available']:
+                return info['cuda_device']
+        except Exception:
+            pass
         import winreg
         try:
             key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r'SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000')
