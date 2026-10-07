@@ -1,0 +1,138 @@
+{
+  "java_version": "openjdk version \"25.0.4.1\" 2026-08-18 LTS",
+  "original_kinoforms_sha256": "88fd6ef6631262cf83ade6d125037e5f2677080b7f544fb2f84dcb76f529226a",
+  "original_source_unchanged": true,
+  "iterations": 12,
+  "source_gains": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "propagation_adapter": "T2-compatible point_source, float32 input/output; renderer/material model excluded",
+  "comparisons": [
+    {
+      "trap_type": "focus",
+      "virtual_count": 2,
+      "phases_rad": [
+        -0.54292375,
+        2.4187703,
+        0.76595205,
+        -2.1743822
+      ],
+      "phase_phasor_error_after_common_phase": 7.115584135381387e-08,
+      "targets_studio": [
+        {
+          "position_mm": [
+            -6.0,
+            0.0,
+            0.0
+          ],
+          "trap_type": "focus",
+          "weight": 1.0,
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "position_mm": [
+            6.0,
+            1.0,
+            2.0
+          ],
+          "trap_type": "focus",
+          "weight": 1.0,
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "trap_type": "twin",
+      "virtual_count": 4,
+      "phases_rad": [
+        -0.41930225,
+        2.7167733,
+        1.0689884,
+        -2.0792985
+      ],
+      "phase_phasor_error_after_common_phase": 1.0570700915821715e-07,
+      "targets_studio": [
+        {
+          "position_mm": [
+            -6.0,
+            0.0,
+            0.0
+          ],
+          "trap_type": "twin",
+          "weight": 1.0,
+          "direction": [
+            -0.006159946638138569,
+            -0.999981027348727,
+            0.0
+          ]
+        },
+        {
+          "position_mm": [
+            6.0,
+            1.0,
+            2.0
+          ],
+          "trap_type": "twin",
+          "weight": 1.0,
+          "direction": [
+            -0.006159946638138569,
+            -0.999981027348727,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "trap_type": "standing_wave",
+      "virtual_count": 4,
+      "phases_rad": [
+        -2.153393,
+        1.1611099,
+        2.6252213,
+        -0.6837843
+      ],
+      "phase_phasor_error_after_common_phase": 2.0493316361287136e-07,
+      "targets_studio": [
+        {
+          "position_mm": [
+            -6.0,
+            0.0,
+            0.0
+          ],
+          "trap_type": "standing_wave",
+          "weight": 1.0,
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "position_mm": [
+            6.0,
+            1.0,
+            2.0
+          ],
+          "trap_type": "standing_wave",
+          "weight": 1.0,
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      ]
+    }
+  ]
+}

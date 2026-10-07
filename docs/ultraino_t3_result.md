@@ -91,9 +91,11 @@ $env:PYTHONIOENCODING = 'utf-8'
 
 [정적 검사 기록](../scratch/ultraino_migration/t3_static_result.json): Python 37개 AST, 문서 13개 UTF-8·로컬 링크 136개, T2 native 소스/DLL 및 수치 비교 입력 해시 일치, `git diff --check`를 확인했다. 실제 보드 송신·부양, CAD 재생성, k-Wave 실행은 수행하지 않았다. backup/commit/push는 갱신하지 않았다.
 
-## 다음 에이전트의 T4 시작 기준
+## T4 구현에 사용한 인계 기준
 
-1. AGENTS.md, 계획, T2/T3 결과를 읽고 `git status --short`를 확인한다. 현재 다음 미완료 단계는 **T4**다. 기존 작업은 아직 커밋하지 않은 상태다.
+T0~T3는 이후 사용자 요청으로 [00de06b 커밋](https://github.com/ekkukdl/AcousticStudio/commit/00de06b6607c9a822d11f38f1c8f563095d41ae1)에 기록하여 main에 push했다. 아래 기준에 따른 T4도 소프트웨어 검증을 완료했으며 현재 다음 단계는 T5다. 최신 인계는 [T4 결과](ultraino_t4_result.md)를 따른다.
+
+1. AGENTS.md, 계획, T2/T3 결과를 읽고 `git status --short`를 확인한다. T4 구현은 기존 형상·전파·분석 경로를 재사용한다.
 2. 원본 [Kinoforms.java](../../simulations/Ultraino/AcousticFieldSim/src/acousticfield3d/algorithms/Kinoforms.java)를 읽고 `hologram.py`에 가상점 생성과 IBP를 추가한다. PhaseEngine 진입점과 T2 전파 행렬을 연결한다. 배열 로더·전파 엔진·시리얼 계층을 중복 작성하지 않는다.
 3. Focus → 다중 Focus → Twin/Standing Wave 순서로 구현한다. Java 가상점 축/위상을 현재 Z축 터널 좌표계로 명시적으로 변환한다. 원본의 가상점 간격을 현재 mm/m 계약에 맞춘다. 초기 위상·반복 수·목표 진폭/상대 위상 제약을 재현 가능한 입력으로 남긴다.
 4. 보드 지원이 확인되지 않은 진폭 제어를 전제로 삼지 않는다. phase-only 제약과 고정 음원 이득을 구분하고 영 복소값/영 진폭을 처리한다. 형상·법선·개구·공통 모델·목표점 변경 시 캐시를 무효화한다.

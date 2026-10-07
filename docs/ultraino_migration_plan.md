@@ -2,14 +2,14 @@
 
 2026-10-07 사용자 지시에 따라 현재 개발 기준을 **8면, 면당 PCB 1장, PCB당 트랜스듀서 32개, 총 8기판·256채널**로 확정한다. 현재 Creo R2의 배치와 일치하는 배열을 AcousticStudio에 추가하고, 그 배열을 공통 입력으로 Ultraino의 다중 트랩·방사력 분석·조작·캘리브레이션 기능을 이식한다.
 
-이 문서는 이후 에이전트의 구현 기준이다. 입력 형상·개발 환경 점검에 이어 T0 계산 경로 수정, T1 CAD 배열 로더·프리셋 연결, T2 공통 복소 음장·방향성, T3 고정 위상 방사력 분석을 완료했다. [T0 기록](ultraino_t0_result.md), [T1 기록](ultraino_t1_result.md), [T2 기록](ultraino_t2_result.md), [T3 기록](ultraino_t3_result.md)을 확인하고 다음 T4부터 진행한다. 사용자의 최신 지시가 과거 보고서·안내의 8면 16기판 구성을 대체한다.
+이 문서는 이후 에이전트의 구현 기준이다. 입력 형상·개발 환경 점검에 이어 T0 계산 경로 수정, T1 CAD 배열 로더·프리셋 연결, T2 공통 복소 음장·방향성, T3 고정 위상 방사력 분석, T4 Kinoforms·다중 트랩을 완료했다. [T0 기록](ultraino_t0_result.md), [T1 기록](ultraino_t1_result.md), [T2 기록](ultraino_t2_result.md), [T3 기록](ultraino_t3_result.md), [T4 기록](ultraino_t4_result.md)을 확인하고 다음 T5부터 진행한다. 사용자의 최신 지시가 과거 보고서·안내의 8면 16기판 구성을 대체한다.
 
 ## 작업 시작 순서
 
 1. [AGENTS.md](../AGENTS.md), 이 문서, [진행 기록](project_status.txt)을 읽는다.
 2. `git status --short`와 관련 소스를 확인하고 기존 사용자 변경을 보존한다.
 3. [점검 결과 JSON](ultraino_migration_audit.json)에서 형상 및 인터프리터 근거를 확인한다. 날짜·해시가 달라졌다면 입력을 다시 확인한다.
-4. 완료된 작업의 검증 기록을 확인하고 첫 미완료 단계부터 작업한다. 현재 T0·T1·T2·T3 완료, 다음은 T4다. 각 작업의 산출물과 완료 기준을 만족한 후 의존하는 작업으로 넘어간다.
+4. 완료된 작업의 검증 기록을 확인하고 첫 미완료 단계부터 작업한다. 현재 T0·T1·T2·T3·T4 완료, 다음은 T5다. 각 작업의 산출물과 완료 기준을 만족한 후 의존하는 작업으로 넘어간다.
 5. 구현 후 진행 기록에 변경·실행한 검증·남은 한계를 기록한다. 다른 에이전트에게 맡길 때 작업 ID, 파일 범위, 완료 기준, 실제 검증 결과를 전달한다.
 
 사용자 승인 전 `backup/`을 갱신하지 않으며, 명시적 요청 없이 commit/push하지 않는다. 이 계획 자체가 실제 보드 송신이나 CAD 재생성의 실행 요청은 아니다.
@@ -87,9 +87,9 @@ Creo JSON의 행렬은 **행 벡터와 마지막 행의 평행이동** 규약이
 
 `creo32_env`라는 경로가 R2 안내와 `.gitignore`에 남아 있지만 현재 존재하지 않는다. CAD 환경의 현존 경로는 위 표의 `creo_cad_env`다. 복사된 `pyvenv.cfg`의 과거 생성 경로만 보고 환경을 이동·재생성하지 않는다.
 
-앱과 CAD 환경에는 NumPy/VTK 등이 각각 다른 버전으로 설치되어 있다. 용도가 분리된 환경이므로 합치지 않는다. 앱 기능 이식에는 이미 설치된 NumPy/Numba/Qt/matplotlib/pyserial을 사용한다. 초기 점검은 Torch/Taichi 설치 메타데이터만 확인했으며, T2/T3에서 Taichi 1.7.4의 실제 CUDA 복소 합산을 검증했다. 설치된 PyTorch 2.14.0은 CUDA build가 없어 CPU 전환만 검증했다. SciPy 1.15.3은 T2부터 공통 모델에 사용한다. k-wave-python 0.6.3rc1은 설치되어 있지만 solver 실행 검증은 포함하지 않는다. Java/NetBeans는 원본 Java 비교 실행이 필요할 때 사용하고 Python 포팅의 필수 환경으로 만들지 않는다. T2는 기존 MSVC로 DLL을 재빌드했고 T3는 같은 DLL을 재사용했다. 추가 환경·패키지를 설치하지 않았다.
+앱과 CAD 환경에는 NumPy/VTK 등이 각각 다른 버전으로 설치되어 있다. 용도가 분리된 환경이므로 합치지 않는다. 앱 기능 이식에는 이미 설치된 NumPy/Numba/Qt/matplotlib/pyserial을 사용한다. 초기 점검은 Torch/Taichi 설치 메타데이터만 확인했으며, T2/T3/T4에서 Taichi 1.7.4의 실제 CUDA 복소 합산을 검증했다. 설치된 PyTorch 2.14.0은 CUDA build가 없어 CPU 전환만 검증했다. SciPy 1.15.3은 T2부터 공통 모델에 사용한다. k-wave-python 0.6.3rc1은 설치되어 있지만 solver 실행 검증은 포함하지 않는다. T4 원본 비교는 기존 OpenJDK 25.0.4.1을 사용했으며 Java/NetBeans는 Python 앱 실행의 필수 환경이 아니다. T2는 기존 MSVC로 DLL을 재빌드했고 T3/T4는 같은 DLL을 재사용했다. 추가 환경·패키지를 설치하지 않았다.
 
-`requirements.txt`에는 무조건 import하는 `numba`가 없고, `main.py`의 필수 패키지 점검은 requirements의 전체 항목과 다르다. T0에서 실행 의존성 선언을 맞추고, 확인한 앱 패키지의 버전 기록을 재현용으로 남긴다. 사용자 Anaconda 전체 환경을 freeze하여 프로젝트 요구사항으로 복사하지 않는다. 새 머신에서는 표의 설치 상태를 보장할 수 없으므로 선택한 인터프리터로 다시 점검한다.
+초기 점검에서 `requirements.txt`의 `numba` 누락과 `main.py` 점검 목록의 불일치를 확인했고 T0에서 필수 의존성 10개를 공통 카탈로그와 일치시켰다. 확인한 앱 패키지 버전은 `requirements-tested.txt`에 기록했다. 사용자 Anaconda 전체 환경을 freeze하여 프로젝트 요구사항으로 복사하지 않는다. 새 머신에서는 표의 설치 상태를 보장할 수 없으므로 선택한 인터프리터로 다시 점검한다.
 
 점검 명령은 저장소 루트에서 실행한다. 아래 스크립트는 입력 파일을 읽고, `--out`으로 지정한 점검 JSON만 갱신한다.
 
@@ -112,7 +112,7 @@ UI의 actor를 계산 데이터의 원본으로 사용하지 않는다. 로더�
 - 송신: 계산 위상 → 소프트웨어 채널별 보정 → 위상 및 활성 상태의 물리 채널 매핑 → 프로파일별 양자화/OFF → 인코딩. 실시간과 파일 내보내기가 같은 경로를 사용한다.
 - 저장: 배열과 보정 메타데이터, 송신 프로파일을 기록하고 이전 `test1.json`을 읽는 이행 경로를 제공한다. Undo/Redo에서도 배열 메타데이터가 소실되지 않아야 한다.
 
-새 파일은 필요 범위에만 추가한다. `geometry.py`의 CAD 배열 로딩·검증과 `geometry_scene.py`의 VTK 어댑터는 T1, `field_model.py`와 `field_backends.py`의 공통 복소 전파·합산은 T2, `force_analysis.py`와 `force_analysis_ui.py`의 고정 위상 힘/퍼텐셜 분석은 T3에서 구현했다. `hologram.py`의 가상점/IBP와 `calibration.py`의 보정 데이터는 T4/T5에서 추가한다. PhaseEngine은 계산 진입점, hardware.py는 전송 책임, app.py/widgets.py는 UI 연결을 유지한다. 외부 라이브러리나 별도 위상 엔진·시리얼 컨트롤러를 중복 도입하지 않는다.
+새 파일은 필요 범위에만 추가한다. `geometry.py`의 CAD 배열 로딩·검증과 `geometry_scene.py`의 VTK 어댑터는 T1, `field_model.py`와 `field_backends.py`의 공통 복소 전파·합산은 T2, `force_analysis.py`와 `force_analysis_ui.py`의 고정 위상 힘/퍼텐셜 분석은 T3에서 구현했다. T4는 `hologram.py`의 가상점/IBP와 `hologram_ui.py`의 취소·최신 요청 관리 및 설계 UI를 추가했다. `calibration.py`의 보정 데이터는 T5에서 추가한다. PhaseEngine은 계산 진입점, hardware.py는 전송 책임, app.py/widgets.py는 UI 연결을 유지한다. 외부 라이브러리나 별도 위상 엔진·시리얼 컨트롤러를 중복 도입하지 않는다.
 
 ## 작업 단위와 완료 기준
 
@@ -158,7 +158,9 @@ Ultraino의 [CalcField.java](../../simulations/Ultraino/AcousticFieldSim/src/aco
 
 ### T4 Kinoforms와 다중 트랩
 
-의존: T2. T3의 진단이 준비되면 물리적 복원성을 함께 평가한다. 신규 hologram.py와 PhaseEngine을 연결한다.
+상태: **구현 및 소프트웨어 검증 완료**. [상세 결과·사용법·T5 인계](ultraino_t4_result.md). 전체 테스트 171개 통과·3개 skip. 원본 Java 반복 계산의 최대 공통 위상 정렬 오차 2.05e−7, Creo256채널 36건의 CPU/C++/실제 Taichi CUDA 및 Torch CPU 전환 비교를 확인했다. 음압 균일도와 실물 부양을 구분한다.
+
+의존: T2, T3 진단. hologram.py와 PhaseEngine을 연결하고 hologram_ui.py를 기존 메인 창에서 사용한다.
 
 [Kinoforms.java](../../simulations/Ultraino/AcousticFieldSim/src/acousticfield3d/algorithms/Kinoforms.java)의 가상점 생성, 전방 투영, 목표 진폭·상대 위상 제약, 공액 역전파, 송신기 진폭 제약을 옮긴다. Focus → 다중 Focus → Twin/Standing Wave 순서로 구현한다. 원본 가상점 간격·트랩 방향은 Ultraino 좌표계 변환 후 적용한다. 가상점의 영 복소값과 송신기 영 진폭 정규화를 처리한다. 측정 송신기 이득과 조절 가능한 구동 진폭을 구분하고 보드 능력에 맞는 phase-only 모드를 사용한다. 배열/목표점 변경 시 전파 행렬 캐시를 무효화한다.
 

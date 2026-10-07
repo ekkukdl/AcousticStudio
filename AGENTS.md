@@ -6,9 +6,9 @@
 한국어로 소통하고, 요청에 필요한 변경을 구현·검증한 뒤 결과와 남은 한계를 보고한다.
 
 - Ultraino 이식·터널 배열 작업은 먼저 `docs/ultraino_migration_plan.md`를 읽는다.
-  T0·T1·T2·T3는 구현·소프트웨어 검증 완료이며 상세 기록은 `docs/ultraino_t0_result.md`,
-  `docs/ultraino_t1_result.md`, `docs/ultraino_t2_result.md`, `docs/ultraino_t3_result.md`다.
-  다음은 T4 Kinoforms·다중 트랩이다. T3 기록 끝의 구현·검증 인계 기준을 따른다.
+  T0·T1·T2·T3·T4는 구현·소프트웨어 검증 완료이며 상세 기록은 `docs/ultraino_t0_result.md`,
+  `docs/ultraino_t1_result.md`, `docs/ultraino_t2_result.md`, `docs/ultraino_t3_result.md`,
+  `docs/ultraino_t4_result.md`다. 다음은 T5 통신·캘리브레이션이며 T4 기록 끝의 인계 기준을 따른다.
   현재 기준은 Creo R2의 **8면·8기판·기판당 32송신기, 총 256채널**이다.
   `구상도/outputs/panel_8faces_32ch_R1/array_positions_256.json`의 방사면 좌표와
   법선을 재사용한다. 터널 축은 Z이며 과거 16기판 구성이나 일반 Tube 생성식으로 대체하지 않는다.
@@ -34,6 +34,15 @@
   고유값과 h·h/2·h/4 수렴을 확인한다. 기존 궤적 relative_stiffness_norm과 혼동하지 않는다.
   N*·J*는 상대 음압 1=1Pa 가정값이다. 예시 물성·미보정 음압으로 실물 평형/부양을 선언하지 않는다.
   `force_analysis_ui.py` worker에는 Qt/VTK 객체를 전달하지 않고 계산 중 닫기는 취소·thread 종료를 기다린다.
+- `hologram.py`는 T2 Green 행렬과 고정 음원 이득으로 위상만 조절하는 Kinoforms IBP다.
+  Focus/Twin/Standing Wave를 혼합하며 Java Y→현재 터널 Z의 오른손 좌표 변환을 유지한다.
+  목표 가중치는 상대 음압 제약이며 조절 가능한 송신 진폭이나 부양 성공률이 아니다.
+  위상 정체와 잔차/복원 부호를 구분하고 후보 위상은 T3 FieldSnapshot으로 고정해 평가한다.
+  이득 0은 음향 모델의 비활성 상태다. 실제 OFF·보정·맵·양자화 계약은 T5에서 구현한다.
+  `hologram_ui.py` controller는 한 번에 한 worker만 실행하고 마지막 대기 요청만 보존한다.
+  요청 번호·현재 입력 해시가 일치할 때만 GUI 스레드에서 결과를 적용하며 닫기는 thread 종료를 기다린다.
+  프로젝트는 설정·목표·활성 체크 상태를 저장하고 위상을 재계산한다. 현재 위상 초기값의 정확한
+  재실행에는 설계 JSON의 initial_phases_rad를 사용한다. 기존 단일 궤적의 동기 계산은 T6 후속 범위다.
 
 ## 변경과 사용자 의도
 

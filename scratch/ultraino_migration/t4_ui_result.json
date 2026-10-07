@@ -1,0 +1,116 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "qt_main_integration": true,
+  "channels": 256,
+  "mixed_target_apply": true,
+  "live_worker": true,
+  "latest_input_stale_rejected": true,
+  "settings_and_target_save_restore": true,
+  "inactive_target_save_restore": true,
+  "main_close_during_job": true,
+  "warm_cache": true,
+  "candidate_force_checks": [
+    {
+      "centre_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -0.00019192992659877668,
+          -0.0001769888390687098,
+          -4.251044200188433e-05
+        ],
+        "uncertainty": 2.6588358277493285e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "centre_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -3.7488910363097895e-06,
+          -1.428789544197527e-06,
+          3.5183177379670598e-06
+        ],
+        "uncertainty": 7.112495317687219e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "centre_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          5.080930119409887e-06,
+          6.697171005213014e-06,
+          3.3090182324634885e-05
+        ],
+        "uncertainty": 9.798956332884073e-11,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    }
+  ],
+  "trap_checks": [
+    {
+      "trap_type": "focus",
+      "metrics": {
+        "relative_residual": 0.013236231439330679,
+        "weighted_uniformity": 0.9738710963732264,
+        "fitted_pressure_scale": 1453.6774721560844
+      },
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "trap_type": "twin",
+      "metrics": {
+        "relative_residual": 0.44115301732808715,
+        "weighted_uniformity": 0.8837985451629687,
+        "fitted_pressure_scale": 796.7941293254637
+      },
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "trap_type": "standing_wave",
+      "metrics": {
+        "relative_residual": 0.24926247050943526,
+        "weighted_uniformity": 0.9336944065867948,
+        "fitted_pressure_scale": 1021.4663806807023
+      },
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    }
+  ],
+  "pressure_calibrated": false,
+  "serial_connected": false,
+  "qt_dialog_capture": true,
+  "qt_viewport_capture": false
+}

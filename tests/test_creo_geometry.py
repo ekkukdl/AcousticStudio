@@ -274,3 +274,39 @@ def test_force_settings_persist_undo_redo_and_reject_corrupt_particle_before_sce
     old.pop('force_analysis_settings')
     window.set_state(old)
     assert window.force_analysis_settings == AnalysisSettings().to_dict()
+
+
+def test_hologram_settings_and_target_metadata_persist_and_reject_corrupt_data_before_mutation(window):
+    from acousticstudio.hologram import HologramSettings
+    from PySide6.QtCore import Qt
+    window.hologram_settings = HologramSettings(default_trap_type='twin').to_dict()
+    add_preset(window)
+    actor = window.plotter.add_mesh(pv.Sphere(radius=.25, center=(1., 2., 3.)), color='green')
+    window.control_points.append(dict(name='target', actor=actor, x=1., y=2., z=3., radius=.25,
+                                      hologram_target=dict(trap_type='standing_wave', weight=.7, direction=[0., 0., 1.])))
+    window.points_list.addItem('target'); window.points_list.item(0).setCheckState(Qt.Unchecked)
+    saved = window.get_state(for_file=True)
+    window.set_state(saved)
+    assert window.get_state(for_file=True) == saved
+    window.push_state()
+    window.hologram_settings['iterations'] = 123
+    window.control_points[0]['hologram_target']['weight'] = 2.
+    window.push_state()
+    window.undo(); assert window.get_state(for_file=True) == saved
+    window.redo(); assert window.hologram_settings['iterations'] == 123
+    before = window.get_state(for_file=True)
+    invalid = deepcopy(before)
+    invalid['control_points'][0]['hologram_target']['direction'] = [0., 0., 0.]
+    with pytest.raises(ValueError):
+        window.set_state(invalid)
+    assert window.get_state(for_file=True) == before
+    invalid = deepcopy(before); invalid['control_points'][0]['active'] = 'false'
+    with pytest.raises(ValueError):
+        window.set_state(invalid)
+    assert window.get_state(for_file=True) == before
+    legacy = deepcopy(saved); legacy.pop('hologram_settings'); legacy['control_points'][0].pop('hologram_target')
+    legacy['control_points'][0].pop('active')
+    window.set_state(legacy)
+    assert window.hologram_settings == HologramSettings().to_dict()
+    assert 'hologram_target' not in window.control_points[0]
+    assert window.points_list.item(0).checkState() == Qt.Checked

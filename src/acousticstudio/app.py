@@ -29,6 +29,12 @@ from acousticstudio.geometry_scene import create_geometry_actors, vtk_matrix, tr
 from acousticstudio.field_model import FieldConfig
 from acousticstudio.acoustic_model_ui import AcousticModelControls, field_kwargs, model_changed, model_failed, show_backend
 from acousticstudio.force_analysis import AnalysisSettings, FieldSnapshot
+from acousticstudio.hologram import HologramSettings, TrapTarget, input_signature
+
+
+def hologram_kwargs(window):
+    values = getattr(window, 'hologram_settings', None)
+    return {} if values is None else dict(hologram_settings=HologramSettings(**values))
 
 
 class AcousticStudioMain(QMainWindow):
@@ -108,6 +114,9 @@ class AcousticStudioMain(QMainWindow):
         # --- 분리된 모듈 인스턴스 초기화 ---
         self.phase_engine = PhaseEngine()
         self.force_analysis_settings = AnalysisSettings().to_dict()
+        self.hologram_settings = HologramSettings().to_dict()
+        self._hologram_controller = None
+        self._closing_for_hologram = False
         self.hw_controller = HardwareController(self)
         self.state_mgr = StateManager(max_undo=20)
         
@@ -643,7 +652,7 @@ class AcousticStudioMain(QMainWindow):
         field_group = QGroupBox("위상 계산")
         field_layout = QFormLayout()
         self.trap_type_cb = QComboBox()
-        self.trap_type_cb.addItems(["Twin Trap", "Vortex Trap", "Focus"])
+        self.trap_type_cb.addItems(["Twin Trap", "Vortex Trap", "Focus", "Kinoforms"])
         field_layout.addRow("트랩 종류:", self.trap_type_cb)
         
         self.run_btn = QPushButton("Calculate Phase (위상 계산 및 시각화)")
@@ -654,6 +663,9 @@ class AcousticStudioMain(QMainWindow):
         field_tab_layout.addWidget(field_group)
         self.acoustic_model_controls = AcousticModelControls(lambda *_: model_changed(self))
         field_tab_layout.addWidget(self.acoustic_model_controls)
+        self.btn_hologram = QPushButton('다중 트랩 설계 (Kinoforms)')
+        self.btn_hologram.clicked.connect(self.open_hologram)
+        field_tab_layout.addWidget(self.btn_hologram)
         
         # [5. ?占쎌븬 ?占쎄컖??洹몃９]
         visual_group = QGroupBox("음장 분석")
@@ -1475,6 +1487,12 @@ class AcousticStudioMain(QMainWindow):
             self.delete_selected_objects()
         super().keyPressEvent(event)
     def closeEvent(self, event):
+        controller = getattr(self, '_hologram_controller', None)
+        if controller is not None and controller.busy:
+            self._closing_for_hologram = True
+            controller.cancel()
+            event.ignore()
+            return
         if self.check_unsaved_changes():
             if hasattr(self, 'resource_monitor'):
                 self.resource_monitor.stop()
@@ -1575,6 +1593,8 @@ class AcousticStudioMain(QMainWindow):
             data['acoustic_model'] = self.acoustic_model_controls.config().to_dict()
         if hasattr(self, 'force_analysis_settings'):
             data['force_analysis_settings'] = deepcopy(self.force_analysis_settings)
+        if hasattr(self, 'hologram_settings'):
+            data['hologram_settings'] = deepcopy(self.hologram_settings)
         # Array UI Params
         data['transducer_type'] = self.transducer_type_cb.currentText() if hasattr(self, 'transducer_type_cb') else ""
         data['array_type'] = self.array_type_cb.currentText() if hasattr(self, 'array_type_cb') else ""
@@ -1609,14 +1629,17 @@ class AcousticStudioMain(QMainWindow):
         
         # Targets (Save true updated world position)
         data['control_points'] = []
-        for pt in getattr(self, 'control_points', []):
+        for index, pt in enumerate(getattr(self, 'control_points', [])):
             try:
                 center = self._get_actor_world_center(pt['actor'])
             except:
                 center = pt['actor'].center
             data['control_points'].append({
-                'name': pt['name'], 'x': float(center[0]), 'y': float(center[1]), 'z': float(center[2]), 'radius': pt['radius']
+                'name': pt['name'], 'x': float(center[0]), 'y': float(center[1]), 'z': float(center[2]), 'radius': pt['radius'],
+                'active': self.points_list.item(index) is None or self.points_list.item(index).checkState() == Qt.Checked,
             })
+            if 'hologram_target' in pt:
+                data['control_points'][-1]['hologram_target'] = deepcopy(pt['hologram_target'])
             
         # Transducers Matrices
         data['transducers'] = []
@@ -1650,6 +1673,12 @@ class AcousticStudioMain(QMainWindow):
         geometries = deepcopy(data.get('geometry_arrays', []))
         acoustic_config = FieldConfig(**data.get('acoustic_model', {}))
         force_settings = AnalysisSettings.from_dict(data.get('force_analysis_settings', {}))
+        hologram_settings = HologramSettings(**data.get('hologram_settings', {}))
+        for point in data.get('control_points', []):
+            if 'active' in point and not isinstance(point['active'], bool):
+                raise ValueError('저장된 제어점 활성 상태는 참/거짓이어야 합니다.')
+            if 'hologram_target' in point:
+                TrapTarget.from_point(point, hologram_settings.default_trap_type)
         if hasattr(self, 'acoustic_model_controls'):
             self.acoustic_model_controls.validate_config(acoustic_config)
         for geometry in geometries:
@@ -1671,6 +1700,9 @@ class AcousticStudioMain(QMainWindow):
             if channels != list(range(256)):
                 raise ValueError('저장된 CAD 배열의 채널 순서와 수량이 잘못되었습니다.')
 
+        controller = getattr(self, '_hologram_controller', None)
+        if controller is not None:
+            controller.cancel()
         # A board profile describes a physical protocol and is persisted with a
         # project, but never changed while a live board is connected.
         profile_key = data.get('board_profile')
@@ -1715,6 +1747,8 @@ class AcousticStudioMain(QMainWindow):
             self._field_model_dirty = True
         if hasattr(self, 'force_analysis_settings'):
             self.force_analysis_settings = force_settings.to_dict()
+        if hasattr(self, 'hologram_settings'):
+            self.hologram_settings = hologram_settings.to_dict()
         
         for ui in ui_elements:
             if ui: ui.blockSignals(False)
@@ -1833,13 +1867,26 @@ class AcousticStudioMain(QMainWindow):
             for i, pt in enumerate(pt_data):
                 x, y, z = pt.get('x',0), pt.get('y',0), pt.get('z',50)
                 actor = self.control_points[i]['actor']
+                # Older spheres embed their centre in the mesh and may also carry
+                # an actor position. Restore world coordinates without adding either twice.
+                local_centre = np.asarray(actor.GetMapper().GetInput().GetCenter())
+                actor.SetPosition(0., 0., 0.); actor.SetOrientation(0., 0., 0.); actor.SetScale(1., 1., 1.)
                 mat = vtk.vtkMatrix4x4()
                 mat.Identity()
-                mat.SetElement(0, 3, x)
-                mat.SetElement(1, 3, y)
-                mat.SetElement(2, 3, z)
+                for axis, value in enumerate(np.array([x, y, z]) - local_centre):
+                    mat.SetElement(axis, 3, float(value))
                 actor.SetUserMatrix(mat)
                 
+        for point, stored in zip(self.control_points, pt_data):
+            if 'hologram_target' in stored:
+                point['hologram_target'] = deepcopy(stored['hologram_target'])
+            else:
+                point.pop('hologram_target', None)
+        for index, stored in enumerate(pt_data):
+            item = self.points_list.item(index)
+            if item is not None:
+                item.setCheckState(Qt.Checked if stored.get('active', True) else Qt.Unchecked)
+
         # Trajectory
         if 'traj_start' in data:
             self.traj_start_x.setValue(data['traj_start'][0])
@@ -2365,9 +2412,6 @@ class AcousticStudioMain(QMainWindow):
             
         algorithm = self.trap_type_cb.currentText()
         
-        import matplotlib.cm as cm
-        cmap = cm.get_cmap('hsv')
-        
         active_pts = []
         for idx, pt in enumerate(self.control_points):
             item = self.points_list.item(idx)
@@ -2378,6 +2422,12 @@ class AcousticStudioMain(QMainWindow):
         self._last_packet = None
         
         mode_idx = self.compute_mode_cb.currentIndex()
+        if algorithm == 'Kinoforms':
+            self.start_hologram_live()
+            return
+        controller = getattr(self, '_hologram_controller', None)
+        if controller is not None:
+            controller.cancel()
         
         try:
             total_phases, packet = self.phase_engine.calculate_phases(
@@ -2388,6 +2438,14 @@ class AcousticStudioMain(QMainWindow):
         except ValueError as exc:
             model_failed(self, exc)
             return
+        self.apply_calculated_phases(total_phases, packet)
+
+    def apply_calculated_phases(self, total_phases, packet=None):
+        total_phases = np.asarray(total_phases, dtype=float)
+        if total_phases.shape != (len(self.transducer_actors),) or not np.isfinite(total_phases).all():
+            raise ValueError('적용할 위상의 채널 수 또는 유한값이 잘못되었습니다.')
+        import matplotlib.cm as cm
+        cmap = cm.get_cmap('hsv')
         self._last_packet = packet
 
         self._field_model_dirty = False
@@ -2749,7 +2807,7 @@ class AcousticStudioMain(QMainWindow):
                 mode_idx=self.compute_mode_cb.currentIndex(),
                 has_taichi=getattr(self, 'has_taichi', False),
                 has_pytorch=getattr(self, 'has_pytorch', False),
-                **field_kwargs(self),
+                **field_kwargs(self), **hologram_kwargs(self),
             )
             if hasattr(self, 'statusBar') and self.statusBar():
                 if trajectory_diagnosis_is_valid(optim_metrics):
@@ -3154,7 +3212,7 @@ class AcousticStudioMain(QMainWindow):
                 mode_idx=self.compute_mode_cb.currentIndex(),
                 has_taichi=getattr(self, 'has_taichi', False),
                 has_pytorch=getattr(self, 'has_pytorch', False),
-                **field_kwargs(self),
+                **field_kwargs(self), **hologram_kwargs(self),
             )
             save_trajectory_export(
                 file_path, format_key, traj.get('name', 'Trajectory'), points,
@@ -3171,6 +3229,106 @@ class AcousticStudioMain(QMainWindow):
             self.show_silent_msg("내보내기 완료", f"경로: {file_path}\n\n{detail}")
         except Exception as exc:
             self.show_silent_msg("내보내기 오류", f"위상 계산 또는 파일 저장 중 오류가 발생했습니다:\n{exc}")
+
+    def hologram_inputs(self):
+        indices = [i for i in range(len(self.control_points))
+                   if self.points_list.item(i) and self.points_list.item(i).checkState() == Qt.Checked]
+        settings = HologramSettings(**self.hologram_settings)
+        points = []
+        for index in indices:
+            point = self.control_points[index]
+            values = dict(zip(('x', 'y', 'z'), point['actor'].center))
+            values['hologram_target'] = deepcopy(point.get('hologram_target', {}))
+            points.append(TrapTarget.from_point(values, settings.default_trap_type))
+        centres, amplitudes = transducer_inputs(self.transducer_actors)
+        kwargs = field_kwargs(self)
+        snapshot = FieldSnapshot(centres, kwargs['normals'],
+                                 np.array([getattr(actor, '_phase', 0.) for actor in self.transducer_actors]),
+                                 amplitudes, kwargs['field_config'], kwargs['aperture_radii_mm'])
+        if not points:
+            raise ValueError('활성화된 제어점이 필요합니다.')
+        return snapshot, points, settings, indices
+
+    def start_hologram_live(self):
+        try:
+            from acousticstudio.hologram_ui import HologramController
+            snapshot, targets, settings, _ = self.hologram_inputs()
+            if self._hologram_controller is None:
+                self._hologram_controller = HologramController(self)
+                self._hologram_controller.succeeded.connect(self.hologram_live_completed)
+                self._hologram_controller.failed.connect(self.hologram_live_failed)
+                self._hologram_controller.idle.connect(self.hologram_live_idle)
+            self._field_model_dirty = True
+            self.acoustic_model_controls.backend.setText('Kinoforms 계산 중 — 새 위상 준비 전 송신 보류')
+            for actor in getattr(self, 'field_actors', []):
+                actor.SetVisibility(False)
+            for grid, actor in getattr(self, '_cached_field_grids', {}).values():
+                actor.SetVisibility(False)
+            self._hologram_controller.submit(snapshot, targets, settings, self.compute_mode_cb.currentIndex(),
+                                             getattr(self, 'has_taichi', False), getattr(self, 'has_pytorch', False))
+        except Exception as exc:
+            model_failed(self, exc)
+
+    def hologram_live_completed(self, result):
+        try:
+            snapshot, targets, settings, _ = self.hologram_inputs()
+            current = input_signature(snapshot.sources_mm, snapshot.normals, snapshot.amplitudes,
+                                      snapshot.aperture_radii_mm, snapshot.field_config, targets, settings)
+            if self.trap_type_cb.currentText() != 'Kinoforms' or current != result['input_key']:
+                return
+            self.phase_engine.last_backend = result['backend']
+            self.phase_engine.last_hologram = result
+            self.apply_calculated_phases(result['phases_rad'])
+        except Exception as exc:
+            model_failed(self, exc)
+
+    def hologram_live_failed(self, message):
+        if self.trap_type_cb.currentText() == 'Kinoforms':
+            model_failed(self, message)
+
+    def hologram_live_idle(self):
+        if self._closing_for_hologram:
+            self._closing_for_hologram = False
+            self.close()
+
+    def open_hologram(self):
+        try:
+            from acousticstudio.hologram_ui import HologramDialog
+            snapshot, targets, settings, indices = self.hologram_inputs()
+            if self._hologram_controller is not None:
+                self._hologram_controller.cancel()
+            dialog = HologramDialog(snapshot, targets, settings, self.compute_mode_cb.currentIndex(),
+                                    getattr(self, 'has_taichi', False), getattr(self, 'has_pytorch', False),
+                                    AnalysisSettings.from_dict(self.force_analysis_settings), self)
+            dialog.applied.connect(lambda result: self.apply_hologram_solution(result, indices))
+            dialog.exec()
+        except Exception as exc:
+            self.show_silent_msg('Kinoforms 설계 불가', str(exc))
+
+    def apply_hologram_solution(self, result, indices):
+        try:
+            snapshot, current_targets, _, current_indices = self.hologram_inputs()
+            stored = result['snapshot']
+            if (indices != current_indices or snapshot.field_config.to_dict() != stored['field_config'] or
+                    list(snapshot.aperture_radii_mm) != stored['aperture_radii_mm'] or
+                    any(not np.array_equal(actual, stored[name]) for actual, name in
+                        ((snapshot.sources_mm, 'sources_mm'), (snapshot.normals, 'normals'), (snapshot.amplitudes, 'amplitudes'))) or
+                    any(tuple(target.position_mm) != tuple(data['position_mm']) for target, data in zip(current_targets, result['targets']))):
+                raise ValueError('설계 이후 배열/활성 제어점/음향 설정이 변경되었습니다. 다시 계산하세요.')
+            settings = HologramSettings(**result['settings'])
+            targets = [TrapTarget(**data) for data in result['targets']]
+            phases = np.asarray(result['phases_rad'])
+            if len(targets) != len(indices) or phases.shape != (len(self.transducer_actors),) or not np.isfinite(phases).all():
+                raise ValueError('적용할 Kinoforms 결과의 형상이 잘못되었습니다.')
+            self.hologram_settings = settings.to_dict()
+            for index, target in zip(indices, targets):
+                self.control_points[index]['hologram_target'] = dict(trap_type=target.trap_type, weight=target.weight, direction=list(target.direction))
+            self.trap_type_cb.setCurrentText('Kinoforms')
+            self.phase_engine.last_backend = result['backend']; self.phase_engine.last_hologram = result
+            self.apply_calculated_phases(phases)
+            self.push_state()
+        except Exception as exc:
+            self.show_silent_msg('Kinoforms 적용 불가', str(exc))
 
     def open_force_analysis(self):
         if not self.transducer_actors or not self.control_points:

@@ -1,0 +1,18 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "ast_files": 45,
+  "utf8_documents": 14,
+  "local_links": 164,
+  "native_hash_matches": true,
+  "numerical_input_hashes_match": true,
+  "original_java_hash_matches": true,
+  "backend_cases": 36,
+  "signed_force_diagnoses": 18,
+  "qt_verification_matches": true,
+  "pytest_cases": 174,
+  "pytest_passed": 171,
+  "pytest_skipped": 3,
+  "pytest_failures": 0,
+  "pytest_errors": 0,
+  "git_diff_check": true
+}

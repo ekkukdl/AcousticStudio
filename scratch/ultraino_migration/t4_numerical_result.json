@@ -1,0 +1,1563 @@
+{
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "python_version": "3.13.9",
+  "packages": {
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "numba": "0.62.1",
+    "levitate": "3.0.0",
+    "taichi": "1.7.4",
+    "torch": "2.14.0"
+  },
+  "settings": {
+    "iterations": 50,
+    "phase_tolerance_rad": 0.0,
+    "default_trap_type": "focus",
+    "initialization": "zeros"
+  },
+  "hashes": {
+    "src/acousticstudio/hologram.py": "401470af9eea8aa2a693c5d16af505d924aa0b097ae3f5d8ec1d5ceea9346fab",
+    "src/acousticstudio/field_model.py": "72204059eab888611087416ba92e6670038c28e646d4187c0add8eb7c32b5d47",
+    "src/acousticstudio/sonic_core.dll": "f361f6b91fb1ab9adfb4139d13de6d9d5b3b24e87a9e7bc5a6c34a8aa450ccc1",
+    "구상도/outputs/panel_8faces_32ch_R1/array_positions_256.json": "4fa1145fce5a3f39a84f85b83382aedb8aef7000a028728c60f8a2e68ebbfa79"
+  },
+  "pressure_calibrated": false,
+  "hardware_used": false,
+  "synthetic_directivity_radius_mm": 4.5,
+  "actual_aperture_radius_mm": null,
+  "timing_note": "warm matrix cache, one verification run per case, no 1-2 ms claim",
+  "comparisons": [
+    {
+      "model": "point_source",
+      "trap_type": "focus",
+      "mode": 0,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.17411927565140728,
+        "weighted_uniformity": 0.6994948432878068,
+        "fitted_pressure_scale": 59.434135577821664
+      },
+      "metrics": {
+        "relative_residual": 0.013236231439330679,
+        "weighted_uniformity": 0.9738710963732264,
+        "fitted_pressure_scale": 1453.6774721560844
+      },
+      "iterations": 50,
+      "elapsed_ms": 4.406499999959124,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "focus",
+      "mode": 1,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.17411927565140728,
+        "weighted_uniformity": 0.6994948432878068,
+        "fitted_pressure_scale": 59.434135577821664
+      },
+      "metrics": {
+        "relative_residual": 0.013236231439330679,
+        "weighted_uniformity": 0.9738710963732264,
+        "fitted_pressure_scale": 1453.6774721560844
+      },
+      "iterations": 50,
+      "elapsed_ms": 14.763599999923827,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "focus",
+      "mode": 2,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 1.0919200073868484e-14,
+      "relative_field_error": 8.358073709188356e-16,
+      "initial_metrics": {
+        "relative_residual": 0.17411927565140728,
+        "weighted_uniformity": 0.6994948432878068,
+        "fitted_pressure_scale": 59.434135577821664
+      },
+      "metrics": {
+        "relative_residual": 0.013236231439330455,
+        "weighted_uniformity": 0.9738710963732267,
+        "fitted_pressure_scale": 1453.6774721560837
+      },
+      "iterations": 50,
+      "elapsed_ms": 2149.783899999875,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "focus",
+      "mode": 3,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.17411927565140728,
+        "weighted_uniformity": 0.6994948432878068,
+        "fitted_pressure_scale": 59.434135577821664
+      },
+      "metrics": {
+        "relative_residual": 0.013236231439330679,
+        "weighted_uniformity": 0.9738710963732264,
+        "fitted_pressure_scale": 1453.6774721560844
+      },
+      "iterations": 50,
+      "elapsed_ms": 4.703700000163735,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "twin",
+      "mode": 0,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.9215518919480783,
+        "weighted_uniformity": 0.06706699882844953,
+        "fitted_pressure_scale": 50.19287679029416
+      },
+      "metrics": {
+        "relative_residual": 0.44115301732808715,
+        "weighted_uniformity": 0.8837985451629687,
+        "fitted_pressure_scale": 796.7941293254637
+      },
+      "iterations": 50,
+      "elapsed_ms": 8.635799999865412,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "twin",
+      "mode": 1,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.9215518919480783,
+        "weighted_uniformity": 0.06706699882844953,
+        "fitted_pressure_scale": 50.19287679029416
+      },
+      "metrics": {
+        "relative_residual": 0.44115301732808715,
+        "weighted_uniformity": 0.8837985451629687,
+        "fitted_pressure_scale": 796.7941293254637
+      },
+      "iterations": 50,
+      "elapsed_ms": 17.249600000013743,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "twin",
+      "mode": 2,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 2.450677444825646e-15,
+      "relative_field_error": 6.458070430234054e-16,
+      "initial_metrics": {
+        "relative_residual": 0.9215518919480783,
+        "weighted_uniformity": 0.06706699882844953,
+        "fitted_pressure_scale": 50.19287679029416
+      },
+      "metrics": {
+        "relative_residual": 0.44115301732808687,
+        "weighted_uniformity": 0.8837985451629694,
+        "fitted_pressure_scale": 796.7941293254637
+      },
+      "iterations": 50,
+      "elapsed_ms": 99.43429999998443,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "twin",
+      "mode": 3,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.9215518919480783,
+        "weighted_uniformity": 0.06706699882844953,
+        "fitted_pressure_scale": 50.19287679029416
+      },
+      "metrics": {
+        "relative_residual": 0.44115301732808715,
+        "weighted_uniformity": 0.8837985451629687,
+        "fitted_pressure_scale": 796.7941293254637
+      },
+      "iterations": 50,
+      "elapsed_ms": 8.259899999984555,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "standing_wave",
+      "mode": 0,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.8079771748012935,
+        "weighted_uniformity": 0.26636471014049956,
+        "fitted_pressure_scale": 60.692999013449345
+      },
+      "metrics": {
+        "relative_residual": 0.24926247050943526,
+        "weighted_uniformity": 0.9336944065867948,
+        "fitted_pressure_scale": 1021.4663806807023
+      },
+      "iterations": 50,
+      "elapsed_ms": 8.25699999995777,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "standing_wave",
+      "mode": 1,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.8079771748012935,
+        "weighted_uniformity": 0.26636471014049956,
+        "fitted_pressure_scale": 60.692999013449345
+      },
+      "metrics": {
+        "relative_residual": 0.24926247050943526,
+        "weighted_uniformity": 0.9336944065867948,
+        "fitted_pressure_scale": 1021.4663806807023
+      },
+      "iterations": 50,
+      "elapsed_ms": 14.211900000191235,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "standing_wave",
+      "mode": 2,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 1.8373457322997063e-14,
+      "relative_field_error": 1.4422022840518105e-15,
+      "initial_metrics": {
+        "relative_residual": 0.8079771748012935,
+        "weighted_uniformity": 0.26636471014049956,
+        "fitted_pressure_scale": 60.692999013449345
+      },
+      "metrics": {
+        "relative_residual": 0.2492624705094352,
+        "weighted_uniformity": 0.9336944065867946,
+        "fitted_pressure_scale": 1021.4663806807023
+      },
+      "iterations": 50,
+      "elapsed_ms": 87.12619999982962,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "point_source",
+      "trap_type": "standing_wave",
+      "mode": 3,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.8079771748012935,
+        "weighted_uniformity": 0.26636471014049956,
+        "fitted_pressure_scale": 60.692999013449345
+      },
+      "metrics": {
+        "relative_residual": 0.24926247050943526,
+        "weighted_uniformity": 0.9336944065867948,
+        "fitted_pressure_scale": 1021.4663806807023
+      },
+      "iterations": 50,
+      "elapsed_ms": 8.133399999906032,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "focus",
+      "mode": 0,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.0010141331078619656,
+        "weighted_uniformity": 0.9979737875914176,
+        "fitted_pressure_scale": 45.7247479358555
+      },
+      "metrics": {
+        "relative_residual": 0.0028737861906305267,
+        "weighted_uniformity": 0.9942688739838185,
+        "fitted_pressure_scale": 1059.5629537592872
+      },
+      "iterations": 50,
+      "elapsed_ms": 8.894899999859263,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "focus",
+      "mode": 1,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.0010141331078619656,
+        "weighted_uniformity": 0.9979737875914176,
+        "fitted_pressure_scale": 45.7247479358555
+      },
+      "metrics": {
+        "relative_residual": 0.0028737861906305267,
+        "weighted_uniformity": 0.9942688739838185,
+        "fitted_pressure_scale": 1059.5629537592872
+      },
+      "iterations": 50,
+      "elapsed_ms": 14.330599999993865,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "focus",
+      "mode": 2,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 1.533555207252136e-14,
+      "relative_field_error": 1.1186314764358445e-15,
+      "initial_metrics": {
+        "relative_residual": 0.0010141331078619656,
+        "weighted_uniformity": 0.9979737875914176,
+        "fitted_pressure_scale": 45.7247479358555
+      },
+      "metrics": {
+        "relative_residual": 0.002873786190630419,
+        "weighted_uniformity": 0.9942688739838184,
+        "fitted_pressure_scale": 1059.5629537592874
+      },
+      "iterations": 50,
+      "elapsed_ms": 88.74450000007528,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "focus",
+      "mode": 3,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.0010141331078619656,
+        "weighted_uniformity": 0.9979737875914176,
+        "fitted_pressure_scale": 45.7247479358555
+      },
+      "metrics": {
+        "relative_residual": 0.0028737861906305267,
+        "weighted_uniformity": 0.9942688739838185,
+        "fitted_pressure_scale": 1059.5629537592872
+      },
+      "iterations": 50,
+      "elapsed_ms": 7.791600000018661,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "twin",
+      "mode": 0,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.910738261150332,
+        "weighted_uniformity": 0.0324617756333752,
+        "fitted_pressure_scale": 42.828408173519556
+      },
+      "metrics": {
+        "relative_residual": 0.4371827110164592,
+        "weighted_uniformity": 0.8576665139818629,
+        "fitted_pressure_scale": 575.7797157240458
+      },
+      "iterations": 50,
+      "elapsed_ms": 7.31339999992997,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "twin",
+      "mode": 1,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.910738261150332,
+        "weighted_uniformity": 0.0324617756333752,
+        "fitted_pressure_scale": 42.828408173519556
+      },
+      "metrics": {
+        "relative_residual": 0.4371827110164592,
+        "weighted_uniformity": 0.8576665139818629,
+        "fitted_pressure_scale": 575.7797157240458
+      },
+      "iterations": 50,
+      "elapsed_ms": 13.731900000038877,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "twin",
+      "mode": 2,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 5.095718837926687e-15,
+      "relative_field_error": 6.848918837931659e-16,
+      "initial_metrics": {
+        "relative_residual": 0.910738261150332,
+        "weighted_uniformity": 0.0324617756333752,
+        "fitted_pressure_scale": 42.828408173519556
+      },
+      "metrics": {
+        "relative_residual": 0.4371827110164593,
+        "weighted_uniformity": 0.8576665139818632,
+        "fitted_pressure_scale": 575.7797157240454
+      },
+      "iterations": 50,
+      "elapsed_ms": 88.00289999999222,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "twin",
+      "mode": 3,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.910738261150332,
+        "weighted_uniformity": 0.0324617756333752,
+        "fitted_pressure_scale": 42.828408173519556
+      },
+      "metrics": {
+        "relative_residual": 0.4371827110164592,
+        "weighted_uniformity": 0.8576665139818629,
+        "fitted_pressure_scale": 575.7797157240458
+      },
+      "iterations": 50,
+      "elapsed_ms": 8.512999999993554,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "standing_wave",
+      "mode": 0,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.926373585597804,
+        "weighted_uniformity": 0.3029343079462864,
+        "fitted_pressure_scale": 24.539261984829643
+      },
+      "metrics": {
+        "relative_residual": 0.2711713393192353,
+        "weighted_uniformity": 0.9178421075802843,
+        "fitted_pressure_scale": 683.1024502258971
+      },
+      "iterations": 50,
+      "elapsed_ms": 4.72170000011829,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "standing_wave",
+      "mode": 1,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.926373585597804,
+        "weighted_uniformity": 0.3029343079462864,
+        "fitted_pressure_scale": 24.539261984829643
+      },
+      "metrics": {
+        "relative_residual": 0.2711713393192353,
+        "weighted_uniformity": 0.9178421075802843,
+        "fitted_pressure_scale": 683.1024502258971
+      },
+      "iterations": 50,
+      "elapsed_ms": 11.697099999992133,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "standing_wave",
+      "mode": 2,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 3.2124605855954973e-15,
+      "relative_field_error": 5.98041815269641e-16,
+      "initial_metrics": {
+        "relative_residual": 0.926373585597804,
+        "weighted_uniformity": 0.3029343079462864,
+        "fitted_pressure_scale": 24.539261984829643
+      },
+      "metrics": {
+        "relative_residual": 0.2711713393192348,
+        "weighted_uniformity": 0.917842107580284,
+        "fitted_pressure_scale": 683.1024502258972
+      },
+      "iterations": 50,
+      "elapsed_ms": 86.623500000087,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "standing_wave",
+      "mode": 3,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.926373585597804,
+        "weighted_uniformity": 0.3029343079462864,
+        "fitted_pressure_scale": 24.539261984829643
+      },
+      "metrics": {
+        "relative_residual": 0.2711713393192353,
+        "weighted_uniformity": 0.9178421075802843,
+        "fitted_pressure_scale": 683.1024502258971
+      },
+      "iterations": 50,
+      "elapsed_ms": 8.122400000047492,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "focus",
+      "mode": 0,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.04745154495122834,
+        "weighted_uniformity": 0.9092986575797745,
+        "fitted_pressure_scale": 48.92039783787498
+      },
+      "metrics": {
+        "relative_residual": 0.0018127063126270057,
+        "weighted_uniformity": 0.9963811413570364,
+        "fitted_pressure_scale": 1149.8471901679793
+      },
+      "iterations": 50,
+      "elapsed_ms": 6.069000000024971,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "focus",
+      "mode": 1,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.04745154495122834,
+        "weighted_uniformity": 0.9092986575797745,
+        "fitted_pressure_scale": 48.92039783787498
+      },
+      "metrics": {
+        "relative_residual": 0.0018127063126270057,
+        "weighted_uniformity": 0.9963811413570364,
+        "fitted_pressure_scale": 1149.8471901679793
+      },
+      "iterations": 50,
+      "elapsed_ms": 9.986000000026252,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "focus",
+      "mode": 2,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 4.927689594407735e-15,
+      "relative_field_error": 9.288507245155556e-16,
+      "initial_metrics": {
+        "relative_residual": 0.04745154495122834,
+        "weighted_uniformity": 0.9092986575797745,
+        "fitted_pressure_scale": 48.92039783787498
+      },
+      "metrics": {
+        "relative_residual": 0.0018127063126263984,
+        "weighted_uniformity": 0.9963811413570374,
+        "fitted_pressure_scale": 1149.8471901679795
+      },
+      "iterations": 50,
+      "elapsed_ms": 81.72070000000531,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "focus",
+      "mode": 3,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.04745154495122834,
+        "weighted_uniformity": 0.9092986575797745,
+        "fitted_pressure_scale": 48.92039783787498
+      },
+      "metrics": {
+        "relative_residual": 0.0018127063126270057,
+        "weighted_uniformity": 0.9963811413570364,
+        "fitted_pressure_scale": 1149.8471901679793
+      },
+      "iterations": 50,
+      "elapsed_ms": 7.141900000078749,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "twin",
+      "mode": 0,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.913791402107107,
+        "weighted_uniformity": 0.04126342362474777,
+        "fitted_pressure_scale": 44.407968538644134
+      },
+      "metrics": {
+        "relative_residual": 0.38963937293610207,
+        "weighted_uniformity": 0.9567089479263865,
+        "fitted_pressure_scale": 632.1927264159522
+      },
+      "iterations": 50,
+      "elapsed_ms": 8.988199999976132,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "twin",
+      "mode": 1,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.913791402107107,
+        "weighted_uniformity": 0.04126342362474777,
+        "fitted_pressure_scale": 44.407968538644134
+      },
+      "metrics": {
+        "relative_residual": 0.38963937293610207,
+        "weighted_uniformity": 0.9567089479263865,
+        "fitted_pressure_scale": 632.1927264159522
+      },
+      "iterations": 50,
+      "elapsed_ms": 14.641199999914534,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "twin",
+      "mode": 2,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 2.8945113320754e-14,
+      "relative_field_error": 8.759961104606609e-16,
+      "initial_metrics": {
+        "relative_residual": 0.913791402107107,
+        "weighted_uniformity": 0.04126342362474777,
+        "fitted_pressure_scale": 44.407968538644134
+      },
+      "metrics": {
+        "relative_residual": 0.38963937293610224,
+        "weighted_uniformity": 0.9567089479263854,
+        "fitted_pressure_scale": 632.192726415952
+      },
+      "iterations": 50,
+      "elapsed_ms": 80.81670000001395,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "twin",
+      "mode": 3,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.913791402107107,
+        "weighted_uniformity": 0.04126342362474777,
+        "fitted_pressure_scale": 44.407968538644134
+      },
+      "metrics": {
+        "relative_residual": 0.38963937293610207,
+        "weighted_uniformity": 0.9567089479263865,
+        "fitted_pressure_scale": 632.1927264159522
+      },
+      "iterations": 50,
+      "elapsed_ms": 7.082200000013472,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "standing_wave",
+      "mode": 0,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.8934465273321198,
+        "weighted_uniformity": 0.29096852379909083,
+        "fitted_pressure_scale": 33.06098974456608
+      },
+      "metrics": {
+        "relative_residual": 0.2652866725976737,
+        "weighted_uniformity": 0.8957336483996237,
+        "fitted_pressure_scale": 753.150407324209
+      },
+      "iterations": 50,
+      "elapsed_ms": 9.142900000142618,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 0,
+        "backend": "Numba CPU",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "standing_wave",
+      "mode": 1,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.8934465273321198,
+        "weighted_uniformity": 0.29096852379909083,
+        "fitted_pressure_scale": 33.06098974456608
+      },
+      "metrics": {
+        "relative_residual": 0.2652866725976737,
+        "weighted_uniformity": 0.8957336483996237,
+        "fitted_pressure_scale": 753.150407324209
+      },
+      "iterations": 50,
+      "elapsed_ms": 12.524299999995492,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "standing_wave",
+      "mode": 2,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 1.4947350299918526e-14,
+      "relative_field_error": 1.0576463440071491e-15,
+      "initial_metrics": {
+        "relative_residual": 0.8934465273321198,
+        "weighted_uniformity": 0.29096852379909083,
+        "fitted_pressure_scale": 33.06098974456608
+      },
+      "metrics": {
+        "relative_residual": 0.2652866725976731,
+        "weighted_uniformity": 0.8957336483996234,
+        "fitted_pressure_scale": 753.150407324209
+      },
+      "iterations": 50,
+      "elapsed_ms": 88.4349000000384,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi cuda",
+        "fallback_reason": null
+      }
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "standing_wave",
+      "mode": 3,
+      "channels": 256,
+      "phase_phasor_error_after_common_phase": 0.0,
+      "relative_field_error": 0.0,
+      "initial_metrics": {
+        "relative_residual": 0.8934465273321198,
+        "weighted_uniformity": 0.29096852379909083,
+        "fitted_pressure_scale": 33.06098974456608
+      },
+      "metrics": {
+        "relative_residual": 0.2652866725976737,
+        "weighted_uniformity": 0.8957336483996237,
+        "fitted_pressure_scale": 753.150407324209
+      },
+      "iterations": 50,
+      "elapsed_ms": 8.339700000078665,
+      "cache_hit": true,
+      "backend": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 장치를 사용할 수 없습니다."
+      }
+    }
+  ],
+  "signed_force_diagnoses": [
+    {
+      "model": "point_source",
+      "trap_type": "focus",
+      "position_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -0.00019192992661817154,
+          -0.00017698883908652714,
+          -4.251044200626525e-05
+        ],
+        "uncertainty": 2.658835862622516e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        2.3738217892278364e-08,
+        1.8977488128435727e-08,
+        -6.52008889298531e-11
+      ],
+      "conditional_centre_residual": [
+        2.3738217892278364e-08,
+        1.8977488128435727e-08,
+        -1.6111294428683155e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "point_source",
+      "trap_type": "focus",
+      "position_mm": [
+        8.0,
+        4.0,
+        -7.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -0.0001748268541813957,
+          -0.00017192830070414682,
+          -4.032225136188838e-05
+        ],
+        "uncertainty": 2.3663095059176262e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -2.0943565488896888e-08,
+        -1.7849901856782613e-08,
+        3.458935884422595e-10
+      ],
+      "conditional_centre_residual": [
+        -2.0943565488896888e-08,
+        -1.7849901856782613e-08,
+        -1.5700199951311043e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "point_source",
+      "trap_type": "twin",
+      "position_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -3.748891036699174e-06,
+          -1.4287895443398366e-06,
+          3.5183177383372377e-06
+        ],
+        "uncertainty": 7.112495316674986e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        2.4193866853949555e-10,
+        -3.0431253100561534e-11,
+        -1.5539981589388151e-10
+      ],
+      "conditional_centre_residual": [
+        2.4193866853949555e-10,
+        -3.0431253100561534e-11,
+        -1.6201493355647183e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "point_source",
+      "trap_type": "twin",
+      "position_mm": [
+        8.0,
+        4.0,
+        -7.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -2.0030450685337685e-06,
+          -1.1396123425475792e-06,
+          5.605972750085409e-06
+        ],
+        "uncertainty": 6.018466670356316e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -4.00553048906248e-09,
+        -6.4430800009876e-11,
+        2.5032977042646647e-10
+      ],
+      "conditional_centre_residual": [
+        -4.00553048906248e-09,
+        -6.4430800009876e-11,
+        -1.5795763769326838e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "point_source",
+      "trap_type": "standing_wave",
+      "position_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          5.080930119989057e-06,
+          6.69717100594851e-06,
+          3.309018232792033e-05
+        ],
+        "uncertainty": 9.798956235843797e-11,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -1.5595374379763395e-08,
+        -5.7204434325222725e-09,
+        -6.667481366399809e-09
+      ],
+      "conditional_centre_residual": [
+        -1.5595374379763395e-08,
+        -5.7204434325222725e-09,
+        -2.271357490615311e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "point_source",
+      "trap_type": "standing_wave",
+      "position_mm": [
+        8.0,
+        4.0,
+        -7.0
+      ],
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          6.0263305393611166e-06,
+          1.6078491593597543e-05,
+          3.327780953170449e-05
+        ],
+        "uncertainty": 4.1423251166832283e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -9.088027326410964e-09,
+        -5.306789422128455e-09,
+        7.787193445281049e-09
+      ],
+      "conditional_centre_residual": [
+        -9.088027326410964e-09,
+        -5.306789422128455e-09,
+        -8.258900094472254e-09
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "focus",
+      "position_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -0.00010522453917897112,
+          -9.686659757375669e-05,
+          -1.6844806142754953e-05
+        ],
+        "uncertainty": 1.551845804935685e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        1.6319843586682564e-08,
+        9.360111730978746e-09,
+        -2.3649132616141783e-09
+      ],
+      "conditional_centre_residual": [
+        1.6319843586682564e-08,
+        9.360111730978746e-09,
+        -1.8411006801367482e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "focus",
+      "position_mm": [
+        8.0,
+        4.0,
+        -7.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -9.943433995407015e-05,
+          -9.844379802917396e-05,
+          -1.7677283846468662e-05
+        ],
+        "uncertainty": 1.4210856775455863e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -1.5866007559857193e-08,
+        -8.678499686333624e-09,
+        1.9199645267184332e-09
+      ],
+      "conditional_centre_residual": [
+        -1.5866007559857193e-08,
+        -8.678499686333624e-09,
+        -1.412612901303487e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "twin",
+      "position_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -1.9425309733438243e-06,
+          -4.835782495478199e-07,
+          3.85041054202688e-06
+        ],
+        "uncertainty": 3.835223850181536e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        1.8008859547394938e-09,
+        -5.213599384553239e-11,
+        -2.688826134578626e-10
+      ],
+      "conditional_centre_residual": [
+        1.8008859547394938e-09,
+        -5.213599384553239e-11,
+        -1.6314976153211167e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "twin",
+      "position_mm": [
+        8.0,
+        4.0,
+        -7.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -2.395869218258556e-06,
+          -4.88017554474381e-07,
+          2.1528287439514494e-06
+        ],
+        "uncertainty": 4.4320601546290924e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        2.0057928978657864e-09,
+        -1.8783055351965046e-10,
+        -2.74440427307676e-10
+      ],
+      "conditional_centre_residual": [
+        2.0057928978657864e-09,
+        -1.8783055351965046e-10,
+        -1.6320533967060978e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "standing_wave",
+      "position_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          2.8007421250509287e-06,
+          4.368180340509729e-06,
+          1.260172766323596e-05
+        ],
+        "uncertainty": 3.140183908462699e-11,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -5.20662478426148e-09,
+        -1.7807615538253156e-09,
+        -2.2600068193416273e-09
+      ],
+      "conditional_centre_residual": [
+        -5.20662478426148e-09,
+        -1.7807615538253156e-09,
+        -1.830610035909493e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "ultraino_sinc",
+      "trap_type": "standing_wave",
+      "position_mm": [
+        8.0,
+        4.0,
+        -7.0
+      ],
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          5.5497907392197375e-06,
+          9.699660660620456e-06,
+          1.4093671078251829e-05
+        ],
+        "uncertainty": 1.6301902932230071e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -4.67864975118114e-10,
+        -5.618449355105108e-10,
+        2.312925197534052e-09
+      ],
+      "conditional_centre_residual": [
+        -4.67864975118114e-10,
+        -5.618449355105108e-10,
+        -1.373316834221925e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "focus",
+      "position_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -0.00012199308380781263,
+          -0.00011300739702484467,
+          -2.1296480409439237e-05
+        ],
+        "uncertainty": 1.7719246809029913e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        1.8686887243189963e-08,
+        1.102177480894959e-08,
+        -2.115180462104116e-09
+      ],
+      "conditional_centre_residual": [
+        1.8686887243189963e-08,
+        1.102177480894959e-08,
+        -1.816127400185742e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "focus",
+      "position_mm": [
+        8.0,
+        4.0,
+        -7.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -0.00011651001657079802,
+          -0.00011425179499977467,
+          -2.2472409265263773e-05
+        ],
+        "uncertainty": 1.6210825569618446e-09,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -1.8116355173893332e-08,
+        -1.0304455284698787e-08,
+        1.6541421716185923e-09
+      ],
+      "conditional_centre_residual": [
+        -1.8116355173893332e-08,
+        -1.0304455284698787e-08,
+        -1.439195136813471e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "twin",
+      "position_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -2.094174155233531e-06,
+          -4.0007879977641677e-07,
+          4.5940595226429955e-06
+        ],
+        "uncertainty": 4.648854708161365e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        2.1620670399500435e-09,
+        1.799932237924118e-10,
+        1.6296871090322906e-10
+      ],
+      "conditional_centre_residual": [
+        2.1620670399500435e-09,
+        1.799932237924118e-10,
+        -1.5883124828850075e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "twin",
+      "position_mm": [
+        8.0,
+        4.0,
+        -7.0
+      ],
+      "restoring": {
+        "status": "non_restoring",
+        "eigenvalues": [
+          -1.9640595608663248e-06,
+          -3.759238703781392e-07,
+          4.436735084196552e-06
+        ],
+        "uncertainty": 4.912000958817057e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -1.6325173067022285e-09,
+        -1.3172297654465193e-10,
+        -1.7321221726975476e-10
+      ],
+      "conditional_centre_residual": [
+        -1.6325173067022285e-09,
+        -1.3172297654465193e-10,
+        -1.6219305757023056e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "standing_wave",
+      "position_mm": [
+        -10.0,
+        -3.0,
+        5.0
+      ],
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          3.673316736870216e-06,
+          4.353073099472555e-06,
+          1.620623258543935e-05
+        ],
+        "uncertainty": 4.4018118690522194e-11,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -7.095080237540739e-09,
+        -2.1070896935947264e-09,
+        -4.511326929107344e-09
+      ],
+      "conditional_centre_residual": [
+        -7.095080237540739e-09,
+        -2.1070896935947264e-09,
+        -2.0557420468860647e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    },
+    {
+      "model": "circular_piston",
+      "trap_type": "standing_wave",
+      "position_mm": [
+        8.0,
+        4.0,
+        -7.0
+      ],
+      "restoring": {
+        "status": "restoring",
+        "eigenvalues": [
+          5.99080045372069e-06,
+          1.057858376794281e-05,
+          1.7314159832691408e-05
+        ],
+        "uncertainty": 1.920870749403373e-10,
+        "symmetry_relative_error": 0.0
+      },
+      "converged": true,
+      "centre_force": [
+        -2.1602870376571795e-09,
+        -1.3065191879203268e-09,
+        3.994669201722314e-09
+      ],
+      "conditional_centre_residual": [
+        -2.1602870376571795e-09,
+        -1.3065191879203268e-09,
+        -1.205142433803099e-08
+      ],
+      "pressure_calibrated": false,
+      "particle_provenance": "example",
+      "gravity_equilibrium_status": "unavailable_uncalibrated_pressure"
+    }
+  ]
+}

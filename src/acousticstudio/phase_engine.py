@@ -42,9 +42,12 @@ class PhaseEngine:
     def __init__(self):
         self.k = 2.0 * np.pi / (self.DEFAULT_SPEED_OF_SOUND / self.DEFAULT_FREQUENCY)
         self.last_backend = None
+        self.last_hologram = None
+        self._hologram_solver = None
 
     def calculate_phases(self, centers, active_points, amplitudes, algorithm, mode_idx, has_taichi=False, has_pytorch=False,
-                         field_config=None, normals=None, aperture_radii_mm=None):
+                         field_config=None, normals=None, aperture_radii_mm=None,
+                         hologram_settings=None, initial_phases=None, cancelled=None, progress=None):
         """
         Calculate phases for all transducers.
 
@@ -52,7 +55,7 @@ class PhaseEngine:
             centers: np.array shape (N, 3) - transducer center positions
             active_points: list of dicts with 'x', 'y', 'z' keys
             amplitudes: np.array shape (N,) - transducer amplitudes
-            algorithm: str - 'Focus', 'Twin Trap' or 'Vortex Trap'
+            algorithm: str - 'Focus', 'Twin Trap', 'Vortex Trap' or 'Kinoforms'
             mode_idx: int - 0=Numba, 1=C++, 2=Taichi, 3=PyTorch
             has_taichi: bool
             has_pytorch: bool
@@ -62,7 +65,7 @@ class PhaseEngine:
         """
         centers = _positions_mm(centers, "송신기")
         amplitudes = _amplitudes(amplitudes, len(centers))
-        if algorithm not in ('Focus', 'Twin Trap', 'Vortex Trap'):
+        if algorithm not in ('Focus', 'Twin Trap', 'Vortex Trap', 'Kinoforms'):
             raise ValueError(f"지원하지 않는 트랩 알고리즘: {algorithm}")
         if mode_idx not in (0, 1, 2, 3):
             raise ValueError(f"지원하지 않는 연산 모드: {mode_idx}")
@@ -70,6 +73,14 @@ class PhaseEngine:
             targets = _positions_mm([[point['x'], point['y'], point['z']] for point in active_points], "제어점")
         except (KeyError, TypeError) as exc:
             raise ValueError("제어점에는 x, y, z 좌표가 필요합니다.") from exc
+        if algorithm == 'Kinoforms':
+            from acousticstudio.hologram import HologramSettings, TrapTarget
+            settings = hologram_settings or HologramSettings()
+            result = self.calculate_hologram(
+                centers, [TrapTarget.from_point(point, settings.default_trap_type) for point in active_points],
+                amplitudes, mode_idx, has_taichi, has_pytorch, field_config, normals, aperture_radii_mm,
+                settings, initial_phases, cancelled, progress)
+            return result['phases_rad'], None
         k = self.k
         if not np.isfinite(k) or k <= 0:
             raise ValueError("파수는 유한한 양수여야 합니다.")
@@ -148,9 +159,24 @@ class PhaseEngine:
             raise ValueError("위상 계산 결과의 채널 수가 잘못되었거나 유한하지 않습니다.")
         return total_phases % (2.0 * np.pi), packet
 
+    def calculate_hologram(self, centers, targets, amplitudes, mode_idx=0, has_taichi=False, has_pytorch=False,
+                           field_config=None, normals=None, aperture_radii_mm=None, settings=None,
+                           initial_phases=None, cancelled=None, progress=None):
+        from acousticstudio.hologram import HologramSolver
+        if field_config is None:
+            raise ValueError('Kinoforms에는 명시적인 공통 음향 설정이 필요합니다.')
+        if self._hologram_solver is None:
+            self._hologram_solver = HologramSolver()
+        self.last_hologram = None
+        result = self._hologram_solver.solve(
+            centers, normals, amplitudes, field_config, targets, settings, aperture_radii_mm,
+            initial_phases, mode_idx, has_taichi, has_pytorch, cancelled, progress)
+        self.last_backend, self.last_hologram = result['backend'], result
+        return result
+
     def calculate_trajectory_phases(self, centers, points, amplitudes, algorithm,
                                     mode_idx=0, has_taichi=False, has_pytorch=False,
-                                    field_config=None, normals=None, aperture_radii_mm=None):
+                                    field_config=None, normals=None, aperture_radii_mm=None, hologram_settings=None):
         """Calculate one moving target per waypoint through the live dispatcher.
 
         Results retain software channel order; hardware mapping/correction belongs
@@ -167,6 +193,7 @@ class PhaseEngine:
                 centers, [dict(zip(('x', 'y', 'z'), point))], amplitudes, algorithm,
                 mode_idx, has_taichi=has_taichi, has_pytorch=has_pytorch,
                 field_config=field_config, normals=normals, aperture_radii_mm=aperture_radii_mm,
+                hologram_settings=hologram_settings,
             )
         return phases
 
@@ -210,7 +237,7 @@ class PhaseEngine:
 
     def optimize_trajectory_physical(self, tx_centers, points, base_delay, algorithm='Twin Trap', smooth_accel=True,
                                      amplitudes=None, mode_idx=0, has_taichi=False, has_pytorch=False,
-                                     field_config=None, normals=None, aperture_radii_mm=None):
+                                     field_config=None, normals=None, aperture_radii_mm=None, hologram_settings=None):
         """
         물리 연산(levitate 기반)을 접목한 선형 이송 궤적 최적화.
 
@@ -263,6 +290,7 @@ class PhaseEngine:
                 tx_centers, points, amplitudes, algorithm, mode_idx,
                 has_taichi=has_taichi, has_pytorch=has_pytorch,
                 field_config=field_config, normals=normals, aperture_radii_mm=aperture_radii_mm,
+                hologram_settings=hologram_settings,
             )
 
             # Unit conversion: mm -> m
