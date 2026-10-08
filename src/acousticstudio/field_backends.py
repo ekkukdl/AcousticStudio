@@ -1,6 +1,7 @@
 """Accelerate complex reduction only; every backend consumes the same Green matrix."""
 import ctypes
 from pathlib import Path
+from threading import RLock
 
 import numba
 import numpy as np
@@ -18,6 +19,7 @@ def _numba_matvec(matrix, weights):
 _native = None
 _native_checked = False
 _native_error = None
+_taichi_lock = RLock()
 
 
 def _native_reduce(matrix, weights):
@@ -63,7 +65,8 @@ def reduce_field(matrix, weights, mode_idx=0, has_taichi=False, has_pytorch=Fals
             if not has_taichi:
                 raise RuntimeError('Taichi 모드를 사용할 수 없습니다.')
             from acousticstudio.sonic_wrapper import calculate_complex_matvec_taichi
-            result = calculate_complex_matvec_taichi(matrix, weights)
+            with _taichi_lock:
+                result = calculate_complex_matvec_taichi(matrix, weights)
             if result is None:
                 raise RuntimeError('Taichi 복소 연산을 사용할 수 없습니다.')
             from acousticstudio.sonic_wrapper import ti

@@ -1,5 +1,9 @@
 # Acoustic Control Studio
 
+2026-10-08 T6 단면 클릭·드래그, 선택/전체 제어점 XYZ 이동, 비동기 궤적 이송과 최신 프레임 큐를 추가했습니다.
+`구성 → 제어점`에서 이동 대상·단면·간격을 선택하며, 느린 계산에서는 이전 waypoint를 완료한 뒤 진행합니다.
+[사용법·검증·현재 PC 성능](docs/ultraino_t6_result.md)을 확인하세요. 실제 터널 부양·이송 검증은 남아 있습니다.
+
 현재 개발 저장소는 **[ekkukdl/AcousticStudio](https://github.com/ekkukdl/AcousticStudio)** 하나로 통합했습니다. 2026-10-07 기준 `AcousticStudio_ver2`의 코드, 구상도·PCB·Creo 자료 및 로컬 수정 내용을 반영했으며 두 저장소의 커밋 이력을 보존했습니다.
 
 화면은 **보기 → UI → 클래식 / 모던**에서 선택합니다. 두 화면 모두 상단 **보드** 메뉴를 사용합니다. 설계 자료는 [구상도 시작 안내](구상도/START_HERE.md), 최신 32채널 PCB는 [제작 자료 안내](구상도/outputs/panel_8faces_32ch_R1/README.md)를 참고하세요. 통합 범위와 검증 기록은 [저장소 통합 기록](docs/repository_consolidation.md)에 있습니다.

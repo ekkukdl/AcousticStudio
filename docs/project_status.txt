@@ -1,5 +1,43 @@
 # AcousticStudio 프로젝트 상태 및 계획
 
+### 2026-10-08 사용자 요청 커밋·푸시 준비 검증
+- 사용자 푸시 요청에 따라 T6 조작/비동기 계산·송신, 연속 단면 회귀 수정, 갱신 간격 UI 및 CUDA 설치 창 오류 수정을 함께 커밋한다. 원격 origin/main과 시작 HEAD의 차이는0/0이었다. 기존 로컬 백업·.agents 및 별도 PCB 업체 전달 자료 변경은 앱 변경 커밋에 포함하지 않는다.
+- 최종 전체 회귀252 passed, 4 skipped, 19 warnings (81.03s). scratch/ultraino_migration/t6_final_pytest.xml에 기록했다. 경고는 기존 Taichi locale/Matplotlib 및 NumPy 경계 조건이며 skip4건은 실제 CUDA 없음이다. git diff --check도 통과했다.
+
+### 2026-10-08 단면 갱신 간격 UI 설정
+- 음장→음장 분석에 단면 갱신 간격(ms) 입력을 추가했다. 범위1~5000ms, 기본100ms이며 계산 시간에 따라 실제 갱신 속도가 달라짐을 툴팁으로 안내한다. 위상/송신 주기는 이 입력으로 변경하지 않는다.
+- 고정0.1초 간격을 사용자 입력으로 교체했다. 간격을 줄이거나 늘리면 마지막 단면 계산 시작 시각을 기준으로 대기 타이머를 즉시 재조정한다. 실행 중인 worker는 유지하고 완료 뒤 후속 최신 계산으로 반영한다.
+- 프로젝트 및 Undo/Redo 상태에 field_update_interval_ms를 저장한다. 기존 프로젝트는100ms로 복원하고 범위 밖/문자열/소수/bool 입력은 장면 변경 전에 거절한다.
+- 검증: tests/test_motion.py에서24 passed, 17 warnings (55.96s). 추가2건은 설정 저장/복원/이전 프로젝트/잘못된 값의 원자적 거절 및 타이머 확대/축소/진행 중 작업 유지다. 기록은 scratch/ultraino_migration/field_interval_pytest.xml이다. 전체 회귀는 이번 변경 후 다시 실행하지 않았다. 마지막 추가한 editingFinished→push_state 연결은 AST/diff 검사로 확인했다.
+
+### 2026-10-08 제어점 연속 이동 중 단면 갱신 회귀 수정
+- T6 비동기 전환에서 이동마다 단면 worker를 취소/숨기고 최신 위상 해시와 다른 결과를 버려, 연속 이동 중 단면이 사라지거나 갱신되지 않던 회귀를 확인했다. 기존 연속 표시를 없애려던 변경이 아니다.
+- 단면 드래그와 선택 좌표 입력은 마지막 완성 단면을 유지하고 실행 중 음장 작업을 끝낸 뒤 표시한다. 작업 도중 위상이 갱신되면 최신 위상으로 후속 단면 작업을 요청한다. 음원/보정/평면/표시 설정 변경 결과는 계속 거절하고 위상 적용 및 송신의 최신 입력 검증은 유지한다. 좌표 입력 렌더링도 계산 완료와 분리했다.
+- 지연된 음장 worker 도중 반복 이동과 위상 계산을 실제 Qt에서 재현하는 회귀 2건을 추가했다. 기존 단면 가시성/취소되지 않은 작업/후속 최신 스냅샷/최종 단면 수치 일치를 드래그 및 좌표 입력 경로에서 확인했다.
+- 검증: T6 집중22 passed, 17 warnings (60.75s), 전체250 passed, 4 skipped, 19 warnings (106.32s). 기록은 scratch/ultraino_migration/field_motion_fix_pytest.xml 및 field_motion_fix_full_pytest.xml이다. Python AST와 git diff --check도 통과했다. 실물 송신/부양은 수행하지 않았다.
+
+### 2026-10-08 T6 단면 조작·궤적 이송 소프트웨어 구현 및 검증
+- 구성→제어점에 선택/전체 이동, X/Y/Z ± 간격 버튼, XY/XZ/YZ 단면 클릭·드래그 및 이동·계산 중지를 추가했다. VTK 세계 좌표 역투영, mm 단위 교차, 그룹 간격·혼합 트랩 메타데이터와 최종 드래그 위치를 유지한다. 이동 설정은 프로젝트·Undo/Redo로 저장한다.
+- motion_ui는 기존 Kinoforms controller의 실행1개/대기 최신1개·취소·QThread 종료 구조를 재사용한다. 일반 위상·음장·궤적 진단·내보내기를 숫자 스냅샷 worker로 옮기고 요청 번호/현재 입력 해시로 결과를 적용한다. 위상33ms, 음장100ms, 이동 렌더링33ms 요청 병합 및 오래된 음장 숨김을 구현했다.
+- 실시간 hardware.queue_phases는 기존 보정/맵/OFF 인코더를 사용하고 별도 write1개/대기 최신 프레임1개, 30Hz/선로 시간 제한, 부분 write/timeout 연결 종료와 재시도 없음, 세션별 결과 거절·대기 폐기 및 창 닫기 대기를 구현했다. 로컬 성공은 ACK가 아니다. 실제 COM은 열지 않았다.
+- 궤적 한 스텝을 XYZ 원자 이동으로 바꿨고 목록에서 waypoint 번호를 궤적 선택으로 사용하던 오류를 제거했다. 재생 첫/최종 위치·역방향·중지·선택/전체 그룹 이동을 확인했다. 계산이나 실시간 write가 느리면 다음 waypoint를 진행하지 않는다. 단일 목표 export와 다중 그룹 재생은 구분한다.
+- 검증: 전체248 passed, 4 skipped, 11 warnings (44.72s), 첫 waypoint 조정 후 최종 T6 집중20 passed, 9 warnings (25.28s). 세계 좌표/회전 카메라·실제 Qt eventFilter·최신 결과·입력 복사·프로젝트 원자 복원·GUI 스레드 음장 표시·혼합 재생·비동기 진단/export·직접 인코더 일치·부분 write/timeout/세션/종료·느린 계산 및 write 중 waypoint 유지를 확인했다. skip은 실제 CUDA 없음4건, warning은 기존 Taichi locale/Matplotlib 및 오류 경계 NumPy overflow다.
+- 실제 데스크톱 Creo256채널/Vulkan 혼합 트랩·단면을 확인했고 드래그 후 그룹 X30.47/Y0/Z18.28mm·간격20mm와 fake 프레임6건을 확인했다. 이동 버튼은 폭을 줄여 두 줄로 배치했다. 캡처/결과/JUnit/재현 도구는 scratch/ultraino_migration/t6_*에 있다.
+- warm nominal33ms·30요청 스트림에서 C++은30적용/30frame, 1.430초, 계산약17.93~20.93ms였다. Vulkan은1적용/1frame, 29최신 병합, 마지막 계산71.83ms/응답78.77ms였다. 최종 phasor CPU 오차1.83e-15 미만 및 frame 일치를 확인했다. 실물 지속30Hz로 해석하지 않는다.
+- 상세와 T7 실물 인계는 docs/ultraino_t6_result.md. 실제 펌웨어·배선·OFF/파형·지속 갱신률·입자·개구·절대 음압 검증은 남아 있다. 패키지 설치·CAD 재생성·DLL 재빌드·backup 갱신·commit/push는 수행하지 않았다.
+
+### 2026-10-08 CUDA 선택 오류 수정 및 현재 PC 장치 확인
+- 사용자 스크린샷의 configure_pytorch_cuda 오류를 확인했다. LiveInstallerDialog 인스턴스의 Accepted 접근을 QDialog.DialogCode.Accepted로 교체했다. 기존 모드 선택 mock이 Accepted 속성을 임의 제공해 실제 PySide6 인스턴스의 오류를 숨기고 있어 이를 제거했다. 실제 LiveInstallerDialog/QThread의 성공·실패 결과 처리를 검증하는 회귀 2건을 추가했다.
+- 현재 Windows 장치 조회는 Intel UHD Graphics 620만 표시했다. nvidia-smi는 종료 코드4, Anaconda PyTorch 2.14.0+cpu는 CUDA build=None/is_available=false/device_count=0이며 별도 runtime/torch_cuda 활성 기록도 없다. 현재 PC에는 CUDA가 적용되지 않았다. 과거 NVIDIA/Taichi CUDA 검증 기록은 당시 환경의 결과로 구분한다.
+- 실제 복소 행렬(16×256) 합산에서 Taichi vulkan은 CPU 전환 없이 CPU 기준 최대 오차3.63e-14 이내였다. PyTorch/CUDA 요청은 사용 불가 사유를 표시하며 Numba CPU로 전환했다. scratch/ultraino_migration/verify_current_cuda.py 및 current_cuda_result.json에 장치·런타임·연산 증거를 기록했다. 패키지 설치와 보드 송신은 수행하지 않았다.
+- 집중 테스트: tests/test_cuda_selection.py 및 tests/test_compute_devices.py에서 20 passed, 1 skipped, 1 warning (12.46s). skip은 현재 Vulkan 환경에서 실제 Taichi CUDA 테스트이며 warning은 기존 Taichi locale API다. 현재 실행 중인 앱에는 수정 코드가 자동 반영되지 않으므로 프로젝트를 저장하고 재시작해야 한다.
+
+### 2026-10-08 작업 재개 및 현재 환경 회귀 확인
+- AGENTS.md, 이식 계획 및 T5/T6 인계와 최신 Git 변경을 확인했다. Anaconda Python 3.13.9 환경을 재사용했다. 다음 구현 단계는 T6 단면 조작·궤적 이송이며 아직 착수하지 않았다.
+- 전체 테스트 최초 실행은 225 passed, 4 skipped, 1 failed였다. 홀로그램 극소 가중치 1e-310이 전체 실행 중 0으로 취급되어 정규화 검사 전에 양수 검증에서 거절됐다. 테스트 입력을 정상 범위의 양수 1e-200으로 바꿔 제곱 노름의 언더플로 경계를 검사하도록 수정했다. 계산 구현은 변경하지 않았다.
+- 수정 후 홀로그램 테스트 20 passed, 전체 226 passed, 4 skipped, 7 warnings (44.36s)를 확인했다. 이전 227 passed/3 skipped 기록과 현재 결과는 구분한다. 실제 CUDA 설치·보드 송신·실물 부양 검증은 수행하지 않았다.
+- 패키지 설치, CAD 변경, backup 갱신, commit/push는 수행하지 않았다. 기존 사용자 파일을 보존했다.
+
 ### 2026-10-08 PyTorch/CUDA 선택 작업 최종 기록·정적 점검
 - 중단된 작업의 사용 안내·정적 검증 재현 도구·환경/코드 해시 기록을 마무리했다. 변경 소스 구문, UTF-8 문서/로컬 링크, 기존 Creo 배열/후보 맵·음장/홀로그램 모델·보정/통신·native DLL 보존과 git diff를 확인했다.
 - 전체 테스트 결과는 2026-10-07의 227 passed, 3 skipped를 그대로 보존했다. 실제 PyTorch CUDA 설치·커널 실행은 아직 수행하지 않았고 앱의 선택 항목에서 준비한다. T6 미완료 상태와 인계 기준은 유지한다.

@@ -8,10 +8,12 @@ Communicates state changes through Qt signals rather than direct UI access.
 from dataclasses import dataclass
 from math import floor, isfinite, pi
 from typing import Iterable
+from time import monotonic, perf_counter
+from math import ceil
 
 import serial
 import serial.tools.list_ports
-from PySide6.QtCore import QObject, QTimer, Signal
+from PySide6.QtCore import QObject, QTimer, QThread, Signal
 from acousticstudio.calibration import validate_active, validate_mapping
 
 
@@ -111,6 +113,26 @@ def encode_steps(profile, phase_steps):
     raise ValueError(f"지원하지 않는 전송 형식: {profile.transport}")
 
 
+class FrameWriter(QThread):
+    """A single bounded port write; controller state is changed on the GUI thread."""
+    def __init__(self, port, frame, parent=None):
+        super().__init__(parent)
+        self.port, self.frame = port, frame
+        self.error = None
+        self.elapsed_seconds = 0.
+
+    def run(self):
+        started = perf_counter()
+        try:
+            written = self.port.write(self.frame)
+            if written != len(self.frame):
+                raise serial.SerialTimeoutException(f'부분 전송: {written}/{len(self.frame)} bytes')
+        except Exception as exc:
+            self.error = str(exc)
+        finally:
+            self.elapsed_seconds = perf_counter() - started
+
+
 class HardwareController(QObject):
     """Manages serial hardware connection and packet transmission.
 
@@ -126,6 +148,8 @@ class HardwareController(QObject):
     connected = Signal(str)       # port name
     disconnected = Signal(str)    # reason message
     send_failed = Signal(str)     # error message
+    sender_idle = Signal()
+    frame_written = Signal(object)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -135,6 +159,13 @@ class HardwareController(QObject):
         self.phase_offsets: list[float] | None = None
         self.active_channels: list[bool] | None = None
         self.write_timeout_s = .1
+        self._writer = None
+        self._pending_frame = None
+        self._next_write = 0.
+        self.send_statistics = dict(submitted=0, replaced=0, written=0, failed=0, last_write_ms=0.)
+        self._send_timer = QTimer(self)
+        self._send_timer.setSingleShot(True)
+        self._send_timer.timeout.connect(self._start_queued_write)
 
         # Timer-based health check (1 s interval)
         self.hw_health_timer = QTimer(self)
@@ -302,6 +333,7 @@ class HardwareController(QObject):
 
     def disconnect(self) -> None:
         """Close the current serial connection (if any)."""
+        self.cancel_queued_frames()
         if self.serial_port is not None:
             self.hw_health_timer.stop()
             try:
@@ -326,6 +358,10 @@ class HardwareController(QObject):
         connection is torn down via :pymeth:`_handle_disconnect`. No board ACK is implied.
         """
         if self.serial_port is None:
+            return False
+        self.cancel_queued_frames()
+        if self.sender_busy:
+            self.send_failed.emit('이전 프레임을 전송 중입니다. 완료 후 다시 전송하세요.')
             return False
 
         try:
@@ -353,6 +389,61 @@ class HardwareController(QObject):
         self.send_packet(frame)
         return frame
 
+    @property
+    def sender_busy(self):
+        return self._writer is not None
+
+    def cancel_queued_frames(self):
+        self._pending_frame = None
+        self._send_timer.stop()
+
+    def queue_phases(self, phases_radians, active=None):
+        frame = self.build_phase_frame(phases_radians, active)
+        if not self.is_connected():
+            return False
+        self.send_statistics['submitted'] += 1
+        if self._pending_frame is not None:
+            self.send_statistics['replaced'] += 1
+        self._pending_frame = (self.serial_port, frame)
+        self._start_queued_write()
+        return True
+
+    def _start_queued_write(self):
+        if self.sender_busy or self._pending_frame is None:
+            return
+        port, frame = self._pending_frame
+        if port is not self.serial_port:
+            self.cancel_queued_frames()
+            return
+        remaining = self._next_write - monotonic()
+        if remaining > 0:
+            self._send_timer.start(max(1, ceil(remaining * 1000)))
+            return
+        self._pending_frame = None
+        baud = getattr(port, 'baudrate', self.board_profile.baud_rate)
+        # 8N1 takes ten wire bits per byte. Default update ceiling is 30 Hz.
+        self._next_write = monotonic() + max(1 / 30, len(frame) * 10 / baud)
+        self._writer = FrameWriter(port, frame, self)
+        self._writer.finished.connect(self._queued_write_done)
+        self._writer.start()
+
+    def _queued_write_done(self):
+        writer, self._writer = self._writer, None
+        self.send_statistics['last_write_ms'] = writer.elapsed_seconds * 1000
+        if writer.port is self.serial_port:
+            if writer.error:
+                self.send_statistics['failed'] += 1
+                self.cancel_queued_frames()
+                self._handle_disconnect()
+                self.send_failed.emit(f'보드 프레임 전송 실패: {writer.error}')
+            else:
+                self.send_statistics['written'] += 1
+                self.frame_written.emit(writer.frame)
+        writer.deleteLater()
+        self._start_queued_write()
+        if not self.sender_busy and self._pending_frame is None:
+            self.sender_idle.emit()
+
     # ------------------------------------------------------------------
     # Health monitoring
     # ------------------------------------------------------------------
@@ -373,6 +464,7 @@ class HardwareController(QObject):
     # ------------------------------------------------------------------
     def _handle_disconnect(self) -> None:
         """Tear down the serial connection after an unexpected failure."""
+        self.cancel_queued_frames()
         if self.serial_port is not None:
             self.hw_health_timer.stop()
             try:

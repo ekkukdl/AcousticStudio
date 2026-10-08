@@ -209,7 +209,9 @@ def test_duplicate_near_empty_unknown_aperture_bad_settings_and_cancellation():
     assert progress == [5]
 
 
-@pytest.mark.parametrize('weight', [1e308, 1e-310])
+# A normal float stays positive even when a native backend flushes subnormals;
+# its squared norm still underflows, exercising the normalization guard.
+@pytest.mark.parametrize('weight', [1e308, 1e-200])
 def test_unrepresentable_target_normalization_fails_instead_of_exporting_nonfinite_metrics(weight):
     sources, normals, gains, config = fixture()
     with np.errstate(over='ignore', invalid='ignore', divide='ignore'):

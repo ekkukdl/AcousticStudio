@@ -1,0 +1,53 @@
+{
+  "utc": "2026-10-08T04:32:15.904215+00:00",
+  "python": "C:\\Users\\line0\\anaconda3\\python.exe",
+  "windows_gpu": {
+    "returncode": 0,
+    "stdout": "{\n    \"Name\":  \"Intel(R) UHD Graphics 620\",\n    \"DriverVersion\":  \"31.0.101.2141\",\n    \"Status\":  \"OK\"\n}",
+    "stderr": ""
+  },
+  "nvidia_smi": {
+    "returncode": 4,
+    "stdout": "NVIDIA-SMI has failed because you are not:\n\ta) running as an administrator or\n\tb) there is not at least one TCC device in the system",
+    "stderr": ""
+  },
+  "host_torch": {
+    "version": "2.14.0+cpu",
+    "cuda_build": null,
+    "cuda_available": false,
+    "device_count": 0
+  },
+  "runtime_root": "C:\\Users\\line0\\OneDrive\\바탕 화면\\제개설\\초음파부상 및 역장제어 자료조사\\AcousticStudio\\runtime\\torch_cuda\\py313-cu130",
+  "installed_runtime": null,
+  "compute_devices": {
+    "cpp_available": true,
+    "taichi_installed": true,
+    "taichi_arch": "vulkan",
+    "taichi_error": null,
+    "torch_installed": true,
+    "torch_version": "2.14.0+cpu",
+    "torch_cuda_build": null,
+    "cuda_available": false,
+    "cuda_device": null,
+    "cuda_error": "설치된 PyTorch에 CUDA 빌드가 없습니다 (CPU 전용).",
+    "cuda_runtime_path": null
+  },
+  "backend_checks": [
+    {
+      "status": {
+        "requested_mode": 2,
+        "backend": "Taichi vulkan",
+        "fallback_reason": null
+      },
+      "max_absolute_error": 3.623071274882353e-14
+    },
+    {
+      "status": {
+        "requested_mode": 3,
+        "backend": "Numba CPU",
+        "fallback_reason": "PyTorch CUDA 모드를 사용할 수 없습니다."
+      },
+      "max_absolute_error": 3.552713678800501e-14
+    }
+  ]
+}

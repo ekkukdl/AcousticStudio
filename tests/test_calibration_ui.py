@@ -129,6 +129,10 @@ def test_live_export_force_inputs_share_gains_and_mapped_off_mask(window, tmp_pa
     window.apply_calibration(calibration)
     window.transducer_actors[9]._enabled = False
     window.simulate_colors()
+    app = QApplication.instance()
+    deadline = QtCore.QElapsedTimer(); deadline.start()
+    while window._field_model_dirty and deadline.elapsed() < 15000:
+        app.processEvents(); QtCore.QThread.msleep(5)
     assert not window._field_model_dirty
     snapshot, targets, _, _ = window.hologram_inputs()
     assert snapshot.amplitudes[5] == 0 and snapshot.amplitudes[7] == .4

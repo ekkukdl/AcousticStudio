@@ -1,0 +1,38 @@
+{
+  "utc": "2026-10-08T04:47:36.326096+00:00",
+  "channels": 256,
+  "positions_mm": [
+    [
+      30.472531391610744,
+      0.0,
+      8.283518834966507
+    ],
+    [
+      30.472531391610744,
+      0.0,
+      28.283518834966507
+    ]
+  ],
+  "backend": {
+    "requested_mode": 2,
+    "backend": "Taichi vulkan",
+    "fallback_reason": null
+  },
+  "motion_statistics": {
+    "phase_results": 0,
+    "stale_results": 0,
+    "last_phase_ms": 0.0,
+    "field_results": 3
+  },
+  "send_statistics": {
+    "submitted": 6,
+    "replaced": 0,
+    "written": 6,
+    "failed": 0,
+    "last_write_ms": 0.006500165909528732
+  },
+  "frames_written": 6,
+  "field_grids": [
+    "0"
+  ]
+}

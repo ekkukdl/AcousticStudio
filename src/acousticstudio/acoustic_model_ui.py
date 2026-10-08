@@ -95,6 +95,8 @@ def show_backend(window):
 
 
 def model_changed(window):
+    if hasattr(window, '_phase_controller'):
+        window.invalidate_motion()
     window._field_model_dirty = True
     window.acoustic_model_controls.backend.setText('음향 설정 변경 — 위상을 다시 계산하세요.')
     for actor in getattr(window, 'field_actors', []):

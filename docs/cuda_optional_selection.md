@@ -1,5 +1,12 @@
 # 선택 항목에서 PyTorch/CUDA 적용 — 2026-10-07
 
+2026-10-08 현재 PC 점검에서는 Intel UHD Graphics 620만 조회되고 PyTorch는 CPU 전용이며
+별도 CUDA 설치본이 없었다. 따라서 현재 사용 가능한 GPU 경로는 실제 계산을 확인한
+Taichi Vulkan이다. 과거 NVIDIA CUDA 검증 기록을 현재 장치 사용 가능 상태로 해석하지 않는다.
+설치 창 결과 비교의 `dialog.Accepted` 오류는 `QDialog.DialogCode.Accepted`로 수정했고,
+실제 설치 창/QThread의 성공·실패 회귀를 확인했다. 실행 중인 앱은 저장 후 재시작한다.
+장치와 계산 증거는 [현재 점검 기록](../scratch/ultraino_migration/current_cuda_result.json)에 있다.
+
 상단 연산 모드의 **`PyTorch/CUDA: 선택 시 준비`**를 선택하면 CUDA 설치본을 준비하고
 사용 가능 상태를 확인한 뒤 해당 모드로 계산한다. CPU 전용 PyTorch가 이미 설치되어 있어도
 이 경로를 사용할 수 있다. 사용자 선택이 설치 시작이므로 추가 확인 질문은 띄우지 않는다.

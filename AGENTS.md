@@ -6,10 +6,11 @@
 한국어로 소통하고, 요청에 필요한 변경을 구현·검증한 뒤 결과와 남은 한계를 보고한다.
 
 - Ultraino 이식·터널 배열 작업은 먼저 `docs/ultraino_migration_plan.md`를 읽는다.
-  T0·T1·T2·T3·T4·T5는 구현·소프트웨어 검증 완료이며 상세 기록은 `docs/ultraino_t0_result.md`,
+  T0·T1·T2·T3·T4·T5·T6는 구현·소프트웨어 검증 완료이며 상세 기록은 `docs/ultraino_t0_result.md`,
   `docs/ultraino_t1_result.md`, `docs/ultraino_t2_result.md`, `docs/ultraino_t3_result.md`,
-  `docs/ultraino_t4_result.md`, `docs/ultraino_t5_result.md`다. 다음 소프트웨어 단계는 T6 조작·이송이며
-  T5 기록 끝의 인계 기준을 따른다. 실제 펌웨어·배선·파형/OFF 측정은 아직 남아 있다.
+  `docs/ultraino_t4_result.md`, `docs/ultraino_t5_result.md`, `docs/ultraino_t6_result.md`다.
+  다음 실물 단계는 T7이며 사용자 요청 하드웨어 범위에서 수행한다.
+  실제 펌웨어·배선·파형/OFF·지속 갱신률 측정은 아직 남아 있다.
   현재 기준은 Creo R2의 **8면·8기판·기판당 32송신기, 총 256채널**이다.
   `구상도/outputs/panel_8faces_32ch_R1/array_positions_256.json`의 방사면 좌표와
   법선을 재사용한다. 터널 축은 Z이며 과거 16기판 구성이나 일반 Tube 생성식으로 대체하지 않는다.
@@ -43,7 +44,8 @@
   `hologram_ui.py` controller는 한 번에 한 worker만 실행하고 마지막 대기 요청만 보존한다.
   요청 번호·현재 입력 해시가 일치할 때만 GUI 스레드에서 결과를 적용하며 닫기는 thread 종료를 기다린다.
   프로젝트는 설정·목표·활성 체크 상태를 저장하고 위상을 재계산한다. 현재 위상 초기값의 정확한
-  재실행에는 설계 JSON의 initial_phases_rad를 사용한다. 기존 단일 궤적의 동기 계산은 T6 후속 범위다.
+  재실행에는 설계 JSON의 initial_phases_rad를 사용한다. T6는 같은 controller 종료/취소 구조를
+  motion_ui.NumericalController로 재사용한다. 단일 목표 궤적 export와 혼합 목표 그룹 재생을 구분한다.
 - `calibration.py`는 SW 순서의 상대 이득·명령 위상 보정·활성 상태·물리 맵 및 출처/이력을 저장한다.
   `source_inputs(window)`를 모든 계산 경로에서 재사용한다. 보정 이득은 nominal 이득에 곱하고,
   명령 위상 오프셋은 hardware.py에서 한 번 더하며 시뮬레이션 위상에 중복 적용하지 않는다.
@@ -54,10 +56,11 @@
   supported OFF=32와 활성 위상0을 구별한다. Legacy OFF는 거절하며 기존 ties-even 반올림을 유지한다.
   송신/내보내기는 공통 encoder를 사용한다. 부분 write·timeout은 재시도 없이 연결을 종료한다.
   write_timeout=0.1s이며 serial.flush()를 GUI에서 호출하지 않는다. 로컬 write 성공은 보드 ACK가 아니다.
-  계산·송신·렌더링 큐의 일반화는 T6 범위다. 다른 보정/맵/프로파일의 connected 복원을 거절한다.
+  T6의 queue_phases는 별도 write 작업1개/대기 최신 프레임1개다. 수동 송신과 동시 write는 거절한다.
+  다른 보정/맵/프로파일의 connected 복원을 거절한다.
 - `compute_devices.py`는 설치 여부와 실제 GPU 런타임 사용 가능 상태를 구분한다.
   app의 has_taichi/has_pytorch는 실제 GPU 사용 가능 상태이며 설치 여부는 compute_devices에 있다.
-  현재 CPU 전용 PyTorch를 CUDA 가속으로 표시하지 않는다. 실제 Taichi cuda가 사용 가능하다.
+  현재 CPU 전용 PyTorch를 CUDA 가속으로 표시하지 않는다. 현재 PC에서 확인한 Taichi GPU 경로는 Vulkan이다.
   Kinoforms는 복소 행렬 곱만 GPU이며 작은 문제에서 매 연산의 복사 비용 때문에 CPU보다 느릴 수 있다.
   장치 기본 선택은 성능 자동 튜닝이 아니다. 근거·재현·T6 후속은 docs/multitrap_cuda_diagnosis.md를 읽는다.
   사용자 선택으로 CUDA를 준비하는 현재 흐름은 docs/cuda_optional_selection.md를 따른다.
@@ -66,6 +69,15 @@
   선택 후 설치는 기존 Qt 창, 성공 확인 후 모드 적용이며 실패/취소는 이전 모드를 유지한다.
   공통 reduce_field와 레거시 GPU wrapper를 함께 유지하고 숫자 배열만 전달한다.
   실제 새 CUDA 패키지 설치/커널 실행은 아직 미검증이다. fake IPC를 실제 GPU 검증으로 기록하지 않는다.
+- T6의 단면 좌표는 VTK 역투영과 motion.py의 mm 평면 교차를 사용한다. Qt/VTK 객체는 GUI에서만 읽는다.
+  일반 위상/음장/궤적 진단/내보내기는 복사 스냅샷 worker이며 요청 번호와 현재 입력 해시로 결과를 거른다.
+  단면 시각화는 제어점 연속 이동 중 마지막 완성 단면을 유지한다. 실행 중 단면 작업은 이동만으로 취소하지
+  않고 음원·보정·평면·표시 설정이 같으면 완성 스냅샷을 표시한 뒤 최신 위상으로 재계산한다.
+  이 표시 계약을 위상 적용이나 하드웨어 송신의 최신 입력 검증에 확대하지 않는다.
+  드래그는 최신 위치로 병합하고 궤적 재생은 이전 위상/실시간 write 완료를 기다려 waypoint를 유지한다.
+  현재 PC는 Intel UHD Graphics620/Taichi Vulkan, CPU 전용 Torch이며 과거 NVIDIA 기록과 구분한다.
+  nominal33ms 요청은 실제 지속30Hz 보장이 아니다. 현재 작은 혼합 문제는 C++이 Vulkan보다 빠르다.
+  근거와 T7 인계는 docs/ultraino_t6_result.md 및 scratch/ultraino_migration/t6_*를 확인한다.
 
 ## 변경과 사용자 의도
 

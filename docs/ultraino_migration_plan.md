@@ -2,14 +2,14 @@
 
 2026-10-07 사용자 지시에 따라 현재 개발 기준을 **8면, 면당 PCB 1장, PCB당 트랜스듀서 32개, 총 8기판·256채널**로 확정한다. 현재 Creo R2의 배치와 일치하는 배열을 AcousticStudio에 추가하고, 그 배열을 공통 입력으로 Ultraino의 다중 트랩·방사력 분석·조작·캘리브레이션 기능을 이식한다.
 
-이 문서는 이후 에이전트의 구현 기준이다. 입력 형상·개발 환경 점검에 이어 T0 계산 경로 수정, T1 CAD 배열 로더·프리셋 연결, T2 공통 복소 음장·방향성, T3 고정 위상 방사력 분석, T4 Kinoforms·다중 트랩, T5 통신·캘리브레이션의 소프트웨어 구현과 검증을 완료했다. [T0 기록](ultraino_t0_result.md), [T1 기록](ultraino_t1_result.md), [T2 기록](ultraino_t2_result.md), [T3 기록](ultraino_t3_result.md), [T4 기록](ultraino_t4_result.md), [T5 기록](ultraino_t5_result.md)을 확인하고 다음 소프트웨어 단계 T6부터 진행한다. 실제 펌웨어·배선·OFF/파형 측정은 미완료다. 사용자의 최신 지시가 과거 보고서·안내의 8면 16기판 구성을 대체한다.
+이 문서는 이후 에이전트의 구현 기준이다. T0 계산 경로, T1 CAD 배열, T2 복소 음장, T3 방사력 분석, T4 다중 트랩, T5 통신·캘리브레이션, T6 단면 조작·궤적 이송의 소프트웨어 구현과 검증을 완료했다. [T0 기록](ultraino_t0_result.md), [T1 기록](ultraino_t1_result.md), [T2 기록](ultraino_t2_result.md), [T3 기록](ultraino_t3_result.md), [T4 기록](ultraino_t4_result.md), [T5 기록](ultraino_t5_result.md), [T6 기록](ultraino_t6_result.md)을 확인한다. 다음 단계는 사용자 요청에 따른 T7 실물 검증이다. 실제 펌웨어·배선·OFF/파형 측정은 미완료다. 사용자의 최신 지시가 과거 보고서·안내의 8면 16기판 구성을 대체한다.
 
 ## 작업 시작 순서
 
 1. [AGENTS.md](../AGENTS.md), 이 문서, [진행 기록](project_status.txt)을 읽는다.
 2. `git status --short`와 관련 소스를 확인하고 기존 사용자 변경을 보존한다.
 3. [점검 결과 JSON](ultraino_migration_audit.json)에서 형상 및 인터프리터 근거를 확인한다. 날짜·해시가 달라졌다면 입력을 다시 확인한다.
-4. 완료된 작업의 검증 기록을 확인하고 첫 미완료 단계부터 작업한다. 현재 T0·T1·T2·T3·T4·T5 소프트웨어 완료, 다음은 T6다. T5 실제 하드웨어 검증은 사용자 요청 실물 단계에서 수행한다. 각 작업의 산출물과 완료 기준을 만족한 후 의존하는 작업으로 넘어간다.
+4. 완료된 작업의 검증 기록을 확인하고 첫 미완료 단계부터 작업한다. 현재 T0~T6 소프트웨어 완료, 다음은 T7 실물 검증이다. T5 실제 하드웨어 검증은 사용자 요청 실물 단계에서 수행한다. 각 작업의 산출물과 완료 기준을 만족한 후 의존하는 작업으로 넘어간다.
 5. 구현 후 진행 기록에 변경·실행한 검증·남은 한계를 기록한다. 다른 에이전트에게 맡길 때 작업 ID, 파일 범위, 완료 기준, 실제 검증 결과를 전달한다.
 
 사용자 승인 전 `backup/`을 갱신하지 않으며, 명시적 요청 없이 commit/push하지 않는다. 이 계획 자체가 실제 보드 송신이나 CAD 재생성의 실행 요청은 아니다.
@@ -182,6 +182,10 @@ Ultraino [ChainedFPGA.java](../../simulations/Ultraino/AcousticFieldSim/src/acou
 
 ### T6 단면 조작과 궤적 이송
 
+상태: **소프트웨어 구현 및 Qt/fake-serial 검증 완료**. [T6 사용법·검증·T7 인계](ultraino_t6_result.md).
+전체248 passed/4 skipped, T6 집중20 passed. 실제 Vulkan 단면 조작과 C++/Vulkan 갱신 스트림을 확인했다.
+드래그는 최신 요청으로 병합하고 재생은 이전 계산/송신 완료를 기다린다. 실제 지속 갱신률·부양/이송은 미검증이다.
+
 의존: T1, T4 및 T5 소프트웨어 경로. 기존 자동 계산·실시간 전송과 widgets.py의 이벤트 필터를 확장한다.
 
 [TrapsPanel.java](../../simulations/Ultraino/AcousticFieldSim/src/acousticfield3d/gui/panels/TrapsPanel.java)와 [MovePanel.java](../../simulations/Ultraino/AcousticFieldSim/src/acousticfield3d/gui/panels/MovePanel.java)의 단면 클릭/드래그, 선택 입자/전체 입자 XYZ 이동을 Qt로 연결한다. 현재 CAD의 Z축을 터널 이송 축으로 사용한다. 작업 큐에 요청 번호를 부여하여 오래된 계산 결과를 버리고 GUI/VTK는 GUI 스레드에서 갱신한다. 프레임 계산/송신과 음장 그래프 갱신 속도를 분리하며 드래그 해제 시 최종 위치를 반영한다.
@@ -212,7 +216,7 @@ Ultraino [ChainedFPGA.java](../../simulations/Ultraino/AcousticFieldSim/src/acou
 보고: 변경 내용, 통과/실패한 검사, 미실행 항목, 남은 입력
 ```
 
-현재 미확정 입력은 실제 컨트롤러/펌웨어/헤더 배선, 소자의 유효 음향 개구와 음압 보정, 실제 입자 물성이다. 이 입력을 가정한 실물 완료 판정은 금지하지만 완료한 T0~T5 소프트웨어 및 fake-serial 경로를 재사용해 T6 개발은 계속할 수 있다.
+현재 미확정 입력은 실제 컨트롤러/펌웨어/헤더 배선, 소자의 유효 음향 개구와 음압 보정, 실제 입자 물성이다. 이 입력을 가정한 실물 완료 판정은 금지한다. 완료한 T0~T6 소프트웨어 및 fake-serial 경로를 재사용하고 사용자 요청 하드웨어 작업에서 실제 조건을 확인한다.
 
 ## 이번 정리의 검증 범위
 

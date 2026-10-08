@@ -76,7 +76,7 @@ class HologramController(QObject):
         arguments, self._pending = self._pending, None
         self._cancellation = Event()
         self._thread = QThread(self)
-        self._worker = HologramWorker(self.engine, *arguments, self._cancellation)
+        self._worker = self._make_worker(arguments)
         self._worker.moveToThread(self._thread)
         self._thread.started.connect(self._worker.run)
         self._worker.succeeded.connect(self._succeeded)
@@ -86,6 +86,9 @@ class HologramController(QObject):
         self._worker.finished.connect(self._worker.deleteLater)
         self._thread.finished.connect(self._done)
         self._thread.start()
+
+    def _make_worker(self, arguments):
+        return HologramWorker(self.engine, *arguments, self._cancellation)
 
     def cancel(self):
         self._version += 1

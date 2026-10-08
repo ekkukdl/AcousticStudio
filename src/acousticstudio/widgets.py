@@ -65,6 +65,8 @@ class MouseEventFilter(QObject):
         self.rubber_band = QRubberBand(QRubberBand.Rectangle, self.main.plotter.interactor)
         self.origin = None
         self.right_dragging = False
+        self.slice_dragging = False
+        self.slice_targets = []
     def eventFilter(self, obj, event):
         if event.type() == QEvent.MouseButtonPress:
             scale = self.main.plotter.interactor.devicePixelRatioF()
@@ -73,6 +75,16 @@ class MouseEventFilter(QObject):
             scaled_y = int(round(pos.y() * scale))
             vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
             if event.button() == Qt.LeftButton:
+                if getattr(self.main, 'slice_move_cb', None) is not None and self.main.slice_move_cb.isChecked():
+                    self.main.pause_traj_playback()
+                    point = self.main.slice_world_point(scaled_x, vtk_y)
+                    self.slice_targets = self.main.motion_points()
+                    if point is not None and self.slice_targets:
+                        self.slice_dragging = True
+                        self.main.move_control_points(point, self.slice_targets)
+                    else:
+                        self.main.statusBar().showMessage('선택한 단면이 카메라와 평행하거나 이동할 제어점이 없습니다.', 5000)
+                    return True
                 if hasattr(self.main, 'gizmo_actors') and self.main.gizmo_actors:
                     import vtk
                     prop_picker = vtk.vtkPropPicker()
@@ -126,6 +138,12 @@ class MouseEventFilter(QObject):
             scaled_x = int(round(pos.x() * scale))
             scaled_y = int(round(pos.y() * scale))
             vtk_y = self.main.plotter.window_size[1] - scaled_y - 1
+
+            if self.slice_dragging:
+                point = self.main.slice_world_point(scaled_x, vtk_y)
+                if point is not None:
+                    self.main.move_control_points(point, self.slice_targets)
+                return True
             
             # --- Hover Logic ---
             if event.buttons() == Qt.NoButton and hasattr(self.main, 'gizmo_actors') and self.main.gizmo_actors:
@@ -300,6 +318,16 @@ class MouseEventFilter(QObject):
                 if self.main.show_field_btn.isChecked():
                     self.main.update_field_slice()
                 self.main.plotter.render()
+                return True
+            if event.button() == Qt.LeftButton and self.slice_dragging:
+                self.slice_dragging = False
+                scaled_x = int(round(pos.x() * scale))
+                point = self.main.slice_world_point(scaled_x, vtk_y)
+                if point is not None:
+                    self.main.move_control_points(point, self.slice_targets, final=True)
+                else:
+                    self.main.push_state()
+                self.slice_targets = []
                 return True
             if event.button() == Qt.LeftButton and self.origin is not None:
                 self.rubber_band.hide()

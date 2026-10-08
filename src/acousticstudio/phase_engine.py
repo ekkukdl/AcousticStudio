@@ -176,7 +176,8 @@ class PhaseEngine:
 
     def calculate_trajectory_phases(self, centers, points, amplitudes, algorithm,
                                     mode_idx=0, has_taichi=False, has_pytorch=False,
-                                    field_config=None, normals=None, aperture_radii_mm=None, hologram_settings=None):
+                                    field_config=None, normals=None, aperture_radii_mm=None, hologram_settings=None,
+                                    cancelled=None):
         """Calculate one moving target per waypoint through the live dispatcher.
 
         Results retain software channel order; hardware mapping/correction belongs
@@ -189,16 +190,20 @@ class PhaseEngine:
             raise ValueError("궤적 위상 계산에는 송신기와 궤적 좌표가 필요합니다.")
         phases = np.empty((len(points), len(centers)), dtype=np.float64)
         for index, point in enumerate(points):
+            if cancelled is not None and cancelled.is_set():
+                from acousticstudio.hologram import HologramCancelled
+                raise HologramCancelled()
             phases[index], _ = self.calculate_phases(
                 centers, [dict(zip(('x', 'y', 'z'), point))], amplitudes, algorithm,
                 mode_idx, has_taichi=has_taichi, has_pytorch=has_pytorch,
                 field_config=field_config, normals=normals, aperture_radii_mm=aperture_radii_mm,
                 hologram_settings=hologram_settings,
+                cancelled=cancelled,
             )
         return phases
 
     def calculate_field_slice(self, pts, tx_centers, tx_phases, tx_amplitudes, mode_idx, has_taichi=False, has_pytorch=False,
-                              field_config=None, normals=None, aperture_radii_mm=None):
+                              field_config=None, normals=None, aperture_radii_mm=None, cancelled=None):
         """
         Calculate pressure field on a grid of points.
 
@@ -230,6 +235,9 @@ class PhaseEngine:
         output = np.empty(len(pts), dtype=np.complex128)
         source_parameters(len(tx_centers), normals, aperture_radii_mm, field_config)
         for start in range(0, len(pts), 512):
+            if cancelled is not None and cancelled.is_set():
+                from acousticstudio.hologram import HologramCancelled
+                raise HologramCancelled()
             green = propagation_matrix(pts[start:start + 512], tx_centers, normals, aperture_radii_mm, field_config)
             output[start:start + 512], self.last_backend = reduce_field(
                 green, weights, mode_idx, has_taichi, has_pytorch)
@@ -237,7 +245,8 @@ class PhaseEngine:
 
     def optimize_trajectory_physical(self, tx_centers, points, base_delay, algorithm='Twin Trap', smooth_accel=True,
                                      amplitudes=None, mode_idx=0, has_taichi=False, has_pytorch=False,
-                                     field_config=None, normals=None, aperture_radii_mm=None, hologram_settings=None):
+                                     field_config=None, normals=None, aperture_radii_mm=None, hologram_settings=None,
+                                     cancelled=None):
         """
         물리 연산(levitate 기반)을 접목한 선형 이송 궤적 최적화.
 
@@ -291,6 +300,7 @@ class PhaseEngine:
                 has_taichi=has_taichi, has_pytorch=has_pytorch,
                 field_config=field_config, normals=normals, aperture_radii_mm=aperture_radii_mm,
                 hologram_settings=hologram_settings,
+                cancelled=cancelled,
             )
 
             # Unit conversion: mm -> m
@@ -313,6 +323,9 @@ class PhaseEngine:
 
             # Evaluate each trajectory waypoint
             for i in range(steps):
+                if cancelled is not None and cancelled.is_set():
+                    from acousticstudio.hologram import HologramCancelled
+                    raise HologramCancelled()
                 u = amplitudes * np.exp(1j * waypoint_phases[i])
                 stiff_vec = np.asarray((stiffness_field @ points_m[i])(u), dtype=np.float64)
                 if stiff_vec.shape != (3,) or not np.all(np.isfinite(stiff_vec)):
@@ -397,6 +410,9 @@ class PhaseEngine:
             return delays, metrics
 
         except Exception as e:
+            from acousticstudio.hologram import HologramCancelled
+            if isinstance(e, HologramCancelled):
+                raise
             # Safe fallback if levitate calculation encounters an error
             print(f"[PhaseEngine] Trajectory optimization fallback: {e}")
             delays[:] = base_delay

@@ -661,6 +661,34 @@ class AcousticStudioMain(QMainWindow):
         self.auto_calc_cb = QCheckBox("제어점 이동 시 실시간 위상 업데이트")
         self.auto_calc_cb.setChecked(True) # 湲곕낯쟻쑝濡 耳쒕몺
         points_layout.addWidget(self.auto_calc_cb)
+
+        movement = QFormLayout()
+        self.move_scope_cb = QComboBox()
+        self.move_scope_cb.addItems(['선택 제어점', '전체 제어점'])
+        self.slice_move_cb = QCheckBox('단면 클릭·드래그로 이동')
+        self.slice_move_plane_cb = QComboBox()
+        self.slice_move_plane_cb.addItems(['XZ', 'YZ', 'XY'])
+        plane_row = QHBoxLayout()
+        plane_row.addWidget(self.slice_move_cb)
+        plane_row.addWidget(self.slice_move_plane_cb)
+        self.move_step_spin = QDoubleSpinBox()
+        self.move_step_spin.setRange(.01, 100.)
+        self.move_step_spin.setValue(1.)
+        self.move_step_spin.setSuffix(' mm')
+        movement.addRow('이동 대상:', self.move_scope_cb)
+        movement.addRow(plane_row)
+        movement.addRow('이동 간격:', self.move_step_spin)
+        points_layout.addLayout(movement)
+        move_buttons = QGridLayout()
+        for axis, label in enumerate(('X', 'Y', 'Z')):
+            for sign in (-1, 1):
+                button = QPushButton(label + ('−' if sign < 0 else '+'))
+                button.clicked.connect(lambda checked=False, a=axis, s=sign: self.nudge_control_points(a, s))
+                move_buttons.addWidget(button, 0 if sign < 0 else 1, axis)
+        points_layout.addLayout(move_buttons)
+        self.btn_stop_motion = QPushButton('이동·계산 중지')
+        self.btn_stop_motion.clicked.connect(self.stop_motion)
+        points_layout.addWidget(self.btn_stop_motion)
         
         points_group.setLayout(points_layout)
         design_layout.addWidget(points_group)
@@ -741,6 +769,20 @@ class AcousticStudioMain(QMainWindow):
         self.field_mode_combo.currentIndexChanged.connect(self.update_field_slice)
         show_field_lyt.addWidget(self.field_mode_combo)
         visual_layout.addLayout(show_field_lyt)
+
+        field_timing_form = QFormLayout()
+        self.field_update_interval_spin = QSpinBox()
+        self.field_update_interval_spin.setRange(1, 5000)
+        self.field_update_interval_spin.setSingleStep(10)
+        self.field_update_interval_spin.setValue(100)
+        self.field_update_interval_spin.setSuffix(' ms')
+        self.field_update_interval_spin.setToolTip(
+            '단면 계산을 시작하는 최소 간격입니다. 기본값은 100 ms입니다.\n'
+            '작을수록 자주 갱신하지만 계산 부하가 커집니다. 실제 갱신 속도는 계산 시간에 따라 달라집니다.')
+        self.field_update_interval_spin.valueChanged.connect(self.field_update_interval_changed)
+        self.field_update_interval_spin.editingFinished.connect(self.push_state)
+        field_timing_form.addRow('단면 갱신 간격:', self.field_update_interval_spin)
+        visual_layout.addLayout(field_timing_form)
 
         self.btn_force_analysis = QPushButton('고정 위상 방사력·복원성 분석')
         self.btn_force_analysis.clicked.connect(self.open_force_analysis)
@@ -1025,6 +1067,171 @@ class AcousticStudioMain(QMainWindow):
         self.resource_monitor.show_gpu = self.show_gpu
         self.resource_monitor.updated.connect(self.on_resource_updated)
         self.resource_monitor.start()
+        self.initialize_motion()
+
+    def initialize_motion(self):
+        from acousticstudio.motion_ui import NumericalController
+        from PySide6.QtCore import QTimer
+        self._phase_controller = NumericalController(self)
+        self._field_controller = NumericalController(self)
+        self._trajectory_controller = NumericalController(self)
+        self._export_controller = NumericalController(self)
+        self._phase_controller.succeeded.connect(self.motion_phase_completed)
+        self._field_controller.succeeded.connect(self.motion_field_completed)
+        self._field_controller.idle.connect(self.motion_field_idle)
+        self._field_refresh_pending = False
+        self._trajectory_controller.succeeded.connect(self.motion_trajectory_completed)
+        self._export_controller.succeeded.connect(self.motion_export_completed)
+        for controller in self.motion_controllers():
+            controller.failed.connect(self.motion_failed)
+            controller.idle.connect(self.motion_idle)
+        self.hw_controller.sender_idle.connect(self.motion_idle)
+        self._closing_motion = False
+        self._motion_context = self._export_context = None
+        self._field_due = 0.
+        self._field_last_started = 0.
+        self._field_timer = QTimer(self)
+        self._field_timer.setSingleShot(True)
+        self._field_timer.timeout.connect(self.update_field_slice)
+        self._render_timer = QTimer(self)
+        self._render_timer.setSingleShot(True)
+        self._render_timer.timeout.connect(self.plotter.render)
+        self.motion_statistics = dict(phase_results=0, stale_results=0, last_phase_ms=0., field_results=0)
+        self.points_list.itemChanged.connect(self.motion_inputs_changed)
+        self.trap_type_cb.currentIndexChanged.connect(self.motion_inputs_changed)
+
+    def motion_inputs_changed(self, *args):
+        self.invalidate_motion()
+        if self.auto_calc_cb.isChecked():
+            self.simulate_colors()
+
+    def motion_controllers(self):
+        return [getattr(self, name) for name in
+                ('_phase_controller', '_field_controller', '_trajectory_controller', '_export_controller')
+                if hasattr(self, name)]
+
+    def request_motion_render(self):
+        if hasattr(self, '_render_timer'):
+            if not self._render_timer.isActive():
+                self._render_timer.start(33)
+        else:
+            self.plotter.render()
+
+    def invalidate_motion(self):
+        for controller in self.motion_controllers():
+            controller.cancel()
+        self.invalidate_live_motion()
+        for name in ('_field_timer', '_sim_timer'):
+            timer = getattr(self, name, None)
+            if timer is not None:
+                timer.stop()
+
+    def invalidate_live_motion(self, preserve_field=False):
+        self._phase_controller.cancel()
+        if not preserve_field:
+            self._field_refresh_pending = False
+            self._field_controller.cancel()
+        if self._hologram_controller is not None:
+            self._hologram_controller.cancel()
+        self.hw_controller.cancel_queued_frames()
+        self._field_model_dirty = True
+        if not preserve_field:
+            for actor in getattr(self, 'field_actors', []):
+                actor.SetVisibility(False)
+            for grid, actor in getattr(self, '_cached_field_grids', {}).values():
+                actor.SetVisibility(False)
+
+    def stop_motion(self):
+        self.pause_traj_playback()
+        self.invalidate_motion()
+        self.statusBar().showMessage('이동·계산 중지 — 대기 프레임을 비웠습니다.', 5000)
+
+    def motion_idle(self):
+        if self._closing_motion and not any(c.busy for c in self.motion_controllers()) and not self.hw_controller.sender_busy:
+            if self._hologram_controller is None or not self._hologram_controller.busy:
+                self.close()
+
+    def motion_failed(self, message):
+        self.pause_traj_playback()
+        self.hw_controller.cancel_queued_frames()
+        model_failed(self, message)
+
+    def motion_phase_parameters(self):
+        centres, amplitudes = source_inputs(self)
+        points = [dict(x=p['x'], y=p['y'], z=p['z']) for index, p in enumerate(self.control_points)
+                  if self.points_list.item(index) and self.points_list.item(index).checkState() == Qt.Checked]
+        return dict(centers=centres, active_points=points, amplitudes=amplitudes,
+                    algorithm=self.trap_type_cb.currentText(), mode_idx=self.compute_mode_cb.currentIndex(),
+                    has_taichi=self.has_taichi, has_pytorch=self.has_pytorch, **field_kwargs(self))
+
+    def motion_phase_completed(self, result):
+        from acousticstudio.motion_ui import job_key
+        try:
+            if self._closing_motion or result['key'] != job_key(self.motion_phase_parameters()):
+                self.motion_statistics['stale_results'] += 1
+                return
+            self.phase_engine.last_backend = result['backend']
+            self.motion_statistics['phase_results'] += 1
+            self.motion_statistics['last_phase_ms'] = result['elapsed_seconds'] * 1000
+            self.apply_calculated_phases(*result['value'])
+        except Exception as exc:
+            self.motion_failed(str(exc))
+
+    def motion_points(self):
+        if self.move_scope_cb.currentIndex() == 1:
+            return list(self.control_points)
+        return [point for point in self.control_points if point['actor'] in self.selected_actors]
+
+    def move_control_points(self, destination, points=None, final=False):
+        from acousticstudio.motion import translated_points
+        points = self.motion_points() if points is None else points
+        if not points:
+            self.statusBar().showMessage('이동할 제어점을 선택하세요.', 4000)
+            return False
+        positions = np.array([[p['x'], p['y'], p['z']] for p in points])
+        shifted = translated_points(positions, destination)
+        # Moving a target invalidates live phases and fields, but need not cancel
+        # an independent single-target trajectory export/diagnostic snapshot.
+        self.invalidate_live_motion(preserve_field=True)
+        for point, before, after in zip(points, positions, shifted):
+            matrix = vtk.vtkMatrix4x4()
+            matrix.DeepCopy(point['actor'].GetMatrix())
+            for axis in range(3):
+                matrix.SetElement(axis, 3, matrix.GetElement(axis, 3) + after[axis] - before[axis])
+            point['actor'].SetUserMatrix(matrix)
+            point['x'], point['y'], point['z'] = map(float, after)
+        self.update_ui_from_selection()
+        self.request_motion_render()
+        if self.auto_calc_cb.isChecked() or getattr(self, '_trajectory_moving', False):
+            self.simulate_colors()
+        if final:
+            self.push_state()
+        return True
+
+    def nudge_control_points(self, axis, sign):
+        self.pause_traj_playback()
+        points = self.motion_points()
+        if not points:
+            self.statusBar().showMessage('이동할 제어점을 선택하세요.', 4000)
+            return
+        centroid = np.mean([[p['x'], p['y'], p['z']] for p in points], axis=0)
+        centroid[axis] += sign * self.move_step_spin.value()
+        self.move_control_points(centroid, points, final=True)
+
+    def slice_world_point(self, display_x, display_y):
+        from acousticstudio.motion import ray_plane_intersection
+        renderer = self.plotter.renderer
+        ray = []
+        for depth in (0., 1.):
+            renderer.SetDisplayPoint(display_x, display_y, depth)
+            renderer.DisplayToWorld()
+            value = np.array(renderer.GetWorldPoint())
+            if abs(value[3]) < 1e-12:
+                return None
+            ray.append(value[:3] / value[3])
+        plane = self.slice_move_plane_cb.currentText().lower()
+        offset = getattr(self, plane + '_spin').value()
+        return ray_plane_intersection(ray[0], ray[1] - ray[0], plane, offset)
     
     def get_pyvista_actor(self, vtk_prop):
         if vtk_prop is None: return None
@@ -1171,7 +1378,7 @@ class AcousticStudioMain(QMainWindow):
     def send_phase_data(self):
         if not self.hw_controller.is_connected():
             return
-        if getattr(self, '_field_model_dirty', False):
+        if getattr(self, '_field_model_dirty', False) or getattr(self, '_compute_installing', False):
             self.statusBar().showMessage('음향 설정이 변경되어 위상 재계산이 필요합니다.', 5000)
             return
         try:
@@ -1186,6 +1393,8 @@ class AcousticStudioMain(QMainWindow):
             print(f"HW Send Error: {e}")
     def handle_hw_disconnect(self, reason=""):
         """UI 업데이트 — HardwareController.disconnected 시그널에 연결"""
+        self.pause_traj_playback()
+        self.hw_controller.cancel_queued_frames()
         self.btn_connect_hw.setText("연결")
         self.btn_send_phase.setEnabled(False)
         if hasattr(self, 'chk_realtime_send'):
@@ -1242,6 +1451,13 @@ class AcousticStudioMain(QMainWindow):
             for act in self.gizmo_actors.values():
                 act.SetUserMatrix(t2.GetMatrix())
             
+        if hasattr(self, '_phase_controller'):
+            if point_moved and all(any(p['actor'] == a for p in self.control_points)
+                                   for a in self.selected_actors):
+                self.invalidate_live_motion(preserve_field=True)
+            else:
+                self.invalidate_motion()
+            self.request_motion_render()
         if point_moved and self.auto_calc_cb.isChecked():
             if not getattr(self, '_sim_pending', False):
                 self._sim_pending = True
@@ -1541,6 +1757,9 @@ class AcousticStudioMain(QMainWindow):
         self.selected_actors = new_actors
         self.plotter.render()
     def delete_selected_objects(self):
+        if hasattr(self, '_phase_controller'):
+            self.pause_traj_playback()
+            self.invalidate_motion()
         if not self.selected_actors:
             return
         instance_ids = {getattr(actor, '_geometry_instance', None) for actor in self.selected_actors}
@@ -1579,6 +1798,12 @@ class AcousticStudioMain(QMainWindow):
             self.delete_selected_objects()
         super().keyPressEvent(event)
     def closeEvent(self, event):
+        self._closing_motion = True
+        self.pause_traj_playback()
+        if any(c.busy for c in self.motion_controllers()) or self.hw_controller.sender_busy:
+            self.invalidate_motion()
+            event.ignore()
+            return
         controller = getattr(self, '_hologram_controller', None)
         if controller is not None and controller.busy:
             self._closing_for_hologram = True
@@ -1586,10 +1811,16 @@ class AcousticStudioMain(QMainWindow):
             event.ignore()
             return
         if self.check_unsaved_changes():
+            self.invalidate_motion()
+            self.hw_controller.disconnect()
+            if hasattr(self, '_render_timer'):
+                self._render_timer.stop()
             if hasattr(self, 'resource_monitor'):
                 self.resource_monitor.stop()
             event.accept()
         else:
+            self._closing_motion = False
+            self._closing_for_hologram = False
             event.ignore()
     def update_gizmo(self):
         if hasattr(self, 'gizmo') and self.gizmo is not None:
@@ -1644,6 +1875,9 @@ class AcousticStudioMain(QMainWindow):
         self.points_list.addItem(item)
         self.points_list.setCurrentRow(idx)
     def delete_control_point(self):
+        if hasattr(self, '_phase_controller'):
+            self.pause_traj_playback()
+            self.invalidate_motion()
         items = self.points_list.selectedItems()
         if not items: return
         
@@ -1680,6 +1914,12 @@ class AcousticStudioMain(QMainWindow):
         self.plotter.render()
     def get_state(self, for_file=False):
         data = {}
+        if hasattr(self, 'field_update_interval_spin'):
+            data['field_update_interval_ms'] = self.field_update_interval_spin.value()
+        if hasattr(self, 'move_scope_cb'):
+            data['motion_settings'] = dict(scope=self.move_scope_cb.currentIndex(),
+                                           plane=self.slice_move_plane_cb.currentText(),
+                                           slice_enabled=self.slice_move_cb.isChecked(), step_mm=self.move_step_spin.value())
         data['geometry_arrays'] = deepcopy(getattr(self, 'geometry_arrays', []))
         if hasattr(self, 'calibration'):
             data['calibration'] = None if self.calibration is None else self.calibration.to_dict()
@@ -1772,6 +2012,15 @@ class AcousticStudioMain(QMainWindow):
         acoustic_config = FieldConfig(**data.get('acoustic_model', {}))
         force_settings = AnalysisSettings.from_dict(data.get('force_analysis_settings', {}))
         hologram_settings = HologramSettings(**data.get('hologram_settings', {}))
+        field_update_interval_ms = data.get('field_update_interval_ms', 100)
+        if type(field_update_interval_ms) is not int or not 1 <= field_update_interval_ms <= 5000:
+            raise ValueError('단면 갱신 간격은 1~5000 ms의 정수여야 합니다.')
+        motion = data.get('motion_settings', dict(scope=0, plane='XZ', slice_enabled=False, step_mm=1.))
+        if (not isinstance(motion, dict) or set(motion) != {'scope', 'plane', 'slice_enabled', 'step_mm'} or
+                type(motion['scope']) is not int or motion['scope'] not in (0, 1) or
+                motion['plane'] not in ('XY', 'XZ', 'YZ') or type(motion['slice_enabled']) is not bool or
+                not isinstance(motion['step_mm'], (int, float)) or not .01 <= motion['step_mm'] <= 100.):
+            raise ValueError('저장된 제어점 이동 설정이 잘못되었습니다.')
         for point in data.get('control_points', []):
             if 'active' in point and not isinstance(point['active'], bool):
                 raise ValueError('저장된 제어점 활성 상태는 참/거짓이어야 합니다.')
@@ -1817,6 +2066,9 @@ class AcousticStudioMain(QMainWindow):
                 raise ValueError('보정 파일과 저장된 하드웨어 보정 설정이 다릅니다.')
         if hasattr(self.hw_controller, 'settings') and self.hw_controller.is_connected() and self.hw_controller.settings() != candidate_hardware.settings():
             raise RuntimeError('보드 연결을 해제한 뒤 다른 보정/맵/프로파일을 복원하세요.')
+        if hasattr(self, '_phase_controller'):
+            self.pause_traj_playback()
+            self.invalidate_motion()
         controller = getattr(self, '_hologram_controller', None)
         if controller is not None:
             controller.cancel()
@@ -1824,6 +2076,16 @@ class AcousticStudioMain(QMainWindow):
             self.hw_controller.restore_settings(candidate_hardware.settings())
         if hasattr(self, 'calibration'):
             self.calibration = calibration
+        if hasattr(self, 'move_scope_cb'):
+            self.move_scope_cb.setCurrentIndex(motion['scope'])
+            self.slice_move_plane_cb.setCurrentText(motion['plane'])
+            self.slice_move_cb.setChecked(motion['slice_enabled'])
+            self.move_step_spin.setValue(motion['step_mm'])
+        if hasattr(self, 'field_update_interval_spin'):
+            self.field_update_interval_spin.blockSignals(True)
+            self.field_update_interval_spin.setValue(field_update_interval_ms)
+            self.field_update_interval_spin.blockSignals(False)
+            self._field_last_started = self._field_due = 0.
         profile_key = candidate_hardware.board_profile.key
         if profile_key in BOARD_PROFILES and not self.hw_controller.is_connected() and hasattr(self, 'board_profile_cb'):
             blocked = self.board_profile_cb.blockSignals(True)
@@ -1838,7 +2100,8 @@ class AcousticStudioMain(QMainWindow):
             getattr(self, 'transducer_type_cb', None), getattr(self, 'array_type_cb', None), 
             getattr(self, 'spacing_spin', None), getattr(self, 'trap_type_cb', None), 
             getattr(self, 'grid_x_spin', None), getattr(self, 'grid_y_spin', None), 
-            getattr(self, 'point_size_spin', None), getattr(self, 'prop_radius_spin', None)
+            getattr(self, 'point_size_spin', None), getattr(self, 'prop_radius_spin', None),
+            getattr(self, 'points_list', None)
         ]
         for ui in ui_elements:
             if ui: ui.blockSignals(True)
@@ -2224,6 +2487,9 @@ class AcousticStudioMain(QMainWindow):
         if next_state is not None:
             self.set_state(next_state)
     def clear_view(self):
+        if hasattr(self, '_phase_controller'):
+            self.pause_traj_playback()
+            self.invalidate_motion()
         for actor in self.transducer_actors:
             if actor in self.selected_actors:
                 self.selected_actors.remove(actor)
@@ -2519,20 +2785,20 @@ class AcousticStudioMain(QMainWindow):
                 actor.SetUserMatrix(vtk_matrix(support['matrix']))
 
     def simulate_colors(self):
-        if getattr(self, '_compute_installing', False):
+        if getattr(self, '_compute_installing', False) or getattr(self, '_closing_motion', False):
             return
         import time
         if hasattr(self, 'run_btn') and self.run_btn.isCheckable() and not self.run_btn.isChecked():
             return
         current_time = time.time()
-        if hasattr(self, '_last_sim_time') and (current_time - self._last_sim_time) < 0.016:
+        if hasattr(self, '_last_sim_time') and (current_time - self._last_sim_time) < 0.033:
             if not hasattr(self, '_sim_timer'):
                 from PySide6.QtCore import QTimer
-                self._sim_timer = QTimer()
+                self._sim_timer = QTimer(self)
                 self._sim_timer.setSingleShot(True)
                 self._sim_timer.timeout.connect(self.simulate_colors)
             if not self._sim_timer.isActive():
-                self._sim_timer.start(16)
+                self._sim_timer.start(33)
             return
         self._last_sim_time = current_time
         if hasattr(self, '_sim_timer'):
@@ -2561,11 +2827,25 @@ class AcousticStudioMain(QMainWindow):
         
         mode_idx = self.compute_mode_cb.currentIndex()
         if algorithm == 'Kinoforms':
+            if hasattr(self, '_phase_controller'):
+                self._phase_controller.cancel()
             self.start_hologram_live()
             return
         controller = getattr(self, '_hologram_controller', None)
         if controller is not None:
             controller.cancel()
+
+        if hasattr(self, '_phase_controller'):
+            try:
+                self._field_model_dirty = True
+                self.hw_controller.cancel_queued_frames()
+                if not active_pts:
+                    raise ValueError('활성화된 제어점이 필요합니다.')
+                self.acoustic_model_controls.backend.setText('위상 계산 중 — 최신 위치 준비 전 송신 보류')
+                self._phase_controller.submit('phase', self.motion_phase_parameters())
+            except Exception as exc:
+                model_failed(self, exc)
+            return
         
         try:
             total_phases, packet = self.phase_engine.calculate_phases(
@@ -2606,12 +2886,13 @@ class AcousticStudioMain(QMainWindow):
         if self.show_field_btn.isChecked():
             self.update_field_slice()
         else:
-            self.plotter.render()
+            self.request_motion_render()
             
         # Real-time hardware transmission
         if hasattr(self, 'chk_realtime_send') and self.chk_realtime_send.isChecked():
             if self.hw_controller.is_connected():
-                self.send_phase_data()
+                _, gains = source_inputs(self)
+                self.hw_controller.queue_phases(total_phases, active=(gains > 0).tolist())
     def toggle_field_slice(self):
         if self.show_field_btn.isChecked():
             self.show_field_btn.setText("음압 단면 숨기기")
@@ -2698,72 +2979,99 @@ class AcousticStudioMain(QMainWindow):
             act.SetVisibility(False)
             
         self.plotter.render()
+    def motion_field_parameters(self):
+        centres, gains = source_inputs(self)
+        bounds = self._get_field_bounds()
+        values = [np.linspace(low, high, 120) for low, high in bounds]
+        planes = []
+        for key, plane, fixed in (('0', 'xz', 1), ('1', 'yz', 0), ('2', 'xy', 2)):
+            if not getattr(self, plane + '_check').isChecked():
+                continue
+            axes = [axis for axis in range(3) if axis != fixed]
+            a, b = np.meshgrid(values[axes[0]], values[axes[1]])
+            points = np.empty((120 * 120, 3))
+            points[:, axes[0]], points[:, axes[1]] = a.ravel(), b.ravel()
+            points[:, fixed] = getattr(self, plane + '_spin').value()
+            planes.append((key, points))
+        return dict(planes=planes, tx_centers=centres, tx_amplitudes=gains,
+                    tx_phases=np.array([getattr(a, '_phase', 0.) for a in self.transducer_actors]),
+                    mode_idx=self.compute_mode_cb.currentIndex(), has_taichi=self.has_taichi,
+                    has_pytorch=self.has_pytorch, view_mode=self.field_mode_combo.currentIndex(), **field_kwargs(self))
+
+    def field_update_interval_changed(self, *args):
+        if not hasattr(self, '_field_timer'):
+            return
+        self._field_due = self._field_last_started + self.field_update_interval_spin.value() / 1000.
+        self._field_timer.stop()
+        self.update_field_slice()
+
     def update_field_slice(self, *args):
-        if hasattr(self, '_ghost_actors'):
-            for act in self._ghost_actors.values():
-                act.SetVisibility(False)
-            
+        if getattr(self, '_closing_motion', False) or getattr(self, '_compute_installing', False):
+            return
+        for actor in getattr(self, '_ghost_actors', {}).values():
+            actor.SetVisibility(False)
         if not hasattr(self, '_cached_field_grids'):
             self._cached_field_grids = {}
         if not self.show_field_btn.isChecked() or not self.transducer_actors:
-            for a in self.field_actors:
-                a.SetVisibility(False)
-            if hasattr(self, '_cached_field_grids'):
-                for key, (grid, actor) in self._cached_field_grids.items():
-                    actor.SetVisibility(False)
-            self.plotter.render()
+            self._field_refresh_pending = False
+            if hasattr(self, '_field_controller'):
+                self._field_controller.cancel()
+                self._field_timer.stop()
+            for actor in self.field_actors:
+                actor.SetVisibility(False)
+            for grid, actor in self._cached_field_grids.values():
+                actor.SetVisibility(False)
+            self.request_motion_render()
             return
-        
+        if getattr(self, '_field_model_dirty', False) or not hasattr(self, '_field_controller'):
+            return
+        if self._field_controller.busy:
+            self._field_refresh_pending = True
+            return
+        remaining = self._field_due - time.monotonic()
+        if remaining > 0:
+            if not self._field_timer.isActive():
+                self._field_timer.start(max(1, int(np.ceil(remaining * 1000))))
+            return
         try:
-            tx_centers, tx_amplitudes = source_inputs(self)
-        except ValueError as exc:
+            parameters = self.motion_field_parameters()
+            self._field_active_parameters = parameters
+            self._field_refresh_pending = False
+            self._field_last_started = time.monotonic()
+            self._field_due = self._field_last_started + self.field_update_interval_spin.value() / 1000.
+            self._field_controller.submit('field', parameters)
+        except Exception as exc:
             model_failed(self, exc)
+
+    def motion_field_idle(self):
+        if self._field_refresh_pending:
+            self._field_refresh_pending = False
+            self.update_field_slice()
+
+    def motion_field_completed(self, result):
+        from acousticstudio.motion_ui import job_key
+        if self._closing_motion or not self.show_field_btn.isChecked():
             return
-        if getattr(self, '_field_model_dirty', False):
+        current = self.motion_field_parameters()
+        computed = self._field_active_parameters
+        # A completed phase snapshot is useful during continuous target motion.
+        # Geometry, calibration, slice and display changes still reject it.
+        computed_context = {k: v for k, v in computed.items() if k != 'tx_phases'}
+        current_context = {k: v for k, v in current.items() if k != 'tx_phases'}
+        if job_key(computed_context) != job_key(current_context):
+            self.motion_statistics['stale_results'] += 1
+            self._field_refresh_pending = True
             return
-        tx_phases = np.array([getattr(a, '_phase', 0.0) for a in self.transducer_actors])
-        
-        (bx_min, bx_max), (by_min, by_max), (bz_min, bz_max) = self._get_field_bounds()
-        
-        res = 120
-        x_vals = np.linspace(bx_min, bx_max, res)
-        y_vals = np.linspace(by_min, by_max, res)
-        z_vals = np.linspace(bz_min, bz_max, res)
-        
-        planes_to_draw = []
-        if self.xz_check.isChecked(): planes_to_draw.append((0, self.xz_slider.value()))
-        if self.yz_check.isChecked(): planes_to_draw.append((1, self.yz_slider.value()))
-        if self.xy_check.isChecked(): planes_to_draw.append((2, self.xy_slider.value()))
-        # Keep track of active planes to hide unused ones
+        if result['key'] != job_key(current):
+            self._field_refresh_pending = True
+        self.motion_statistics['field_results'] += 1
+        self.phase_engine.last_backend = result['backend']
+        show_backend(self)
+        field_mode_idx = self.field_mode_combo.currentIndex()
         active_plane_keys = set()
-        
-        for plane_idx, offset in planes_to_draw:
-            cache_key = str(plane_idx)
+        res = 120
+        for cache_key, pts, real_p, imag_p in result['value']:
             active_plane_keys.add(cache_key)
-            
-            if plane_idx == 0:
-                X, Z = np.meshgrid(x_vals, z_vals)
-                pts = np.c_[X.ravel(), np.full(res*res, offset), Z.ravel()]
-            elif plane_idx == 1:
-                Y, Z = np.meshgrid(y_vals, z_vals)
-                pts = np.c_[np.full(res*res, offset), Y.ravel(), Z.ravel()]
-            else:
-                X, Y = np.meshgrid(x_vals, y_vals)
-                pts = np.c_[X.ravel(), Y.ravel(), np.full(res*res, offset)]
-                
-            field_mode_idx = self.field_mode_combo.currentIndex() if hasattr(self, 'field_mode_combo') else 0
-            mode_idx = self.compute_mode_cb.currentIndex()
-            
-            try:
-                real_p, imag_p = self.phase_engine.calculate_field_slice(
-                    pts, tx_centers, tx_phases, tx_amplitudes, mode_idx,
-                    has_taichi=getattr(self, 'has_taichi', False),
-                    has_pytorch=getattr(self, 'has_pytorch', False), **field_kwargs(self)
-                )
-            except ValueError as exc:
-                model_failed(self, exc)
-                return
-            show_backend(self)
             if field_mode_idx == 1:
                 # 위상 분포 (Phase Angle)
                 scalar_data = np.arctan2(imag_p, real_p)
@@ -2814,12 +3122,11 @@ class AcousticStudioMain(QMainWindow):
                 )
                 self.field_actors.append(actor)
                 self._cached_field_grids[cache_key] = (grid, actor)
-        # Hide actors for planes no longer active
         for key, (grid, actor) in self._cached_field_grids.items():
             if key not in active_plane_keys:
                 actor.SetVisibility(False)
-                
-        self.plotter.render()
+        self.request_motion_render()
+
     def refresh_compute_devices(self):
         self.compute_devices = probe_compute_devices()
         self.has_taichi = self.compute_devices.taichi_available
@@ -2859,6 +3166,8 @@ class AcousticStudioMain(QMainWindow):
             return
         self._changing_compute_mode = True
         try:
+            if hasattr(self, '_phase_controller'):
+                self.invalidate_motion()
             setup_error = None
             devices = self.compute_devices
             if index == 2 and not devices.taichi_installed:
@@ -2892,6 +3201,8 @@ class AcousticStudioMain(QMainWindow):
             self._changing_compute_mode = False
 
     def prepare_compute_install(self):
+        if hasattr(self, '_phase_controller'):
+            self.invalidate_motion()
         self._compute_installing = True
         if self._hologram_controller is not None:
             self._hologram_controller.cancel()
@@ -2902,13 +3213,14 @@ class AcousticStudioMain(QMainWindow):
         self.acoustic_model_controls.backend.setText('CUDA 준비 중 — 새 위상 계산 대기')
 
     def configure_pytorch_cuda(self):
+        from PySide6.QtWidgets import QDialog
         from acousticstudio.installer_ui import LiveInstallerDialog
         self.prepare_compute_install()
         dialog = LiveInstallerDialog(['torch'], self, cuda=True)
         outcome = dialog.exec()
         self.refresh_compute_devices()
         self.update_compute_mode_styles()
-        if outcome != dialog.Accepted:
+        if outcome != QDialog.DialogCode.Accepted:
             return dialog.worker.error or 'CUDA 준비를 취소했습니다.'
         return None if dialog.worker.success else dialog.worker.error
 
@@ -2993,6 +3305,22 @@ class AcousticStudioMain(QMainWindow):
                 points[i] = [sx + param * np.sin(theta), sy + param * np.sin(theta) * np.cos(theta), sz]
             
         optim_metrics = None
+        if hasattr(self, '_trajectory_controller') and self.chk_optim_traj.isChecked():
+            try:
+                centres, amplitudes = source_inputs(self)
+                parameters = dict(tx_centers=centres, points=points, base_delay=self.traj_delay.value(),
+                                  algorithm=self.trap_type_cb.currentText(), smooth_accel=True, amplitudes=amplitudes,
+                                  mode_idx=self.compute_mode_cb.currentIndex(), has_taichi=self.has_taichi,
+                                  has_pytorch=self.has_pytorch, **field_kwargs(self), **hologram_kwargs(self))
+                type_str = self.traj_type_cb.currentText()
+                name = f'궤적 {len(getattr(self, "trajectories_list", []))+1} [{type_str}]'
+                name += f': ({sx:.1f}, {sy:.1f}, {sz:.1f}) ➜ ({ex:.1f}, {ey:.1f}, {ez:.1f})' if traj_type == 0 else f': 중심({sx:.1f}, {sy:.1f}, {sz:.1f}), 반경/크기({param:.1f}mm)'
+                self._motion_context = dict(parameters=parameters, spec=self.trajectory_spec(), name=name, points=points)
+                self._trajectory_controller.submit('trajectory', parameters)
+                self.statusBar().showMessage('궤적 진단 계산 중 — 이동·계산 중지로 취소할 수 있습니다.')
+            except Exception as exc:
+                self.motion_failed(str(exc))
+            return
         if hasattr(self, 'chk_optim_traj') and self.chk_optim_traj.isChecked():
             tx_centers, tx_amplitudes = source_inputs(self)
             algo = self.trap_type_cb.currentText() if hasattr(self, 'trap_type_cb') else "Twin Trap"
@@ -3041,6 +3369,7 @@ class AcousticStudioMain(QMainWindow):
             self.load_selected_trajectory(len(self.trajectories_list) - 1)
 
     def load_selected_trajectory(self, idx):
+        self.pause_traj_playback()
         if not hasattr(self, 'trajectories_list') or idx < 0 or idx >= len(self.trajectories_list):
             return
             
@@ -3058,12 +3387,13 @@ class AcousticStudioMain(QMainWindow):
         points = traj['points']
         import numpy as np
         self.traj_points_data = points
+        self.traj_current_step = -1
         self.traj_delays_data = traj.get('delays', np.ones(len(points)) * self.traj_delay.value())
         self.traj_steps.blockSignals(True)
         self.traj_steps.setValue(traj['steps'])
         self.traj_steps.blockSignals(False)
         
-        actual_time = np.sum(self.traj_delays_data) / 1000.0
+        actual_time = np.sum(np.maximum(self.traj_delays_data, 33)) / 1000.0
         self.lbl_traj_time.setText(f"예상 시간: {actual_time:.2f}초 (+렌더링)")
         
         import pyvista as pv
@@ -3085,6 +3415,7 @@ class AcousticStudioMain(QMainWindow):
         self.plotter.render()
         
     def clear_selected_trajectory(self):
+        self.pause_traj_playback()
         if hasattr(self, 'traj_list') and hasattr(self, 'trajectories_list'):
             row = self.traj_list.currentRow()
             if row < 0 or row >= len(self.trajectories_list):
@@ -3109,6 +3440,7 @@ class AcousticStudioMain(QMainWindow):
                 self.plotter.render()
 
     def clear_all_trajectories(self):
+        self.pause_traj_playback()
         if hasattr(self, 'traj_actors'):
             for act in self.traj_actors:
                 try: self.plotter.remove_actor(act, render=False)
@@ -3126,24 +3458,28 @@ class AcousticStudioMain(QMainWindow):
         self.load_selected_trajectory(idx)
 
     def start_traj_playback(self, direction=1):
+        if getattr(self, '_compute_installing', False) or self._closing_motion:
+            return
         if not hasattr(self, 'traj_actors') or not self.traj_actors:
             from PySide6.QtWidgets import QMessageBox
             self.show_silent_msg("경고", "먼저 궤적을 생성하거나 선택해주세요.")
             return
-        if not getattr(self, 'selected_actors', []):
+        if not self.motion_points():
             from PySide6.QtWidgets import QMessageBox
             self.show_silent_msg("경고", "궤적을 따라 이동시킬 제어점을 선택해주세요.")
             return
             
         self.traj_play_direction = direction
+        self._trajectory_targets = self.motion_points()
+        self._trajectory_moving = True
         if not hasattr(self, 'traj_timer'):
             from PySide6.QtCore import QTimer
             self.traj_timer = QTimer(self)
             self.traj_timer.timeout.connect(self._on_traj_timer_step)
-            self.traj_current_step = 0
+            self.traj_current_step = -1 if direction > 0 else len(self.traj_points_data)
             
         if not hasattr(self, 'traj_current_step'):
-            self.traj_current_step = 0
+            self.traj_current_step = -1 if direction > 0 else len(self.traj_points_data)
             
         # If playing forward and already at the end, restart from beginning
         if direction == 1 and hasattr(self, 'traj_points_data') and self.traj_current_step >= len(self.traj_points_data) - 1:
@@ -3158,66 +3494,95 @@ class AcousticStudioMain(QMainWindow):
             self.auto_calc_cb.setChecked(False)
             
         delay_ms = self.traj_delay.value()
-        self.traj_timer.start(delay_ms if delay_ms > 0 else 10)
+        self.traj_timer.start(max(33, int(delay_ms)))
         self.btn_traj_play.setStyleSheet("background-color: #2E7D32; color: white; font-weight: bold; font-size: 16px;")
 
     def pause_traj_playback(self):
+        self._trajectory_moving = False
         if hasattr(self, 'traj_timer') and self.traj_timer.isActive():
             self.traj_timer.stop()
             self.btn_traj_play.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
             self.auto_calc_cb.setChecked(getattr(self, '_prev_auto_calc', False))
             if hasattr(self, 'push_state'): self.push_state()
+        if hasattr(self, '_phase_controller'):
+            self._phase_controller.cancel()
+        if self._hologram_controller is not None:
+            self._hologram_controller.cancel()
+        if hasattr(self, '_sim_timer'):
+            self._sim_timer.stop()
+        self.hw_controller.cancel_queued_frames()
 
     def reset_traj_playback(self):
         self.pause_traj_playback()
         self.traj_current_step = 0
-        if hasattr(self, 'traj_points_data') and len(self.traj_points_data) > 0:
-            pt = self.traj_points_data[0]
-            if getattr(self, 'selected_actors', []):
-                self.sel_x.setValue(pt[0])
-                self.sel_y.setValue(pt[1])
-                self.sel_z.setValue(pt[2])
-                if hasattr(self, 'simulate_colors'): self.simulate_colors()
-                if hasattr(self, 'update_field_slice'): self.update_field_slice()
-                self.plotter.render()
-        if hasattr(self, 'traj_list'):
-            self.traj_list.setCurrentRow(0)
+        if hasattr(self, 'traj_points_data') and len(self.traj_points_data):
+            points = self.motion_points()
+            if points:
+                self.move_control_points(self.traj_points_data[0], points, final=True)
 
     def _on_traj_timer_step(self):
-        if not hasattr(self, 'traj_points_data') or len(self.traj_points_data) == 0:
+        points = getattr(self, 'traj_points_data', [])
+        targets = getattr(self, '_trajectory_targets', [])
+        if not len(points) or not targets or any(not any(p is q for q in self.control_points) for p in targets):
             self.pause_traj_playback()
             return
-            
-        pts = self.traj_points_data
-        self.traj_current_step += self.traj_play_direction
-        
-        if self.traj_current_step < 0:
-            self.traj_current_step = 0
+        phase_busy = self._phase_controller.busy or (self._hologram_controller is not None and self._hologram_controller.busy)
+        deferred = hasattr(self, '_sim_timer') and self._sim_timer.isActive()
+        if self._field_model_dirty and (phase_busy or deferred):
+            return
+        if (self.chk_realtime_send.isChecked() and self.hw_controller.is_connected() and
+                (self.hw_controller.sender_busy or self.hw_controller._pending_frame is not None)):
+            return
+        next_step = self.traj_current_step + self.traj_play_direction
+        if not 0 <= next_step < len(points):
             self.pause_traj_playback()
-        elif self.traj_current_step >= len(pts):
-            self.traj_current_step = len(pts) - 1
-            self.pause_traj_playback()
-            
-        pt = pts[self.traj_current_step]
-        self.sel_x.setValue(pt[0])
-        self.sel_y.setValue(pt[1])
-        self.sel_z.setValue(pt[2])
-        
-        if hasattr(self, 'traj_delays_data') and self.traj_current_step < len(self.traj_delays_data):
-            dynamic_delay = int(self.traj_delays_data[self.traj_current_step])
-            if dynamic_delay > 0 and self.traj_timer.interval() != dynamic_delay:
-                self.traj_timer.setInterval(dynamic_delay)
-                
-        if hasattr(self, 'traj_list'):
-            self.traj_list.setCurrentRow(self.traj_current_step)
-        
-        if hasattr(self, 'simulate_colors'):
-            self.simulate_colors()
-            
-        if hasattr(self, 'update_field_slice'):
-            self.update_field_slice()
-            
-        self.plotter.render()
+            return
+        self.traj_current_step = next_step
+        self.move_control_points(points[next_step], targets)
+        if hasattr(self, 'traj_delays_data') and next_step < len(self.traj_delays_data):
+            self.traj_timer.setInterval(max(33, int(self.traj_delays_data[next_step])))
+        # The trajectory list selects a trajectory, never a waypoint index.
+        if (self.traj_play_direction > 0 and next_step == len(points) - 1) or (self.traj_play_direction < 0 and next_step == 0):
+            # Stop scheduling but allow the final position calculation to complete.
+            self.traj_timer.stop()
+            self._trajectory_moving = False
+            self.btn_traj_play.setStyleSheet('background-color: #4CAF50; color: white; font-weight: bold;')
+            self.auto_calc_cb.setChecked(getattr(self, '_prev_auto_calc', False))
+            self.push_state()
+
+    def trajectory_spec(self):
+        return (self.traj_type_cb.currentIndex(), self.traj_steps.value(), self.traj_param_spin.value(),
+                self.traj_delay.value(), self.chk_optim_traj.isChecked(),
+                tuple(getattr(self, 'traj_' + end + '_' + axis).value() for end in ('start', 'end') for axis in ('x', 'y', 'z')))
+
+    def motion_trajectory_completed(self, result):
+        from acousticstudio.motion_ui import job_key
+        context = self._motion_context
+        if context is None or self._closing_motion or context['spec'] != self.trajectory_spec():
+            return
+        current = dict(context['parameters'])
+        current['tx_centers'], current['amplitudes'] = source_inputs(self)
+        current.update(field_kwargs(self), **hologram_kwargs(self))
+        current.update(algorithm=self.trap_type_cb.currentText(), mode_idx=self.compute_mode_cb.currentIndex(),
+                       has_taichi=self.has_taichi, has_pytorch=self.has_pytorch)
+        if result['key'] != job_key(current):
+            self.statusBar().showMessage('배열 또는 설정이 변경되어 궤적 진단 결과를 버렸습니다.', 5000)
+            return
+        delays, metrics = result['value']
+        name = context['name']
+        if trajectory_diagnosis_is_valid(metrics):
+            name += ' [상대 강도 {:.0f}%]'.format(metrics['avg_stability'])
+        else:
+            name += ' [진단 불가]'
+        trajectory = dict(name=name, points=context['points'], steps=len(context['points']), delays=delays, metrics=metrics)
+        if not hasattr(self, 'trajectories_list'):
+            self.trajectories_list = []
+        self.trajectories_list.append(trajectory)
+        self.traj_list.addItem(name)
+        self.traj_list.setCurrentRow(len(self.trajectories_list) - 1)
+        self.load_selected_trajectory(len(self.trajectories_list) - 1)
+        self.push_state()
+        self.statusBar().showMessage('궤적 진단 완료' if trajectory_diagnosis_is_valid(metrics) else '궤적 진단 불가 — 기하학적 지연을 적용했습니다.', 5000)
 
     def update_traj_preview(self, *args):
         if not hasattr(self, 'traj_steps') or not hasattr(self, 'traj_delay'):
@@ -3225,7 +3590,7 @@ class AcousticStudioMain(QMainWindow):
         
         steps = self.traj_steps.value()
         delay_ms = self.traj_delay.value()
-        base_seconds = (steps * delay_ms) / 1000.0
+        base_seconds = (steps * max(33, delay_ms)) / 1000.0
 
         # 1. 3D 이동 거리 계산 (Distance, mm)
         traj_type_idx = self.traj_type_cb.currentIndex() if hasattr(self, 'traj_type_cb') else 0
@@ -3406,6 +3771,17 @@ class AcousticStudioMain(QMainWindow):
         try:
             actors = getattr(self, 'transducer_actors', [])
             centers, amplitudes = source_inputs(self)
+            if hasattr(self, '_export_controller'):
+                parameters = dict(centers=centers, points=points, amplitudes=amplitudes,
+                                  algorithm=self.trap_type_cb.currentText(), mode_idx=self.compute_mode_cb.currentIndex(),
+                                  has_taichi=self.has_taichi, has_pytorch=self.has_pytorch,
+                                  **field_kwargs(self), **hologram_kwargs(self))
+                self._export_context = dict(parameters=parameters, trajectory=traj, row=row,
+                                            path=file_path, format=format_key, hardware=deepcopy(self.hw_controller.settings()),
+                                            calibration_id='' if self.calibration is None else self.calibration.calibration_id)
+                self._export_controller.submit('export', parameters)
+                self.statusBar().showMessage('궤적 위상 계산 중 — 이동·계산 중지로 취소할 수 있습니다.')
+                return
             phases = self.phase_engine.calculate_trajectory_phases(
                 centers, points, amplitudes, self.trap_type_cb.currentText(),
                 mode_idx=self.compute_mode_cb.currentIndex(),
@@ -3429,6 +3805,38 @@ class AcousticStudioMain(QMainWindow):
             self.show_silent_msg("내보내기 완료", f"경로: {file_path}\n\n{detail}")
         except Exception as exc:
             self.show_silent_msg("내보내기 오류", f"위상 계산 또는 파일 저장 중 오류가 발생했습니다:\n{exc}")
+
+    def motion_export_completed(self, result):
+        from acousticstudio.motion_ui import job_key
+        from acousticstudio.trajectory_export import save_trajectory_export
+        context = self._export_context
+        if context is None or self._closing_motion:
+            return
+        current = dict(context['parameters'])
+        current['centers'], current['amplitudes'] = source_inputs(self)
+        current.update(field_kwargs(self), **hologram_kwargs(self))
+        current.update(algorithm=self.trap_type_cb.currentText(), mode_idx=self.compute_mode_cb.currentIndex(),
+                       has_taichi=self.has_taichi, has_pytorch=self.has_pytorch)
+        row = context['row']
+        if (result['key'] != job_key(current) or self.hw_controller.settings() != context['hardware'] or
+                row >= len(self.trajectories_list) or self.trajectories_list[row] is not context['trajectory']):
+            self.statusBar().showMessage('배열·궤적·보드 설정이 변경되어 내보내기를 취소했습니다.', 5000)
+            return
+        try:
+            trajectory = context['trajectory']
+            save_trajectory_export(context['path'], context['format'], trajectory['name'], trajectory['points'],
+                                   trajectory.get('delays', np.full(len(trajectory['points']), self.traj_delay.value())),
+                                   result['value'], self.hw_controller, active=(current['amplitudes'] > 0).tolist(),
+                                   calibration_id=context['calibration_id'])
+            self.statusBar().showMessage(f"궤적 데이터 내보내기 완료: {context['path']}", 5000)
+            detail = '위상 보정·물리 채널 맵·OFF를 적용했습니다.'
+            if context['format'] == 'binary':
+                detail += '\n보드 프레임 파일에는 스텝 지연이 포함되지 않습니다.'
+            elif context['format'] == 'legacy':
+                detail += '\n이전 0xFA 파일 형식이며 직접 송신용 프레임과 구분하세요.'
+            self.show_silent_msg('내보내기 완료', context['path'] + '\n' + detail)
+        except Exception as exc:
+            self.show_silent_msg('내보내기 오류', str(exc))
 
     def hologram_inputs(self):
         indices = [i for i in range(len(self.control_points))
@@ -3459,6 +3867,7 @@ class AcousticStudioMain(QMainWindow):
                 self._hologram_controller.failed.connect(self.hologram_live_failed)
                 self._hologram_controller.idle.connect(self.hologram_live_idle)
             self._field_model_dirty = True
+            self.hw_controller.cancel_queued_frames()
             self.acoustic_model_controls.backend.setText('Kinoforms 계산 중 — 새 위상 준비 전 송신 보류')
             for actor in getattr(self, 'field_actors', []):
                 actor.SetVisibility(False)
@@ -3470,6 +3879,8 @@ class AcousticStudioMain(QMainWindow):
             model_failed(self, exc)
 
     def hologram_live_completed(self, result):
+        if getattr(self, '_closing_motion', False):
+            return
         try:
             snapshot, targets, settings, _ = self.hologram_inputs()
             current = input_signature(snapshot.sources_mm, snapshot.normals, snapshot.amplitudes,
@@ -3478,6 +3889,9 @@ class AcousticStudioMain(QMainWindow):
                 return
             self.phase_engine.last_backend = result['backend']
             self.phase_engine.last_hologram = result
+            if hasattr(self, 'motion_statistics'):
+                self.motion_statistics['phase_results'] += 1
+                self.motion_statistics['last_phase_ms'] = result['elapsed_seconds'] * 1000
             self.apply_calculated_phases(result['phases_rad'])
         except Exception as exc:
             model_failed(self, exc)
@@ -3487,6 +3901,9 @@ class AcousticStudioMain(QMainWindow):
             model_failed(self, message)
 
     def hologram_live_idle(self):
+        if getattr(self, '_closing_motion', False):
+            self.motion_idle()
+            return
         if self._closing_for_hologram:
             self._closing_for_hologram = False
             self.close()

@@ -1,0 +1,86 @@
+{
+  "utc": "2026-10-08T04:59:54.368992+00:00",
+  "nominal_request_interval_ms": 33,
+  "serial_transport": "fake serial, no physical wire or controller ACK",
+  "results": [
+    {
+      "mode": 1,
+      "backend": {
+        "requested_mode": 1,
+        "backend": "C++",
+        "fallback_reason": null
+      },
+      "requested": 30,
+      "accepted": 30,
+      "superseded_or_merged": 0,
+      "frames_written": 30,
+      "elapsed_seconds": 1.4303852999582887,
+      "final_response_ms": 23.836500011384487,
+      "worker_ms": [
+        19.979799864813685,
+        19.73629998974502,
+        19.014399964362383,
+        20.286999875679612,
+        20.933100022375584,
+        18.57950002886355,
+        19.56470008008182,
+        20.084600197151303,
+        19.731299951672554,
+        19.27959988825023,
+        20.473500015214086,
+        19.438500050455332,
+        18.919599941000342,
+        20.57050005532801,
+        19.522200105711818,
+        19.952400121837854,
+        20.769299939274788,
+        20.09690017439425,
+        17.93060009367764,
+        19.36300005763769,
+        19.97789996676147,
+        19.450200023129582,
+        20.055900095030665,
+        20.69819997996092,
+        19.57340002991259,
+        19.07239994034171,
+        19.716800190508366,
+        19.403799902647734,
+        19.76749999448657,
+        20.741399843245745
+      ],
+      "phase_error": 0.0,
+      "send_statistics": {
+        "submitted": 30,
+        "replaced": 0,
+        "written": 30,
+        "failed": 0,
+        "last_write_ms": 0.005800044164061546
+      }
+    },
+    {
+      "mode": 2,
+      "backend": {
+        "requested_mode": 2,
+        "backend": "Taichi vulkan",
+        "fallback_reason": null
+      },
+      "requested": 30,
+      "accepted": 1,
+      "superseded_or_merged": 29,
+      "frames_written": 1,
+      "elapsed_seconds": 1.5876372999045998,
+      "final_response_ms": 78.77050014212728,
+      "worker_ms": [
+        71.82890013791621
+      ],
+      "phase_error": 1.8209011484034673e-15,
+      "send_statistics": {
+        "submitted": 1,
+        "replaced": 0,
+        "written": 1,
+        "failed": 0,
+        "last_write_ms": 0.00400003045797348
+      }
+    }
+  ]
+}

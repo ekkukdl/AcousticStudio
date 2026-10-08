@@ -1,0 +1,39 @@
+{
+  "checked_at": "2026-10-08T14:12:07.360798",
+  "python_ast_files": 47,
+  "utf8_documents": 4,
+  "relative_links": 70,
+  "new_broken_links": [],
+  "preexisting_missing_links": [
+    {
+      "document": "docs\\ultraino_migration_plan.md",
+      "target": "../../보고서 및 구체화/초음파부상_역장제어_및_Ultraino_기능통합_분석보고서.docx"
+    }
+  ],
+  "test_reports": {
+    "t6_pytest.xml": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "4",
+        "tests": "252",
+        "time": "44.717",
+        "timestamp": "2026-10-08T14:00:11.438337+09:00",
+        "hostname": "dogbear"
+      }
+    ],
+    "t6_motion_pytest.xml": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "20",
+        "time": "25.271",
+        "timestamp": "2026-10-08T14:01:16.440207+09:00",
+        "hostname": "dogbear"
+      }
+    ]
+  }
+}

@@ -184,6 +184,38 @@ def test_installer_checks_exit_status_and_escape_waits_for_worker(app, monkeypat
     assert dialog.worker.cancelled.is_set()
 
 
+@pytest.mark.parametrize('success', [True, False])
+def test_cuda_configuration_reads_real_dialog_result_without_instance_enum(app, monkeypatch, success):
+    from acousticstudio.app import AcousticStudioMain
+    calls = []
+    def install(log, cancelled, process_changed):
+        if not success:
+            raise RuntimeError('NVIDIA CUDA 장치를 확인하지 못했습니다.')
+    monkeypatch.setattr(installer_ui, 'install_cuda_runtime', install)
+    real_dialog = installer_ui.LiveInstallerDialog
+    dialogs = []
+    def create_dialog(*args, **kwargs):
+        dialog = real_dialog(*args, **kwargs)
+        dialogs.append(dialog)
+        if not success:
+            # Close the failed installation just as the user presses Close.
+            dialog.worker.finished.connect(dialog.reject)
+        return dialog
+    monkeypatch.setattr(installer_ui, 'LiveInstallerDialog', create_dialog)
+    parent = QDialog()
+    parent.prepare_compute_install = lambda: calls.append('prepare')
+    parent.refresh_compute_devices = lambda: calls.append('refresh')
+    parent.update_compute_mode_styles = lambda: calls.append('styles')
+    try:
+        error = AcousticStudioMain.configure_pytorch_cuda(parent)
+        assert calls == ['prepare', 'refresh', 'styles']
+        assert error == (None if success else 'NVIDIA CUDA 장치를 확인하지 못했습니다.')
+        assert not dialogs[0].worker.isRunning()
+        assert dialogs[0].result() == (QDialog.DialogCode.Accepted if success else QDialog.DialogCode.Rejected)
+    finally:
+        parent.close()
+
+
 def test_mode_selection_installs_then_switches_and_cpu_selection_needs_no_install(app, monkeypatch, tmp_path):
     import acousticstudio.app as app_module
     cpu = ComputeDevices(cpp_available=True, taichi_installed=True, taichi_arch='cuda',
@@ -196,7 +228,6 @@ def test_mode_selection_installs_then_switches_and_cpu_selection_needs_no_instal
         window = app_module.AcousticStudioMain()
     calls = []
     class Installer:
-        Accepted = QDialog.Accepted
         def __init__(self, packages, parent=None, cuda=False):
             assert cuda and packages == ['torch']
             assert parent._compute_installing and parent._field_model_dirty
